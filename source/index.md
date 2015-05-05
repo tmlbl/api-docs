@@ -1,22 +1,61 @@
 ---
-title: API Reference
+title: Smartsheet API Documentation - AUTHORING
 
 language_tabs:
-  - shell
-  - ruby
-  - python
+  - shell: cURL
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='https://www.smartsheet.com/developers' target='_blank'>Developer Portal</a>
+  - <a href='https://www.smartsheet.com/developers/register' target='_blank'>Developer Registration</a>
+  - <a href='https://www.smartsheet.com/developers/api-faq' target='_blank'>FAQs</a>
+  - <a href='https://www.smartsheet.com/blog/development' target='_blank'>Blog</a>
+
+snippets:
+  - snippet1
+  - snippet2
+  - snippet3
+  - snippet4
+  - snippet5
 
 includes:
   - errors
+  - test
 
 search: true
 ---
 
 # Introduction
+
+~snippet1~
+
+~snippet2~
+
+~snippet3~
+
+~snippet4~
+
+~snippet5~
+
+~snippet1~
+
+~snippet2~
+
+~snippet3~
+
+~snippet4~
+
+~snippet5~
+
+<div class='snippet1'></div>
+<div class='snippet2'></div>
+<div class='snippet3'></div>
+<div class='snippet4'></div>
+<div class='snippet5'></div>
+<div class='snippet1'></div>
+<div class='snippet2'></div>
+<div class='snippet3'></div>
+<div class='snippet4'></div>
+<div class='snippet5'></div>
 
 Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
 
@@ -27,18 +66,6 @@ This example API documentation page was created with [Slate](http://github.com/t
 # Authentication
 
 > To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
 
 ```shell
 # With shell, you can just pass the correct header with each request
@@ -57,6 +84,8 @@ Kittn expects for the API key to be included in all API requests to the server i
 <aside class="notice">
 You must replace `meowmeowmeow` with your personal API key.
 </aside>
+
+<iframe src="//api.apiembed.com/?source=https://apiembed.com/sample.json&targets=shell:curl,node:unirest,java:unirest,python:requests,php:curl,ruby:native,objc:nsurlsession,go:native" frameborder="0" scrolling="no" width="50%" height="500px" seamless></iframe>
 
 # Kittens
 

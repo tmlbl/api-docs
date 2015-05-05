@@ -38,6 +38,27 @@ under the License.
         });
       </script>
     <% end %>
+	
+	<% current_page.data.snippets.each do |snippet| %>
+	  <script>
+		  $(function() {
+			<% fPath = "/app/source/snippets/" + snippet + ".md"; %>
+			<% placeholderText = "~" + snippet + "~"; %>
+			
+			// ISSUE: multiple-line files fail silently and next loop iteration begins (JS function calls that follow do not get executed...instead, next loop iteration begins)
+			<% fContents = File.read(fPath); %>
+			
+			// test
+			test_function("<%= snippet %>");
+			
+			// Option 1:  Works, but Files must contain contents within an HTML container tag.
+			//injectSnippet_usingDivClass("<%= snippet %>", "<%= fContents %>");
+			
+			// Option 2: Works, but breaks side nav.
+			//injectSnippet_usingStringSub("<%= placeholderText %>", "<%= fContents %>");
+		  });
+	  </script>
+	<% end %>
   </head>
 
   <body class="<%= page_classes %>">
