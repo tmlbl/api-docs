@@ -1,1 +1,0 @@
-<p>This is Snippet 3 CONTENTS</p>
