@@ -4791,13 +4791,14 @@ Creates a Workspace.
 
 <aside class="notice">When using the 'Create Workspace' operation to create a copy of a Workspace:<ul>
 <li>Specify the <b>include</b> parameter to indicate which elements of the Workspace to copy.</li>
+<li>Specify the <b>skipRemap</b> parameter to indicate to preserve original references in reports or for cell links in the new workspace.</li>
 <li>Specify the <b>fromId</b> property in the body of the request to indicate the Workspace to copy.</li></ul></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- If copying a workspace - comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand - Applicable when copying a workspace.</li><li>shares - Applicable when copying a workspace.</li></ul>By default, all elements are copied.  See [Copying Folders & Workspaces](http://help.smartsheet.com/customer/portal/articles/1782802-copying-folders-workspaces) help article. If "data" is omitted, attachments, discussions, and cellLinks include elements are ignored even if provided.
+<%= PARAMETERS %> | **include** (optional) -- If copying a workspace - comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand - Applicable when copying a workspace.</li><li>shares - Applicable when copying a workspace.</li></ul>By default, all elements are copied.  See [Copying Folders & Workspaces](http://help.smartsheet.com/customer/portal/articles/1782802-copying-folders-workspaces) help article. If "data" is omitted, attachments, discussions, and cellLinks include elements are ignored even if provided.<br/><br/>**skipRemap** (optional) -If copying a workspace - comma-separated list of original references to preserve/skip "remapping" for:<ul><li>cellLinks</li><li>reports</li></ul>The cell links and reports should continue to point to the original source sheets if specified via skipRemap. By default, if the cell link source is among the copied, the copied cell link shall point to the copied source NOT the original.
 <%= REQUEST %> | [Workspace object](#workspace-object), limited to the following attributes:<ul><li>name (string) - required</li><li>fromId (number) - optional: if copying a Workspace, the ID of the Workspace from which to copy</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
