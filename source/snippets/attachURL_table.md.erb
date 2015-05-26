@@ -1,0 +1,19 @@
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Attachment object](#attachment-object) limited to the following attributes:<ul><li>name</li><li>description (applicable when attaching to sheet or row only)</li><li>url</li><li>attachmentType</li><li>attachmentSubType</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing an [Attachment object](#attachment-object) for the newly created attachment
+
+The url can be any of the following:
+<ul>
+<li>a normal URL (attachmentType "LINK")</li>
+<li>a Google Drive URL (attachmentType "GOOGLE_DRIVE")</li>
+<li>a Box.com URL (attachmentType "BOX_COM")</li>
+<li>a Dropbox URL (attachmentType “DROPBOX”)</li>
+<li>an Evernote URL (attachmentType “EVERNOTE”)</li>
+</ul>
+
+<aside class="notice">attachmentSubType is valid only for GOOGLE_DRIVE attachments which are Google Docs.  It can optionally be included to indicate the type of a file.  The following attachmentSubTypes are valid for GOOGLE_DRIVE attachments "DOCUMENT", "SPREADSHEET", "PRESENTATION", "PDF", "DRAWING".</aside>
+
+<aside class="notice">When the attachment type is BOX_COM, DROPBOX, or GOOGLE_DRIVE (without an attachmentSubType specified), the mimeType will be derived by the file extension specified on the "name".</aside>

@@ -1,0 +1,38 @@
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/search/sheets/{sheetId}?query=stuff \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "results": [
+        {
+            "contextData": [
+                "Discussion 1"
+            ],
+            "objectId": 1888207043356548,
+            "objectType": "discussion",
+            "parentObjectId": 7141187195824004,
+            "parentObjectName": "Sheet 1",
+            "parentObjectType": "sheet",
+            "text": "discussion stuff goes here"
+        }
+    ],
+    "totalCount": 1
+}
+```
+
+`GET /search/sheets/{sheetId}`
+
+Searches a Sheet for the specified text.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **query** (required): Text with which to perform the search.
+<%= RETURNS %> | [SearchResult object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
