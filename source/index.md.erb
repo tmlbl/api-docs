@@ -1,9 +1,9 @@
 ---
-title: Smartsheet API Documentation
+title: Smartsheet API 2.0 Documentation
 
 language_tabs:
   - shell: cURL
-
+  
 toc_footers:
   - <a href='https://www.smartsheet.com/developers' target='_blank'>Developer Portal</a>
   - <a href='https://www.smartsheet.com/developers/register' target='_blank'>Developer Registration</a>
@@ -11,144 +11,5088 @@ toc_footers:
   - <a href='https://www.smartsheet.com/blog/development' target='_blank'>Blog</a>
 
 includes:
-  - errors
 
-search: true
+search: false
 ---
-# Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+<% OBJECTS = "Objects" %>
+<% RELATED = "Related Items" %>
+<% METHOD = "**HTTP Request**" %>
+<% SCOPE = "**Access Scope**" %>
+<% HEADERS = "**Headers**" %>
+<% PARAMETERS = "**Parameters**" %>
+<% REQUEST = "**Request Body**" %>
+<% RETURNS = "**Returns**" %>
+<% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
+<% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+# Smartsheet API 2.0
 
-<%= partial "snippets/snippet1.md" %>
+## Introduction
 
-# Authentication
+> **Base URL**:  https://api.smartsheet.com/2.0
 
-> To authorize, use this code:
+The Smartsheet API provides programmatic access to Smartsheet features and data. 
+In designing the API, our goal was to make it simple, intuitive, and predictable. 
+We do our best to adhere to common open and widely accepted standards, including REST for access, JSON format for the data, and OAuth for Authentication and Authorization. 
+This API assumes a good working knowledge of the Smartsheet application UI, concepts and terminology.
+
+<aside class="success">This documentation applies to Smartsheet API 2.0. For Smartsheet API 1.1 documentation, see <a href="https://www.smartsheet.com/developers/api-documentation">here</a></aside>
+
+## RESTful Architecture
+
+```apires
+Resources:
+
+/favorites
+/folders
+/groups
+/home
+/reports
+/search
+/serverinfo
+/sheets
+/sheets/{id}/rows
+/sheets/{id}/columns
+/sheets/{id}/attachments
+/sheets/{id}/discussions
+/templates
+/token
+/users
+/workspaces
+```
+
+Everything in Smartsheet is represented as an object with a defined structure. 
+Whether it is a "Home" object that represents your list of Sheets and Workspaces, or a Sheet object with "Row" and "Column" objects, or a list of "Shares" that indicate who has access to a given sheet, all aspects of Smartsheet are modeled as structured objects.
+
+URL structure follows typical resource-oriented conventions. For example, to get a list of sheets, use `GET https://api.smartsheet.com/2.0/sheets`. 
+This will return a list of Sheet objects, where each Sheet will have an "id" attribute. 
+To get details on a particular sheet, use `GET https://api.smartsheet.com/2.0/sheets/123456`, where 123456 is the "id" of the Sheet you want. 
+Similarly, to share a sheet, `POST` a Share object to `https://api.smartsheet.com/2.0/sheets/123456/shares`.
+
+## HTTP Standards
+
+All actions taken through the API are done via HTTP using [standard HTTP methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html): GET (to retrieve an object), POST (to create), PUT (to modify), and DELETE. 
+[Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions.
+
+## Input / Output Format
+
+Request body data is expected to be in [JSON](http://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON. 
+ 
+<aside class="notice">Some of the data returned by the Smartsheet API is user-generated content. Caution should be taken to ensure that the user-generated content is consumed safely in any external system to avoid introducing vulnerabilities.</aside>
+
+## Example Requests & Responses
+
+With every API operation we provide a sample request and a sample response. 
+The requests shown use a command line data transfer tool [cURL](http://en.wikipedia.org/wiki/CURL). 
+Alternatively, you can use a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm).
+
+## Versioning and Changes
+
+**Non-breaking changes**: We will be adding new functionality and bug fixes to the API over time. 
+You should expect to see new endpoints or new attributes for existing objects. 
+Such changes will not result in a new API version.  Please make sure that your code can handle new attributes gracefully. 
+Also, please make sure your code does not depend on the order in which records are returned, unless it is explicitly stated in this documentation.  
+
+**Breaking changes**: We intend to maintain the current API version for the foreseeable future. 
+If and when we decide to add functionality that breaks the contract of the current API, we will publish it with a new version number, so as to keep the existing API functionality backwards compatible.
+
+If new functionality is added to the API, we will let you know via our [Developer Portal](http://www.smartsheet.com/developers) and other means of communication, such as Twitter, Facebook or email. 
+Please follow these sources to stay up to date on the latest changes.
+
+# API Fundamentals
+
+## Authentication
+
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. 
+An **Authorization** HTTP header containing an Access Token is required to authenticate requests. 
+Access Tokens can be acquired in one of two ways:
+<ul>
+<li>via the Smartsheet UI ([User-generated Access Tokens](#user-generated-access-tokens)) </li>
+<li>via oAuth 2.0 (see [Third-party Access Tokens](#third-party-access-tokens))</li>
+</ul> 
+
+### User-generated Access Tokens
+
+Smartsheet users can easily generate Access Tokens by logging in to their Smartsheet account. 
+Once a token is generated, it can be used in a script or custom application, or with an API integration service like Zapier, to access any Smartsheet data which the token owner already can access in the application. 
+See [Direct API Access](#direct-api-access) for more information on user-generated tokens.
+
+### Third-party Access Tokens
+
+Third-party developers are able to build applications that can acquire Access Tokens using OAuth 2.0. 
+See [Third Party App Development](#third-party-app-development) for more information.
+
+## Rate Limiting
+
+In order to prevent abuse and undue stress on the Smartsheet servers, the API has a rate limiting feature that restricts users to **300** requests per minute per Access Token. 
+Certain resource intensive operations, such as attaching a file and getting cell history, count as 10 requests to prevent abuse of these operations. 
+We reserve the right to enforce this limit depending on the load on our systems. 
+If and when the limit is enforced, any requests that exceed this limit will be rejected with an **HTTP 503** error code, with the Smartsheet error code **4003**. 
+Please design your applications assuming that the stated limit will be enforced.
+
+## Errors
+
+[Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions. Generally, they will follow this pattern:
+
+     |     |
+-----|-----|
+2xx | Request was successful
+4xx | Problem with request (malformed or missing a parameter or access denied)
+5xx | Request was properly formatted, but the operation failed on Smartsheet’s end
+
+**Smartsheet HTTP codes**:
+
+     |     |
+-----|-----|
+200 | OK
+400 | BAD REQUEST
+401 | NOT AUTHORIZED
+403 | FORBIDDEN
+404 | NOT FOUND
+405 | METHOD NOT SUPPORTED
+500 | INTERNAL SERVER ERROR
+503 | SERVICE UNAVAILABLE
+
+All errors will also be accompanied by JSON-formatted error objects, containing a descriptive message. For example, doing a `GET` on a non-existent sheet at `https://api.smartsheet.com/2.0/sheets/123456` will result in a response code of **404**, indicating the resource was not found. The body of the response will include an Error object:
+
+{<br/>
+&#160;&#160;&#160;&#160;"errorCode": 1006,<br/>
+&#160;&#160;&#160;&#160;"message": "Not Found"<br/>
+}
+ 
+The full list of error codes is below:
+
+     |     |
+-----|-----|
+1001 | An Access Token is required.
+1002 | Your Access Token is invalid.
+1003 | Your Access Token has expired.
+1004 | You are not authorized to perform this action.
+1005 | Single Sign-On is required for this account.
+1006 | Not Found.
+1007 | Version not supported.
+1008 | Unable to parse request. The following error occurred: {0}
+1009 | A required parameter is missing from your request: {0}.
+1010 | HTTP Method not supported.
+1011 | A required header was missing or invalid: {0}
+1012 | A required object attribute is missing from your request: {0}.
+1013 | The operation you are attempting to perform is not supported by your plan.
+1014 | There are no licenses available on your account.
+1015 | The user exists in another account. The user must be removed from that account before they can be added to yours.
+1016 | The user is already a member of your account.
+1017 | The user already has a paid account. The user must cancel that account before they can be added to yours.
+1018 | The value {0} was not valid for the parameter {1}.
+1019 | Cannot transfer to the user specified. User not found.
+1020 | User not found.
+1021 | Cannot transfer to the user specified. They are not a member of your account.
+1022 | Cannot delete the user specified. They are not a member of your account.
+1023 | The sheet specified is shared at the Workspace level.
+1024 | The HTTP request body is required for this Method.
+1025 | The share already exists.
+1026 | Transferring ownership is not currently supported.
+1027 | Share not found.
+1028 | You cannot edit the share of the owner.
+1029 | The parameter in the URI does not match the object in the request body.
+1030 | You are unable to assume the user specified.
+1031 | The value {0} was not valid for the attribute {1}.
+1032 | The attribute(s) {0} are not allowed for this operation.
+1033 | The template was not found.
+1034 | Invalid Row ID.
+1035 | Attachments and discussions cannot be POSTed with a row.
+1036 | The columnId {0} is invalid.
+1037 | The columnId {0} is included more than once in a single row.
+1038 | Invalid Cell value. Must be numeric or a string.
+1039 | Cannot edit a locked column {0}
+1040 | Cannot edit your own share.
+1041 | The value for {0} must be less than {1} but was {2}.
+1042 | The value for cell in column {0}, {1}, did not conform to the strict requirements for type {2}.
+1043 | The row number you requested is blank and cannot be retrieved.        
+1044 | Assume-User header is required for your Access Token.        
+1045 | The resource specified is read-only.
+1046 | Cells containing formulas, links to other cells, system values, or Gantt values cannot be inserted or updated through the API.
+1047 | You cannot remove yourself from the account through the API.
+1048 | The user specified has declined the invitation to join your organization. You cannot modify declined invitations.
+1049 | You cannot remove admin permissions from yourself through the API.
+1050 | You cannot edit a locked row.
+1051 | Attachments of type FILE cannot be created using JSON.
+1052 | Invalid Accept header. Media type not supported.
+1053 | Unknown Paper size: {0}.
+1054 | The new sheet requires either a fromId or columns.
+1055 | One and only one column must be primary.
+1056 | Column titles must be unique.
+1057 | Primary columns must be of type TEXT_NUMBER.
+1058 | Column type of {1} does not support symbol of type {0}.
+1059 | Column options are not allowed when a symbol is specified.
+1060 | Column options are not allowed for column type {0}.
+1061 | Max count exceeded for field {0}.
+1062 | Invalid row location.
+1063 | Invalid parentId: {0}.
+1064 | Invalid siblingId: {0}.
+1065 | The column specified cannot be deleted.
+1066 | You can only share to {0} users at a time.
+1067 | Invalid client_id
+1068 | Unsupported grant type.
+1069 | Invalid Request. The authorization_code has expired.
+1070 | Invalid Request. Required parameter is missing: {0}.
+1071 | Invalid Grant. The authorization code or refresh token provided was invalid.
+1072 | Invalid hash value. The hash provided did not match the expected value.
+1073 | The redirect_uri did not match the expected value.
+1074 | You are trying to upload a file of {0}, but the API currently only supports {1}
+1075 | The Content-Size provided did not match the file uploaded. This may be due to network issues or because the wrong Content-Size was specified.
+1076 | The user has created sheets and must be added as a licensed user.
+1077 | Duplicate system column type: {0}.
+1078 | System column type {0} not supported for {1} {2}.
+1079 | Column type {0} is not supported for system column type {1}
+1080 | End Dates on dependency-enabled sheets cannot be created/updated. Please update either the Duration or Start Date column.
+1081 | You cannot delete another user's discussions, comments, or comment attachments.
+1082 | You cannot add options to the given column {0} because it is not a PICKLIST.
+1083 | Auto number formatting cannot be added to a column {0}
+1084 | The auto number format is invalid.
+1085 | The column specified is either a calendar, Gantt, or dependency column and the type cannot be changed.
+1086 | Google was not able to verify your access.
+1087 | The column specified is used in a conditional formatting rule, so the column cannot be deleted and its type cannot be changed.
+1088 | Invalid length for concatenated auto number format. Concatenated format is {0}, with a length of {1}. Must be less than or equal to 40.
+1089 | The type specified is only used with System Columns.
+1090 | Column.type is required when changing symbol, systemColumnType or options.
+1091 | Invalid Content-Type: {0}
+1092 | You cannot delete this row. Either it or one or more of its children are locked.
+1093 | An error occurred verifying this receipt, please try again later.
+1094 | You cannot set a password on a new user unless they accept the license.
+1095 | The Excel file is invalid/corrupt. This may be due to an invalid file extension, an outdated Excel format, or an invalid Content-Length.
+1096 | This Apple payment receipt has already been applied to a user's payment profile.
+1097 | A user must be a licensed sheet creator to be a resource viewer.
+1098 | To delete this column you must first disable Dependencies for this sheet.
+1099 | To delete this column you must first disable Resource Management for this sheet.
+1100 | Uploading new versions of a discussion comment attachment is not supported.
+1101 | Uploading new versions of non-FILE type attachments is not supported.
+1102 | A user must be a licensed sheet creator to be a group administrator.
+1103 | A group with the same name already exists.
+1104 | You must be a group administrator to create a group.
+1105 | The operation failed because one or more group members were not members of your account: {0}
+1106 | Group not found
+1107 | User specified in transferGroupsTo must be a group admin.
+1108 | transferGroupsTo must be provided because user being deleted owns one or more groups.
+1109 | Only one of cell.hyperlink or cell.linkInFromCell may be non-null.
+1110 | cell.value must be null if cell.linkInFromCell is non-null.
+1111 | Only one of cell.hyperlink.sheetId and cell.hyperlink.reportId may be non-null.
+1112 | cell.hyperlink.url must be null for sheet or report hyperlinks.
+1113 | cell.value must be a string when the cell is a hyperlink.
+1114 | Invalid sheetId or reportId: {0}
+1115 | Row must contain either cell link updates or row/cell value updates; mixing of both update types in one API call is not supported.
+1116 | You cannot link a cell to its own sheet.
+1117 | One of the following cell.hyperlink fields must be non-null: url, sheetId, or reportId.
+1118 | You cannot set the value of a Gantt allocation column (id {0}) in a row that has child rows.
+1119 | Failed to complete copy.<br/>**NOTE**: may include a "detail" object containing "topContainerType" and "topContainerId" which represent the top-level folder or workspace that were partially copied.
+1120 | Too many sheets to copy.<br/>**NOTE**: includes a "detail" object containing "maxSheetCount" which represents the server-side limit on the number of sheets allowed in a single folder/workspace copy operation.
+2000 | Invalid username and/or password.
+2001 | Your account is locked out.
+2002 | Invalid email address
+2003 | Your account is currently locked out due to a billing issue. Please contact Smartsheet Finance at finance@smartsheet.com.
+2004 | Your email address must be confirmed for you to log into Smartsheet. Please click on the link from your welcome mail, or you can confirm your email by resetting your password.
+2005 | The device id you have provided is longer than the maximum of 45 characters.
+2006 | The client id you have provided is not valid.
+2008 | Invalid login ticket.
+2009 | The given launch parameters are not currently supported by the API.
+4000 | An unexpected error has occurred. Please contact Smartsheet support at support@smartsheet.com for assistance.
+4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly.
+4002 | Server timeout exceeded. Request has failed.
+4003 | Rate limit exceeded.
+
+## Access Levels
+
+Throughout the API we have "Share" objects that represent the shared user's access level. 
+Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
+This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
+The **accessLevel** attribute has one of the following values:
+
+     |     |
+-----|-----|
+VIEWER | The user has read-only access to the resource.
+EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
+EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
+ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
+OWNER | The user has complete control over the resource.
+
+## About Columns
+
+### Column Types
+
+Smartsheet has 5 basic column types: 
+<ul>
+<li>Text/Number</li>
+<li>Contact List</li>
+<li>Date</li>
+<li>Dropdown List (custom, RYG, Harvey Ball, Priority types, etc.)</li>
+<li>Checkbox (checkbox, star, and flag types)</li>
+</ul>
+
+These types are referred to as  the following constant values in the API: 
+<ul>
+<li>TEXT_NUMBER</li>
+<li>CONTACT_LIST</li>
+<li>DATE</li>
+<li>PICKLIST</li>
+<li>CHECKBOX</li>
+</ul>
+ 
+In addition to the column types, there are symbols available within Smartsheet. These are simply specialized PICKLIST or CHECKBOX types. 
+
+The available CHECKBOX symbols are:
+<ul>
+<li>FLAG</li>
+<li>STAR</li>
+</ul>
+
+The available PICKLIST symbols are:
+<ul>
+<li>HARVEY_BALLS</li>
+<li>RYG</li>
+<li>PRIORITY</li>
+<li>PRIORITY_HML</li>
+<li>DECISION_SYMBOLS</li>
+<li>DECISION_SHAPES</li>
+<li>VCR</li>
+<li>RYGB</li>
+<li>RYGG</li>
+<li>WEATHER</li>
+<li>PROGRESS</li>
+<li>ARROWS_3_WAY</li>
+<li>ARROWS_4_WAY</li>
+<li>ARROWS_5_WAY</li>
+<li>DIRECTIONS_3_WAY</li>
+<li>DIRECTIONS_4_WAY</li>
+<li>SKI</li>
+<li>SIGNAL</li>
+<li>STAR_RATING</li>
+<li>HEARTS</li>
+<li>MONEY</li>
+<li>EFFORT</li>
+<li>PAIN</li>
+</ul>
+ 
+<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
+
+### Strict vs. Lenient Parsing
+
+Within the Smartsheet web application, the column types are flexible and generally, any column can contain any type of data. This allows for a very flexible UI and is one of the key benefits to using Smartsheet. This flexibility, however, poses a challenge for an API. Being too flexible will likely result in unexpected behavior. For instance, if you write code to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date as a Text value? Probably not.
+ 
+To address this problem, Smartsheet has employed a simple scheme to indicate whether you want a more predictable and strict interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules. If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make sense of it. The rules are as follows:
+
+**TEXT_NUMBER**:
+
+     |     |
+-----|-----|
+*Strict* | All numeric and text values are valid and are interpreted literally.
+*Lenient* |  All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
+
+**PICKLIST**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string and must be one of the options for the Picklist.
+*Lenient* |  All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
+
+**DATE**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
+*Lenient* |  We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+
+**CONTACT_LIST**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a valid email address. If "displayValue" is set, we use that as the name, otherwise if we find a match among the the Access Token owner's contacts, we will associate this cell with that existing contact.
+*Lenient* |  If the value is a valid email address, we handle it the same way as Strict. If not, we save the value as a text value.
+
+**CHECKBOX**:
+
+     |     |
+-----|-----|
+*Strict* | Only boolean values (true or false) are valid.
+*Lenient* |  Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
+
+### Contact List Columns
+
+With columns of type CONTACT_LIST, cells’ “value” and “displayValue” attributes are treated independently. 
+The contact’s email address is represented by **value**, while the contact’s name (and the value displayed in the cell in the Smartsheet app) is represented by **displayValue**.
+ 
+When creating or updating cells for a contact list column, the **displayValue** attribute works as follows:
+<ul>
+<li>If **displayValue** is non-null and non-empty, the Smartsheet cell will display the value provided.</li>
+<li>If **displayValue** is an empty string, the Smartsheet cell will display the email address.</li>
+<li>If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.</li>
+</ul>
+
+### System Columns
+
+In addition to the standard column types and symbols, there are system columns - columns whose values cannot be changed by the user. These include the following **systemColumnType** values:
+
+     |     |
+-----|-----|
+MODIFIED_DATE | type DATETIME
+MODIFIED_BY | type CONTACT_LIST
+CREATED_DATE | type DATETIME
+CREATED_BY  | type CONTACT_LIST
+AUTO_NUMBER | type TEXT_NUMBER<br/><br/>When a column is of this **systemColumnType**, it will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
+
+# Getting Started
+
+## Developer Account
+
+Developer accounts provide access to the full range of features and functionality available in production. 
+They are easy to set up, will not expire, and will let you focus on your development without any risk to your production data.
+ 
+To set up a Developer account, please visit the Smartsheet Developer Portal [registration page](http://www.smartsheet.com/developers/register). 
+If you already have a paid Smartsheet account and your goal is to keep your development and production accounts separate, make sure to use a different email address when registering.
+ 
+Please note that Developer accounts are intended for development and testing purposes only, and are subject to the [Smartsheet Developer Program Agreement](https://www.smartsheet.com/files/haymaker/SmartsheetDeveloperProgramAgreement20130713.pdf).
+
+## SDKs and Sample Code
+
+See our [Github repository](https://github.com/smartsheet-platform) for sample / source code in multiple languages and our [tools and sample apps page ](http://www.smartsheet.com/apps)for sample apps.  
+ 
+See our [SDK page](http://www.smartsheet.com/developers/sdks) for available SDKs or to submit your vote for additional language coverage.
+
+## Direct API Access
+
+Smartsheet makes it easy to directly access your data via the API. 
+The first step is to generate an Access Token via the Smartsheet UI. 
+Users can generate and have more than one active token at any time. 
+Access Tokens generated in Smartsheet UI are long lived, meaning they won’t expire for 10 years. 
+They are best used in system-level integrations, such as applications designed to keep Smartsheet and other systems in sync, or to integrate with Zapier, ifttt or similar API integration services.
+
+### Generating Access Token
+
+These instructions assume that you already have an existing Smartsheet account. Follow these steps to generate an Access Token:
+<ol>
+<li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Personal Settings**.  This will open the Personal Settings form.</li>
+<li>Click the **API Access** button to open the API Access form.
+<li>Use the API Access form to generate new or manage existing acces tokens.
+</ol>
+ 
+Because you can generate and have more than one active token at any time, you have the ability to implement a granular security policy by designating a separate token for each application or integration scenario you may have. 
+That way, should any one token become compromised, you can easily revoke it without impacting any of your other API-enabled applications.
+ 
+<aside class="notice">You will have only one opportunity to view and copy your newly generated token. For security reasons, you will not be able to retrieve it at a later time. If you lose your token, however, it is easy to use the UI to revoke it and generate a new one.</aside>
+ 
+<aside class="success">Access Tokens are essentially passwords and grant the holder access to all of your Smartsheet data. It is imperative that you keep them secure.</aside>
+
+### Using Access Tokens
+
+> Example Request:
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl https://api.smartsheet.com/2.0/users/me \
+`-H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Example Response:
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
-</aside>
-
-<iframe src="//api.apiembed.com/?source=https://apiembed.com/sample.json&targets=shell:curl,node:unirest,java:unirest,python:requests,php:curl,ruby:native,objc:nsurlsession,go:native" frameborder="0" scrolling="no" width="50%" height="500px" seamless></iframe>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
 ```
 
-```python
-import kittn
+Once you have an Access Token, include it in the **Authorization** header for every request you make:
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+`Authorization: Bearer 0da6cf0d848266b4cd32a6151b1`
+
+The header name is <b>Authorization</b> and the value of the header is <b>Bearer ACCESS_TOKEN</b>, where ACCESS_TOKEN is a token generated by you. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
+
+## Third Party App Development
+
+In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
+We are committed to making it easy to build applications on top of Smartsheet - whether you are developing a solution for your organization or creating an app for the Smartsheet customer community at large. 
+We are here to support you and would love your feedback on how to improve the API and the developer experience.
+ 
+As a developer, you will be building applications that allow any Smartsheet user to access his or her Smartsheet data. 
+Your app must implement a 3-legged oAuth flow to redirect your end users to Smartsheet for authentication and app authorization.
+
+### Developer Registration
+
+Third party app registration and management is available via the Developer Tools. 
+To get access to Developer Tools, you must first [register](http://www.smartsheet.com/developers/register) as a Smartsheet developer. 
+Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
+ 
+Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
+<ol>
+<li>Click the **Account** button in the upper-left corner of your Smartsheet screen.</li>
+<li>Now that you are registered as a Smartsheet developer, you should see a new **Developer Tools** option in the dropdown menu. Select it to open Developer Tools.</li>
+<li>Before you can register your first app, you will need to complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.</li>
+<li>Once your developer profile is complete, you will be able to use **Developer Tools** to register and manage your apps.</li>
+</ol>
+
+### Registering Your App
+
+To build a third party app, you must first register it with Smartsheet using Developer Tools:
+<ol>
+<li>Login to Smartsheet.</li>
+<li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Developer Tools**.</li>
+<li>Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.</li>
+<li>Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [oAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
+</ol>
+
+### Access Scopes
+
+In order to access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
+The Access Scopes enable your app to communicate to the end users what type of operations it will be performing. 
+Access Scopes do not override existing Access Level restrictions. 
+For example, having the Access Scope of WRITE_SHEETS will not allow your app to update a sheet on which the end user has read-only permission.
+ 
+The Access Scopes are as follows:
+
+     |     |
+-----|-----|
+READ_SHEETS | Read all sheet data, including comments, attachments and cell data
+WRITE_SHEETS | Insert and modify sheet data, including comments, attachments and cell data
+SHARE_SHEETS | Share sheets, including sending sheets as attachments
+DELETE_SHEETS | Delete sheets
+CREATE_SHEETS | Create new sheets  
+READ_USERS | Retrieve users and groups for your Smartsheet organization
+ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership
+ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
+ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
+ 
+<aside class="notice">Third-party apps should only request the scopes necessary. User-generated Access Tokens are granted all of these permissions.</aside>
+
+### oAuth Flow
+
+#### Requesting an authorization code
+
+After completing your Developer Profile and registering your new App, your app will need an Access Token to access Smartsheet on behalf of an end user. 
+To do so, first direct your user to `https://www.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
+
+     |     |
+-----|-----|
+response_type (required) | must be set to "code"
+client_id (required) | client id for your app
+redirect_uri | redirect URL you registered for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
+scope (required) | space-delimited list of access scopes to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
+state | arbitrary string that will be returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated
+
+Here is an example of a URL to which you would send your user as a `GET` request:
+ 
+`https://www.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
+ 
+If your user has not logged in to Smartsheet, he/she will first be directed to the Smartsheet login page. 
+After a successful login, your user will be prompted to allow or deny the access scopes you requested.
+
+#### Obtaining the authorization code
+
+If the user clicks “Allow”, he/she will be redirected to the **redirect_uri** with the following parameters:
+
+     |     |
+-----|-----|
+code | authorization code required to obtain access token
+expires_in | number of seconds code is valid once issued; this is always 4 minutes - you must obtain an access token within that time
+state | **state** string specified earlier
+
+If the user clicks “Deny”, he/she will be redirected to the **redirect_uri** with the following parameters:
+
+     |     |
+-----|-----|
+error | "access_denied"
+state | **state** string specified earlier
+
+Other errors that may be returned include:
+
+     |     |
+-----|-----|
+unsupported_response_type | response_type must be set to “code”
+invalid_scope | one or more of the requested access scopes are invalid. Please check the list of access scopes
+
+#### Obtaining an Access Token
+
+> Request an access token:
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl https://api.smartsheet.com/2.0/token \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(client_secret|code)}' \
+-X POST
 ```
 
-> The above command returns JSON structured like this:
+> Successful Response:
+
+```json
+{
+   "access_token": "Access Token Value",
+   "token_type": "bearer",
+   "refresh_token": "Refresh Token Value",
+   "expires_in": "# of seconds before token expires"
+}
+```
+
+> Error Response:
+
+```json
+{
+   "errorCode": "Smartsheet error number",
+   "error": "OAuth error type",
+   "error_description": "Error description"
+}
+```
+
+Once you’ve successfully obtained an authorization code, the next step is to obtain an access token. 
+To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters (all parameters are required):
+
+     |     |
+-----|-----|
+grant_type | must be set to "authorization_code"
+client_id | client id for your app
+code | authorization code returned in the previous step
+redirect_uri | redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
+hash | SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The **client_secret** is never sent with the request.
+
+<aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
+
+Possible OAuth error types:
+
+     |     |
+-----|-----|
+invalid_request | The request parameters are invalid or missing.
+invalid_client | The client information is invalid. Ensure your client id is correct.
+invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the client secret and/or code.
+unsupported_grant_type | grant_type must equal “authorization_code” or “refresh_token”.
+
+#### Refreshing an access token
+
+> Refresh an access token:
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(client_secret|refresh_token)}' \
+-X POST
+```
+
+> Successful Response:
+
+```json
+{
+   "access_token": "Newly refreshed Access Token",
+   "expires_in": "# of seconds before token expires",
+   "token_type": "bearer",
+   "refresh_token": "New refresh token"
+}
+```
+
+An access token is valid for one week but you can use the refresh token to obtain a new access token. 
+Once you obtain the new access token, you can use it in place of the old one, which is no longer valid.
+ 
+To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters (all parameters are required):
+
+     |     |
+-----|-----|
+grant_type | must be set to "refresh_token"
+client_id | client id for your app
+refresh_token | refresh_token value that came with the access token
+redirect_uri | redirect URL registered for your app, including the protocol (e.g., "http://")
+hash | SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
+
+<aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
+
+##### Getting basic user info
+Once you have obtained an access token on behalf of the user, you can fetch basic information (including user ID, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
+
+# Admin Features
+
+Smartsheet users with System Admin rights have access to additional API features, including user management and ability to access any sheet in the organization.
+
+## Manage Users
+
+As an org Administrator, you can provision, de-provision and otherwise manage users in your Smartsheet organization.  See [Users](#users) for more information on relevant API calls.
+
+## Assume-User
+
+As an org Administrator, you can assume the identity of any user in your organization. 
+This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
+ 
+Here is how it works. 
+Simply add an **Assume-User** header to your call, with the URI-encoded email address of the user whose identity you want to assume as the value. 
+For example, if you want to assume the identity of **john.doe@smartsheet.com** and john.doe@smartsheet.com is a confirmed member of your Smartsheet organization, you would add the following header:
+
+`Assume-User: john.doe%40smartsheet.com`
+
+You can then act on behalf of the user and make API calls as though you were that user.
+
+## Maintain Data Attribution
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Assume-User: bob.johnson%40smartsheet.com" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"toTop":true", "rows":[{"cells": [ {"columnId": 3738748463671172, "value": "Revision 1"}, {"columnId": 5427598323935108, "value": "New status", "strict": false} ]} ]}'
+```
+
+If you are integrating Smartsheet with another API-enabled system, such as Salesforce, it may be useful to maintain attribution when adding data to Smartsheet. 
+For example, let's say you want to add a new row to a Sales Pipeline sheet in Smartsheet whenever your sales team updates a sales pipeline in Salesforce. 
+So, if Bob Johnson makes a change in Salesforce, wouldn't it be great to make the new row show up in Smartsheet as if it were created by Bob? 
+Specifying the **Assume-User** header API requests allows org Administrators to develop integrations which do just that.
+ 
+## List All Sheets
+
+As an org Administrator, you can get a list of all sheets in your organization, regardless of ownership or whether or not the sheets have been shared to you. 
+Please see [List All Org Sheets](#list-all-org-sheets) for more information.
+
+## Backup All Org Data
+
+> Get list of all sheets in the org:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/sheets \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Fetch each sheet (using Assume-User):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}?include=discussions,attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Assume-User: OWNER_EMAIL"
+```
+
+> Fetch each attachment:
+
+```shell
+curl -0 URL_TO_ATTACHMENT
+```
+
+To backup all of the org data, follow these steps:
+<ol>
+<li>Get a list of all sheets in your organization.</li>
+<li>For each sheet in the list, fetch the sheet (optionally including a list of discussions and attachments) by assuming the identity of the owner of the sheet. (The value of the **Assume-User** header must be the URI-encoded email address of the sheet owner.)</li>
+<li>To backup all files attached to each sheet, fetch them one at a time, using your favorite download method. See [Get Attachment](#get-attachment) for more information.
+</ol>
+
+You can use the sheet version number to enable incremental backups. [Fetch the sheet version number](#get-sheet-version) and compare it to the last backed up version number (you will need to store the sheet ID and the last backup up version number) - if they are the same, no need to include the sheet in your incremental backup run.
+
+# <font color="#ffffff">--------------------------------</font>
+
+<span class="customTOCSectionHeading">API REFERENCE</span>
+
+# Attachments
+
+Attachments can exist on a [Comment](#comments), on a [Row](#rows), or on a [Sheet](#sheets).
+
+## <%= OBJECTS %>
+
+### Attachment Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Attachment ID
+**name** | string | Attachment name
+**url** | string | Attachment temporary URL (files only)
+**urlExpiresInMillis** | number | Attachment temporary URL time to live (files only) 
+**attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, or EVERNOTE)
+**attachmentSubType** | string | Attachment sub type, only for GOOGLE_DRIVE type attachments; one of (DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING)
+**createdAt** | timestamp | A timestamp of when the attachment was originally added
+**createdBy** | User | [User object](#user-object) containing name and email of the creator of this attachment
+**mimeType** | string | Attachment MIME type (PNG, etc.)
+**parentType** | string | The type of object the attachment belongs to. One of “SHEET”, “ROW”, or “COMMENT”
+**parentId** | number | The id of the parent 
+**sizeInKb** | number | The size of the file, if the attachmentType is FILE  
+
+## Attach File to Comment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/msword" \
+-H 'Content-Disposition: attachment; filename="ProgressReport.docx"' \
+-H "Content-Length: FILE_SIZE" \
+-X POST \
+--data-binary @ProgressReport.docx
+```
+
+> Example Response:
+
+<%= partial "snippets/attachFile_response.md.erb" %>
+
+`POST /sheets/{sheetId}/comments/{commentId}/attachments`
+
+Attaches a file to the Comment.
+
+<%= partial "snippets/attachFile_table.md.erb" %>
+
+## Attach File to Row
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/msword" \
+-H 'Content-Disposition: attachment; filename="ProgressReport.docx"' \
+-H "Content-Length: FILE_SIZE" \
+-X POST \
+--data-binary @ProgressReport.docx
+```
+
+> Example Response:
+
+<%= partial "snippets/attachFile_response.md.erb" %>
+
+`POST /sheets/{sheetId}/rows/{rowId}/attachments`
+
+Attaches a file to the Row.
+
+<%= partial "snippets/attachFile_table.md.erb" %>
+
+## Attach File to Sheet 
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/msword" \
+-H 'Content-Disposition: attachment; filename="ProgressReport.docx"' \
+-H "Content-Length: FILE_SIZE" \
+-X POST \
+--data-binary @ProgressReport.docx
+```
+
+> Example Response:
+
+<%= partial "snippets/attachFile_response.md.erb" %>
+
+`POST /sheets/{sheetId}/attachments`
+
+Attaches a file to the Sheet.
+
+<%= partial "snippets/attachFile_table.md.erb" %>
+
+## Attach URL to Comment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+```
+
+> Example Response:
+
+<%= partial "snippets/attachURL_response.md.erb" %>
+
+`POST /sheets/{sheetId}/comments/{commentId}/attachments`
+
+Attaches a URL to the Comment.
+
+<%= partial "snippets/attachURL_table.md.erb" %>
+
+## Attach URL to Row
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+```
+
+> Example Response:
+
+<%= partial "snippets/attachURL_response.md.erb" %>
+
+`POST /sheets/{sheetId}/rows/{rowId}/attachments`
+
+Attaches a URL to the Row.
+
+<%= partial "snippets/attachURL_table.md.erb" %>
+
+## Attach URL to Sheet
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+```
+
+> Example Response:
+
+<%= partial "snippets/attachURL_response.md.erb" %>
+
+`POST /sheets/{sheetId}/attachments`
+
+Attaches a URL to the Sheet.
+
+<%= partial "snippets/attachURL_table.md.erb" %>
+
+## Delete Attachment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /sheets/{sheetId}/attachments/{attachmentId}`
+
+Deletes the Attachment specified in the URL.  
+
+<aside class="notice">If the Attachment has multiple versions this deletes only the specific version specified by the attachmentId (each version has a different attachment ID).</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Attachment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "name": "at3.png",
+    "url": "URL_TO_ATTACHMENT",
+    "attachmentType": "file",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "urlExpiresInMillis": 120000
+}
+```
+
+`GET /sheets/{sheetId}/attachments/{attachmentId}`
+
+Fetches the Attachment specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Attachment object](#attachment-object). For File attachments, this will include a temporary URL for downloading the file.<br/><br/>Currently, the temporary URL is set to expire in 120000 milliseconds, or 2 minutes.
+
+## Get All Attachments
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
 
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "name": "att3.png",
+    "attachmentType": "FILE",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "parent" : "SHEET",
+    "parentId" : 341847495283
   },
   {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "name": "att4.png",
+    "attachmentType": "FILE",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "parent" : "ROW",
+    "parentId" : 684956754834557
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+`GET /sheets/{sheetId}/attachments`
 
-### HTTP Request
+Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion level Attachments.
 
-`GET http://example.com/kittens`
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
 
-<%= partial "snippets/snippet1.md" %>
+## Get Discussion Attachments
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+> Example Request:
 
 ```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
-> The above command returns JSON structured like this:
+> Example Response:
+
+```json
+[
+  {
+    "name": "att3.png",
+    "attachmentType": "FILE",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "parent" : "COMMENT",
+    "parentId" : 341847495283
+  },
+  {
+    "name": "att4.png",
+    "attachmentType": "FILE",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "parent" : "COMMENT",
+    "parentId" : 684956754834557
+  }
+]
+```
+
+`GET /sheets/{sheetId}/discussions/{discussionId}/attachments`
+
+Gets a list of all Attachments that are in the Discussion.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+
+## Get Row Attachments
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+  {
+    "name": "att3.png",
+    "attachmentType": "FILE",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "parent" : "ROW",
+    "parentId" : 341847495283
+  },
+  {
+    "name": "att4.png",
+    "attachmentType": "FILE",
+    "mimeType": "image/png",
+    "id": 4583173393803140,
+    "parent" : "COMMENT",
+    "parentId" : 684956754834557
+  }
+]
+```
+
+`GET /sheets/{sheetId}/rows/{rowId}/attachments`
+
+Gets a list of all Attachments that are on the Row, including Row and Discussion level Attachments.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+
+## Posting an Attachment
+
+> Example Request:
+
+```shell
+ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
+ -H 'Authorization: Bearer ACCESS_TOKEN'  \
+ -H 'Content-Disposition: attachment; filename="ProgressReport.docx"'  \
+ -H 'Content-Type: application/msword'  \
+ -H 'Content-Length: 5463'  \
+ -X POST \
+ --data-binary @ProgressReport.docx
+ ```
+ 
+Smartsheet UI allows attaching files to Sheets, Rows and Comments. The same is true for the API. To upload a file, send a POST request to one of the following URLs, depending on your use case:
+<ul>
+<li>`https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments`</li>
+<li>`https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments`</li>
+<li>`https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attachments`</li>
+</ul>
+
+When posting an attachment, you must set specific headers to tell Smartsheet about the file. The following three headers are required: 
+<ul>
+<li>**Content-Disposition**</li>
+<li>**Content-Type**</li>
+<li>**Content-Length**</li>
+</ul>
+
+Here is an example:
+<ul>
+<li>`Content-Disposition: attachment; filename="ProgressReport.docx"`</li>
+<li>`Content-Type: application/msword`</li>
+<li>`Content-Length: 5463`</li>
+</ul>
+
+**Content-Disposition** tells us that a file is in the body of the POST request and what the name of the file is. 
+**Content-Type** can be left blank if it is not known (but must be present), and Smartsheet will make its best guess based on the extension of the file. 
+**Content-Length** must be set to the size of the file, in bytes. For example, in UNIX:
+<p>`$ ls -l ProgressReport.docx`<br/>`5463 ProgressReport.docx`</p>
+
+<aside class="notice">Important Notes:<ul><li>Multipart or chunked file uploads are not supported at this time.</li><li>Max file size for upload through the API is currently limited to 30mb.</li><li>This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</li></ul></aside>
+
+All that is left is to include the file in the body of the post. In most programming languages, this is done by reading the file from an input stream and writing it out to the output stream of the HTTP request. 
+
+## Versioning 
+
+### Attach New Version
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/msword" \
+-H 'Content-Disposition: attachment; filename="ProgressReport.docx"' \
+-H "Content-Length: FILE_SIZE" \
+-X POST \
+--data-binary @ProgressReport.docx
+```
+
+> Example Response:
 
 ```json
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+    "message": "SUCCESS",
+    "result": {
+        "attachmentType": "FILE",
+        "createdAt": "2013-02-28T21:04:56-08:00",
+        "id": 4583173393803140,
+        "mimeType": "application/msword",
+        "name": "ProgressReport.docx"
+    },
+    "resultCode": 0
 }
 ```
 
-This endpoint retrieves a specific kitten.
+`POST /sheets/{sheetId}/attachments/{attachmentId}/versions`
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
+Uploads a new version of a file to a Sheet or Row.
 
-### HTTP Request
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Content-Disposition**<br/>**Content-Type**<br/>**Content-Length**
+<%= RETURNS %> | [Result object](#result-object) containing [Attachment object](#attachment-object) for newly created attachment
 
-`GET http://example.com/kittens/<ID>`
+<aside class="notice">Uploading new versions is not supported for attachments on Comments or for URL attachments.</aside>
 
-### URL Parameters
+### Delete All Versions
 
-Parameter | Description
---------- | -----------
-ID | The ID of the cat to retrieve
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /sheets/{sheetId}/attachments/{attachmentId}/versions`
+
+Deletes all versions of the attachment corresponding to the specified Attachment ID.  For attachments with multiple versions, this will effectively delete the attachment from the object that it’s attached to.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+### List All Versions
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+	{
+		"id": 4583173393803140,
+		"name": "at3.png",
+		"attachmentType": "file",
+		"mimeType": "image/png",
+		"createdAt": "2014-03-28T18:13:20-07:00"
+	},
+	{
+		"id": 4583173393803140,
+		"name": "at3.png",
+		"attachmentType": "file",
+		"mimeType": "image/png",
+		"createdAt": "2014-03-27T18:11:11-07:00"
+	}
+]
+```
+
+`GET /sheets/{sheetId}/attachments/{attachmentId}/versions`
+
+Gets a list of all versions of the given Attachment ID, in order from newest to oldest.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+
+<aside class="notice">To retrieve a download URL for a file attachment, use the Get Attachment operation for the specific version you want to download.</aside>
+
+# Cells
+
+A collection of Cells comprises each Row in a Sheet.
+
+## <%= OBJECTS %>
+
+### Cell Object
+
+     |     |     |
+-----|-----|-----|
+**type** | string | See type definition on the [Column object](#column-object).
+**value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell
+**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI
+**columnId** | number | The ID of the column that the cell is located in
+**hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
+**linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
+**linksOutToCells** | array | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
+**formula** | string | The  formula for a cell, if set
+**format** | string | The format descriptor (see [Formats](#formatting))
+
+### Cell History Object
+
+Extends the [Cell object](#cell-object).
+
+     |     |     |
+-----|-----|-----|
+**modifiedAt** | timestamp | The datetime for when the change was made to the cell
+**modifiedBy** | User | [User object](#user-object) containing the name and email of the User that made the change
+
+## Get Cell History
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+        {
+          "columnId":642523719853956,
+          "displayValue": "Revision 3",
+          "type": "TEXT_NUMBER",
+          "value": "Revision 3",
+          "modifiedAt": "2013-06-24T00:10:18Z",
+          "modifiedBy" : {
+              "name" : "Jane Smart",
+              "email" : "jane.smart@smartsheet.com"
+           }
+        },
+		{
+          "columnId":642523719853956,
+          "displayValue": "Revision 2",
+          "type": "TEXT_NUMBER",
+          "value": "Revision 2",
+          "modifiedAt": "2013-06-23T00:10:18Z",
+          "modifiedBy" : {
+              "name" : "Joe Smart",
+              "email" : "joe.smart@smartsheet.com"
+          }
+        },
+		{
+          "columnId":642523719853956,
+          "displayValue": "Revision 1",
+          "type": "TEXT_NUMBER",
+          "value": "Revision 1",
+          "modifiedAt": "2013-06-22T00:10:18Z",
+          "modifiedBy" : {
+              "name" : "Joe Smart",
+              "email" : "joe.smart@smartsheet.com" 
+          }
+        }
+]
+```
+
+`GET /sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history`
+
+Gets the cell modification history. 
+
+<aside>This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Cell History objects](#cell-history-object)
+
+## Update Cell(s)
+
+To update the Cells in a Sheet, use the [Update Row(s)](#update-row(s)) operation.
+
+## <%= RELATED %>
+
+### Cell Links
+
+You can create and modify [cell links](#celllink-object) by using any API operation that creates or updates cell data. 
+Creating or updating cell links via the **cell.linkInFromCell** attribute is a special operation. 
+A given row or cell update operation may contain only link updates, or no link updates. 
+Attempting to mix row/cell updates with cell link updates will result in error code 1115.
+ 
+When creating a cell link, **cell.value** must be null (the data will be pulled from the linked cell).
+ 
+A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **linkInFromCell** may never both be non-null at the same time.
+ 
+A cell link can only be added to an *existing* cell, so the **cell.linkInFromCell** attribute is not allowed when POSTing a new row to a sheet.
+
+### Hyperlinks
+
+You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
+When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
+If null, the cell's value will be derived from the hyperlink: 
+<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report link, the cell's value will be set to the sheet or report's name.</li></ul>
+
+# Columns
+
+A Column is a component of a Sheet. 
+
+## <%= OBJECTS %>
+
+### Column Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Column ID
+**index** | number | Column index
+**title** | string | Column title
+**primary** | boolean | Returned only if the column is the Primary Column (value = "true")
+**type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li></ul>
+**options** | string[] | Array of the options available for the column
+**hidden** | boolean | Flag indicating whether the column is hidden
+**symbol** | string | When applicable for CHECKBOX column type:<ul><li>STAR</li><li>FLAG</li></ul>When applicable for PICKLIST column type:<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>
+**systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>
+**autoNumberFormat** | AutoNumberFormat | Present when systemColumnType == AUTO_NUMBER
+**tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
+**width** | number | Display width of the column in pixels
+**format** | string | [Format Descriptor object](#format-descriptor)
+**filter** | Filter | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters" and the column has a filter applied to it
+
+### Criteria Object
+
+     |     |     |
+-----|-----|-----|
+**operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
+**value1** | object | Optional. Present if a custom filter criteria's operator has one or more arguments.
+**value2** | object | Optional.  Present if a custom filter criteria's operator has two arguments.
+
+### Filter Object
+
+Smartsheet users can define and save personal column filters on sheets they can view.  When any API operation that returns columns is invoked with the "include=filters" query string parameter, the column will include any active filters the user has defined for the sheet.
+
+     |     |     |
+-----|-----|-----|
+**type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
+**excludeSelected** | boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
+**values** | array | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
+**criteria** | array | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
+
+## Add Column
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"], "index":1}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "id": 5005385858869124,
+        "index": 1,
+        "width": 150,
+        "title": "Status",
+        "type": "PICKLIST",
+        "options":["Not Started","Started","Completed"]
+    },
+    "resultCode": 0
+}
+```
+
+`POST /sheets/{sheetId}/columns`
+
+Inserts a Column into the Sheet specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Column object](#column-object) that contains the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) for the newly created Column
+
+## Delete Column
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /sheets/{sheetId}/columns/{columnId}`
+
+Deletes the column specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Column
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+	"id": 7960873114331012,
+	"index": 2,
+	"symbol": "STAR",
+	"title": "Favorite",
+	"type": "CHECKBOX"
+}
+```
+
+`GET /sheets/{sheetId}/columns/{columnId}`
+
+Gets the Column specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
+<%= RETURNS %> | [Column object](#column-object)
+
+## Get All Columns
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+    {
+        "id": 7960873114331012,
+        "index": 0,
+        "symbol": "STAR",
+        "title": "Favorite",
+        "type": "CHECKBOX"
+    },
+    {
+        "id": 642523719853956,
+        "index": 1,
+        "primary": true,
+        "title": "Primary Column",
+        "type": "TEXT_NUMBER"
+    },
+    {
+        "id": 5146123347224452,
+        "index": 2,
+        "title": "Status",
+        "type": "PICKLIST"
+    }
+]
+```
+
+`GET /sheets/{sheetId}/columns`
+
+Gets a list of all Columns belonging to the Sheet specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
+<%= RETURNS %> | Array of [Column objects](#column-object)
+
+## Update Column
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X PUT \
+-d '{"title":"First Column","index":0, "sheetId":SHEET_ID, "type" : "PICKLIST", "options" :["One","Two"]}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "id": 5005385858869124,
+        "index": 0,
+        "options" : ["One", "Two"],
+        "title": "First Column",
+        "type": "PICKLIST"
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /sheets/{sheetId}/columns/{columnId}`
+
+Updates properties of the column, moves the column, and/or renames the column.
+
+<aside class="notice">You cannot change the type of a Primary column, or of any special calendar/Gantt columns. Also, if the column type is changed,  all cells in the column will be converted to the new column type.  Type is optional when moving or renaming, but required when changing type or dropdown values.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>sheetId</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>format (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
+
+# Comments
+
+A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
+
+## <%= OBJECTS %>
+
+### Comment Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Comment ID
+**text** | string | Comment body
+**createdBy** | User | [User object](#user-object) containing name and email of the Comment's author
+**createdAt** | timestamp | Time of creation
+**modifiedAt** | timestamp | Time of last modification
+**attachments** | array | Array of [Attachment objects](#attachment-object)
+**discussionId** | number (optional) | Discussion ID
+
+## Add Comment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"text":"This is a new comment."}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "createdAt": "2013-02-28T22:58:30-08:00",
+        "createdBy": {
+            "email": "john.doe@smartsheet.com",
+            "name": "John Doe"
+        },
+        "id": 6834973207488388,
+        "modifiedAt": "2013-02-28T22:58:30-08:00",
+        "modifiedDate": "2013-02-28T22:58:30-08:00",
+        "text": "This is a new comment."
+    },
+    "resultCode": 0
+}
+```
+
+`POST /sheets/{sheetId}/discussions/{discussionId}/comments`
+
+Adds a Comment to a Discussion.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Comment object](#comment-object) with the following attribute:<ul><li>text</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing [Comment object](#comment-object) that was created
+
+## Delete Comment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
+-H "Authorization: Bearer ACCESS_TOKEN"\
+-X 'DELETE'
+```
+
+> Example Response:
+
+```json
+{
+   "resultCode": 0,
+   "message" : "SUCCESS"
+}
+```
+
+`DELETE /sheets/{sheetId}/comments/{commentId}`
+
+Deletes the Comment specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Comment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{id} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "text": "This is a comment",
+    "createdBy" : {"name": "John Doe", "email" : "john.doe@smartsheet.com"},
+    "createdAt" : "2013-06-24T21:07:45Z",
+    "modifiedAt" : "2013-06-24T21:07:45Z",
+    "discussionId" : 48569348493469348,
+    "id": 48569348493401200
+}
+```
+
+`GET /sheets/{sheetId}/comments/{commentId}`
+
+Gets the Comment specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Comment object](#comment-object)
+
+## <%= RELATED %>
+
+A Comment can contain one or more Attachments.
+
+### Comment Attachments
+
+For details about working with a Comment's attachments, see [Attachments](#attachments).
+
+# Discussions
+
+A Discussion is a collection of one or more [Comments](#comments). A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
+
+## <%= OBJECTS %>
+
+### Discussion Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Discussion ID
+**title** | string | Discussion title
+**comments** | array | Array of [Comment objects](#comment-object)
+**commentAttachments** | array | Array of [Attachment objects](#attachment-object)
+**parentId** | number | ID of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
+**parentType** | string | “SHEET” or “ROW”: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
+**lastCommentedAt** | timestamp | Time of most recent comment
+**lastCommentedUser** | User | [User object](#user-object) containing name and email of the author of the most recent Comment
+**createdBy** | User | [User object](#user-object) containing name and email of the creator of the Discussion
+
+## Create Discussion on Row
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createDiscussion_response.md.erb" %>
+
+`POST /sheets/{sheetId}/rows/{rowId}/discussions`
+
+Creates a new Discussion on a Row.
+
+<%= partial "snippets/createDiscussion_table.md.erb" %>
+
+## Create Discussion on Sheet
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createDiscussion_response.md.erb" %>
+
+`POST /sheets/{sheetId}/discussions`
+
+Creates a new Discussion on a Sheet.
+
+<%= partial "snippets/createDiscussion_table.md.erb" %>
+
+## Delete Discussion
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} \
+-H "Authorization: Bearer ACCESS_TOKEN"\
+-X 'DELETE'
+```
+
+> Example Response:
+
+```json
+{
+   "resultCode": 0,
+   "message" : "SUCCESS"
+}
+```
+
+`DELETE /sheets/{sheetId}/discussions/{discussionId}`
+
+Deletes the Discussion specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get All Discussions
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comments,attachments \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+<%= partial "snippets/getDiscussions_response.md.erb" %>
+
+`GET /sheets/{sheetId}/discussions`
+
+Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
+
+<%= partial "snippets/getDiscussions_table.md.erb" %>
+
+## Get Discussion
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "title": "This is a new discussion",
+    "id": 2331373580117892,
+    "comments": [
+        {
+            "id": 2331373580117892,
+            "text": "This text is the body of the discussion",
+            "createdBy": {
+                "email": "john.doe@smartsheet.com"
+            },
+            "modifiedDate": "2012-07-25T00:02:42-07:00"
+        }
+    ]
+}
+```
+
+`GET /sheets/{sheetId}/discussions/{discussionId}`
+
+Gets the Discussion specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Discussion object](#discussion-object)
+
+## Get Row Discussions
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?include=comments,attachments \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+<%= partial "snippets/getDiscussions_response.md.erb" %>
+
+`GET /sheets/{sheetId}/rows/{rowId}/discussions`
+
+Gets a list of all Discussions associated with the specified Row.
+
+<%= partial "snippets/getDiscussions_table.md.erb" %>
+
+## <%= RELATED %>
+
+A Discussion is a collection of one or more Comments, each of which may contain Attachments.
+
+### Discussion Attachments
+
+For details about working with the attachments within a Discussion, see [Attachments](#attachments).
+
+### Discussion Comments
+
+For details about working with a Discussion's comments, see [Comments](#comments).
+
+# Favorites
+
+Smartsheet allows users to "star" sheets, reports, folders, workspaces, and other objects on their Home tab to mark them as favorites. 
+These API operations allow you to access the user's favorite API-supported objects, as well as create and delete favorites.
+
+## <%= OBJECTS %>
+
+### Favorite Object
+
+     |     |     |
+-----|-----|-----|
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li></ul>
+**objectId** | number | ID of the favorited item.  If **type** is "template", only private sheet-type template ID is allowed.
+
+## Add Favorite(s)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"type": "sheet", "objectId": 8400677765441412}]'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": [
+        {
+            "type": "sheet",
+            "objectId": 8400677765441412
+        }
+    ],
+    "message": "SUCCESS"
+}
+```
+
+`POST /favorites`
+
+Adds item(s) to the user's list of Favorite items.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | Array of [Favorite objects](#favorite-object), each with the following attributes:<ul><li>type</li><li>objectId</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing an array of [Favorite objects](#favorite-object) that were created.  If any of the objects in the request were already favorites, they will be ignored and omitted from the response.
+
+
+## List Favorites
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+    {
+        "type": "sheet",
+        "objectId": 5897312590423940
+    },
+    {
+        "type": "folder",
+        "objectId": 1493728255862660
+    }
+]
+```
+
+`GET /favorites`
+
+Gets a list of all of the user's Favorite items.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Favorite objects](#favorite-object)
+
+## Remove Favorite
+
+### Remove Favorite Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/folder/{folderId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorite_response.md.erb" %>
+
+`DELETE /favorites/folder/{folderId}`
+
+Removes a single Folder from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorite_table.md.erb" %>
+
+### Remove Favorite Report
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/report/{reportId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorite_response.md.erb" %>
+
+`DELETE /favorites/report/{reportId}`
+
+Removes a single Report from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorite_table.md.erb" %>
+
+### Remove Favorite Sheet
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorite_response.md.erb" %>
+
+`DELETE /favorites/sheet/{sheetId}`
+
+Removes a single Sheet from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorite_table.md.erb" %>
+
+
+
+
+
+### Remove Favorite Workspace
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorite_response.md.erb" %>
+
+`DELETE /favorites/workspace/{workspaceId}`
+
+Removes a single Workspace from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorite_table.md.erb" %>
+
+### Remove Favorite Template
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorite_response.md.erb" %>
+
+`DELETE /favorites/template/{templateId}`
+
+Removes a single Template from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorite_table.md.erb" %>
+
+## Remove Favorites (in bulk)
+
+### Remove Favorite Folders
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{folderId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/folder`
+
+Removes multiple Folders from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
+### Remove Favorite Reports
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{reportId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/report`
+
+Removes multiple Reports from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
+### Remove Favorite Sheets
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/sheet`
+
+Removes multiple Sheets from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
+### Remove Favorite Templates
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/template?objectIds={templateId1},{templateId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/template`
+
+Removes multiple Templates from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
+### Remove Favorite Workspaces
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds={workspaceId1},{workspaceId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/workspace`
+
+Removes multiple Workspaces from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
+# Folders
+
+A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#folders), or in a [Workspace](#workspaces).
+
+## <%= OBJECTS %>
+
+### Folder Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Folder ID
+**name** | string | Folder name
+**favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
+**permalink** | string | Direct URL to Folder
+**sheets** | array | Array of [Sheet](#sheets) objects
+**folders** | array | Array of [Folder](#folders) objects
+**reports** | array | Array of [Report](#reports) objects
+**templates** | array | Array of [Template](#templates) objects
+**workspaces** | array | Array of [Workspace](#workspaces) objects
+
+## Copy Folder
+
+To create a copy of an existing Folder, use one of the following operations:
+<ul>
+<li>[Create Folder](#create-folder) - create the new Folder in the user's **Sheets** folder ([Home](#home))</li>
+<li>[Create Folder (Folder)](#create-folder-(folder)) - create the new Folder in another Folder</li>
+<li>[Create Folder (Workspace)](#create-folder-(workspace)) - create the new Folder in a Workspace</li>
+</ul>
+
+## Create Child Folder
+
+A Folder can be created in the user's **Sheets** folder ([Home](#home)), in another Folder, or in a Workspace.
+
+### Create Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/home/folders \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name": "New folder"}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createFolder_response.md.erb" %>
+
+`POST /home/folders`
+
+Creates a Folder in the user's **Sheets** folder ([Home](#home)). 
+
+<%= partial "snippets/createFolder_table.md.erb" %>
+
+### Create Folder (Folder)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name": "New folder"}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createFolder_response.md.erb" %>
+
+`POST /folders/{folderid}/folders`
+
+Creates a Folder in the specified Folder. 
+
+<%= partial "snippets/createFolder_table.md.erb" %>
+
+### Create Folder (Workspace)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceid}/folders \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name": "New folder"}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createFolder_response.md.erb" %>
+
+`POST /workspaces/{workspaceid}/folders`
+
+Creates a Folder in the specified Workspace. 
+
+<%= partial "snippets/createFolder_table.md.erb" %>
+
+## Delete Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "message": "SUCCESS"
+}
+```
+
+`DELETE /folders/{folderId}`
+
+Deletes the Folder (and its contents) specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "id": 7116448184199044,
+    "name": "New folder"
+}
+```
+
+`GET /folders/{folderId}`
+
+Gets the specified Folder (and lists its contents).
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>templates</li><li>reports</li><li>source - include [source](#source-object) for each sheet</li></ul>
+<%= RETURNS %> | [Folder object](#folder-object)<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
+
+## List Child Folders
+
+Top-level child Folders can be retrieved from the user's **Sheets** folder ([Home](#home)), from another Folder, or from a Workspace.
+
+### List Folders
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/home/folders \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json"
+```
+
+> Example Response:
+
+<%= partial "snippets/listFolders_response.md.erb" %>
+
+`GET /home/folders`
+
+Gets a list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
+
+<%= partial "snippets/listFolders_table.md.erb" %>
+
+### List Folders (Folder)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json"
+```
+
+> Example Response:
+
+<%= partial "snippets/listFolders_response.md.erb" %>
+
+`GET /folders/{folderId}/folders`
+
+Gets a list of the top-level child Folders within the specified Folder.
+
+<%= partial "snippets/listFolders_table.md.erb" %>
+
+### List Folders (Workspace)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json"
+```
+
+> Example Response:
+
+<%= partial "snippets/listFolders_response.md.erb" %>
+
+`GET /workspaces/{workspaceId}/folders`
+
+Gets a list of the top-level child Folders within the specified Workspace.
+
+<%= partial "snippets/listFolders_table.md.erb" %>
+
+## Update Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"name": "New name for folder"}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "id": 1486948649985924,
+        "name": "New name for folder"
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /folders/{folderId}`
+
+Updates the Folder specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Folder object](#folder-object), limited to the following required attribute:<ul><li>name (string)</li></ul>Name need not be unique.
+<%= RETURNS %> | [Result object](#result-object) containing the updated [Folder object](#folder-object)
+
+# Groups
+
+A Group is a collection of [Group Members](#group-members).
+
+## <%= OBJECTS %>
+
+### Group Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Group ID
+**name** | string | Group name
+**description** | string | Group description
+**owner** | string | Group owner’s email address
+**ownerId** | number | Group owner's User ID
+**members** | array | Array of [Group Member objects](#group-member-object)
+**createdAt** | timestamp | Time of creation
+**modifiedAt** | timestamp | Time of last modification
+
+## Create Group
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups \
+-H "Authorization: Bearer ACCESS_TOKEN"
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ "name": "API-created Group", "description": "Group created via API", "members": [{ "email": "john.doe@smartsheet.com" }]}'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": 2331373580117892,
+        "name": "API-created Group",
+        "description": "Group created via API",
+        "owner": "john.doe@smartsheet.com",
+        "ownerId": 4583173393803140,
+        "members": [
+            {
+                "id": 4583173393803140,
+                "email": "john.doe@smartsheet.com",
+                "firstName": "John",
+                "lastName": "Doe",
+                "name": "John Doe"
+            }
+        ],
+        "createdAt": "2014-05-29T16:28:49-07:00",
+        "modifiedAt": "2014-05-29T16:28:49-07:00"
+    },
+    "message": "SUCCESS"
+}
+```
+
+`POST /groups`
+
+Creates a new Group.
+
+<aside class="notice">This operation is only available to group administrators and system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Group object](#group-object), limited to the following attributes:<ul><li>name (required) -- must be unique within the organization</li><li>description (optional)</li><li>members (optional) -- array of [Group Member objects](#group-member-object), each limited to the following attribute:<ul><li>email</li></ul></li></ul>
+<%= RETURNS %> | [Result object](#result-object), containing a [Group object](#group-object) for the newly created Group
+
+## Delete Group
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups/{groupId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /groups/{groupId}`
+
+Deletes the Group specified in the URL.
+
+<aside class="notice">This operation is only available to group administrators and system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+<aside class="notice"><b>This operation is asynchronous</b>, meaning group members may retain their sharing access for a brief period of time after the call returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
+
+## Get Group
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups/{groupId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "id": 4583173393803140,
+    "name": "Group 1",
+    "description": "My group",
+    "owner": "john.doe@smartsheet.com",
+    "ownerId": 2331373580117892,
+    "members": [
+        {
+            "id": 2331373580117892,
+            "email": "john.doe@smartsheet.com",
+            "firstName": "John",
+            "lastName": "Doe",
+            "name": "John Doe"
+        },
+    ],
+    "createdAt": "2014-05-29T14:41:35-07:00",
+    "modifiedAt": "2014-05-29T14:41:35-07:00"
+}
+```
+
+`GET /groups/{groupId}`
+
+Gets the Group specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Group object](#group-object) that includes the list of [Group Members](#group-member-object)
+
+## List All Org Groups
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+    {
+        "id": 4583173393803140,
+        "name": "Group 1",
+        "description": "My group",
+        "owner": "john.doe@smartsheet.com",
+        "ownerId": 2331373580117892,
+        "createdAt": "2014-05-29T14:41:35-07:00",
+        "modifiedAt": "2014-05-29T14:41:35-07:00"
+    }
+]
+```
+
+`GET /groups`
+
+Gets the list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | Array of [Group objects](#group-object)
+
+## Update Group
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups/{groupId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{ "name": "Renamed Group", "description": "Some new description" }'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": 2331373580117892,
+        "name": "Renamed Group",
+        "description": "Some new description",
+        "owner": "john.doe@smartsheet.com",
+        "ownerId": 4583173393803140,
+        "createdAt": "2014-05-29T16:28:49-07:00",
+        "modifiedAt": "2014-05-29T17:00:23-07:00"
+    },
+    "message": "SUCCESS"
+}
+```
+
+`PUT /groups/{groupId}`
+
+Updates the Group specified in the URL.
+
+<aside class="notice">This operation is only available to group administrators and system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Group object](#group-object), limited to the following attributes:<ul><li>name (optional) -- must be unique within the organization</li><li>description (optional)</li><li>ownerId (optional): ID of an admin User to whom the group ownership will be transferred</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the [Group object](#group-object) for the updated group
+
+## <%= RELATED %>
+
+A Group is comprised of one or more members.
+
+### Members of a Group
+
+For details about working with a Group's members, see [Group Members](#group-members).
+
+# Group Members
+
+A Group Member is a User that belongs to a [Group](#groups).
+
+## <%= OBJECTS %>
+
+### Group Member Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Group Member's User ID
+**email** | string | Group Member's email address
+**firstName** | string | Group Member's first name
+**lastName** | string | Group Member's last name
+**name** | string | Group Member's full name
+
+## Add Group Member(s)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
+-H "Authorization: Bearer ACCESS_TOKEN"
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{ "email": "jane.doe@smartsheet.com" }]'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": [
+        {
+            "id": 1539725208119172,
+            "email": "jane.doe@smartsheet.com",
+            "firstName": "Jane",
+            "lastName": "Doe",
+            "name": "Jane Doe"
+        }
+    ],
+    "message": "SUCCESS"
+}
+```
+
+`POST /groups/{groupId}/members`
+
+Adds member(s) to a Group.
+
+<aside class="notice">This operation is only available to group administrators and system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | Array of [Group Member objects](#group-member-objects), each limited to the following attribute:<ul><li>email</li></ul>
+<%= RETURNS %> | [Result object](#result-object), containing an array of the [group members](#group-member-objects) that will be added to the group. (Duplicate members will be filtered out.)
+
+<aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
+
+## Remove Group Member
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/groups/{groupId}/members/{userId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /groups/{groupId}/members/{userId}`
+
+Removes a member from a Group.
+
+<aside class="notice">This operation is only available to group administrators and system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+<aside class="notice"><b>This operation is asynchronous</b>, meaning group members may retain their sharing access for a brief period of time after the call returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
+
+# Home
+
+In the Smartsheet UI, the "Home" tab shows all objects a User has access to, including Sheets, Folders, Workspaces, Reports, and Templates.
+
+## <%= OBJECTS %>
+
+### Home Object
+
+     |     |     |
+-----|-----|-----|
+**sheets** | array | Array of [Sheet objects](#sheet-object)
+**folders** | array | Array of [Folder objects](#folder-object)
+**reports** | array | Array of [Report objects](#report-object)
+**templates** | array | Array of [Template objects](#template-object)
+**workspaces** | array | Array of [Workspace objects](#workspace-object)
+
+## List All Contents
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/home?include=templates \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "folders": [
+        {
+            "id": 5709073300645764,
+            "name": "folder 1"
+        }
+    ],
+    "sheets": [
+        {
+            "accessLevel": "OWNER",
+            "id": 4583173393803140,
+            "name": "sheet 1"
+        },
+        {
+            "accessLevel": "OWNER",
+            "id": 2331373580117892,
+            "name": "sheet 2"
+        }
+    ],
+    "templates": [],
+    "workspaces": []
+}
+```
+
+`GET /home`
+
+Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, and optionally Reports and/or Templates, as shown on the Home tab.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>templates</li><li>reports</li><li>[source](#source-object)</li></ul>
+<%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
+
+## <%= RELATED %>
+
+### Home Folders
+
+For details about working with Folders in the user's **Sheets** folder (i.e., at the Home level), see [Folders](#folders).
+
+### Home Sheets
+
+For details about working with sheets in the user's **Sheets** folder (i.e., at the Home level), see [Sheets](#sheets).
+
+# Reports
+
+A Report is a filtered view of the data from one or more Sheets. Like a Sheet, a Report is comprised of Columns, Rows, and Cells, and may optionally contain Attachments and/or Discussions.
+
+## <%= OBJECTS %>
+
+### Report Object
+
+Extends the [Sheet object](#sheet-object), adding the following:
+
+     |     |     |
+-----|-----|-----|
+**sourceSheet** | array | Array of [Sheet objects](#sheet-object) (without rows), representing the sheets that rows in the report originated from.  Only included in the [Get Report](#get-report) response if the **include** parameter specifies "sourceSheets".
+
+### Report Cell Object
+
+Extends the [Cell object](#cell-object), adding the following: 
+
+     |     |     |
+-----|-----|-----|
+**virtualColumnId** | number | The virtual ID of the cell's column. This property refers to the cell's parent column in the Report, while the **columnId** property refers to the cell's parent column in its originating source Sheet.
+
+
+### Report Column Object
+
+Extends the [Column object](#column-object), adding the following: 
+
+     |     |     |
+-----|-----|-----|
+**virtualId** | number | The virtual ID of this report column
+**sheetNameColumn** | boolean | Returned only for the special "Sheet Name" report column (value = "true")
+
+A report column is a "virtual" column, in that it appears identical to source sheet column(s), but is in fact a different column belonging to the report. 
+[Cells](#report-cell-object) in the report refer to this column via their **virtualColumnId** attribute, and to their actual column from their source sheet via their **columnId** attribute.
+
+### Report Row Object
+
+Extends the [Row object](#row-object), adding the following: 
+
+     |     |     |
+-----|-----|-----|
+**sheetId** | number | The ID of the Sheet from which the Row originates
+
+## Get Report
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports/{reportId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "id": 4583173393803140,
+    "name": "My Report",
+    "totalRowCount": 4,
+    "accessLevel": "OWNER",
+    "permalink": "https://app.smartsheet.com/b/home?lx=pWNSDH9itjBXxBzFmyf-5w",
+    "createdAt": "2012-07-24T18:22:29-07:00",
+    "modifiedAt": "2012-07-24T18:30:52-07:00",
+    "columns": [
+        {
+            "virtualId": 4583173393803140,
+            "index": 0,
+            "primary": true,
+            "title": "Sheet Name",
+            "type": "TEXT_NUMBER",
+            "sheetNameColumn": true
+        },
+        {
+            "virtualId": 2331373580117892,
+            "index": 1,
+            "title": "Status",
+            "type": "TEXT_NUMBER"
+        }
+    ],
+    "rows": [
+        {
+            "id": 1732835527681924,
+            "sheetId": 1060338138408836,
+            "rowNumber": 1,
+            "expanded": true,
+            "accessLevel": "OWNER",
+            "createdAt": "2014-10-02T15:05:35-07:00",
+            "modifiedAt": "2014-10-02T15:05:35-07:00",
+            "cells": [
+                {
+                    "virtualColumnId": 4583173393803140,
+                    "type": "TEXT_NUMBER",
+                    "value": "My Sheet",
+                    "displayValue": "My Sheet"
+                },
+                {
+                    "columnId": 8467747974735748,
+                    "virtualColumnId": 2331373580117892,
+                    "type": "TEXT_NUMBER",
+                    "value": "In Progress",
+                    "displayValue": "In Progress"
+                }
+            ]
+        }
+ 
+    ]
+}
+```
+
+`GET /reports/{reportId}`
+
+Gets the Report, including one page of Rows, and optionally populated with Discussions, Attachments, and source Sheets.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
+  | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
+  | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
+<%= RETURNS %> | [Report object](#report-object), populated according to the "include" parameter
+
+## Get Report as Excel / PDF / CSV
+
+[todo]
+
+## Send Report via Email
+
+<%= partial "snippets/sendReport.md.erb" %>
+
+## Share Report
+
+For details about Report sharing, see [Report Sharing](#report-sharing).
+
+# Rows
+
+A Row is a component of a Sheet. Each Row is composed of a collection of Cells, and may optionally contain Discussions and/or Attachments.
+
+## <%= OBJECTS %>
+
+### Row Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Row ID
+**sheetId** | number | Parent Sheet ID
+**rowNumber** | number | Row number within the sheet (1-based - starts at 1)
+**parentRowNumber** | number | Parent row number (indented items only)
+**cells** | array | Array of [Cell objects](#cell-object)
+**discussions** | array | Array of [Discussion objects](#discussion-object)
+**attachments** | array | Array of [Attachment objects](#attachment-object)
+**columns** | array | Array of [Column objects](#column-object)
+**expanded** | boolean | Flag to indicate if the row is expanded or collapsed
+**createdAt** | timestamp | Time of creation
+**modifiedAt** | timestamp | Time of last modification
+**accessLevel** | string | User's permission level on the Sheet that contains the Row
+**version** | number | Number that is incremented every time a sheet is modified
+**format** | string | Format descriptor (see [Formatting](#formatting))
+**filteredOut** | boolean | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters".  Contains "true" if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), "false" if the row is not filtered out.
+
+### RowWrapper Object
+
+An object for specifying a Row or set of Rows’ expanded state or location within a Sheet.
+
+     |     |     |
+-----|-----|-----|
+**expanded** | boolean | Flag to indicate if row(s) should be expanded or collapsed
+**toTop** | boolean | Flag to indicate that row(s) should be put at the top of the sheet
+**toBottom** | boolean | Flag to indicate that row(s) should be put at the bottom of the sheet
+**parentId** | number | Puts the row as the first child of this row
+**sibling** | number | Puts the row as the next row at the same hierarchical level of this row
+**rows** | array | Array of [Row objects](#row-object)
+
+## Add Row(s)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"toTop":true, "rows":[ {"cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }, {"cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] } ] }'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": [
+        {
+            "cells": [
+                {
+                    "columnId": 7960873114331012,
+                    "type": "CHECKBOX",
+                    "value": true
+                },
+                {
+                    "columnId": 642523719853956,
+                    "displayValue": "New status",
+                    "type": "TEXT_NUMBER",
+                    "value": "New status"
+                }
+            ],
+            "createdAt": "2013-02-28T17:45:13-08:00",
+            "expanded": true,
+            "id": 7670198317672324,
+            "modifiedAt": "2013-02-28T17:45:13-08:00",
+            "rowNumber": 1,
+            "sheetId": 2331373580117892
+        },
+        {
+            "cells": [
+                {
+                    "columnId": 7960873114331012,
+                    "type": "CHECKBOX",
+                    "value": true
+                },
+                {
+                    "columnId": 642523719853956,
+                    "displayValue": "New status",
+                    "type": "TEXT_NUMBER",
+                    "value": "New status"
+                }
+            ],
+            "createdAt": "2013-02-28T17:45:13-08:00",
+            "expanded": true,
+            "id": 2040698783459204,
+            "modifiedAt": "2013-02-28T17:45:13-08:00",
+            "rowNumber": 2,
+            "sheetId": 2331373580117892
+        }
+    ],
+    "resultCode": 0
+}
+```
+
+`POST /sheets/{sheetId}/rows`
+
+Inserts Rows into the Sheet specified in the URL.
+
+<aside class="notice">All rows are added at the same hierarchical level, as specified by the [RowWrapper](#rowwrapper-object). Currently inserting rows with different levels of hierarchy (using a single request) is not supported.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [RowWrapper object](#rowwrapper-object) that contains the following attributes:<ul><li>One of:<ul><li>**toTop**: Inserts the rows at the top of the sheet.</li><li>**toBottom**: Inserts the rows at the bottom of the sheet</li><li>**parentId**: Inserts the rows as the first child row of the parent. **toBottom** = true can also be set to add the row as the last child of the parent</li><li>**siblingId**: Inserts the row as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**rows**: an array of [Row objects](#row-object), containing at least one item<ul><li>Each Row object may contain a **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null.</li><li>Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul></li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the array of newly inserted [Row objects](#row-object), as well as the new version of the Sheet. 
+
+## Copy Row to Another Sheet
+
+[todo]
+
+## Delete Row
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+   "message": "SUCCESS",
+   "resultCode": 0
+}
+```
+
+`DELETE /sheets/{sheetId}/rows/{rowId}`
+
+Deletes the Row specified in the URL.
+
+<aside class="warning">This operation will delete ALL child Rows of the specified Row.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Row
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "id": 2361756178769796,
+    "sheetId": 4583173393803140,
+    "rowNumber": 1,
+    "expanded": true,
+    "cells": [
+        {
+            "type": "TEXT_NUMBER",
+            "value": "Revision 1",
+            "displayValue": "Revision 1",
+            "columnId": 4583173393803140
+        },
+        {
+            "type": "PICKLIST",
+            "value": "completed",
+            "displayValue": "completed",
+            "columnId": 2331373580117892
+        }
+    ],
+    "createdAt": "2012-07-24T23:10:55-07:00",
+    "modifiedAt": "2012-07-24T23:14:27-07:00"
+}
+```
+
+`GET /sheets/{sheetId}/rows/{rowId}`
+
+Gets the Row specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- copy-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>filters</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the query string.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+<%= RETURNS %> | [Row object](#row-object)
+
+## Move Row to Another Sheet
+
+[todo]
+
+## Send Row via Email
+
+<%= partial "snippets/sendRow.md.erb" %>
+
+## Update Row(s)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"parentId": PARENT_ROW_ID, "expanded": true, "cells": [{"columnId": 642523719853956, "value": 73.0}]}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": [
+        {
+            "cells": [
+                {
+                    "columnId": 642523719853956,
+                    "displayValue": "1",
+                    "type": "TEXT_NUMBER",
+                    "value": 73.0
+                }
+            ],
+            "createdAt": "2013-02-28T10:48:42-08:00",
+            "expanded": true,
+            "id": 3377704922834820,
+            "modifiedAt": "2013-02-28T17:45:13-08:00",
+            "parentRowNumber": 4,
+            "rowNumber": 5
+        }
+    ],
+    "resultCode": 0
+}
+```
+
+`PUT /sheets/{sheetId}/rows/{rowId}`
+
+Updates cell values in the row, expands/collapses the row, or modifies its position (including indenting/outdenting). 
+
+<aside class="notice">If row position is updated, all child rows are moved with the row.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Row object](#row-object) that contains the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>ColumnIds must be valid for the sheet to which the row belongs, and must only be used once per operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the array of [Row objects](#row-object) that have been moved by the operation. 
+
+## <%= RELATED %>
+
+A Row is comprised of a collection of Cells, and may optionally contain Attachments and/or Discussions.
+
+### Row Attachments
+
+For details about working with a Row's attachments, see [Attachments](#attachments).
+
+### Row Cells
+
+For details about working with a Row's cells, see [Cells](#cells).
+
+### Row Discussions
+
+For details about working with a Row's discussions, see [Discussions](#discussions).
+
+# Searching
+
+Use the *Search* operations to search a specific Sheet or to search across all Sheets that a User can access.
+
+## <%= OBJECTS %>
+
+### SearchResult Object
+
+     |     |     |
+-----|-----|-----|
+**totalCount** | number | Total number of search results
+**results** | array | Array of [SearchResultItem objects](#searchresultitem-object)
+
+### SearchResultItem Object
+
+     |     |     |
+-----|-----|-----|
+**text** | string | Search result text excerpt
+**objectId** | number | Search result object ID
+**objectType** | string | Search result object type (row, discussion, attach)
+**parentObjectId** | number | Search result parent object ID
+**parentObjectType** | string | Search result parent object type (row, discussion, attach)
+**parentObjectName** | string | Search result parent object name
+**contextData** | array | Additional info on search result context (row num...)
+
+## Search Everything
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/search?query=stuff \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "results": [
+        {
+            "contextData": [
+                "Discussion 1"
+            ],
+            "objectId": 1888207043356548,
+            "objectType": "discussion",
+            "parentObjectId": 7141187195824004,
+            "parentObjectName": "Sheet 1",
+            "parentObjectType": "sheet",
+            "text": "discussion stuff goes here"
+        },
+        {
+            "contextData": [
+                "Row 1"
+            ],
+            "objectId": 2711817823774596,
+            "objectType": "row",
+            "parentObjectId": 2583735121012612,
+            "parentObjectName": "Sheet 2",
+            "parentObjectType": "sheet",
+            "text": "row stuff goes here"
+        }
+    ],
+    "totalCount": 2
+}
+```
+
+`GET /search`
+
+Searches all Sheets that the User can access, for the specified text.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **query** (required): Text with which to perform the search.
+<%= RETURNS %> | [SearchResult object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
+
+## Search Sheet
+
+<%= partial "snippets/searchSheet.md.erb" %>
+
+# Sending
+
+Use the *Send* operations to send a Report, a Row, or a Sheet via email.
+
+## <%= OBJECTS %>
+
+### Email Object
+
+     |     |     |
+-----|-----|-----|
+**to** | array | Array of strings that represent the email address(es) to send to.  Optional, but at least one **to** and/or **toGroups** value is required.
+**toGroups** | array | Array of strings that represent the Group IDs to send to.  Optional, but at least one **to** and/or **toGroups** value is required.
+**subject** | string | The subject of the email, optional.
+**message** | string | The message of the email, optional.
+**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
+
+### RowEmail Object
+
+Extends the [Email object](#email-object), adding the following:
+
+     |     |     |
+-----|-----|-----|
+**includeAttachments** | boolean | A flag to indicate whether or not to include Attachments in the email.
+**includeDiscussions** | boolean | A flag to indicate whether or not to include Discussions in the email.
+
+### SheetEmail Object
+
+Extends the [Email object](#email-object), adding the following:
+
+     |     |     |
+-----|-----|-----|
+**format** | string | Can either be "PDF" or "EXCEL".
+**formatDetails** | FormatDetails | Currently, only the **paperSize** attribute can be set on the FormatDetails object. The value of the **paperSize** attribute can be one of: LETTER,LEGAL,WIDE,ARCHD,A4,A3,A2,A1,A0.
+
+## Send Report
+
+<%= partial "snippets/sendReport.md.erb" %>
+
+## Send Row
+
+<%= partial "snippets/sendRow.md.erb" %>
+
+## Send Sheet
+
+<%= partial "snippets/sendSheet.md.erb" %>
+
+# Server Information
+
+For developer convenience, the Smartsheet API provides access to application constants.
+
+## <%= OBJECTS %>
+
+### ServerInfo Object
+
+     |     |     |
+-----|-----|-----|
+**supportedLocales** | array | Array of strings representing all Smartsheet-supported locales.
+**formats** | FormatTables | Definition of [Format Tables](#formattables-object) that are used in Column, Row, and Cell **format** property.  For more information, see [Formatting](#formatting).
+
+## Get Server Info
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/serverinfo
+```
+
+> Example Response: (*too long to list in its entirety*)
+
+```json
+{
+        "supportedLocales": [  ],
+        "formats": {  }
+}
+```
+
+`GET /serverinfo`
+
+Gets application constants.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | None required (may be called unauthenticated)
+<%= HEADERS %> | None required (may be called unauthenticated)
+<%= RETURNS %> | [ServerInfo object](#serverinfo-object)
+
+# Sharing
+
+Use the *Share* operations to control sharing of Reports, Sheets, and Workspaces.
+
+## <%= OBJECTS %>
+
+### Share Object
+
+[todo]
+
+## Report Sharing
+
+### Delete Report Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/deleteShare_response.md.erb" %>
+
+`DELETE /reports/(reportId)/shares/{shareId}`
+
+Deletes the Share specified in the URL. 
+
+<%= partial "snippets/deleteShare_table.md.erb" %>
+
+### Get Report Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+> Example Response:
+
+<%= partial "snippets/getShare_response.md.erb" %>
+
+`GET /reports/(reportId)/shares/{shareId}`
+
+Gets the Share specified in the URL. 
+
+<%= partial "snippets/getShare_table.md.erb" %>
+
+### List Report Shares
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+> Example Response:
+
+<%= partial "snippets/listShares_response.md.erb" %>
+
+`GET /reports/(reportId)/shares`
+
+Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
+
+<%= partial "snippets/listShares_table.md.erb" %>
+
+### Share Report
+
+> Example Request: 
+
+```shell
+[todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/share_response.md.erb" %>
+
+`POST /reports/{reportId}/shares`
+
+Shares a Report with the specified Users and Groups.
+
+<%= partial "snippets/share_table.md.erb" %>
+
+### Update Report Share
+
+> Example Request: 
+
+```shell
+[todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/updateShare_response.md.erb" %>
+
+`PUT /reports/{reportId}/shares/{shareId}`
+
+Updates the access level of a User or Group for the specified Report.
+
+<%= partial "snippets/updateShare_table.md.erb" %>
+
+## Sheet Sharing
+
+### Delete Sheet Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/deleteShare_response.md.erb" %>
+
+`DELETE /sheets/(sheetId)/shares/{shareId}`
+
+Deletes the Share specified in the URL. 
+
+<%= partial "snippets/deleteShare_table.md.erb" %>
+
+### Get Sheet Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+> Example Response:
+
+<%= partial "snippets/getShare_response.md.erb" %>
+
+`GET /sheets/(sheetId)/shares/{shareId}`
+
+Gets the Share specified in the URL. 
+
+<%= partial "snippets/getShare_table.md.erb" %>
+
+### List Sheet Shares
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+> Example Response:
+
+<%= partial "snippets/listShares_response.md.erb" %>
+
+`GET /sheets/(sheetId)/shares`
+
+Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
+
+<%= partial "snippets/listShares_table.md.erb" %>
+
+### Share Sheet
+
+> Example Request: 
+
+```shell
+[todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/share_response.md.erb" %>
+
+`POST /sheets/{sheetId}/shares`
+
+Shares a Sheet with the specified Users and Groups.
+
+<%= partial "snippets/share_table.md.erb" %>
+
+### Update Sheet Share
+
+> Example Request: 
+
+```shell
+[todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/updateShare_response.md.erb" %>
+
+`PUT /sheets/{sheetId}/shares/{shareId}`
+
+Updates the access level of a User or Group for the specified Sheet.
+
+<%= partial "snippets/updateShare_table.md.erb" %>
+
+## Workspace Sharing
+
+### Delete Workspace Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+<%= partial "snippets/deleteShare_response.md.erb" %>
+
+`DELETE /workspaces/(workspaceId)/shares/{shareId}`
+
+Deletes the Share specified in the URL. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+### Get Workspace Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+> Example Response:
+
+<%= partial "snippets/getShare_response.md.erb" %>
+
+`GET /workspaces/(workspaceId)/shares/{shareId}`
+
+Gets the Share specified in the URL. 
+
+<%= partial "snippets/getShare_table.md.erb" %>
+
+### List Workspace Shares
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspacesId}/shares \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+> Example Response:
+
+<%= partial "snippets/listShares_response.md.erb" %>
+
+`GET /workspaces/(workspaceId)/shares`
+
+Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
+
+<%= partial "snippets/listShares_table.md.erb" %>
+
+### Share Workspace
+
+> Example Request: 
+
+```shell
+[todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/share_response.md.erb" %>
+
+`POST /workspaces/{workspaceId}/shares`
+
+Shares a Workspace with the specified Users and Groups.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= RETURNS %> | [Result object](#result-object) containing an array of [Share objects](#share-object).....[todo]
+
+### Update Workspace Share
+
+> Example Request: 
+
+```shell
+[todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/updateShare_response.md.erb" %>
+
+`PUT /workspaces/{workspaceId}/shares/{shareId}`
+
+Updates the access level of a User or Group for the specified Workspace.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Share object](#share-object) limited to the following attribute:<ul><li>accessLevel (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object).....[todo]
+
+# Sheets
+
+A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#folders), or in a [Workspace](#workspaces). It is comprised of Columns, Rows, and Cells, and may optionally contain Attachments and/or Discussions.
+
+## <%= OBJECTS %>
+
+### Sheet Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Attachment ID
+**name** | string | Sheet name
+**columns** | array | An array of [Column objects](#column-object)
+**rows** | array | An array of [Row objects](#row-object)
+**accessLevel** | string | User's permissions on the Sheet
+**discussions** | array | An array of [Discussion objects](#discussion-object)
+**attachments** | array | An array of [Attachment objects](#attachment-object)
+**effectiveAttachmentOptions** | array | An array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
+**readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
+**createdAt** | timestamp | Time that the Sheet was created
+**modifiedAt** | timestamp | Time that the Sheet was modified
+**permalink** | string | Direct URL to the Sheet
+**ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
+**dependenciesEnabled** | boolean | Flag to indicate that dependencies are enabled
+**favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
+**showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
+**version** | number | A number that is incremented every time a Sheet is modified
+**totalRowCount** | number | The total number of rows in the Sheet
+**source** | Source | A [Source object](#source-object) indicating the Sheet or Template from which this sheet was created
+
+### Sheet Publish Object 
+
+     |     |     |
+-----|-----|-----|
+**readOnlyLiteEnabled** | boolean | Status of Read-Only HTML
+**readOnlyFullEnabled** | boolean | Status of Read-Only Full
+**readWriteEnabled** | boolean | Status of Edit by Anyone
+**icalEnabled** | boolean | Status of iCal
+**readOnlyLiteUrl** | string | URL for Read-Only HTML
+**readOnlyFullUrl** | string | URL for Read-Only Full
+**readWriteUrl** | string | URL for Edit by Anyone
+**icalUrl** | string | URL for iCal
+
+### Source Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | ID of the Sheet or Template from which the enclosing sheet was created
+**type** | string | "sheet" or "template"
+
+## Copy Sheet
+
+To create a copy of an existing Sheet, see [Create Sheet from Existing Sheet or Template](#create-sheet-from-existing-sheet-or-template).
+
+## Create Sheet
+
+To create a Sheet from scratch, use one of the following operations (according to where you want to create the Sheet):
+<ul>
+<li>[Create Sheet](#create-sheet-in-"sheets"-folder)</li>
+<li>[Create Sheet in Folder](#create-sheet-in-folder)</li>
+<li>[Create Sheet in Workspace](#create-sheet-in-workspace)</li>
+</ul>
+<p>To create a Sheet from a Sheet (i.e., "copy sheet") or from a Template, see [Create Sheet from Existing Sheet or Template](#create-sheet-from-existing-sheet-or-template).</p>
+
+### Create Sheet in "Sheets" folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createSheet_response.md.erb" %>
+
+`POST /sheets`
+
+Creates a Sheet from scratch in the user's **Sheets** folder ([Home](#home)). To create a Sheet from scratch in a subfolder of the **Sheets** folder, use [Create Sheet in Folder](#create-sheet-in-folder). 
+
+<%= partial "snippets/createSheet_table.md.erb" %>
+
+### Create Sheet in Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createSheet_response.md.erb" %>
+
+`POST /folders/{folderId}/sheets`
+
+Creates a Sheet from scratch in the specified Folder.
+
+<%= partial "snippets/createSheet_table.md.erb" %>
+
+### Create Sheet in Workspace 
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createSheet_response.md.erb" %>
+
+`POST /workspaces/{workspaceId}/sheets`
+
+Creates a Sheet from scratch at the top-level of the specified Workspace. To create a Sheet from scratch in a Folder within a Workspace, use [Create Sheet in Folder](#create-sheet-in-folder).
+
+<%= partial "snippets/createSheet_table.md.erb" %>
+
+## Create Sheet from Existing Sheet or Template
+
+To create a Sheet from an existing Sheet (i.e., "copy sheet") or from a Template, use one of the following operations (according to where you want to create the Sheet):
+<ul>
+<li>[Create Sheet from Sheet or Template](#create-sheet-from-sheet-or-template)</li>
+<li>[Create Sheet in Folder from Sheet or Template](#create-sheet-in-folder-from-sheet-or-template)</li>
+<li>[Create Sheet in Workspace from Sheet or Template](#create-sheet-in-workspace-from-sheet-or-template)</li>
+</ul>
+<p>To create a Sheet from scratch, see [Create Sheet](#create-sheet).</p>
+
+### Create Sheet from Sheet or Template
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"newsheet", "fromId": 7679398137620356}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createSheetFromExisting_response.md.erb" %>
+
+`POST /sheets`
+
+Creates a Sheet in the user's **Sheets** folder ([Home](#home)), from the specified Sheet or Template. To create a Sheet in a subfolder of the **Sheets** folder, use [Create Sheet in Folder from Sheet or Template](#create-sheet-in-folder-from-sheet-or-template).
+
+<%= partial "snippets/createSheetFromExisting_table.md.erb" %>
+
+### Create Sheet in Folder from Sheet or Template
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attachments,discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"newsheet", "fromId": 7679398137620356}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createSheetFromExisting_response.md.erb" %>
+
+`POST /folders/{folderId}/sheets`
+
+Creates a Sheet in the specified Folder, from the specified Sheet or Template.
+
+<%= partial "snippets/createSheetFromExisting_table.md.erb" %>
+
+### Create Sheet in Workspace from Sheet or Template
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data,attachments,discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name":"newsheet", "fromId": 7679398137620356}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createSheetFromExisting_response.md.erb" %>
+
+`POST /workspaces/{workspaceId}/sheets`
+
+Creates a Sheet at the top-level of the specified Workspace, from the specified Sheet or Template. To create a Sheet in a Folder within a Workspace, use [Create Sheet in Folder from Sheet or Template](#create-sheet-in-folder-from-sheet-or-template).
+
+<%= partial "snippets/createSheetFromExisting_table.md.erb" %>
+
+## Delete Sheet
+
+> Example Request:
+
+```shell
+...curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "message": "SUCCESS"
+}
+```
+
+`DELETE /sheets/{sheetId}`
+
+Deletes the Sheet specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | DELETE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Sheet Version
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "version": "23"
+}
+```
+
+`GET /sheets/{sheetId}/version`
+
+Gets the Sheet version without loading the entire Sheet.
+
+The following actions increment Sheet version:
+<ul>
+<li>add/modify cell value</li>
+<li>add/modify row</li>
+<li>add/modify Discussion/Comment</li>
+<li>change formatting</li>
+<li>add/remove/update version attachment</li>
+<li>cell updated via cell link</li>
+</ul>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | A simple object with only a **version** attribute
+
+## Get Sheet (incl. Rows)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "accessLevel": "OWNER",
+    "columns": [
+        {
+            "id": 4583173393803140,
+            "index": 0,
+            "primary": true,
+            "title": "Primary Column",
+            "type": "TEXT_NUMBER"
+        },
+        {
+            "id": 2331373580117892,
+            "index": 1,
+            "options": [
+                "new",
+                "in progress",
+                "completed"
+            ],
+            "title": "status",
+            "type": "PICKLIST"
+        }
+    ],
+    "createdAt": "2012-07-24T18:22:29-07:00",
+    "id": 4583173393803140,
+    "modifiedAt": "2012-07-24T18:30:52-07:00",
+    "name": "sheet 1",
+    "permalink": "https://app.smartsheet.com/b/home?lx=pWNSDH9itjBXxBzFmyf-5w",
+    "rows": []
+}
+```
+
+`GET /sheets/{sheetId}`
+
+Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and optionally populated with Discussion and Attachment objects.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>filters</li><li>[source](#source-object)</li>To include Discussion Attachments, both **attachments** and **discussions** parameters must be present in the query string.</ul>
+  | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
+  | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
+  | **columnIds** (optional): a comma-separated list of Column IDs. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
+  | **pageSize** (optional): number of rows per page to include with the sheet.  If neither **pageSize** or **page** are specified, returns all rows in the sheet.  If only page is specified, defaults to a page size of 100.
+  | **page** (optional): which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
+<%= RETURNS %> | [Sheet object](#sheet-object), populated according to the **include** parameter
+
+## Get Sheet as Excel / PDF / CSV
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: application/pdf" -o  output.pdf
+```
+
+> Example Response:
+
+```desc
+See local file named "output.pdf"
+```
+
+`GET /sheets/{sheetId}`
+
+Gets the Sheet in the format specified, based on the Sheet ID.  
+
+<aside class="notice">Note:<ul><li>For Excel format, only .xls output format is supported at this time.</li><li>Gantt chart is not generated at this time.</li></ul></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/>Accept -- must be set to one of the following values:<ul><li>application/pdf</li><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
+<%= PARAMETERS %> | **paperSize** (optional) -- applies to PDF only, must be one of:<ul><li>LETTER (default)</li><li>LEGAL</li><li>WIDE (same as 11x17)</li><li>ARCHD</li><li>A4</li><li>A3</li><li>A2</li><li>A1</li><li>A0</li></ul>
+<%= RETURNS %> | The file in either Excel or PDF format.
+
+## List All Org Sheets
+
+<%= partial "snippets/listAllOrgSheets.md.erb" %>
+
+## List Sheets
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets \
+-H "Authorization: Bearer ACCESS_TOKEN"...
+```
+
+> Example Response:
+
+```json
+[
+    {
+        "accessLevel": "OWNER",
+        "id": 4583173393803140,
+        "name": "sheet 1",
+		"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ"
+    },
+    {
+        "accessLevel": "OWNER",
+        "id": 2331373580117892,
+        "name": "sheet 2",
+		"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG"
+    }
+]
+```
+
+`GET /sheets`
+
+Gets the list of all Sheets that the User has access to, in alphabetical order, by name.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- element to include in the response:<ul><li>[source](#source-object)</li></ul>
+<%= RETURNS %> | Array of [Sheet objects](#sheet-object), limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li></ul>
+
+## Publish Sheet
+
+### Get Sheet Publish Status
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+	"readOnlyLiteEnabled": true,
+	"readOnlyFullEnabled": false,
+	"readWriteEnabled": false,
+	"icalEnabled": false,
+	"readOnlyLiteUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
+}
+```
+
+`GET /sheets/{sheetId}/publish`
+
+Gets the status of the Publish settings of the Sheet, including the URLs of any enabled publishings.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Sheet Publish object](#sheet-publish-object)
+
+### Set Sheet Publish Status
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"readOnlyLiteEnabled": true,"readOnlyFullEnabled": false,"readWriteEnabled": false,"icalEnabled": false}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "icalEnabled": false,
+        "readOnlyFullEnabled": false,
+        "readOnlyLiteEnabled": true,
+        "readOnlyLiteUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d",
+        "readWriteEnabled": false
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /sheets/{sheetId}/publish`
+
+Sets the publish status of the Sheet and returns the new status, including the URLs of any enabled publishings.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Sheet Publish object](#sheet-publish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Sheet Publish object](#sheet-publish-object)
+
+## Search Sheet 
+
+<%= partial "snippets/searchSheet.md.erb" %>
+
+## Send Sheet via Email
+
+<%= partial "snippets/sendSheet.md.erb" %>
+
+## Share Sheet
+
+For details about Sheet sharing, see [Sheet Sharing](#sheet-sharing).
+
+## Update Sheet
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"name":"New Sheet Name"}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "accessLevel": "OWNER",
+        "id": 7960873114331012,
+        "name": "New Sheet Name"
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /sheets/{sheetId}`
+
+Updates (renames) the Sheet specified in the URL.
+ 
+To modify Sheet contents, see [Add Row(s)](#add-row(s)), [Update Row(s)](#update-row(s)), and [Update Column](#update-column).
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attribute:<ul><li>name (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet
+
+## <%= RELATED %>
+
+A Sheet is comprised of Columns, Rows, and Cells, and may optionally contain Attachments and/or Discussions.
+
+### Sheet Attachments
+
+For details about working with a Sheet's attachments, see [Attachments](#attachments).
+
+### Sheet Cells
+
+For details about working with a Sheet's cells, see [Cells](#cells).
+
+### Sheet Columns
+
+For details about working with a Sheet's columns, see [Columns](#columns).
+
+### Sheet Discussions
+
+For details about working with a Sheet's discussions, see [Discussions](#discussions).
+
+### Sheet Rows 
+
+For details about working with a Sheet's rows, see [Rows](#rows).
+
+# Templates
+
+A Template can be used to create a Sheet, as described in [Create Sheet from Existing Sheet or Template](#create-sheet-from-existing-sheet-or-template).
+
+## <%= OBJECTS %>
+
+### Template Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Template ID
+**name** | string | Template name
+**description** | string | Template description
+**accessLevel** | string | User's permissions on the Template
+
+## List Public Templates
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/templates/public \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+<%= partial "snippets/listTemplates_response.md.erb" %>
+
+`GET /templates/public`
+
+Gets the list of public Templates to which the user has access.
+
+<%= partial "snippets/listTemplates_table.md.erb" %>
+
+## List User-created Templates
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/templates \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+<%= partial "snippets/listTemplates_response.md.erb" %>
+
+`GET /templates`
+
+Gets the list of user-created Templates to which the user has access.
+
+<%= partial "snippets/listTemplates_table.md.erb" %>
+
+# Token
+
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication).
+
+## Delete Access Token
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+	"" : ""
+}
+```
+
+`DELETE /token`
+
+[todo]
+
+## Get Access Token
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(client_secret|code)}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+   "access_token": "Access Token Value",
+   "token_type": "bearer",
+   "refresh_token": "Refresh Token Value",
+   "expires_in": "#_of_seconds_before_token_expires"
+}
+```
+
+`POST /token`
+
+Gets an access token, as part of the oAuth process. For more information, see [oAuth Flow](#oauth-flow).
+
+     |     |
+-----|-----|
+<%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
+ | **client_id** (required) -- client id for your app
+ | **code** (required) -- authorization code returned in the previous step
+ | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
+ | **hash** (required) -- SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The client_secret is never sent with the request.
+
+## Refresh Access Token
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-d 'grant_type=refresh_token&refresh_token={your_refresh_token}
+&client_id={your_client_id}&redirect_uri={redirect_uri}
+&hash={SHA_256(client_secret|refresh_token)}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+   "access_token": "Newly refreshed Access Token",
+   "expires_in": "#_of_seconds_before_token_expires",
+   "token_type": "bearer",
+   "refresh_token": "New refresh token"
+}
+```
+
+`POST /token`
+
+Refreshes an access token, as part of the oAuth process. For more information, see [oAuth Flow](#oauth-flow).
+
+     |     |
+-----|-----|
+<%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
+ | **client_id** (required) -- client id for your app
+ | **refresh_token** (required) -- refresh_token value that came with the access token
+ | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://")
+ | **hash** (required) -- SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
+
+# Users
+
+## <%= OBJECTS %>
+
+### User Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | User ID
+**email** | string | User's email address
+**name** | string | User's full name (read-only)
+**firstName** | string | User's first name
+**lastName** | string | User's last name
+**admin** | boolean | Flag indicating whether the user is a system admin (can manage users and account)
+**licensedSheetCreator** | boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
+**groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
+**resourceManager** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
+
+### User Profile Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Current user's ID
+**email** | string | Current user's email address
+**firstName** | string | Current user's first name
+**lastName** | string | Current user's last name
+**timeZone** | string | Current user's time zone ID
+**locale** | string | Current user's locale (see [Server Information](#server-information))
+**account** | Account | [Account object](#account-object) representing the current user's customer account
+
+### Account Object
+
+     |     |     |
+-----|-----|-----|
+**name** | string | Account name
+**id** | number | Account ID
+
+## Add User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users?sendEmail=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"firstName": "John", "lastName": "Doe", "email": "NEW_USER_EMAIL", "admin": false, "licensedSheetCreator": true}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "admin": false,
+        "email": "NEW_USER_EMAIL",
+        "name": "John Doe",
+        "id": 1768423626696580,
+        "licensedSheetCreator": true
+    },
+    "resultCode": 0
+}
+```
+
+`POST /users`
+
+Adds a User to the organization.
+
+<aside class="notice">This operation is only available to system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **sendEmail** (optional): A boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
+<%= REQUEST %> | [User object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceManager (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the newly created [User object](#user-object).
+
+<aside class="notice">The <b>resourceManager</b> attribute is equivalent to the "Resource Viewer" role in the product.</aside>
+
+<aside class="notice">If successful, and user auto provisioning (UAP) is on, and user matches the auto provisioning rules, user will be added to the org.  If UAP is off, or user does not match UAP rules, user will be invited to the org and must explicitly accept the invitation to join.</aside>
+
+<aside class="notice">In some specific scenarios, supplied attributes such as <b>firstName</b> and <b>lastName</b> may be ignored.  For example, if you are inviting an existing Smartsheet user to join your organization, and the invited user has not yet accepted your invitation, any supplied <b>firstName</b> and <b>lastName</b> will be ignored.</aside>
+
+## Get Current User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
+`GET /users/me`
+
+Gets the current User.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | all scopes
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [User Profile object](#user-profile-object)
+
+## Get User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
+`GET /users/{userId}`
+
+Gets the User specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [User Profile object](#user-profile-object)
+
+## List All Org Sheets
+
+<%= partial "snippets/listAllOrgSheets.md.erb" %>
+
+## List Users
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+    {
+        "id": 94094820842,
+        "admin": true,
+        "email": "john.doe@smartsheet.com",
+        "name": "John Doe",
+        "licensedSheetCreator": true,
+        "status": "ACTIVE"
+    }
+]
+```
+
+`GET /users`
+
+Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results
+<%= RETURNS %> | Array of [User objects](#user-object)
+
+## Remove User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFromSharing=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /users/{userId}`
+
+Removes a User from an organization. User is transitioned to a free collaborator with read-only access to owned sheets (unless those are optionally transferred to another user). 
+
+<aside class="notice">This operation is only available to system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **transferTo** (optional): ID of the User to whom the sheets should be transferred.  If not specified, sheets will not be transferred.
+  | **removeFromSharing** (optional): Set to **true** to remove the user from sharing for all sheets/workspaces in the organization. If not specified, User will not be removed from sharing.
+<%= RETURNS %> | [Result object](#result-object)
+
+## Update User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"admin": false, "licensedSheetCreator": true}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "admin": true,
+        "licensedSheetCreator": true
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /users/{userId}`
+
+Updates the User specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [User object](#user-object) containing at least one of the following attributes:<ul><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceManager (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the [User object](#user-object) for the updated User
+
+# Workspaces
+
+## <%= OBJECTS %>
+
+### Workspace Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Workspace ID
+**name** | string | Workspace name
+**favorite** | boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
+**accessLevel** | string | User's permissions on the Workspace
+**permalink** | string | Direct URL to the Workspace
+**sheets** | array |  Array of [Sheet objects](#sheet-object)
+**folders** | array |  Array of [Folder objects](#folder-object)
+
+## Copy Workspace 
+
+To create a copy of an existing Workspace, see [Create Workspace](#create-workspace).
+
+## Create Workspace
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name": "New workspace"}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "accessLevel": "OWNER",
+        "id": 7960873114331012,
+        "name": "New workspace",
+        "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
+    },
+    "resultCode": 0
+}
+```
+
+`POST /workspaces`
+
+Creates a Workspace.
+
+<aside class="notice">When using the 'Create Workspace' operation to create a copy of a Workspace:<ul>
+<li>Specify the <b>include</b> parameter to indicate which elements of the Workspace to copy.</li>
+<li>Specify the <b>fromId</b> property in the body of the request to indicate the Workspace to copy.</li></ul></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- If copying a workspace - comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li></ul>By default, all elements are copied.  See [Copying Folders & Workspaces](http://help.smartsheet.com/customer/portal/articles/1782802-copying-folders-workspaces) help article. If "data" is omitted, attachments, discussions, and cellLinks include elements are ignored even if provided.
+<%= REQUEST %> | [Workspace object](#workspace-object), limited to the following attributes:<ul><li>name (string) - required</li><li>fromId (number) - optional: if copying a Workspace, the ID of the Workspace from which to copy</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
+
+## Delete Workspace
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /workspaces/{id}`
+
+Deletes the specified Workspace (and its contents).
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Workspace
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "sheets": [
+       {
+            "accessLevel": "OWNER",
+            "id": 4583173393803140,
+            "name": "sheet 1"
+       }
+	],
+    "accessLevel": "OWNER",
+    "id": 7116448184199044,
+    "name": "New workspace",
+    "permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zgg"
+}
+```
+
+`GET /workspaces/{workspaceid}`
+
+Gets the specified Workspace (and lists its contents).
+
+<aside class="notice">By default, this operation only returns the top-level items in the Workspace. To load all of the contents, including nested Folders, include the <b>loadAll</b> query string parameter with a value of <b>true</b>.</aside>
+
+<aside class="notice">If no Folders and/or Sheets are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response object.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
+    | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>templates</li><li>reports</li><li>source - include [source](#source-object) for each Sheet</li></ul>
+<%= RETURNS %> | [Workspace object](#workspace-object)
+
+## List Workspaces
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+[
+    {
+        "accessLevel": "OWNER",
+        "id": 3457273486960516,
+        "name": "workspace 1",
+        "permalink": "https://app.smartsheet.com/b/home?lx=JNL0bgXtXc0pzni9tzAc4g"
+    },
+    {
+        "accessLevel": "OWNER",
+        "id": 7960873114331012,
+        "name": "workspace 2",
+        "permalink": "https://app.smartsheet.com/b/home?lx=JLiJbgXtXc0pzni9tzAKiR"
+    }
+]
+```
+
+`GET /workspaces`
+
+Gets the list of Workspaces to which the user has access.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>templates</li><li>reports</li></ul>
+<%= RETURNS %> | Array of [Workspace objects](#workspace-object)
+
+## Share Workspace
+
+For details about Workspace sharing, see [Workspace Sharing](#workspace-sharing).
+
+## Update Workspace
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"name": "Updated workspace"}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "accessLevel": "OWNER",
+        "id": 7960873114331012,
+        "name": "Updated workspace",
+        "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /workspaces/{id}`
+
+Updates the Workspace specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Workspace object](#workspace-object) limited to the following attribute:<ul><li>name (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the updated [Workspace object](#workspace-object)
+
+## <%= RELATED %>
+
+### Workspace Folders
+
+For details about working with folders in a Workspace, see [Folders](#folders).
+
+### Workspace Sheets
+
+For details about working with sheets in a Workspace, see [Sheets](#sheets).
+
+# <font color="#ffffff">-------------------------------</font>
+
+<span class="customTOCSectionHeading">ADDITIONAL REFERENCE</span>
+
+# Other Objects
+
+## AutoNumberFormat Object
+
+Object that describes how the the System Column type of "AUTO_NUMBER" is auto-generated.
+
+     |     |     |
+-----|-----|-----|
+**prefix** | string | The prefix. Can include the date tokens:<ul><li>{YY}</li><li>{YYYY}</li><li>{MM}</li><li>{DD}</li></ul>
+**suffix** | string | The suffix. Can include the date tokens:<ul><li>{YY}</li><li>{YYYY}</li><li>{MM}</li><li>{DD}</li></ul>
+**fill** | string | Indicates zero-padding. Must be between 0 and 10 "0" (zero) characters.
+**startingNumber** | number | The starting number for the auto-id
+ 
+## CellLink Object
+
+Represents a link to a Cell in a different Sheet.
+
+<aside class="notice">If status is not "OK" (i.e. there is a problem with the link), any or all of the following attributes may be null: <ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></aside>
+
+     |     |     |
+-----|-----|-----|
+**status** | string | One of the following values:<ul><li>**OK**: the link is in a good state</li><li>**BROKEN**: the row or sheet linked to was deleted</li><li>**INACCESSIBLE**: the sheet linked to cannot be viewed by this user</li><li>Several other values indicating unusual error conditions: **NOT_SHARED**, **BLOCKED**, **CIRCULAR**, **INVALID**, and **DISABLED**.</li></ul>
+**sheetId** | number | Sheet ID of the sheet that the linked cell belongs to
+**rowId** | number | Row ID of the linked cell
+**columnId** | number | Column ID of the linked cell
+**sheetname** | string | Sheet name of the linked cell
+
+## Hyperlink Object
+
+Represents a hyperlink to a URL, a Sheet, or a Report.
+ 
+<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
+
+     |     |     |
+-----|-----|-----|
+**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
+**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
+**reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
+
+## Result Object
+
+Object returned for all PUT operations and POST operations (and for some other operations). 
+
+     |     |     |
+-----|-----|-----|
+**resultCode** | number | 0 (zero) if successful
+**message** | string | Message that indicates the outcome of the request
+**result** | Object | Object that was created or updated (if applicable)
+**version** | number | New version of the Sheet (only available on select operations)
+
+# Formatting
+
+Formatting data can optionally be included for columns, rows, and cells by adding the "include=format" query string parameter to any API operation that returns any of those objects (for example, `GET /sheets/{sheetId}`, `GET sheets/{sheetId}/rows/{rowId}`, etc.).  When this parameter is included, objects that contain non-default formatting will include a **format** property.  Objects which do not have any non-default format settings applied will exclude this property.
+ 
+Because the amount of format data in a large sheet can potentially be very large in itself, for bandwidth reasons, format data is represented by a compact format descriptor string.  The format descriptor takes the form of a comma-separated list of numeric values.  These values represent indexes into pre-defined format lookup tables which can be retrieved using the `GET /serverinfo` operation.
+
+## Row & Column Format
+
+Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
+ 
+The equivalent API action for what happens when you highlight a column or row in the Smartsheet web app and set a format (e.g. bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
+
+## Format Descriptor
+
+The format descriptor contains 16 comma-separated numeric indexes.  Each index represents a format style whose value can be found in one of the lookup tables in the [FormatTables object](#formattables-object).
+
+**Format Descriptor Element #** | **Format Style** | **FormatTables Lookup Table Property** |
+-----|-----|-----|
+0 | Font Family | fontFamily
+1 | Font size | fontSize
+2 | Bold | bold
+3 | Italic | italic
+4 | Underline | underline
+5 | Strikethrough | strikethrough
+6 | Horizontal alignment | horizontalAlign
+7 | Vertical alignment | verticalAlign
+8 | Text color | color
+9 | Background color | color
+10 | Taskbar color | color
+11 | Currency | currency
+12 | Decimal count | decimalCount
+13 | Thousands separator | thousandsSeparator
+14 | Number format | numberFormat
+15 | Text wrap | textWrap
+
+<aside class="notice">Formats which have not been explicitly set are omitted in the descriptor string.  For example, a cell which has been set to bold and italic, but has no other formats applied to it, would have a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
+
+<aside class="notice">As a convenience, the FormatTables object contains a <b>defaults</b> property which is a format descriptor that describes which formats the Smartsheet web application displays for unset formats.  Your application can use these values to display unformatted cells identically to the Smartsheet web application.</aside>
+
+## FormatTables Object
+
+The FormatTables object is retrieved via the `GET /serverinfo` operation and contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet web application displays for unset formats.
+ 
+<aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
+
+     |     |     |
+-----|-----|-----|
+**defaults** | string | A format descriptor where each element describes the formats the Smartsheet web application displays for format values that have not been set.
+**fontFamily** | array of [FontFamily objects](#fontfamily-object) | Font families with additional font information
+**fontSize** | array of strings | Font sizes in points
+**bold** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**italic** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**underline** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**strikethrough** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**horizontalAlign** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**verticalAlign** | array of strings | Vertical alignment, possible values:<ul><li>top</li><li>middle</li><li>bottom</li></ul>Note: "default" is the default value, which is equivalent to "top".
+**color** | array of strings | Color hex values. <br/><br/>Note: "none" is the default value for all colors.  Applications will need to handle this value and use app-defined colors (typically this is Black for text color and White for background color)
+**currency** | array of [Currency objects](#currency-object) | Currency codes and symbols
+**decimalCount** | array of strings | All allowed decimal count values
+**thousandsSeparator** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**numberFormat** | array of strings | Possible values:<ul><li>none</li><li>NUMBER</li><li>CURRENCY</li><li>PERCENT</li></ul>
+**textWrap** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+
+## FontFamily Object
+
+     |     |     |
+-----|-----|-----|
+**name** | string | Name of the font family (e.g. "Arial")
+**traits** | array | Platform-independent traits of the font family. One of the following values:<ul><li>serif</li><li>sans-serif</li>
+
+## Currency Object
+
+     |     |     |
+-----|-----|-----|
+**code** | string | The ISO 4217 currency code (e.g. "EUR")
+**symbol** | string | The currency symbol (e.g. "€")
+
 
