@@ -3153,7 +3153,44 @@ Inserts Rows into the Sheet specified in the URL.
 
 ## Copy Row to Another Sheet
 
-[todo]
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ "rowIds": [145417762563972, 8026717110462340], "to": {"sheetId": 2258256056870788} }'
+```
+
+> Example Response:
+
+```json
+{
+    "destinationSheetId": 2258256056870788,
+    "rowMappings": [
+        {
+            "from": 145417762563972,
+            "to": 4508365800925060
+        },
+        {
+            "from": 8026717110462340,
+            "to": 2256565987239812
+        }
+    ]
+}
+```
+
+`POST /2.0/sheets/{sheetId}/rows/copy`
+
+Copies zero or more rows from a source sheet to the bottom of a destination sheet.
+<aside class="notice">Up to 5,000 source row IDs are allowed in the request, but if the total number of rows on the destination sheet after the copy exceeds the Smartsheet row limit, it shall result in an error.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - If specified, all descendants of all source rows shall be copied to the destination sheet while preserving relationships among them; otherwise, only the source rows shall be copied.</li></ul>**ignoreRowsNotFound** -- true or false: default is false. If set to true, source rows not found on the source sheet shall not cause an error response. If false, source rows shall be copied in the listed order in the **rowIds** field.
 
 ## Delete Row
 
@@ -3230,7 +3267,7 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- copy-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>filters</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the query string.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>filters</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the query string.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
 <%= RETURNS %> | [Row object](#row-object)
 
 ## Move Row to Another Sheet
