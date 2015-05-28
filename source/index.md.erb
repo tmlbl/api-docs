@@ -2392,7 +2392,16 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```json
 {
     "id": 7116448184199044,
-    "name": "New folder"
+    "name": "Projects",
+    "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=B0_lvAtnWygeMrWr4Rfoa",
+    "sheets": [
+        {
+            "id": 4509918431602564,
+            "name": "Project Timeline",
+            "accessLevel": "OWNER",
+            "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=uWicCItTmkbxJwpCfQ5wiwW"
+        }
+    ]
 }
 ```
 
@@ -2404,7 +2413,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>templates</li><li>reports</li><li>source - include [source](#source-object) for each sheet</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>source - include [source](#source-object) for each sheet</li></ul>
 <%= RETURNS %> | [Folder object](#folder-object)<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
 
 ## List Child Folders
@@ -2854,7 +2863,7 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/home?include=templates \
+curl https://api.smartsheet.com/2.0/home?include=source \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
@@ -2865,21 +2874,29 @@ curl https://api.smartsheet.com/2.0/home?include=templates \
     "folders": [
         {
             "id": 5709073300645764,
-            "name": "folder 1"
+            "name": "folder 1",
+            "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Z1"
         }
     ],
     "sheets": [
         {
-            "accessLevel": "OWNER",
             "id": 4583173393803140,
-            "name": "sheet 1"
+            "name": "sheet 1",
+            "accessLevel": "OWNER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Za"
         },
         {
-            "accessLevel": "OWNER",
             "id": 2331373580117892,
-            "name": "sheet 2"
+            "name": "Copy of sheet 1",
+            "accessLevel": "OWNER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Zb",
+			"source": {
+                "id": 4583173393803140,
+                "type": "sheet"
+            }
         }
     ],
+    "reports": [],
     "templates": [],
     "workspaces": []
 }
@@ -2887,13 +2904,13 @@ curl https://api.smartsheet.com/2.0/home?include=templates \
 
 `GET /home`
 
-Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, and optionally Reports and/or Templates, as shown on the Home tab.
+Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, Reports, and Templates, as shown on the Home tab.
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>templates</li><li>reports</li><li>[source](#source-object)</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>[source](#source-object)</li></ul>
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -3053,7 +3070,6 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **id** | number | Row ID
 **sheetId** | number | Parent Sheet ID
 **rowNumber** | number | Row number within the sheet (1-based - starts at 1)
-**parentRowNumber** | number | Parent row number (indented items only)
 **cells** | array | Array of [Cell objects](#cell-object)
 **discussions** | array | Array of [Discussion objects](#discussion-object)
 **attachments** | array | Array of [Attachment objects](#attachment-object)
@@ -4551,7 +4567,7 @@ Refreshes an access token, as part of the oAuth process. For more information, s
 **admin** | boolean | Flag indicating whether the user is a system admin (can manage users and account)
 **licensedSheetCreator** | boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
 **groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
-**resourceManager** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 
 ### User Profile Object
@@ -4897,9 +4913,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 {
     "sheets": [
        {
-            "accessLevel": "OWNER",
             "id": 4583173393803140,
-            "name": "sheet 1"
+            "name": "sheet 1",
+            "accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zg1"
        }
 	],
     "accessLevel": "OWNER",
@@ -4915,14 +4932,14 @@ Gets the specified Workspace (and lists its contents).
 
 <aside class="notice">By default, this operation only returns the top-level items in the Workspace. To load all of the contents, including nested Folders, include the <b>loadAll</b> query string parameter with a value of <b>true</b>.</aside>
 
-<aside class="notice">If no Folders and/or Sheets are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response object.</aside>
+<aside class="notice">If no Folders, Sheets, Reports, or Templates are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response object.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
-    | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>templates</li><li>reports</li><li>source - include [source](#source-object) for each Sheet</li></ul>
+    | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>source - include [source](#source-object) for each Sheet</li></ul>
 <%= RETURNS %> | [Workspace object](#workspace-object)
 
 ## List Workspaces
@@ -4960,8 +4977,7 @@ Gets the list of Workspaces to which the user has access.
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>templates</li><li>reports</li></ul>
+<%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | Array of [Workspace objects](#workspace-object)
 
 ## Share Workspace
