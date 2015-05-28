@@ -3172,7 +3172,40 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 
 ## Get Report as Excel / CSV
 
-[todo]
+> Example Request:
+
+```shell
+#
+# Excel
+#
+curl https://api.smartsheet.com/2.0/reports/{reportId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: application/vnd.ms-excel"
+
+#
+# CSV
+#
+curl https://api.smartsheet.com/2.0/reports/{reportId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: text/csv"
+```
+
+> Example Response:
+
+```shell
+#
+# Streaming response for either Excel or CSV.
+#
+```
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Accept**: (application/vnd.ms-excel|text/csv)
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
+  | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
+  | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
+<%= RETURNS %> | Streaming response for either Excel or CSV, containing the Report data according to the **include** parameter.
 
 ## List Reports
 
