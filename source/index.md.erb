@@ -1456,21 +1456,50 @@ Smartsheet users can define and save personal column filters on sheets they can 
 **values** | array | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
 **criteria** | array | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
 
-## Add Column
+## Add Column(s)
 
 > Example Request:
 
 ```shell
+#
+# Add One Column:
+#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"], "index":1}'
+
+#
+# Add Zero or More Columns
+#
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[
+    {
+        "title":"New Picklist Column 1",
+        "type":"PICKLIST",
+        "options": ["First", "Second", "Third"],
+        "index":100
+    } ,
+    {"title":"New Date Column", "type":"DATE", "index":100},
+    {
+        "title":"New Picklist Column 2",
+        "type":"PICKLIST",
+        "options": ["1", "2", "3"],
+        "index":100
+    }
+]'
 ```
 
 > Example Response:
 
 ```json
+#
+# For One Column:
+#
 {
     "message": "SUCCESS",
     "result": {
@@ -1483,18 +1512,59 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
     },
     "resultCode": 0
 }
+
+#
+# For Zero or More Columns:
+#
+{
+    "resultCode": 0,
+    "result": [
+        {
+            "id": 9007194052434043,
+            "index": 4,
+            "title": "New Picklist Column 1",
+            "type": "PICKLIST",
+            "options": [
+                "First",
+                "Second",
+                "Third"
+            ],
+            "width": 150
+        },
+        {
+            "id": 4503594425063547,
+            "index": 5,
+            "title": "New Date Column",
+            "type": "DATE",
+            "width": 150
+        },
+        {
+            "id": 6755394238748795,
+            "index": 6,
+            "title": "New Picklist Column 2",
+            "type": "PICKLIST",
+            "options": [
+                "1",
+                "2",
+                "3"
+            ],
+            "width": 150
+        }
+    ],
+    "message": "SUCCESS"
+}
 ```
 
 `POST /sheets/{sheetId}/columns`
 
-Inserts a Column into the Sheet specified in the URL.
+Inserts zero or more Columns into the Sheet specified in the URL.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Column object](#column-object) that contains the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) for the newly created Column
+<%= REQUEST %> | [Column object](#column-object) or an array of [Column objects](#column-object) that contains the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the [Column object(s)](#column-object) for the newly created Column(s)
 
 ## Delete Column
 
