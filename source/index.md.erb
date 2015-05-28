@@ -78,7 +78,13 @@ All actions taken through the API are done via HTTP using [standard HTTP methods
 
 ## Input / Output Format
 
-Request body data is expected to be in [JSON](http://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON. 
+Unless otherwise specified, all API endpoints expect request body data to be in [JSON](http://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON.
+The following HTTP request headers may be required, depending on the operation and endpoint being invoked:
+
+     |     |
+-----|-----|
+*Content-Type* | For POST and PUT requests, must be set to the appropriate value (typically `application/json`).  Ignored for GET and DELETE requests.
+*Accept*       | Optional; if not specified, `*/*` is assumed (i.e. any response type is accepted), else it must match the output of the invoked endpoint (typically `application/json`).
  
 <aside class="notice">Some of the data returned by the Smartsheet API is user-generated content. Caution should be taken to ensure that the user-generated content is consumed safely in any external system to avoid introducing vulnerabilities.</aside>
 
