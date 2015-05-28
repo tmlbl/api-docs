@@ -1891,11 +1891,38 @@ Creates a new Discussion on a Row.
 > Example Request:
 
 ```shell
+#
+# Without Attachment:
+#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+-d '{
+    "title": "This is a new discussion", 
+    "comment": {
+        "text":"This text is the body of the first comment"
+    }
+}'
+
+#
+# With Attachment:
+#
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X POST \
+-F "discussion=<discussion.json;type=application/json" \
+-F "filename=@file_to_attach;type=application/octet-stream"
+
+    #
+    # Content of the discussion.json file:
+    #
+    {
+        "title": "This is a new discussion with an attachment", 
+        "comment": {
+            "text":"This text is the body of the first comment"
+        }
+    }
 ```
 
 > Example Response:
@@ -1906,7 +1933,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 Creates a new Discussion on a Sheet.
 
+**Without an Attachment:**
 <%= partial "snippets/createDiscussion_table.md.erb" %>
+
+**With an Attachment:**
+<%= partial "snippets/createDiscussionMultipart_table.md.erb" %>
 
 ## Delete Discussion
 
