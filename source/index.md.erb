@@ -1737,11 +1737,30 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 > Example Request:
 
 ```shell
+#
+# Without Attachment
+#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"text":"This is a new comment."}'
+
+#
+# With Attachment:
+#
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X POST \
+-F "comment=<comment.json;type=application/json" \
+-F "filename=@file_to_attach;type=application/octet-stream"
+
+    #
+    # Content of the comment.json file:
+    #
+    {
+        "text":"This text is the body of the new comment"
+    }
 ```
 
 > Example Response:
@@ -1768,12 +1787,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 Adds a Comment to a Discussion.
 
+**Without Attachment:**
+
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Comment object](#comment-object) with the following attribute:<ul><li>text</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing [Comment object](#comment-object) that was created
+
+**With Attachment:**
+<%= partial "snippets/createCommentMultipart_table.md.erb" %>
 
 ## Delete Comment
 
@@ -1933,10 +1957,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 Creates a new Discussion on a Sheet.
 
-**Without an Attachment:**
+**Without Attachment:**
 <%= partial "snippets/createDiscussion_table.md.erb" %>
 
-**With an Attachment:**
+**With Attachment:**
 <%= partial "snippets/createDiscussionMultipart_table.md.erb" %>
 
 ## Delete Discussion
