@@ -483,8 +483,11 @@ AUTO_NUMBER | type TEXT_NUMBER<br/><br/>When a column is of this **systemColumnT
 ## Paging
 
 The Smartsheet API contains a number of *index endpoints* (typically denoted in the documentation with titles beginning with "Get All..." or "List...") which return arrays of objects.
-Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination via
-the following optional query string parameters:
+Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination, meaning
+you can retrieve paged subsets of results, enabling you to process potentially large result sets in smaller chunks.
+
+### Paging Query String Parameters
+Index endpoints all support pagination via the following optional query string parameters:
 
      |     |     |
 -----|-----|-----|
@@ -494,7 +497,11 @@ the following optional query string parameters:
 
 <aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
 
-These index endpoints all return an [IndexResult object](#indexresult-object) which provides paging metadata that can be used to navigate the full set of pages in the result set.
+### Paged Responses
+
+Index endpoints all return paged responses via an **IndexResult** object which provides paging metadata that can be used to navigate the full set of pages in the result set:
+
+<%= partial "snippets/indexResult_object.md.erb" %>
 
 # Getting Started
 
@@ -1074,24 +1081,30 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 > Example Response:
 
 ```json
-[
-  {
-    "name": "att3.png",
-    "attachmentType": "FILE",
-    "mimeType": "image/png",
-    "id": 4583173393803140,
-    "parent" : "SHEET",
-    "parentId" : 341847495283
-  },
-  {
-    "name": "att4.png",
-    "attachmentType": "FILE",
-    "mimeType": "image/png",
-    "id": 4583173393803140,
-    "parent" : "ROW",
-    "parentId" : 684956754834557
-  }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"name": "att3.png",
+			"attachmentType": "FILE",
+			"mimeType": "image/png",
+			"id": 4583173393803140,
+			"parent" : "SHEET",
+			"parentId" : 341847495283
+		},
+		{
+			"name": "att4.png",
+			"attachmentType": "FILE",
+			"mimeType": "image/png",
+			"id": 4583173393803140,
+			"parent" : "ROW",
+			"parentId" : 684956754834557
+		}
+	]
+}
 ```
 
 `GET /sheets/{sheetId}/attachments`
@@ -1102,7 +1115,7 @@ Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 ## Get Discussion Attachments
 
@@ -1116,24 +1129,30 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 > Example Response:
 
 ```json
-[
-  {
-    "name": "att3.png",
-    "attachmentType": "FILE",
-    "mimeType": "image/png",
-    "id": 4583173393803140,
-    "parent" : "COMMENT",
-    "parentId" : 341847495283
-  },
-  {
-    "name": "att4.png",
-    "attachmentType": "FILE",
-    "mimeType": "image/png",
-    "id": 4583173393803140,
-    "parent" : "COMMENT",
-    "parentId" : 684956754834557
-  }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"name": "att3.png",
+			"attachmentType": "FILE",
+			"mimeType": "image/png",
+			"id": 4583173393803140,
+			"parent" : "COMMENT",
+			"parentId" : 341847495283
+		},
+		{
+			"name": "att4.png",
+			"attachmentType": "FILE",
+			"mimeType": "image/png",
+			"id": 4583173393803140,
+			"parent" : "COMMENT",
+			"parentId" : 684956754834557
+		}
+	]
+}
 ```
 
 `GET /sheets/{sheetId}/discussions/{discussionId}/attachments`
@@ -1144,7 +1163,7 @@ Gets a list of all Attachments that are in the Discussion.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 ## Get Row Attachments
 
@@ -1158,24 +1177,30 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 > Example Response:
 
 ```json
-[
-  {
-    "name": "att3.png",
-    "attachmentType": "FILE",
-    "mimeType": "image/png",
-    "id": 4583173393803140,
-    "parent" : "ROW",
-    "parentId" : 341847495283
-  },
-  {
-    "name": "att4.png",
-    "attachmentType": "FILE",
-    "mimeType": "image/png",
-    "id": 4583173393803140,
-    "parent" : "COMMENT",
-    "parentId" : 684956754834557
-  }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"name": "att3.png",
+			"attachmentType": "FILE",
+			"mimeType": "image/png",
+			"id": 4583173393803140,
+			"parent" : "ROW",
+			"parentId" : 341847495283
+		},
+		{
+			"name": "att4.png",
+			"attachmentType": "FILE",
+			"mimeType": "image/png",
+			"id": 4583173393803140,
+			"parent" : "COMMENT",
+			"parentId" : 684956754834557
+		}
+	]
+}
 ```
 
 `GET /sheets/{sheetId}/rows/{rowId}/attachments`
@@ -1186,7 +1211,7 @@ Gets a list of all Attachments that are on the Row, including Row and Discussion
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 ## Posting an Attachment
 
@@ -1317,22 +1342,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 > Example Response:
 
 ```json
-[
-	{
-		"id": 4583173393803140,
-		"name": "at3.png",
-		"attachmentType": "file",
-		"mimeType": "image/png",
-		"createdAt": "2014-03-28T18:13:20-07:00"
-	},
-	{
-		"id": 4583173393803140,
-		"name": "at3.png",
-		"attachmentType": "file",
-		"mimeType": "image/png",
-		"createdAt": "2014-03-27T18:11:11-07:00"
-	}
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"id": 4583173393803140,
+			"name": "at3.png",
+			"attachmentType": "file",
+			"mimeType": "image/png",
+			"createdAt": "2014-03-28T18:13:20-07:00"
+		},
+		{
+			"id": 642523719853956,
+			"name": "at3.png",
+			"attachmentType": "file",
+			"mimeType": "image/png",
+			"createdAt": "2014-03-27T18:11:11-07:00"
+		}
+	]
+}
 ```
 
 `GET /sheets/{sheetId}/attachments/{attachmentId}/versions`
@@ -1343,7 +1374,7 @@ Gets a list of all versions of the given Attachment ID, in order from newest to 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Attachment objects](#attachment-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 <aside class="notice">To retrieve a download URL for a file attachment, use the Get Attachment operation for the specific version you want to download.</aside>
 
@@ -1394,41 +1425,47 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 > Example Response:
 
 ```json
-[
-        {
-          "columnId":642523719853956,
-          "displayValue": "Revision 3",
-          "type": "TEXT_NUMBER",
-          "value": "Revision 3",
-          "modifiedAt": "2013-06-24T00:10:18Z",
-          "modifiedBy" : {
-              "name" : "Jane Smart",
-              "email" : "jane.smart@smartsheet.com"
-           }
-        },
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 3,
+	"data": [
 		{
-          "columnId":642523719853956,
-          "displayValue": "Revision 2",
-          "type": "TEXT_NUMBER",
-          "value": "Revision 2",
-          "modifiedAt": "2013-06-23T00:10:18Z",
-          "modifiedBy" : {
-              "name" : "Joe Smart",
-              "email" : "joe.smart@smartsheet.com"
-          }
-        },
+			"columnId":642523719853956,
+			"displayValue": "Revision 3",
+			"type": "TEXT_NUMBER",
+			"value": "Revision 3",
+			"modifiedAt": "2013-06-24T00:10:18Z",
+			"modifiedBy" : {
+				"name" : "Jane Smart",
+				"email" : "jane.smart@smartsheet.com"
+			}
+		},
 		{
-          "columnId":642523719853956,
-          "displayValue": "Revision 1",
-          "type": "TEXT_NUMBER",
-          "value": "Revision 1",
-          "modifiedAt": "2013-06-22T00:10:18Z",
-          "modifiedBy" : {
-              "name" : "Joe Smart",
-              "email" : "joe.smart@smartsheet.com" 
-          }
-        }
-]
+			"columnId":642523719853956,
+			"displayValue": "Revision 2",
+			"type": "TEXT_NUMBER",
+			"value": "Revision 2",
+			"modifiedAt": "2013-06-23T00:10:18Z",
+			"modifiedBy" : {
+				"name" : "Joe Smart",
+				"email" : "joe.smart@smartsheet.com"
+			}
+		},
+		{
+			"columnId":642523719853956,
+			"displayValue": "Revision 1",
+			"type": "TEXT_NUMBER",
+			"value": "Revision 1",
+			"modifiedAt": "2013-06-22T00:10:18Z",
+			"modifiedBy" : {
+				"name" : "Joe Smart",
+				"email" : "joe.smart@smartsheet.com" 
+			}
+		}
+	]
+}
 ```
 
 `GET /sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history`
@@ -1441,7 +1478,7 @@ Gets the cell modification history.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Cell History objects](#cell-history-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Cell History objects](#cell-history-object)
 
 ## Update Cell(s)
 
@@ -1696,28 +1733,34 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 > Example Response:
 
 ```json
-[
-    {
-        "id": 7960873114331012,
-        "index": 0,
-        "symbol": "STAR",
-        "title": "Favorite",
-        "type": "CHECKBOX"
-    },
-    {
-        "id": 642523719853956,
-        "index": 1,
-        "primary": true,
-        "title": "Primary Column",
-        "type": "TEXT_NUMBER"
-    },
-    {
-        "id": 5146123347224452,
-        "index": 2,
-        "title": "Status",
-        "type": "PICKLIST"
-    }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 3,
+	"data": [
+		{
+			"id": 7960873114331012,
+			"index": 0,
+			"symbol": "STAR",
+			"title": "Favorite",
+			"type": "CHECKBOX"
+		},
+		{
+			"id": 642523719853956,
+			"index": 1,
+			"primary": true,
+			"title": "Primary Column",
+			"type": "TEXT_NUMBER"
+		},
+		{
+			"id": 5146123347224452,
+			"index": 2,
+			"title": "Status",
+			"type": "PICKLIST"
+		}
+	]
+}
 ```
 
 `GET /sheets/{sheetId}/columns`
@@ -1729,7 +1772,7 @@ Gets a list of all Columns belonging to the Sheet specified in the URL.
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
-<%= RETURNS %> | Array of [Column objects](#column-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Column objects](#column-object)
 
 ## Update Column
 
@@ -2202,16 +2245,22 @@ curl https://api.smartsheet.com/2.0/favorites \
 > Example Response:
 
 ```json
-[
-    {
-        "type": "sheet",
-        "objectId": 5897312590423940
-    },
-    {
-        "type": "folder",
-        "objectId": 1493728255862660
-    }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"type": "sheet",
+			"objectId": 5897312590423940
+		},
+		{
+			"type": "folder",
+			"objectId": 1493728255862660
+		}
+	]
+}
 ```
 
 `GET /favorites`
@@ -2222,7 +2271,7 @@ Gets a list of all of the user's Favorite items.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Favorite objects](#favorite-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Favorite objects](#favorite-object)
 
 ## Remove Favorite
 
@@ -2856,17 +2905,23 @@ curl https://api.smartsheet.com/2.0/groups \
 > Example Response:
 
 ```json
-[
-    {
-        "id": 4583173393803140,
-        "name": "Group 1",
-        "description": "My group",
-        "owner": "john.doe@smartsheet.com",
-        "ownerId": 2331373580117892,
-        "createdAt": "2014-05-29T14:41:35-07:00",
-        "modifiedAt": "2014-05-29T14:41:35-07:00"
-    }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 1,
+	"data": [
+		{
+			"id": 4583173393803140,
+			"name": "Group 1",
+			"description": "My group",
+			"owner": "john.doe@smartsheet.com",
+			"ownerId": 2331373580117892,
+			"createdAt": "2014-05-29T14:41:35-07:00",
+			"modifiedAt": "2014-05-29T14:41:35-07:00"
+		}
+	]
+}
 ```
 
 `GET /groups`
@@ -2877,7 +2932,7 @@ Gets the list of all Groups in an organization. To fetch the members of an indiv
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Group objects](#group-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Group objects](#group-object)
 
 ## Update Group
 
@@ -4542,20 +4597,26 @@ curl https://api.smartsheet.com/2.0/sheets \
 > Example Response:
 
 ```json
-[
-    {
-        "accessLevel": "OWNER",
-        "id": 4583173393803140,
-        "name": "sheet 1",
-		"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ"
-    },
-    {
-        "accessLevel": "OWNER",
-        "id": 2331373580117892,
-        "name": "sheet 2",
-		"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG"
-    }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"accessLevel": "OWNER",
+			"id": 4583173393803140,
+			"name": "sheet 1",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ"
+		},
+		{
+			"accessLevel": "OWNER",
+			"id": 2331373580117892,
+			"name": "sheet 2",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG"
+		}
+	]
+}
 ```
 
 `GET /sheets`
@@ -4567,7 +4628,7 @@ Gets the list of all Sheets that the User has access to, in alphabetical order, 
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- element to include in the response:<ul><li>[source](#source-object)</li></ul>
-<%= RETURNS %> | Array of [Sheet objects](#sheet-object), limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li></ul>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li></ul>
 
 ## Publish Sheet
 
@@ -5025,16 +5086,22 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 > Example Response:
 
 ```json
-[
-    {
-        "id": 94094820842,
-        "admin": true,
-        "email": "john.doe@smartsheet.com",
-        "name": "John Doe",
-        "licensedSheetCreator": true,
-        "status": "ACTIVE"
-    }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 1,
+	"data": [
+		{
+			"id": 94094820842,
+			"admin": true,
+			"email": "john.doe@smartsheet.com",
+			"name": "John Doe",
+			"licensedSheetCreator": true,
+			"status": "ACTIVE"
+		}
+	]
+}
 ```
 
 `GET /users`
@@ -5046,7 +5113,7 @@ Gets the list of Users in the organization. To filter by email, use the optional
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results
-<%= RETURNS %> | Array of [User objects](#user-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)
 
 ## Remove User
 
@@ -5266,20 +5333,26 @@ curl https://api.smartsheet.com/2.0/workspaces \
 > Example Response:
 
 ```json
-[
-    {
-        "accessLevel": "OWNER",
-        "id": 3457273486960516,
-        "name": "workspace 1",
-        "permalink": "https://app.smartsheet.com/b/home?lx=JNL0bgXtXc0pzni9tzAc4g"
-    },
-    {
-        "accessLevel": "OWNER",
-        "id": 7960873114331012,
-        "name": "workspace 2",
-        "permalink": "https://app.smartsheet.com/b/home?lx=JLiJbgXtXc0pzni9tzAKiR"
-    }
-]
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"accessLevel": "OWNER",
+			"id": 3457273486960516,
+			"name": "workspace 1",
+			"permalink": "https://app.smartsheet.com/b/home?lx=JNL0bgXtXc0pzni9tzAc4g"
+		},
+		{
+			"accessLevel": "OWNER",
+			"id": 7960873114331012,
+			"name": "workspace 2",
+			"permalink": "https://app.smartsheet.com/b/home?lx=JLiJbgXtXc0pzni9tzAKiR"
+		}
+	]
+}
 ```
 
 `GET /workspaces`
@@ -5290,7 +5363,7 @@ Gets the list of Workspaces to which the user has access.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | Array of [Workspace objects](#workspace-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Workspace objects](#workspace-object)
 
 ## Share Workspace
 
@@ -5391,13 +5464,7 @@ Represents a hyperlink to a URL, a Sheet, or a Report.
 
 Object returned for all `GET` operations against index endpoints.  This object provides metadata which can be used to perform paging on potentially large data sets.  See the [Paging](#paging) section for more information.
 
-     |     |     |
------|-----|-----|
-**pageNumber**	| number | The current page in the full result set that the **data** array represents.
-**pageSize**	| number | The number of items in a page.  Omitted if there is no limit to page size (and hence, all results are included).  Unless otherwise specified, this defaults to **100** for most endpoints.
-**totalPages**	| number | The total number of pages in the full result set.
-**totalCount**	| number | The total number of items in the full result set.
-**data**		| array  | An array of objects representing the current page of data in the result set.
+<%= partial "snippets/indexResult_object.md.erb" %>
 
 ## Result Object
 
