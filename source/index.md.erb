@@ -382,9 +382,19 @@ The available PICKLIST symbols are:
 
 ### Strict vs. Lenient Parsing
 
-Within the Smartsheet web application, the column types are flexible and generally, any column can contain any type of data. This allows for a very flexible UI and is one of the key benefits to using Smartsheet. This flexibility, however, poses a challenge for an API. Being too flexible will likely result in unexpected behavior. For instance, if you write code to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date as a Text value? Probably not.
+Within the Smartsheet web application, the column types are flexible and generally, any column can contain any type of data.
+This allows for a very flexible UI and is one of the key benefits to using Smartsheet. This flexibility, however, poses a
+challenge for an API. Being too flexible will likely result in unexpected behavior. For instance, if you write code to post
+a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
+as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
+as a Text value? Probably not.
  
-To address this problem, Smartsheet has employed a simple scheme to indicate whether you want a more predictable and strict interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules. If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make sense of it. The rules are as follows:
+To address this problem, Smartsheet has employed a simple scheme to indicate whether you want a more predictable and strict
+interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules. If, however, you want
+the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
+sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) of your request.
+
+The parsing rules are as follows:
 
 **TEXT_NUMBER**:
 
@@ -3764,7 +3774,15 @@ Use the *Share* operations to control sharing of Reports, Sheets, and Workspaces
 
 ### Share Object
 
-[todo]
+     |     |     |
+-----|-----|-----|
+**id**          | number | Share ID.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
+**type**        | string | The type of this share. One of `USER` or `GROUP`.
+**userId**      | number | User ID if the share is a user share, else null.
+**groupId**     | number | Group ID if the share is a group share, else null.
+**email**       | string | User's email address for user shares; null for group shares.
+**name**        | string | If a user share and user is also a contact, the user's full name.  If a group share, the group's name.
+**accessLevel** | string | User or group's [access level](#access-levels) on shared object.
 
 ## Report Sharing
 
@@ -3831,7 +3849,11 @@ Gets a list of all Users and Groups to whom the specified Report is shared, and 
 > Example Request: 
 
 ```shell
-[todo]
+curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}'
 ```
 
 > Example Response:
@@ -3849,7 +3871,11 @@ Shares a Report with the specified Users and Groups.
 > Example Request: 
 
 ```shell
-[todo]
+curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"accessLevel": "VIEWER"}'
 ```
 
 > Example Response:
@@ -3927,7 +3953,11 @@ Gets a list of all Users and Groups to whom the specified Sheet is shared, and t
 > Example Request: 
 
 ```shell
-[todo]
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}'
 ```
 
 > Example Response:
@@ -3945,7 +3975,11 @@ Shares a Sheet with the specified Users and Groups.
 > Example Request: 
 
 ```shell
-[todo]
+curl https://api.smartsheet.com/2.0/sheets/{reportId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"accessLevel": "VIEWER"}'
 ```
 
 > Example Response:
@@ -4008,7 +4042,7 @@ Gets the Share specified in the URL.
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/workspaces/{workspacesId}/shares \
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
@@ -4027,7 +4061,11 @@ Gets a list of all Users and Groups to whom the specified Workspace is shared, a
 > Example Request: 
 
 ```shell
-[todo]
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}'
 ```
 
 > Example Response:
@@ -4042,14 +4080,20 @@ Shares a Workspace with the specified Users and Groups.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= RETURNS %> | [Result object](#result-object) containing an array of [Share objects](#share-object).....[todo]
+<%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
+<%= REQUEST %> | [Share object](#share-object) with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of `email` or `groupId` must be specified, but not both.
+<%= RETURNS %> | [Result object](#result-object) containing a [Share object](#share-object) representing the person or group whose share has just been created.
 
 ### Update Workspace Share
 
 > Example Request: 
 
 ```shell
-[todo]
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"accessLevel": "VIEWER"}'
 ```
 
 > Example Response:
@@ -4065,7 +4109,7 @@ Updates the access level of a User or Group for the specified Workspace.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Share object](#share-object) limited to the following attribute:<ul><li>accessLevel (string)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object).....[todo]
+<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object)
 
 # Sheets
 
