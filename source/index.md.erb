@@ -4834,28 +4834,6 @@ Gets the list of user-created Templates to which the user has access.
 
 The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication).
 
-## Delete Access Token
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/token \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-> Example Response:
-
-```json
-{
-	"[todo]" : "[todo]"
-}
-```
-
-`DELETE /token`
-
-[todo]
-
 ## Get Access Token
 
 > Example Request:
@@ -4923,6 +4901,30 @@ Refreshes an access token, as part of the oAuth process. For more information, s
  | **refresh_token** (required) -- refresh_token value that came with the access token
  | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://")
  | **hash** (required) -- SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
+
+## Revoke Access Token
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /token`
+
+Revokes the access token used to make this request.  The access token will no longer be valid, and subsequent API calls made using that token will fail.
+
 
 # Users
 
