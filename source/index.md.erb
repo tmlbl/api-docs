@@ -1737,11 +1737,30 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 > Example Request:
 
 ```shell
+#
+# Without Attachment
+#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"text":"This is a new comment."}'
+
+#
+# With Attachment:
+#
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X POST \
+-F "comment=<comment.json;type=application/json" \
+-F "filename=@file_to_attach;type=application/octet-stream"
+
+    #
+    # Content of the comment.json file:
+    #
+    {
+        "text":"This text is the body of the new comment"
+    }
 ```
 
 > Example Response:
@@ -1768,12 +1787,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 Adds a Comment to a Discussion.
 
+**Without Attachment:**
+
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Comment object](#comment-object) with the following attribute:<ul><li>text</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing [Comment object](#comment-object) that was created
+
+**With Attachment:**
+<%= partial "snippets/createCommentMultipart_table.md.erb" %>
 
 ## Delete Comment
 
@@ -1891,11 +1915,38 @@ Creates a new Discussion on a Row.
 > Example Request:
 
 ```shell
+#
+# Without Attachment:
+#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+-d '{
+    "title": "This is a new discussion", 
+    "comment": {
+        "text":"This text is the body of the first comment"
+    }
+}'
+
+#
+# With Attachment:
+#
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X POST \
+-F "discussion=<discussion.json;type=application/json" \
+-F "filename=@file_to_attach;type=application/octet-stream"
+
+    #
+    # Content of the discussion.json file:
+    #
+    {
+        "title": "This is a new discussion with an attachment", 
+        "comment": {
+            "text":"This text is the body of the first comment"
+        }
+    }
 ```
 
 > Example Response:
@@ -1906,7 +1957,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 Creates a new Discussion on a Sheet.
 
+**Without Attachment:**
 <%= partial "snippets/createDiscussion_table.md.erb" %>
+
+**With Attachment:**
+<%= partial "snippets/createDiscussionMultipart_table.md.erb" %>
 
 ## Delete Discussion
 
@@ -3115,9 +3170,87 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | [Report object](#report-object), populated according to the "include" parameter
 
-## Get Report as Excel / PDF / CSV
+## Get Report as Excel / CSV
 
-[todo]
+> Example Request:
+
+```shell
+#
+# Excel
+#
+curl https://api.smartsheet.com/2.0/reports/{reportId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: application/vnd.ms-excel"
+
+#
+# CSV
+#
+curl https://api.smartsheet.com/2.0/reports/{reportId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: text/csv"
+```
+
+> Example Response:
+
+```shell
+#
+# Streaming response for either Excel or CSV.
+#
+```
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Accept**: application/vnd.ms-excel or text/csv
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
+  | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
+  | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
+<%= RETURNS %> | Streaming response for either Excel or CSV, containing the Report data according to the **include** parameter.
+
+## List Reports
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response:
+
+```json
+{
+    "pageNumber": 1,
+    "totalPages": 1,
+    "totalCount": 2,
+    "data": [
+        {   
+            "id": 6761305928427396,
+            "name": "r1",
+            "accessLevel": "OWNER",
+            "permalink": "https://kbmine.lab.smartsheet.com/dev2/home?lx=zWThapjNSR8LxW_kTdxPhQ"
+        },  
+        {   
+            "id": 4508956358928260,
+            "name": "r2",
+            "accessLevel": "OWNER",
+            "permalink": "https://kbmine.lab.smartsheet.com/dev2/home?lx=33-Y5QkQw6ZNSoApMKntbw"
+        }   
+    ]   
+}
+```
+
+`GET /reports`
+
+Gets the list of all Reports that the User has access to, in alphabetical order, by name.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **includeAll** \(optional\) -- true or false: default is false. 
+  | **pageSize** (optional): Number of Report objects per page.
+  | **page** (optional): Which page number (1-based) to return. If not specified, the default value is 1. If a page number is specified that is greater than the number of total pages, the last page will be returned.
+<%= RETURNS %> | [Report object](#report-object) limited to:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Send Report via Email
 
