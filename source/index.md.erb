@@ -480,6 +480,22 @@ CREATED_DATE | type DATETIME
 CREATED_BY  | type CONTACT_LIST
 AUTO_NUMBER | type TEXT_NUMBER<br/><br/>When a column is of this **systemColumnType**, it will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
 
+## Paging
+
+The Smartsheet API contains a number of *index endpoints* (typically denoted in the documentation with titles beginning with "Get All..." or "List...") which return arrays of objects.
+Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination via
+the following optional query string parameters:
+
+     |     |     |
+-----|-----|-----|
+**pageSize** 	| number  | The maximum number of items to return per page.  Unless otherwise stated for a specific endpoint, defaults to **100** if not specified.
+**page**		| number  | Which page to return.  Defaults to **1** if not specified.
+**includeAll**  | boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
+
+<aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
+
+These index endpoints all return an [IndexResult object](#indexresult-object) which provides paging metadata that can be used to navigate the full set of pages in the result set.
+
 # Getting Started
 
 ## Developer Account
@@ -5357,9 +5373,21 @@ Represents a hyperlink to a URL, a Sheet, or a Report.
 **sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
 **reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
 
+## IndexResult Object
+
+Object returned for all `GET` operations against index endpoints.  This object provides metadata which can be used to perform paging on potentially large data sets.  See the [Paging](#paging) section for more information.
+
+     |     |     |
+-----|-----|-----|
+**pageNumber**	| number | The current page in the full result set that the **data** array represents.
+**pageSize**	| number | The number of items in a page.  Omitted if there is no limit to page size (and hence, all results are included).  Unless otherwise specified, this defaults to **100** for most endpoints.
+**totalPages**	| number | The total number of pages in the full result set.
+**totalCount**	| number | The total number of items in the full result set.
+**data**		| array  | An array of objects representing the current page of data in the result set.
+
 ## Result Object
 
-Object returned for all PUT operations and POST operations (and for some other operations). 
+Object returned for all `PUT` operations and `POST` operations (and for some other operations). 
 
      |     |     |
 -----|-----|-----|
