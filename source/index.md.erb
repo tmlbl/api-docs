@@ -3589,7 +3589,8 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>filters</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the query string.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>[format](#formatting)</li><li>filters</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
 <%= RETURNS %> | [Row object](#row-object)
 
 ## Move Row to Another Sheet
@@ -4542,7 +4543,8 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>filters</li><li>[source](#source-object)</li><li>rowPermalink</li></ul>To include Discussion Attachments, both **attachments** and **discussions** parameters must be present in the query string.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>filters</li><li>[source](#source-object)</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** parameters must be present in the include list.
+  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
   | **columnIds** (optional): a comma-separated list of Column IDs. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
