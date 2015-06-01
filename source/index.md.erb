@@ -25,6 +25,7 @@ search: false
 <% RETURNS = "**Returns**" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
+<% SUPPORTS_BULK = "*This operation supports both single-object and bulk semantics.  See [Bulk Operations](#bulk-operations).*" %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
@@ -503,6 +504,19 @@ Index endpoints all support pagination via the following optional query string p
 Index endpoints all return paged responses via an **IndexResult** object which provides paging metadata that can be used to navigate the full set of pages in the result set:
 
 <%= partial "snippets/indexResult_object.md.erb" %>
+
+## Bulk Operations
+
+Several endpoints support optional bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
+Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorite(s)): you can
+pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
+noted as such in their API reference documentation.
+
+**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
+return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result object](#result-object) returned will omit them.
+
+<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change,
+and existing code will continue to function.</aside>
 
 # Getting Started
 
@@ -2224,12 +2238,16 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 Adds item(s) to the user's list of Favorite items.
 
+<%= SUPPORTS_BULK %>
+
+If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code 1129](#errors) will be returned.  If called with an array, and one or more favorites in the array already exist, they will be ignored and omitted from the response.
+
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | Array of [Favorite objects](#favorite-object), each with the following attributes:<ul><li>type</li><li>objectId</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing an array of [Favorite objects](#favorite-object) that were created.  If any of the objects in the request were already favorites, they will be ignored and omitted from the response.
+<%= REQUEST %> | A single [Favorite object](#favorite-object) or an array, with the following attributes:<ul><li>type</li><li>objectId</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing an a single [Favorite object](#favorite-object) or an array of Favorites (depending on what was passed in) that were created.
 
 
 ## List Favorites
@@ -3034,14 +3052,19 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 
 Adds member(s) to a Group.
 
+<%= SUPPORTS_BULK %>
+
+If called with a single [Group Member object](#group-member-object), and that group member already exists, [error code 1129](#errors) will be returned.  If called with an array,
+and one or more users in the array are already group members, they will be ignored and omitted from the response.
+
 <aside class="notice">This operation is only available to group administrators and system administrators.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | Array of [Group Member objects](#group-member-objects), each limited to the following attribute:<ul><li>email</li></ul>
-<%= RETURNS %> | [Result object](#result-object), containing an array of the [group members](#group-member-objects) that will be added to the group. (Duplicate members will be filtered out.)
+<%= REQUEST %> | A single [Group Member object](#group-member-object) or an array, limited to the following attribute:<ul><li>email</li></ul>
+<%= RETURNS %> | [Result object](#result-object), containing a single [group member](#group-member-object) or array of group members (depending on what was passed in) that will be added to the group.
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -3384,33 +3407,34 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **id** | number | Row ID
 **sheetId** | number | Parent Sheet ID
 **rowNumber** | number | Row number within the sheet (1-based - starts at 1)
+**parentId** | number | If this is a child row, the ID of the parent row, else omitted from response
+**siblingId** | number | The ID of the previous sibling row at the same hierarchical level of this row, if any, else omitted from response
+**version** | number | Number that is incremented every time a sheet is modified
+**permalink** | string | URL to the row on the sheet. Returned if the **include** query parameter contains **rowPermalink**.
+**filteredOut** | boolean | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters".  Contains "true" if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), "false" if the row is not filtered out.
+**inCriticalPath** | boolean | Only returned, with a value of true, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
+**locked** | boolean | True if the row is locked by the sheet owner or the admin. Returned if the row is locked.
+**lockedForUser** | boolean | True if the row is locked for the requesting user. Returned if the row is locked.
+**expanded** | boolean | Flag to indicate if the row is expanded or collapsed
+**accessLevel** | string | User's permission level on the Sheet that contains the Row
+**format** | string | Format descriptor (see [Formatting](#formatting))
+**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))
+**createdAt** | timestamp | Time of creation
+**modifiedAt** | timestamp | Time of last modification
 **cells** | array | Array of [Cell objects](#cell-object)
 **discussions** | array | Array of [Discussion objects](#discussion-object)
 **attachments** | array | Array of [Attachment objects](#attachment-object)
 **columns** | array | Array of [Column objects](#column-object)
-**expanded** | boolean | Flag to indicate if the row is expanded or collapsed
-**createdAt** | timestamp | Time of creation
-**modifiedAt** | timestamp | Time of last modification
-**accessLevel** | string | User's permission level on the Sheet that contains the Row
-**version** | number | Number that is incremented every time a sheet is modified
-**format** | string | Format descriptor (see [Formatting](#formatting))
-**filteredOut** | boolean | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters".  Contains "true" if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), "false" if the row is not filtered out.
-**locked** | boolean | True if the row is locked by the sheet owner or the admin. Returned if the row is locked.
-**lockedForUser** | boolean | True if the row is locked for the requesting user. Returned if the row is locked.
-**permalink** | string | URL to the row on the sheet. Returned if the **include** query parameter contains **rowPermalink**.
 
-### RowWrapper Object
-
-An object for specifying a Row or set of Rows’ expanded state or location within a Sheet.
+**Request attributes** (use these to specify the location at which to create or move a row):
 
      |     |     |
 -----|-----|-----|
-**expanded** | boolean | Flag to indicate if row(s) should be expanded or collapsed
 **toTop** | boolean | Flag to indicate that row(s) should be put at the top of the sheet
-**toBottom** | boolean | Flag to indicate that row(s) should be put at the bottom of the sheet
+**toBottom** | boolean | Flag to indicate that row(s) should be put at the bottom of the sheet, or, if used in conjuction with **parentId**, as the last child of the parent
 **parentId** | number | Puts the row as the first child of this row
-**sibling** | number | Puts the row as the next row at the same hierarchical level of this row
-**rows** | array | Array of [Row objects](#row-object)
+**siblingId** | number | Puts the row as the next row at the same hierarchical level of this row
+**above** | boolean | Optionally used in conjunction with **siblingId** with a value of `true` to put a row above the specified sibling row
 
 ## Add Row(s)
 
@@ -3421,7 +3445,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"toTop":true, "rows":[ {"cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }, {"cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] } ] }'
+-d '[{"toTop":true, "cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }, {"toTop":true, "cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }]'
 ```
 
 > Example Response:
@@ -3431,6 +3455,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
     "message": "SUCCESS",
     "result": [
         {
+            "id": 7670198317672324,
+            "sheetId": 2331373580117892,
+            "rowNumber": 1,
+            "expanded": true,
+            "createdAt": "2013-02-28T17:45:13-08:00",
+            "modifiedAt": "2013-02-28T17:45:13-08:00",
             "cells": [
                 {
                     "columnId": 7960873114331012,
@@ -3443,15 +3473,15 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
                     "type": "TEXT_NUMBER",
                     "value": "New status"
                 }
-            ],
-            "createdAt": "2013-02-28T17:45:13-08:00",
-            "expanded": true,
-            "id": 7670198317672324,
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "rowNumber": 1,
-            "sheetId": 2331373580117892
+            ]
         },
         {
+            "id": 2040698783459204,
+            "sheetId": 2331373580117892,
+            "rowNumber": 2,
+            "expanded": true,
+            "createdAt": "2013-02-28T17:45:13-08:00",
+            "modifiedAt": "2013-02-28T17:45:13-08:00",
             "cells": [
                 {
                     "columnId": 7960873114331012,
@@ -3464,13 +3494,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
                     "type": "TEXT_NUMBER",
                     "value": "New status"
                 }
-            ],
-            "createdAt": "2013-02-28T17:45:13-08:00",
-            "expanded": true,
-            "id": 2040698783459204,
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "rowNumber": 2,
-            "sheetId": 2331373580117892
+            ]
         }
     ],
     "resultCode": 0
@@ -3481,14 +3505,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 Inserts Rows into the Sheet specified in the URL.
 
-<aside class="notice">All rows are added at the same hierarchical level, as specified by the [RowWrapper](#rowwrapper-object). Currently inserting rows with different levels of hierarchy (using a single request) is not supported.</aside>
+<%= SUPPORTS_BULK %>
+
+Currently, if multiple rows are specified in the request, all rows must be inserted at the same location (i.e. the **toTop**, **toBottom**, **parentId**, **siblingId**, and **above** attributes, if specified, must all match).  We may add support for adding rows at different locations in a future update of the API.
+
+<aside class="notice">All rows are added at the same hierarchical level. Currently inserting rows with different levels of hierarchy (using a single request) is not supported.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [RowWrapper object](#rowwrapper-object) that contains the following attributes:<ul><li>One of:<ul><li>**toTop**: Inserts the rows at the top of the sheet.</li><li>**toBottom**: Inserts the rows at the bottom of the sheet</li><li>**parentId**: Inserts the rows as the first child row of the parent. **toBottom** = true can also be set to add the row as the last child of the parent</li><li>**siblingId**: Inserts the row as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**rows**: an array of [Row objects](#row-object), containing at least one item<ul><li>Each Row object may contain a **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null.</li><li>Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul></li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the array of newly inserted [Row objects](#row-object), as well as the new version of the Sheet. 
+<%= REQUEST %> | A single [Row object](#row-object) or an array that contains the following attributes:<ul><li>A location specifier:<ul><li>toTop</li><li>toBottom</li><li>parentId</li><li>siblingId</li><li>above</li></ul><li>format (optional)</li><li>expanded (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the newly inserted [Row object](#row-object) or array of rows (depending on what was passed in), as well as the new version of the Sheet. 
 
 ## Copy Row to Another Sheet
 
@@ -3674,7 +3702,7 @@ Updates cell values in the row, expands/collapses the row, or modifies its posit
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Row object](#row-object) that contains the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>ColumnIds must be valid for the sheet to which the row belongs, and must only be used once per operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the array of [Row objects](#row-object) that have been moved by the operation. 
+<%= RETURNS %> | [Result object](#result-object) containing the array of [Row objects](#row-object) that have been updated and/or moved by the operation. 
 
 ## <%= RELATED %>
 
@@ -3963,7 +3991,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}'
+-d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
 > Example Response:
@@ -3973,6 +4001,11 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 `POST /reports/{reportId}/shares`
 
 Shares a Report with the specified Users and Groups.
+
+<%= SUPPORTS_BULK %>
+
+<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code 1025](#errors) will be returned.  If called with an array, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
+<%= SHARING_ERRORS %>
 
 <%= partial "snippets/share_table.md.erb" %>
 
@@ -4067,7 +4100,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}'
+-d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
 > Example Response:
@@ -4077,6 +4110,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 `POST /sheets/{sheetId}/shares`
 
 Shares a Sheet with the specified Users and Groups.
+
+<%= SUPPORTS_BULK %>
+
+<%= SHARING_ERRORS %>
 
 <%= partial "snippets/share_table.md.erb" %>
 
@@ -4175,7 +4212,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}'
+-d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
 > Example Response:
@@ -4186,12 +4223,16 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 
 Shares a Workspace with the specified Users and Groups.
 
+<%= SUPPORTS_BULK %>
+
+<%= SHARING_ERRORS %>
+
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
-<%= REQUEST %> | [Share object](#share-object) with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of `email` or `groupId` must be specified, but not both.
+<%= REQUEST %> | [Share object](#share-object) with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing a [Share object](#share-object) representing the person or group whose share has just been created.
 
 ### Update Workspace Share
