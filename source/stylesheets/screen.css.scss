@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 @import 'normalize';
 @import 'compass';
 @import 'variables';
@@ -154,13 +154,23 @@ html, body {
     }
   }
 
-
   .tocify-item>a, .toc-footer li {
     padding: 0 $nav-padding 0 $nav-padding;
     display: block;
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  // For truncated TOC entries, show additional text on hover
+  .tocify-item>a:hover, .toc-footer li:hover {
+    text-overflow: inherit;
+    overflow-x: visible;
+  }
+
+  // Change text color on hover
+  .tocify-hover {
+    color: $nav-hover-text;
   }
 
   // The Table of Contents is composed of multiple nested
@@ -189,22 +199,6 @@ html, body {
 
   // Subheaders are the submenus that slide open
   // in the table of contents.
-  .tocify-subheader_ORIG {
-    display: none; // tocify will override this when needed
-    background-color: $nav-subitem-bg;
-    font-weight: 500;
-    .tocify-item>a {
-      padding-left: $nav-padding + $nav-indent;
-      font-size: 12px;
-    }
-
-    // for embossed look:
-    @include embossed-bg;
-    &>li:last-child {
-      box-shadow: none; // otherwise it'll overflow out of the subheader
-    }
-  }
-  
   .tocify-subheader {
     .tocify-item>a {
 		  // Styling here for a level 2 nesting. For example -> 
@@ -227,9 +221,9 @@ html, body {
   }
 
   .toc-footer {
-    padding: 1em 0;
-    margin-top: 1em;
-    border-top: 1px solid $nav-footer-border-color;
+    //padding: 1em 0;
+    //margin-top: 1em;
+    //border-top: 1px solid $nav-footer-border-color;
 
     li,a {
       color: $nav-text;
@@ -237,23 +231,43 @@ html, body {
     }
 
     a:hover {
-      text-decoration: underline;
+      //text-decoration: underline;
     }
 
     li {
-      font-size: 0.8em;
+      font-size: 12px; /*0.8em;*/
       line-height: 1.7;
       text-decoration: none;
     }
   }
 
   // Section headers
-  .tocify-item[data-unique="api-reference"], .tocify-item[data-unique="additional-reference"] {
+  .tocify-item[data-unique="api-reference"], .tocify-item[data-unique="smartsheet-api-2.0"] {
 	text-transform: uppercase;
 	margin-top: 1em;
 	margin-bottom: 0.5em;
 	border-bottom: 1px solid $nav-footer-border-color;
 	font-weight: bold;
+  }
+
+  .tocify-item[data-unique="api-reference"]:hover, .tocify-item[data-unique="smartsheet-api-2.0"]:hover, .tocify-item[data-unique="additional-reference"]:hover, .tocify-item[data-unique="developer-resources"]:hover {
+	color: $nav-text;
+  }
+
+ .tocify-item[data-unique="additional-reference"] {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px dashed $nav-footer-border-color;
+	font-weight: bold;
+  }
+
+  .tocify-item[data-unique="developer-resources"] {
+    text-transform: uppercase;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px solid $nav-footer-border-color;
+	font-weight: bold;
+    background-color: $nav-dev-resources-bg;
   }
 }
 
@@ -561,7 +575,12 @@ html, body {
     
   .customTOCSectionHeading {
 	font-weight: bold;
-	font-size: 40px;
+	font-size: 32px;
+  }
+
+  .customTOCSectionHeading_DevResources {
+	font-size: 1px;
+    color: #ffffff;
   }
   
 }
