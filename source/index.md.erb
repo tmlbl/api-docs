@@ -1038,6 +1038,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 
 Attaches a file to the Comment.
 
+<% NEW_ATTACHMENT = "This operation will always create a new attachment.  To upload a new version of the same attachment, use the [Attach New Version](#attach-new-version) operation." %>
+
+<%= NEW_ATTACHMENT %>
+
 <%= partial "snippets/attachFile_table.md.erb" %>
 
 ## Attach File to Row
@@ -1070,6 +1074,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 
 Attaches a file to the Row.
 
+<%= NEW_ATTACHMENT %>
+
 <%= partial "snippets/attachFile_table.md.erb" %>
 
 ## Attach File to Sheet 
@@ -1101,6 +1107,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 `POST /sheets/{sheetId}/attachments`
 
 Attaches a file to the Sheet.
+
+<%= NEW_ATTACHMENT %>
 
 <%= partial "snippets/attachFile_table.md.erb" %>
 
@@ -1381,7 +1389,15 @@ Gets a list of all Attachments that are on the Row, including Row and Discussion
 
 ### Attach New Version
 
-> Example Request:
+> Example Request (multipart):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X POST \
+-F "file=@ProgressReport.docx;type=application/msword"
+```
+> Example Request (simple):
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
@@ -1413,13 +1429,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 Uploads a new version of a file to a Sheet or Row.
 
-     |     |
------|-----|
-<%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Content-Disposition**<br/>**Content-Type**<br/>**Content-Length**
-<%= RETURNS %> | [Result object](#result-object) containing [Attachment object](#attachment-object) for newly created attachment
-
 <aside class="notice">Uploading new versions is not supported for attachments on Comments or for URL attachments.</aside>
+
+<%= partial "snippets/attachFile_table.md.erb" %>
 
 ### Delete All Versions
 
