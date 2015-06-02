@@ -4395,23 +4395,31 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 -----|-----|-----|
 **id** | number | Attachment ID
 **name** | string | Sheet name
-**columns** | array | An array of [Column objects](#column-object)
-**rows** | array | An array of [Row objects](#row-object)
-**accessLevel** | string | User's permissions on the Sheet
-**discussions** | array | An array of [Discussion objects](#discussion-object)
-**attachments** | array | An array of [Attachment objects](#attachment-object)
-**effectiveAttachmentOptions** | array | An array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
-**readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
-**createdAt** | timestamp | Time that the Sheet was created
-**modifiedAt** | timestamp | Time that the Sheet was modified
-**permalink** | string | Direct URL to the Sheet
-**ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
-**dependenciesEnabled** | boolean | Flag to indicate that dependencies are enabled
-**favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
-**showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
+**accessLevel** | string | User's permissions on the Sheet
+**effectiveAttachmentOptions** | array | An array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
+**readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
+**ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
+**dependenciesEnabled** | boolean | Flag to indicate that dependencies are enabled
+**resourceManagementEnabled** | boolean | Flag to indicate that resource management is enabled
+**favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
+**showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
+**userSettings** | SheetUserSettings | A [Sheet User Settings object](#sheet-user-settings-object) containing the current user's sheet-specific settings.
+**permalink** | string | Direct URL to the Sheet
 **source** | Source | A [Source object](#source-object) indicating the Sheet or Template from which this sheet was created
+**createdAt** | timestamp | Time that the Sheet was created
+**modifiedAt** | timestamp | Time that the Sheet was modified
+**columns** | array | An array of [Column objects](#column-object)
+**rows** | array | An array of [Row objects](#row-object)
+**discussions** | array | An array of [Discussion objects](#discussion-object)
+**attachments** | array | An array of [Attachment objects](#attachment-object)
+
+Request-only attributes (i.e. never returned in a response):
+
+     |     |     |
+-----|-----|-----|
+**fromId** | number | The ID of the Sheet or Template from which to create the Sheet
 
 ### Sheet Publish Object 
 
@@ -4425,6 +4433,15 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **readOnlyFullUrl** | string | URL for Read-Only Full
 **readWriteUrl** | string | URL for Edit by Anyone
 **icalUrl** | string | URL for iCal
+
+### Sheet User Settings Object
+
+Represents individual user settings for a specific sheet.  User settings may be updated even on sheets where the current user only has read access (e.g. viewer permissions or a read-only sheet).
+
+     |     |     |
+-----|-----|-----|
+**criticalPathEnabled** | boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
+
 
 ### Source Object
 
@@ -4886,7 +4903,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"name":"New Sheet Name"}'
+-d '{"name":"New Sheet Name", "userSettings": {"criticalPathEnabled": true}}'
 ```
 
 > Example Response:
@@ -4895,9 +4912,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 {
     "message": "SUCCESS",
     "result": {
-        "accessLevel": "OWNER",
         "id": 7960873114331012,
-        "name": "New Sheet Name"
+        "name": "New Sheet Name",
+        "accessLevel": "OWNER",
+		"userSettings": {
+			"criticalPathEnabled": true
+		},
+        "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=RE8LkzA48kPRWTzcgEYOga"
     },
     "resultCode": 0
 }
@@ -4905,15 +4926,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 
 `PUT /sheets/{sheetId}`
 
-Updates (renames) the Sheet specified in the URL.
- 
+Updates the Sheet specified in the URL.
+
 To modify Sheet contents, see [Add Row(s)](#add-row(s)), [Update Row(s)](#update-row(s)), and [Update Column](#update-column).
 
+This operation can be used to update an individual user's sheet settings.  If the request body contains only the **userSettings** attribute, this operation may be performed even if the user
+only has read-only access to the sheet (i.e. the user has viewer permissions, or the sheet is read-only).
+ 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attribute:<ul><li>name (string)</li></ul>
+<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [Sheet User Settings object](#sheet-user-settings-object) for updating this user's settings for the sheet</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet
 
 ## <%= RELATED %>
