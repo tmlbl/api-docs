@@ -5309,8 +5309,9 @@ Removes a User from an organization. User is transitioned to a free collaborator
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **transferTo** (optional): ID of the User to whom the sheets should be transferred.  If not specified, sheets will not be transferred.
-  | **removeFromSharing** (optional): Set to **true** to remove the user from sharing for all sheets/workspaces in the organization. If not specified, User will not be removed from sharing.
+<%= PARAMETERS %> | **transferTo** (required if user owns groups): The ID of the user to transfer ownership to.  If the user being deleted owns groups, they will be transferred to this user.  If the user owns sheets, *and* **transferSheets** is true, then the deleted user's sheets will be transferred to this user.
+  | **transferSheets** (optional): If `true`, and **transferTo** is specified, the deleted user's sheets will be transferred.  Else, sheets will not be transferred.  Defaults to `false`.
+  | **removeFromSharing** (optional): Set to `true` to remove the user from sharing for all sheets/workspaces in the organization. If not specified, User will not be removed from sharing.
 <%= RETURNS %> | [Result object](#result-object)
 
 ## Update User
