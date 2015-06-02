@@ -1,7 +1,6 @@
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Content-Type**: multipart/form-data 
-**Request Part:<br/>discussion** | **Content-Disposition**: form-data; name=discussion<br/>**Content-Type**: application/json<br/>Attachment \(NOT A HEADER FIELD\): [Discussion object](#discussion-object) with the following attributes:<ul><li>title (string)</li><li>comment ([Comment object](#comment-object))</li></ul>
-**Request Part:<br/>file**<br/>(OPTIONAL) | **Content-Disposition**: form-data; name=file; filename=attachment_name<br/>**Content-Type**: application/octet-stream<br/>Attachment \(NOT A HEADER FIELD\): attachment content 
+<%= HEADERS %> | <%= HEADER_AUTH %><br/>See [Multipart Uploads](#multipart-uploads) for required multipart headers.
+**Parts** | Request should contain parts with the following names:<ul><li>**discussion**: JSON [Discussion object](#discussion-object) with the following attributes:<ul><li>title (string)</li><li>comment ([Comment object](#comment-object))</li></ul></li><li>**file**: (optional) file to attach to the new comment</li></ul>See [Multipart Uploads](#multipart-uploads) for more information on parts.
 <%= RETURNS %> | [Result object](#result-object) containing a [Discussion object](#discussion-object) for the newly created Discussion which contains a [Comment object](#comment-object) for the initial discussion comment, which in turn contains an [Attachment object](#attachment-object) for the attachment.
