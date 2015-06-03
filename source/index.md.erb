@@ -26,6 +26,7 @@ search: false
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% SUPPORTS_BULK = "*This operation supports both single-object and bulk semantics.  See [Bulk Operations](#bulk-operations).*" %>
+<% SUPPORTS_PAGING = "*This operation supports additional query string parameters for paging.  See [Paging](#paging).*" %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
@@ -1283,6 +1284,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 
 Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion level Attachments.
 
+<%= SUPPORTS_PAGING %>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
@@ -1331,6 +1334,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 Gets a list of all Attachments that are in the Discussion.
 
+<%= SUPPORTS_PAGING %>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
@@ -1378,6 +1383,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 `GET /sheets/{sheetId}/rows/{rowId}/attachments`
 
 Gets a list of all Attachments that are on the Row, including Row and Discussion level Attachments.
+
+<%= SUPPORTS_PAGING %>
 
      |     |
 -----|-----|
@@ -1502,6 +1509,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 Gets a list of all versions of the given Attachment ID, in order from newest to oldest.
 
+<%= SUPPORTS_PAGING %>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
@@ -1603,6 +1612,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 `GET /sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history`
 
 Gets the cell modification history. 
+
+<%= SUPPORTS_PAGING %>
 
 <aside>This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
 
@@ -1898,6 +1909,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 `GET /sheets/{sheetId}/columns`
 
 Gets a list of all Columns belonging to the Sheet specified in the URL.
+
+<%= SUPPORTS_PAGING %>
 
      |     |
 -----|-----|
@@ -2243,6 +2256,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 
 Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
 
+<%= SUPPORTS_PAGING %>
+
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
 ## Get Discussion
@@ -2299,6 +2314,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?in
 `GET /sheets/{sheetId}/rows/{rowId}/discussions`
 
 Gets a list of all Discussions associated with the specified Row.
+
+<%= SUPPORTS_PAGING %>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -2404,6 +2421,8 @@ curl https://api.smartsheet.com/2.0/favorites \
 `GET /favorites`
 
 Gets a list of all of the user's Favorite items.
+
+<%= SUPPORTS_PAGING %>
 
      |     |
 -----|-----|
@@ -2807,6 +2826,8 @@ curl https://api.smartsheet.com/2.0/home/folders \
 
 Gets a list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
 
+<%= SUPPORTS_PAGING %>
+
 <%= partial "snippets/listFolders_table.md.erb" %>
 
 ### List Folders (Folder)
@@ -2827,6 +2848,8 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 
 Gets a list of the top-level child Folders within the specified Folder.
 
+<%= SUPPORTS_PAGING %>
+
 <%= partial "snippets/listFolders_table.md.erb" %>
 
 ### List Folders (Workspace)
@@ -2846,6 +2869,8 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 `GET /workspaces/{workspaceId}/folders`
 
 Gets a list of the top-level child Folders within the specified Workspace.
+
+<%= SUPPORTS_PAGING %>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -3065,6 +3090,8 @@ curl https://api.smartsheet.com/2.0/groups \
 `GET /groups`
 
 Gets the list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
+
+<%= SUPPORTS_PAGING %>
 
      |     |
 -----|-----|
@@ -3453,14 +3480,20 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 #
 ```
 
+`GET /reports/{reportId}`
+
+Gets the Report in the format specified, based on the Report ID.  
+
+<aside class="notice">Note: For Excel format, only .xls output format is supported at this time.</aside>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Accept**: application/vnd.ms-excel or text/csv
+<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Accept**: `application/vnd.ms-excel` or `text/csv`
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
   | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
-<%= RETURNS %> | Streaming response for either Excel or CSV, containing the Report data according to the **include** parameter.
+<%= RETURNS %> | The file in either Excel or CSV format, containing the Report data according to the **include** parameter.
 
 ## List Reports
 
@@ -3498,14 +3531,13 @@ curl https://api.smartsheet.com/2.0/reports -H "Authorization: Bearer ACCESS_TOK
 
 Gets the list of all Reports that the User has access to, in alphabetical order, by name.
 
+<%= SUPPORTS_PAGING %>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **includeAll** \(optional\) -- true or false: default is false. 
-  | **pageSize** (optional): Number of Report objects per page.
-  | **page** (optional): Which page number (1-based) to return. If not specified, the default value is 1. If a page number is specified that is greater than the number of total pages, the last page will be returned.
-<%= RETURNS %> | [Report object](#report-object) limited to:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Report objects](#report-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Send Report via Email
 
@@ -4101,6 +4133,8 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 
 Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
+<%= SUPPORTS_PAGING %>
+
 <%= partial "snippets/listShares_table.md.erb" %>
 
 ### Share Report
@@ -4209,6 +4243,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 `GET /sheets/(sheetId)/shares`
 
 Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
+
+<%= SUPPORTS_PAGING %>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -4321,6 +4357,8 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 `GET /workspaces/(workspaceId)/shares`
 
 Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
+
+<%= SUPPORTS_PAGING %>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -4757,9 +4795,10 @@ Gets the Sheet in the format specified, based on the Sheet ID.
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/>Accept -- must be set to one of the following values:<ul><li>application/pdf</li><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
+<%= HEADERS %> | <%= HEADER_AUTH %>
+ | **Accept** -- must be set to one of the following values:<ul><li>application/pdf</li><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
 <%= PARAMETERS %> | **paperSize** (optional) -- applies to PDF only, must be one of:<ul><li>LETTER (default)</li><li>LEGAL</li><li>WIDE (same as 11x17)</li><li>ARCHD</li><li>A4</li><li>A3</li><li>A2</li><li>A1</li><li>A0</li></ul>
-<%= RETURNS %> | The file in either Excel or PDF format.
+<%= RETURNS %> | The file in either Excel, PDF, or CSV format.
 
 ## List All Org Sheets
 
@@ -4802,6 +4841,8 @@ curl https://api.smartsheet.com/2.0/sheets \
 `GET /sheets`
 
 Gets the list of all Sheets that the User has access to, in alphabetical order, by name.
+
+<%= SUPPORTS_PAGING %>
 
      |     |
 -----|-----|
@@ -4996,6 +5037,8 @@ curl https://api.smartsheet.com/2.0/templates/public \
 
 Gets the list of public Templates to which the user has access.
 
+<%= SUPPORTS_PAGING %>
+
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
 ## List User-created Templates
@@ -5014,6 +5057,8 @@ curl https://api.smartsheet.com/2.0/templates \
 `GET /templates`
 
 Gets the list of user-created Templates to which the user has access.
+
+<%= SUPPORTS_PAGING %>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -5297,6 +5342,8 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 
 Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
 
+<%= SUPPORTS_PAGING %>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_USERS
@@ -5548,6 +5595,8 @@ curl https://api.smartsheet.com/2.0/workspaces \
 `GET /workspaces`
 
 Gets the list of Workspaces to which the user has access.
+
+<%= SUPPORTS_PAGING %>
 
      |     |
 -----|-----|
