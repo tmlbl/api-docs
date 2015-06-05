@@ -259,7 +259,7 @@ The full list of error codes is below:
 1082 | You cannot add options to the given column {0} because it is not a PICKLIST.
 1083 | Auto number formatting cannot be added to a column {0}
 1084 | The auto number format is invalid.
-1085 | The column specified is either a calendar, Gantt, or dependency column and the type cannot be changed.
+1085 | To change this column's type you must first disable Dependencies for this sheet.
 1086 | Google was not able to verify your access.
 1087 | The column specified is used in a conditional formatting rule, so the column cannot be deleted and its type cannot be changed.
 1088 | Invalid length for concatenated auto number format. Concatenated format is {0}, with a length of {1}. Must be less than or equal to 40.
@@ -1952,7 +1952,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 
 Updates properties of the column, moves the column, and/or renames the column.
 
-<aside class="notice">You cannot change the type of a Primary column, or of any special calendar/Gantt columns. Also, if the column type is changed,  all cells in the column will be converted to the new column type.  Type is optional when moving or renaming, but required when changing type or dropdown values.</aside>
+**Notes:**
+
+* You cannot change the type of a Primary column.
+* While dependencies are enabled on a sheet, you can't change the type of any special calendar/Gantt columns.
+* If the column type is changed, all cells in the column will be converted to the new column type.
+* Type is optional when moving or renaming, but required when changing type or dropdown values.
 
      |     |
 -----|-----|
