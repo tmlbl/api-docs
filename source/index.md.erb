@@ -26,7 +26,17 @@ search: false
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-<aside class="notice">This documentation applies to Smartsheet API 2.0. For Smartsheet API 1.1 documentation, see <a href="https://www.smartsheet.com/developers/api-documentation">here</a></aside>
+<aside class="notice">
+	<b>Smartsheet API 1.1 Deprecation</b><br/><br/>
+	<p>
+		Version 1.1 of the Smartsheet API has been officially deprecated as of June 20, 2015 (coinciding with the release of Smartsheet API 2.0). 
+		Any new development from that date forward should use Smartsheet API 2.0.
+	</p>
+	<p>
+		Smartsheet API 1.1 will continue to be supported (and documented) until <b>June 30, 2016</b>, at which time it will be permanently disabled. 
+		See the Smartsheet API 2.0 Release Notes for information about migrating from version 1.1 to version 2.0 of the Smartsheet API.
+	</p>
+</aside>
 
 # Overview
 
@@ -128,6 +138,21 @@ See [Direct API Access](#direct-api-access) for more information on user-generat
 
 Third-party developers are able to build applications that can acquire Access Tokens using OAuth 2.0. 
 See [Third Party App Development](#third-party-app-development) for more information.
+
+## Access Levels
+
+Throughout the API we have "Share" objects that represent the shared user's access level. 
+Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
+This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
+The **accessLevel** attribute has one of the following values:
+
+     |     |
+-----|-----|
+VIEWER | The user has read-only access to the resource.
+EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
+EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
+ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
+OWNER | The user has complete control over the resource.
 
 ## Rate Limiting
 
@@ -332,21 +357,6 @@ The full list of error codes is below:
 4002 | Server timeout exceeded. Request has failed.
 4003 | Rate limit exceeded.
 5xxx | Please contact customer support.
-
-## Access Levels
-
-Throughout the API we have "Share" objects that represent the shared user's access level. 
-Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
-This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
-The **accessLevel** attribute has one of the following values:
-
-     |     |
------|-----|
-VIEWER | The user has read-only access to the resource.
-EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
-EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
-ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
-OWNER | The user has complete control over the resource.
 
 ## About Columns
 
