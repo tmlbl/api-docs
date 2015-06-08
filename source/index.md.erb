@@ -521,7 +521,7 @@ and existing code will continue to function.</aside>
 ## Dates and Times
 
 The Smartsheet API returns all dates and times in the [UTC](http://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain using [/me](#me).
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain using [/me](#get-current-user).
 
 You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
 This flag works for any API request.
@@ -2655,11 +2655,10 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **name** | string | Folder name
 **favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | Direct URL to Folder
-**sheets** | array | Array of [Sheet](#sheets) objects
-**folders** | array | Array of [Folder](#folders) objects
-**reports** | array | Array of [Report](#reports) objects
-**templates** | array | Array of [Template](#templates) objects
-**workspaces** | array | Array of [Workspace](#workspaces) objects
+**sheets** | array | Array of [Sheet objects](#sheet-object)
+**folders** | array | Array of [Folder objects](#folder-object)
+**reports** | array | Array of [Report objects](#report-object)
+**templates** | array | Array of [Template objects](#template-object)
 
 ## Copy Folder
 
@@ -4439,7 +4438,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
 **accessLevel** | string | User's permissions on the Sheet
-**effectiveAttachmentOptions** | array | An array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
+**effectiveAttachmentOptions** | array | Array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
 **readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
 **ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
 **dependenciesEnabled** | boolean | Flag to indicate that dependencies are enabled
@@ -4451,10 +4450,10 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **source** | Source | A [Source object](#source-object) indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
 **modifiedAt** | timestamp | Time that the Sheet was modified
-**columns** | array | An array of [Column objects](#column-object)
-**rows** | array | An array of [Row objects](#row-object)
-**discussions** | array | An array of [Discussion objects](#discussion-object)
-**attachments** | array | An array of [Attachment objects](#attachment-object)
+**columns** | array | Array of [Column objects](#column-object)
+**rows** | array | Array of [Row objects](#row-object)
+**discussions** | array | Array of [Discussion objects](#discussion-object)
+**attachments** | array | Array of [Attachment objects](#attachment-object)
 
 Request-only attributes (i.e. never returned in a response):
 
@@ -5439,6 +5438,8 @@ Updates the User specified in the URL.
 **permalink** | string | Direct URL to the Workspace
 **sheets** | array |  Array of [Sheet objects](#sheet-object)
 **folders** | array |  Array of [Folder objects](#folder-object)
+**reports** | array | Array of [Report objects](#report-object)
+**templates** | array | Array of [Template objects](#template-object)
 
 ## Copy Workspace 
 
