@@ -1586,15 +1586,16 @@ A collection of Cells comprises each Row in a Sheet.
 
      |     |     |
 -----|-----|-----|
-**type** | string | See type definition on the [Column object](#column-object).
-**value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell
-**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI
 **columnId** | number | The ID of the column that the cell is located in
+**columnType** | string | See type definition on the [Column object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
+**value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
+**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
+**formula** | string | The  formula for a cell, if set
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
-**linksOutToCells** | array | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
-**formula** | string | The  formula for a cell, if set
-**format** | string | The format descriptor (see [Formats](#formatting))
+**linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
+**format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
+**conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formats](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
 
 **Request-only attributes** (i.e. never returned in a response):
 
@@ -1609,7 +1610,7 @@ Extends the [Cell object](#cell-object).
      |     |     |
 -----|-----|-----|
 **modifiedAt** | timestamp | The datetime for when the change was made to the cell
-**modifiedBy** | User | [User object](#user-object) containing the name and email of the User that made the change
+**modifiedBy** | [User](#user-object) | User object containing the name and email of the User that made the change
 
 ## Get Cell History
 
@@ -1725,19 +1726,19 @@ A Column is a component of a Sheet.
 **hidden** | boolean | Flag indicating whether the column is hidden
 **symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
-**autoNumberFormat** | AutoNumberFormat | Present when systemColumnType == AUTO_NUMBER
+**autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
 **width** | number | Display width of the column in pixels
 **format** | string | [Format Descriptor object](#format-descriptor)
-**filter** | [Filter](filter-object) | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) or [Get Column](#get-column) response if the **include** query string parameter specifies "filters" and the column has a filter applied to it
+**filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and the column has a filter applied to it.
 
 ### Criteria Object
 
      |     |     |
 -----|-----|-----|
 **operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
-**value1** | object | Optional. Present if a custom filter criteria's operator has one or more arguments.
-**value2** | object | Optional.  Present if a custom filter criteria's operator has two arguments.
+**value1** | string or number | Optional. Present if a custom filter criteria's operator has one or more arguments.
+**value2** | string or number | Optional.  Present if a custom filter criteria's operator has two arguments.
 
 ### Filter Object
 
@@ -1747,8 +1748,8 @@ Smartsheet users can define and save personal column filters on sheets they can 
 -----|-----|-----|
 **type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
 **excludeSelected** | boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
-**values** | array | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
-**criteria** | array | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
+**values** | object[] containing strings, numbers, and booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
+**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
 
 ## Add Column(s)
 
@@ -2029,10 +2030,10 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 -----|-----|-----|
 **id** | number | Comment ID
 **text** | string | Comment body
-**createdBy** | User | [User object](#user-object) containing name and email of the Comment's author
+**createdBy** | [User](#user-object) | User object containing name and email of the Comment's author
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
-**attachments** | array | Array of [Attachment objects](#attachment-object)
+**attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects
 **discussionId** | number (optional) | Discussion ID
 
 ## Add Comment
@@ -3605,21 +3606,21 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **parentId** | number | If this is a child row, the ID of the parent row, else omitted from response
 **siblingId** | number | The ID of the previous sibling row at the same hierarchical level of this row, if any, else omitted from response
 **version** | number | Number that is incremented every time a sheet is modified
-**permalink** | string | URL to the row on the sheet. Returned if the **include** query parameter contains **rowPermalink**.
-**filteredOut** | boolean | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters".  Contains "true" if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), "false" if the row is not filtered out.
-**inCriticalPath** | boolean | Only returned, with a value of true, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
-**locked** | boolean | True if the row is locked by the sheet owner or the admin. Returned if the row is locked.
-**lockedForUser** | boolean | True if the row is locked for the requesting user. Returned if the row is locked.
+**permalink** | string | URL to the row on the sheet.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **rowPermalink**.
+**filteredOut** | boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
+**inCriticalPath** | boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
+**locked** | boolean | `true` if the row is locked by the sheet owner or the admin. Returned if the row is locked.
+**lockedForUser** | boolean | `true` if the row is locked for the requesting user. Returned if the row is locked.
 **expanded** | boolean | Flag to indicate if the row is expanded or collapsed
 **accessLevel** | string | User's permission level on the Sheet that contains the Row
-**format** | string | Format descriptor (see [Formatting](#formatting))
-**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))
+**format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
+**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
-**cells** | array | Array of [Cell objects](#cell-object)
-**discussions** | array | Array of [Discussion objects](#discussion-object)
-**attachments** | array | Array of [Attachment objects](#attachment-object)
-**columns** | array | Array of [Column objects](#column-object)
+**cells** | [Cell](#cell-object)[] | Array of Cell objects belonging to the row
+**discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **discussions**.
+**attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **attachments**.
+**columns** | [Column](#column-object)[] | Array of Column objects.<br/>Only returned if the [Get Row](#get-row) **include** query string parameter contains **columns**.
 
 **Request attributes** (use these to specify the location at which to create or move a row):
 
@@ -3815,8 +3816,8 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>[format](#formatting)</li><li>filters</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
-  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which will add a columns array which includes all the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>**nonexistentCells**: omit cells which have never contained any data</li></ul>
 <%= RETURNS %> | [Row object](#row-object)
 
 ## Move Row(s) to Another Sheet
@@ -3918,6 +3919,20 @@ For details about working with a Row's cells, see [Cells](#cells).
 ### Row Discussions
 
 For details about working with a Row's discussions, see [Discussions](#discussions).
+
+### Row Include Flags
+
+Endpoints which returns rows (e.g. [get sheet](#get-sheet), [get row](#get-row)) support the optional **include** query string parameter, whose value is a
+comma-delimited list of include flags which if specified, will add additional attributes to the returned [Row objects](#row-object).
+
+Include Flag | Notes |
+-------------|-------|
+**discussions**	| Includes row **discussions** array.<br/>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.
+**attachments**	| Includes row **attachments** array.<br/>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.
+**format**		| Includes **format** attribute on the row and its cells.  See [Formatting](#formatting).
+**filters**		| Includes **filteredOut** attribute indicating if the row should be displayed or hidden according to the sheet's filters.
+**rowPermalink**| Includes **permalink** attribute that contains a deep link to the row in the Smartsheet application.
+**columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
 
 # Searching
 
@@ -4489,15 +4504,15 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **resourceManagementEnabled** | boolean | Flag to indicate that resource management is enabled
 **favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
 **showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
-**userSettings** | SheetUserSettings | A [SheetUserSettings object](#sheetusersettings-object) containing the current user's sheet-specific settings.
+**userSettings** | [SheetUserSettings](#sheetusersettings-object) | A SheetUserSettings object containing the current user's sheet-specific settings.
 **permalink** | string | Direct URL to the Sheet
-**source** | Source | A [Source object](#source-object) indicating the Sheet or Template from which this sheet was created
+**source** | [Source](#source-object) | A Source object indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
 **modifiedAt** | timestamp | Time that the Sheet was modified
-**columns** | array | Array of [Column objects](#column-object)
-**rows** | array | Array of [Row objects](#row-object)
-**discussions** | array | Array of [Discussion objects](#discussion-object)
-**attachments** | array | Array of [Attachment objects](#attachment-object)
+**columns** | [Column](#column-object)[] | Array of Column objects
+**rows** | [Row](#row-object)[] | Array of Row objects
+**discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
+**attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
 
 Request-only attributes (i.e. never returned in a response):
 
@@ -4756,7 +4771,7 @@ The following actions increment Sheet version:
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | A simple object with only a **version** attribute
 
-## Get Sheet (incl. Rows)
+## Get Sheet
 
 > Example Request:
 
@@ -4807,8 +4822,8 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>filters</li><li>[source](#source-object)</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** parameters must be present in the include list.
-  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.</li>
+  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>**nonexistentCells**: omit cells which have never contained any data</li></ul>
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
   | **columnIds** (optional): a comma-separated list of Column IDs. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
