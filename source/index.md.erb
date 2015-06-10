@@ -363,117 +363,173 @@ The full list of error codes is below:
 4003 | Rate limit exceeded.
 5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.
 
-## About Columns
+## Column Types
 
-### Column Types
+Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
 
-Smartsheet has 5 basic column types: 
-<ul>
-<li>Text/Number</li>
-<li>Contact List</li>
-<li>Date</li>
-<li>Dropdown List (custom, RYG, Harvey Ball, Priority types, etc.)</li>
-<li>Checkbox (checkbox, star, and flag types)</li>
-</ul>
+Column Type | Column.type Value | Notes |
+------------|--------------------------|-------|
+Text/Number		| TEXT_NUMBER	|
+Contact List	| CONTACT_LIST	|
+Date			| DATE			|
+Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
+Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
+Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
+Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application whenconfiguring a project sheet.
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
 
-These types are referred to as  the following constant values in the API: 
-<ul>
-<li>TEXT_NUMBER</li>
-<li>CONTACT_LIST</li>
-<li>DATE</li>
-<li>PICKLIST</li>
-<li>CHECKBOX</li>
-</ul>
- 
-In addition to the column types, there are symbols available within Smartsheet. These are simply specialized PICKLIST or CHECKBOX types. 
+<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
 
-The available CHECKBOX symbols are:
-<ul>
-<li>FLAG</li>
-<li>STAR</li>
-</ul>
+### Symbol Columns
 
-The available PICKLIST symbols are:
-<ul>
-<li>HARVEY_BALLS</li>
-<li>RYG</li>
-<li>PRIORITY</li>
-<li>PRIORITY_HML</li>
-<li>DECISION_SYMBOLS</li>
-<li>DECISION_SHAPES</li>
-<li>VCR</li>
-<li>RYGB</li>
-<li>RYGG</li>
-<li>WEATHER</li>
-<li>PROGRESS</li>
-<li>ARROWS_3_WAY</li>
-<li>ARROWS_4_WAY</li>
-<li>ARROWS_5_WAY</li>
-<li>DIRECTIONS_3_WAY</li>
-<li>DIRECTIONS_4_WAY</li>
-<li>SKI</li>
-<li>SIGNAL</li>
-<li>STAR_RATING</li>
-<li>HEARTS</li>
-<li>MONEY</li>
-<li>EFFORT</li>
-<li>PAIN</li>
-</ul>
+In addition to the basic column types above, the Smartsheet app also supports columns that display symbols. These are simply specialized columns of type PICKLIST or CHECKBOX,
+whose **[symbol](#column-object)** attribute is set to one of the values below:
+
+**Symbols for CHECKBOX columns:**
+
+<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
+
+<%= CHECKBOX_SYMBOL_LIST %>
+
+**Symbols for PICKLIST columns:**
+
+<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
+
+<%= PICKLIST_SYMBOL_LIST %>
  
 <aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
 
-### Strict vs. Lenient Parsing
+### System Columns
 
-Within the Smartsheet web application, the column types are flexible and generally, any column can contain any type of data.
-This allows for a very flexible UI and is one of the key benefits to using Smartsheet. This flexibility, however, poses a
-challenge for an API. Being too flexible will likely result in unexpected behavior. For instance, if you write code to post
-a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
+In addition to the standard column types and symbols, Smartsheet has a number of *system columns*, which represent data that is
+filled in by Smartsheet and whose values cannot be changed by the user. These columns are represented with standard
+[column types](#column-types), with the **[Column.systemColumnType](#column-object)** attribute set to one of the following:
+
+Column.systemColumnType Value | Column Type | Notes
+-----|-----|-----|
+MODIFIED_DATE | DATETIME
+MODIFIED_BY | CONTACT_LIST
+CREATED_DATE | DATETIME
+CREATED_BY  | CONTACT_LIST
+AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
+
+## Cell Values
+
+Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either
+a value specific to the column type (e.g. dates, checkboxes, symbols, etc.) or a free-form text value.  This allows for a very
+flexible UI and is one of the key benefits to using Smartsheet.
+
+<aside class="notice">See the <a href="#column-types">Column Types</a> section for information on the different column types.</aside>
+
+### Cell Value Representation
+
+[Cell objects](#cell-object) retrieved through the Smartsheet API's have two attributes representing cell values: **Cell.value**, and
+**Cell.displayValue**.  An empty cell is always represented by **null** for both.
+
+**Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
+be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
+like 1234.5678, but its **displayValue** would be "$1,234.57".
+
+**Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **boolean**,
+depending on the column type.  Complex types are represented as strings, formatted as described below:
+
+<% PROJECT_COLUMN_HELP_URL = "http://help.smartsheet.com/customer/portal/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
+
+| Column Type | Possible Types for Cell.value | Returns Cell.displayValue?
+|-------------|-------------------------------|---------------------------
+| TEXT_NUMBER	| **string**: free-form text values<br/>**number**: numeric values											| Yes: same as **value** for strings; for number values, the number with formatting applied.
+| CONTACT_LIST	| **string**: an email address representing a contact, or a free-form text value.							| Yes: same as **value** for free-form strings; for contacts, the contact's name if any, else their email address.
+| DATE			| **string**: a date in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+| PICKLIST		| **string**: one of the picklist's column options, or a free-form text value.<br/>**number**: numeric values| Yes: same as **value** for strings; for number values, the number with formatting applied.
+| CHECKBOX		| **boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
+| DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
+| PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
+| ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+
+### Cell Value Parsing
+
+The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
+for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
+to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
 as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
 as a Text value? Probably not.
  
-To address this problem, Smartsheet has employed a simple scheme to indicate whether you want a more predictable and strict
-interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules. If, however, you want
-the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
-sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) of your request.
+To address this problem, the Smartsheet API employs a simple scheme to indicate whether you want a more predictable and strict
+interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules for the type of the cell's column.
+If an input value doesn't conform, the API will return [error code 1042](#errors).
 
-The parsing rules are as follows:
+If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
+sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) in your request body.
+
+The parsing rules for the various column types are as follows:
 
 **TEXT_NUMBER**:
 
      |     |
 -----|-----|
 *Strict* | All numeric and text values are valid and are interpreted literally.
-*Lenient* |  All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
+*Lenient* | All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
 
 **PICKLIST**:
 
      |     |
 -----|-----|
 *Strict* | The value must be a string and must be one of the options for the Picklist.
-*Lenient* |  All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
+*Lenient* | All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
 
 **DATE**:
 
      |     |
 -----|-----|
 *Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
-*Lenient* |  We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+*Lenient* | We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+
+*NOTE:* You may use the query string parameter **numericDates** with a value of `true` to enable strict parsing of dates in numeric format.  See [Dates and Times](#dates-and-times) for more information.
 
 **CONTACT_LIST**:
 
      |     |
 -----|-----|
 *Strict* | The value must be a valid email address. If "displayValue" is set, we use that as the name, otherwise if we find a match among the the Access Token owner's contacts, we will associate this cell with that existing contact.
-*Lenient* |  If the value is a valid email address, we handle it the same way as Strict. If not, we save the value as a text value.
+*Lenient* | If the value is a valid email address, we handle it the same way as Strict. If not, we save the value as a text value.
+
+See [Contact List Columns](#contact-list-columns) below for more information.
 
 **CHECKBOX**:
 
      |     |
 -----|-----|
 *Strict* | Only boolean values (true or false) are valid.
-*Lenient* |  Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
+*Lenient* | Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
 
-### Contact List Columns
+**DURATION**:
+
+     |     |
+-----|-----|
+*Strict* | Only valid duration strings in the user's locale are valid.  Information on duration strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
+*Lenient* | Numeric values are treated as duration values in days.  String values which are valid duration strings in the user's locale are treated as durations, and any other values are treated as free-form text values.
+
+*NOTE:* You may use the query string parameter **projectParseLocale** with a [supported locale string](#server-information) to force parsing in the specified locale (e.g. using `en_US` will let you send in English values regardless of the user's locale)
+
+**PREDECESSOR**:
+
+     |     |
+-----|-----|
+*Strict* | Only valid predecessor strings in the user's locale are valid. Information on predecessor strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
+*Lenient* | String values which are valid predecessor strings in the user's locale are treated as predecessors, and any other values are treated as free-form text values.
+
+*NOTE:* You may use the query string parameter **projectParseLocale** with a [supported locale string](#server-information) to force parsing in the specified locale (e.g. using `en_US` will let you send in English values regardless of the user's locale)
+
+**ABSTRACT_DATETIME**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string value and a valid ISO 8601 date and time.
+*Lenient* | We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+
+*NOTE:* You may use the query string parameter **numericDates** with a value of `true` to enable strict parsing of dates in numeric format.  See [Dates and Times](#dates-and-times) for more information.
+
+#### Contact List Columns
 
 With columns of type CONTACT_LIST, cells’ “value” and “displayValue” attributes are treated independently. 
 The contact’s email address is represented by **value**, while the contact’s name (and the value displayed in the cell in the Smartsheet app) is represented by **displayValue**.
@@ -484,18 +540,6 @@ When creating or updating cells for a contact list column, the **displayValue** 
 <li>If **displayValue** is an empty string, the Smartsheet cell will display the email address.</li>
 <li>If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.</li>
 </ul>
-
-### System Columns
-
-In addition to the standard column types and symbols, there are system columns - columns whose values cannot be changed by the user. These include the following **systemColumnType** values:
-
-     |     |
------|-----|
-MODIFIED_DATE | type DATETIME
-MODIFIED_BY | type CONTACT_LIST
-CREATED_DATE | type DATETIME
-CREATED_BY  | type CONTACT_LIST
-AUTO_NUMBER | type TEXT_NUMBER<br/><br/>When a column is of this **systemColumnType**, it will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
 
 ## Paging
 
@@ -536,7 +580,7 @@ and existing code will continue to function.</aside>
 ## Dates and Times
 
 The Smartsheet API returns all dates and times in the [UTC](http://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain using [/me](#get-current-user).
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
 
 You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
 This flag works for any API request.
@@ -1556,7 +1600,7 @@ A collection of Cells comprises each Row in a Sheet.
 
      |     |     |
 -----|-----|-----|
-**strict** | boolean | Set to false to enable lenient parsing.  Defaults to **true**.  See [Strict vs. Lenient Parsing](#strict-vs.-lenient-parsing).
+**strict** | boolean | Set to false to enable lenient parsing.  Defaults to **true**.  See [Cell Value Parsing](#cell-value-parsing).
 
 ### Cell History Object
 
@@ -1676,11 +1720,11 @@ A Column is a component of a Sheet.
 **index** | number | Column index
 **title** | string | Column title
 **primary** | boolean | Returned only if the column is the Primary Column (value = "true")
-**type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li></ul>
+**type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
 **options** | string[] | Array of the options available for the column
 **hidden** | boolean | Flag indicating whether the column is hidden
-**symbol** | string | When applicable for CHECKBOX column type:<ul><li>STAR</li><li>FLAG</li></ul>When applicable for PICKLIST column type:<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>
-**systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>
+**symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
+**systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
 **autoNumberFormat** | AutoNumberFormat | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
 **width** | number | Display width of the column in pixels
