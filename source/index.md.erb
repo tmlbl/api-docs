@@ -113,6 +113,11 @@ Also, please make sure your code does not depend on the order in which records a
 **Breaking changes**: We intend to maintain the current API version for the foreseeable future. 
 If and when we decide to add functionality that breaks the contract of the current API, we will publish it with a new version number, so as to keep the existing API functionality backwards compatible.
 
+**Deprecations**: Smartsheet occasionally deprecates APIs to indicate that those APIs should no longer be used in active development. 
+Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
+You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, we recommend that you update that code as soon as possible. 
+For a list of Smartsheet API 2.0 deprecations, see [Deprecations](#deprecations).
+
 If new functionality is added to the API, we will let you know via our [Developer Portal](http://www.smartsheet.com/developers) and other means of communication, such as Twitter, Facebook or email. 
 Please follow these sources to stay up to date on the latest changes.
 
@@ -356,7 +361,7 @@ The full list of error codes is below:
 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly.
 4002 | Server timeout exceeded. Request has failed.
 4003 | Rate limit exceeded.
-5xxx | Please contact customer support.
+5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.
 
 ## About Columns
 
@@ -1680,7 +1685,7 @@ A Column is a component of a Sheet.
 **tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
 **width** | number | Display width of the column in pixels
 **format** | string | [Format Descriptor object](#format-descriptor)
-**filter** | Filter | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters" and the column has a filter applied to it
+**filter** | [Filter](filter-object) | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) or [Get Column](#get-column) response if the **include** query string parameter specifies "filters" and the column has a filter applied to it
 
 ### Criteria Object
 
@@ -1703,21 +1708,19 @@ Smartsheet users can define and save personal column filters on sheets they can 
 
 ## Add Column(s)
 
-> Example Request:
+> Example Request (add one column):
 
 ```shell
-#
-# Add One Column:
-#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"], "index":1}'
+```
 
-#
-# Add Zero or More Columns
-#
+> Example Request (add multiple columns):
+
+```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
@@ -1739,12 +1742,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 ]'
 ```
 
-> Example Response:
+> Example Response (one column added):
 
 ```json
-#
-# For One Column:
-#
 {
     "message": "SUCCESS",
     "result": {
@@ -1757,10 +1757,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
     },
     "resultCode": 0
 }
+```
 
-#
-# For Zero or More Columns:
-#
+> Example Response (multiple columns added):
+
+```json
 {
     "resultCode": 0,
     "result": [
@@ -1802,7 +1803,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 `POST /sheets/{sheetId}/columns`
 
-Inserts zero or more Columns into the Sheet specified in the URL.
+Inserts Column(s) into the Sheet specified in the URL.
 
      |     |
 -----|-----|
@@ -1869,7 +1870,7 @@ Gets the Column specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the filter that the user has applied to the column (if any)
 <%= RETURNS %> | [Column object](#column-object)
 
 ## Get All Columns
@@ -1924,7 +1925,7 @@ Gets a list of all Columns belonging to the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the filter that the user has applied to each column (if any)
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Column objects](#column-object)
 
 ## Update Column
@@ -1995,9 +1996,6 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 > Example Request (without attachment):
 
 ```shell
-#
-# Without Attachment
-#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
@@ -2008,9 +2006,6 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 > Example Request (with attachment):
 
 ```shell
-#
-# With Attachment:
-#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X POST \
@@ -2793,13 +2788,13 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 {
     "id": 7116448184199044,
     "name": "Projects",
-    "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=B0_lvAtnWygeMrWr4Rfoa",
+    "permalink": "https://https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
     "sheets": [
         {
             "id": 4509918431602564,
             "name": "Project Timeline",
             "accessLevel": "OWNER",
-            "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=uWicCItTmkbxJwpCfQ5wiwW"
+            "permalink": "https://app.smartsheet.com/b/home?lx=uWicCItTmkbxJwpCfQ5wiwW"
         }
     ]
 }
@@ -3329,7 +3324,7 @@ Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>[source](#source-object)</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -3466,30 +3461,20 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 
 ## Get Report as Excel / CSV
 
-> Example Request:
+> Example Request (Excel):
 
 ```shell
-#
-# Excel
-#
 curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: application/vnd.ms-excel"
+```
 
-#
-# CSV
-#
+> Example Request (CSV):
+
+```shell
 curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: text/csv"
-```
-
-> Example Response:
-
-```shell
-#
-# Streaming response for either Excel or CSV.
-#
 ```
 
 `GET /reports/{reportId}`
@@ -3501,7 +3486,8 @@ Gets the Report in the format specified, based on the Report ID.
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Accept**: `application/vnd.ms-excel` or `text/csv`
+<%= HEADERS %> | <%= HEADER_AUTH %>
+ | **Accept** -- must be set to one of the following values:<ul><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
   | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
@@ -3527,13 +3513,13 @@ curl https://api.smartsheet.com/2.0/reports -H "Authorization: Bearer ACCESS_TOK
             "id": 6761305928427396,
             "name": "r1",
             "accessLevel": "OWNER",
-            "permalink": "https://kbmine.lab.smartsheet.com/dev2/home?lx=zWThapjNSR8LxW_kTdxPhQ"
+            "permalink": "https://app.smartsheet.com/b/home?lx=zWThapjNSR8LxW_kTdxPhQ"
         },  
         {   
             "id": 4508956358928260,
             "name": "r2",
             "accessLevel": "OWNER",
-            "permalink": "https://kbmine.lab.smartsheet.com/dev2/home?lx=33-Y5QkQw6ZNSoApMKntbw"
+            "permalink": "https://app.smartsheet.com/b/home?lx=33-Y5QkQw6ZNSoApMKntbw"
         }   
     ]   
 }
@@ -3668,7 +3654,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 `POST /sheets/{sheetId}/rows`
 
-Inserts Rows into the Sheet specified in the URL.
+Inserts Row(s) into the Sheet specified in the URL.
 
 <%= SUPPORTS_BULK %>
 
@@ -3683,7 +3669,7 @@ Currently, if multiple rows are specified in the request, all rows must be inser
 <%= REQUEST %> | A single [Row object](#row-object) or an array that contains the following attributes:<ul><li>A location specifier:<ul><li>toTop</li><li>toBottom</li><li>parentId</li><li>siblingId</li><li>above</li></ul><li>format (optional)</li><li>expanded (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly inserted [Row object](#row-object) or array of rows (depending on what was passed in), as well as the new version of the Sheet. 
 
-## Copy Row to Another Sheet
+## Copy Row(s) to Another Sheet
 
 > Example Request:
 
@@ -3697,16 +3683,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
-`POST /2.0/sheets/{sheetId}/rows/copy`
+`POST /sheets/{sheetId}/rows/copy`
 
-Copies zero or more rows from a source sheet to the bottom of a destination sheet.
-<aside class="notice">Up to 5,000 source row IDs are allowed in the request, but if the total number of rows on the destination sheet after the copy exceeds the Smartsheet row limit, it shall result in an error.</aside>
+Copies Row(s) from the Sheet specified in the URL to (the bottom of) another sheet.
 
+<aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the copy exceeds the Smartsheet row limit, an error response will be returned.</aside>
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - If specified, all descendants of all source rows shall be copied to the destination sheet while preserving relationships among them; otherwise, only the source rows shall be copied.</li></ul>**ignoreRowsNotFound** -- true or false: default is false. If set to true, source rows not found on the source sheet shall not cause an error response. If false, source rows shall be copied in the listed order in the **rowIds** field.
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - if specified, any child rows of the rows specified in the request will also be copied to the destination sheet, and parent-child relationships amongst rows will be preserved within the destination sheet; if not specified, only the rows specified in the request will be copied.</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If set to false, rows shall be copied in the sequence that row Ids are specified in the request.
+<%= REQUEST %> | ?object? ...kkb
+<%= RETURNS %> | ?object? ...kkb
 
 ## Delete Row
 
@@ -3787,7 +3775,7 @@ Gets the Row specified in the URL.
   | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
 <%= RETURNS %> | [Row object](#row-object)
 
-## Move Row to Another Sheet
+## Move Row(s) to Another Sheet
 
 > Example Request:
 
@@ -3801,17 +3789,19 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/move \
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
-`POST /2.0/sheets/{sheetId}/rows/move`
+`POST /sheets/{sheetId}/rows/move`
 
-Moves zero or more rows from a source sheet to the bottom of a destination sheet.
-<aside class="notice">Up to 5,000 source row IDs are allowed in the request, but if the total number of rows on the destination sheet after the move exceeds the Smartsheet row limit, it shall result in an error.</aside>
-<aside class="notice">All descendants of the source rows shall also be moved: parent-child relationships among rows shall be preserved on the destination sheet.</aside>
+Moves Row(s) from the Sheet specified in the URL to (the bottom of) another sheet.
+<aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the move exceeds the Smartsheet row limit, an error response will be returned.</aside>
+<aside class="notice">Any child rows of the rows specified in the request will also be moved. Parent-child relationships amongst rows will be preserved within the destination sheet.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to move in addition to the cell data:<ul><li>attachments</li><li>discussions</li></ul>**ignoreRowsNotFound** -- true or false: default is false. If set to true, source rows not found on the source sheet shall not cause an error response. If false, source rows shall be moved in the listed order in the **rowIds** field.
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to move in addition to the cell data:<ul><li>attachments</li><li>discussions</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If set to false, rows shall be moved in the sequence that row Ids are specified in the request.
+<%= REQUEST %> | ?object? ...kkb
+<%= RETURNS %> | ?object? ...kkb
 
 ## Send Row via Email
 
@@ -3972,6 +3962,15 @@ Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
 ## <%= OBJECTS %>
 
+### Email Object
+
+     |     |     |
+-----|-----|-----|
+**sendTo**  | array  | Array of [Recipient objects](#recipient-object). Required.
+**subject** | string | The subject of the email. Optional.
+**message** | string | The message of the email. Optional.
+**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
+
 ### Recipient Object
 
 Specifies the recipient of an [Email](#email-object).  The recipient may be either an individual or a group.  To specify an individual, set the **email** attribute; to specify a group, set the **groupId** attribute.
@@ -3981,15 +3980,6 @@ Either **email** and **groupId** may be set, but not both.
 -----|-----|-----|
 **email**   | string | The email address of an individual recipient. Optional.
 **groupId** | number | The ID of a group recipient. Optional.
-
-### Email Object
-
-     |     |     |
------|-----|-----|
-**sendTo**  | array  | Array of [Recipients](#recipient-object). Required.
-**subject** | string | The subject of the email. Optional.
-**message** | string | The message of the email. Optional.
-**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
 
 ### RowEmail Object
 
@@ -4063,7 +4053,7 @@ Gets application constants.
 
 # Sharing
 
-Use the *Share* operations to control sharing of Reports, Sheets, and Workspaces.
+Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspaces.
 
 ## <%= OBJECTS %>
 
@@ -4103,7 +4093,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
 
-`DELETE /reports/(reportId)/shares/{shareId}`
+`DELETE /reports/{reportId}/shares/{shareId}`
 
 Deletes the Share specified in the URL. 
 
@@ -4122,7 +4112,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 
 <%= partial "snippets/getShare_response.md.erb" %>
 
-`GET /reports/(reportId)/shares/{shareId}`
+`GET /reports/{reportId}/shares/{shareId}`
 
 Gets the Share specified in the URL. 
 
@@ -4141,7 +4131,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 
 <%= partial "snippets/listShares_response.md.erb" %>
 
-`GET /reports/(reportId)/shares`
+`GET /reports/{reportId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
@@ -4214,7 +4204,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
 
-`DELETE /sheets/(sheetId)/shares/{shareId}`
+`DELETE /sheets/{sheetId}/shares/{shareId}`
 
 Deletes the Share specified in the URL. 
 
@@ -4233,7 +4223,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 <%= partial "snippets/getShare_response.md.erb" %>
 
-`GET /sheets/(sheetId)/shares/{shareId}`
+`GET /sheets/{sheetId}/shares/{shareId}`
 
 Gets the Share specified in the URL. 
 
@@ -4252,7 +4242,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 
 <%= partial "snippets/listShares_response.md.erb" %>
 
-`GET /sheets/(sheetId)/shares`
+`GET /sheets/{sheetId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
 
@@ -4324,7 +4314,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
 
-`DELETE /workspaces/(workspaceId)/shares/{shareId}`
+`DELETE /workspaces/{workspaceId}/shares/{shareId}`
 
 Deletes the Share specified in the URL. 
 
@@ -4347,7 +4337,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 
 <%= partial "snippets/getShare_response.md.erb" %>
 
-`GET /workspaces/(workspaceId)/shares/{shareId}`
+`GET /workspaces/{workspaceId}/shares/{shareId}`
 
 Gets the Share specified in the URL. 
 
@@ -4366,7 +4356,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 
 <%= partial "snippets/listShares_response.md.erb" %>
 
-`GET /workspaces/(workspaceId)/shares`
+`GET /workspaces/{workspaceId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
 
@@ -4443,7 +4433,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**id** | number | Attachment ID
+**id** | number | Sheet ID
 **name** | string | Sheet name
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
@@ -4455,7 +4445,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **resourceManagementEnabled** | boolean | Flag to indicate that resource management is enabled
 **favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
 **showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
-**userSettings** | SheetUserSettings | A [Sheet User Settings object](#sheet-user-settings-object) containing the current user's sheet-specific settings.
+**userSettings** | SheetUserSettings | A [SheetUserSettings object](#sheetusersettings-object) containing the current user's sheet-specific settings.
 **permalink** | string | Direct URL to the Sheet
 **source** | Source | A [Source object](#source-object) indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
@@ -4471,7 +4461,7 @@ Request-only attributes (i.e. never returned in a response):
 -----|-----|-----|
 **fromId** | number | The ID of the Sheet or Template from which to create the Sheet
 
-### Sheet Publish Object 
+### SheetPublish Object 
 
      |     |     |
 -----|-----|-----|
@@ -4484,7 +4474,7 @@ Request-only attributes (i.e. never returned in a response):
 **readWriteUrl** | string | URL for Edit by Anyone
 **icalUrl** | string | URL for iCal
 
-### Sheet User Settings Object
+### SheetUserSettings Object
 
 Represents individual user settings for a specific sheet.  User settings may be updated even on sheets where the current user only has read access (e.g. viewer permissions or a read-only sheet).
 
@@ -4894,7 +4884,7 @@ Gets the status of the Publish settings of the Sheet, including the URLs of any 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Sheet Publish object](#sheet-publish-object)
+<%= RETURNS %> | [SheetPublish object](#sheetpublish-object)
 
 ### Set Sheet Publish Status
 
@@ -4932,8 +4922,8 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet Publish object](#sheet-publish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing a [Sheet Publish object](#sheet-publish-object)
+<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [SheetPublish object](#sheetpublish-object)
 
 ## Search Sheet 
 
@@ -4971,7 +4961,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 		"userSettings": {
 			"criticalPathEnabled": true
 		},
-        "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=RE8LkzA48kPRWTzcgEYOga"
+        "permalink": "https://app.smartsheet.com/b/home?lx=RE8LkzA48kPRWTzcgEYOga"
     },
     "resultCode": 0
 }
@@ -4990,7 +4980,7 @@ only has read-only access to the sheet (i.e. the user has viewer permissions, or
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [Sheet User Settings object](#sheet-user-settings-object) for updating this user's settings for the sheet</li></ul>
+<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating this user's settings for the sheet</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet
 
 ## <%= RELATED %>
@@ -5167,8 +5157,12 @@ curl https://api.smartsheet.com/2.0/token \
 
 `DELETE /token`
 
-Revokes the access token used to make this request.  The access token will no longer be valid, and subsequent API calls made using that token will fail.
+Revokes the access token used to make this request.  The access token will no longer be valid, and subsequent API calls made using the token will fail.
 
+     |     |
+-----|-----|
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
 
 # Users
 
@@ -5804,3 +5798,33 @@ The FormatTables object is retrieved via the `GET /serverinfo` operation and con
 -----|-----|-----|
 **code** | string | The ISO 4217 currency code (e.g. "EUR")
 **symbol** | string | The currency symbol (e.g. "€")
+
+# <span class="customTOCSectionHeading">Deprecations</span>
+
+Smartsheet occasionally deprecates APIs to indicate that those APIs should no longer be used in active development. 
+Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
+You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, we recommend that you update that code as soon as possible. 
+
+# Endpoints
+
+This section specifies the endpoints and parameters that have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Endpoints
+
+No endpoints have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Parameters
+
+No parameters have been deprecated in version 2.0 of the Smartsheet API.
+ 
+# Objects
+
+This section specifies the objects and attributes that have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Objects
+
+No objects have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Attributes
+
+No attributes have been deprecated in version 2.0 of the Smartsheet API.
