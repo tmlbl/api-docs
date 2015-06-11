@@ -942,7 +942,7 @@ Attachments can exist on a [Comment](#comments), on a [Row](#rows), or on a [She
 **attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, or EVERNOTE)
 **attachmentSubType** | string | Attachment sub type, only for GOOGLE_DRIVE type attachments; one of (DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING)
 **createdAt** | timestamp | A timestamp of when the attachment was originally added
-**createdBy** | User | [User object](#user-object) containing name and email of the creator of this attachment
+**createdBy** | [User](#user-object) | User object containing name and email of the creator of this attachment
 **mimeType** | string | Attachment MIME type (PNG, etc.)
 **parentType** | string | The type of object the attachment belongs to. One of “SHEET”, “ROW”, or “COMMENT”
 **parentId** | number | The id of the parent 
@@ -1594,8 +1594,8 @@ A collection of Cells comprises each Row in a Sheet.
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
 **linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
-**format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
-**conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formats](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
+**format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a non-default format applied.
+**conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formats](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a conditional format applied.
 
 **Request-only attributes** (i.e. never returned in a response):
 
@@ -1611,6 +1611,32 @@ Extends the [Cell object](#cell-object).
 -----|-----|-----|
 **modifiedAt** | timestamp | The datetime for when the change was made to the cell
 **modifiedBy** | [User](#user-object) | User object containing the name and email of the User that made the change
+
+### CellLink Object
+
+Represents a link to a Cell in a different Sheet.
+
+<aside class="notice">If status is not "OK" (i.e. there is a problem with the link), any or all of the following attributes may be null: <ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></aside>
+
+     |     |     |
+-----|-----|-----|
+**status** | string | One of the following values:<ul><li>**OK**: the link is in a good state</li><li>**BROKEN**: the row or sheet linked to was deleted</li><li>**INACCESSIBLE**: the sheet linked to cannot be viewed by this user</li><li>Several other values indicating unusual error conditions: **NOT_SHARED**, **BLOCKED**, **CIRCULAR**, **INVALID**, and **DISABLED**.</li></ul>
+**sheetId** | number | Sheet ID of the sheet that the linked cell belongs to
+**rowId** | number | Row ID of the linked cell
+**columnId** | number | Column ID of the linked cell
+**sheetname** | string | Sheet name of the linked cell
+
+### Hyperlink Object
+
+Represents a hyperlink to a URL, a Sheet, or a Report.
+ 
+<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
+
+     |     |     |
+-----|-----|-----|
+**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
+**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
+**reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
 
 ## Get Cell History
 
@@ -1729,8 +1755,8 @@ A Column is a component of a Sheet.
 **autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
 **width** | number | Display width of the column in pixels
-**format** | string | [Format Descriptor object](#format-descriptor)
-**filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and the column has a filter applied to it.
+**format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
+**filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
 
 ### Criteria Object
 
@@ -2182,13 +2208,13 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 -----|-----|-----|
 **id** | number | Discussion ID
 **title** | string | Discussion title
-**comments** | array | Array of [Comment objects](#comment-object)
-**commentAttachments** | array | Array of [Attachment objects](#attachment-object)
+**comments** | [Comment](#comment-object)[] | Array of Comment objects
+**commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment objects
 **parentId** | number | ID of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **parentType** | string | “SHEET” or “ROW”: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **lastCommentedAt** | timestamp | Time of most recent comment
-**lastCommentedUser** | User | [User object](#user-object) containing name and email of the author of the most recent Comment
-**createdBy** | User | [User object](#user-object) containing name and email of the creator of the Discussion
+**lastCommentedUser** | [User](#user-object) | User object containing name and email of the author of the most recent Comment
+**createdBy** | [User](#user-object) | User object containing name and email of the creator of the Discussion
 
 ## Create Discussion on Row
 
@@ -2705,10 +2731,10 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **name** | string | Folder name
 **favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | Direct URL to Folder
-**sheets** | array | Array of [Sheet objects](#sheet-object)
-**folders** | array | Array of [Folder objects](#folder-object)
-**reports** | array | Array of [Report objects](#report-object)
-**templates** | array | Array of [Template objects](#template-object)
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
+**folders** | [Folder](#folder-object)[] | Array of Folder objects
+**reports** | [Report](#report-object)[] | Array of Report objects
+**templates** | [Template](#template-object)[] | Array of Template objects
 
 ## Copy Folder
 
@@ -2977,7 +3003,7 @@ A Group is a collection of [Group Members](#group-members).
 **description** | string | Group description
 **owner** | string | Group owner’s email address
 **ownerId** | number | Group owner's User ID
-**members** | array | Array of [Group Member objects](#group-member-object)
+**members** | [GroupMember](#groupmember-object)[] | Array of GroupMember objects
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
 
@@ -3030,7 +3056,7 @@ Creates a new Group.
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Group object](#group-object), limited to the following attributes:<ul><li>name (required) -- must be unique within the organization</li><li>description (optional)</li><li>members (optional) -- array of [Group Member objects](#group-member-object), each limited to the following attribute:<ul><li>email</li></ul></li></ul>
+<%= REQUEST %> | [Group object](#group-object), limited to the following attributes:<ul><li>name (required) -- must be unique within the organization</li><li>description (optional)</li><li>members (optional) -- array of [GroupMember objects](#groupmember-object), each limited to the following attribute:<ul><li>email</li></ul></li></ul>
 <%= RETURNS %> | [Result object](#result-object), containing a [Group object](#group-object) for the newly created Group
 
 ## Delete Group
@@ -3106,7 +3132,7 @@ Gets the Group specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Group object](#group-object) that includes the list of [Group Members](#group-member-object)
+<%= RETURNS %> | [Group object](#group-object) that includes the list of [GroupMembers](#groupmember-object)
 
 ## List All Org Groups
 
@@ -3208,7 +3234,7 @@ A Group Member is a User that belongs to a [Group](#groups).
 
 ## <%= OBJECTS %>
 
-### Group Member Object
+### GroupMember Object
 
      |     |     |
 -----|-----|-----|
@@ -3254,7 +3280,7 @@ Adds member(s) to a Group.
 
 <%= SUPPORTS_BULK %>
 
-If called with a single [Group Member object](#group-member-object), and that group member already exists, [error code 1129](#errors) will be returned.  If called with an array,
+If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code 1129](#errors) will be returned.  If called with an array,
 and one or more users in the array are already group members, they will be ignored and omitted from the response.
 
 <aside class="notice">This operation is only available to group administrators and system administrators.</aside>
@@ -3263,8 +3289,8 @@ and one or more users in the array are already group members, they will be ignor
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A single [Group Member object](#group-member-object) or an array, limited to the following attribute:<ul><li>email</li></ul>
-<%= RETURNS %> | [Result object](#result-object), containing a single [group member](#group-member-object) or array of group members (depending on what was passed in) that will be added to the group.
+<%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array, limited to the following attribute:<ul><li>email</li></ul>
+<%= RETURNS %> | [Result object](#result-object), containing a single [group member](#groupmember-object) or array of group members (depending on what was passed in) that will be added to the group.
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -3311,11 +3337,11 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 
      |     |     |
 -----|-----|-----|
-**sheets** | array | Array of [Sheet objects](#sheet-object)
-**folders** | array | Array of [Folder objects](#folder-object)
-**reports** | array | Array of [Report objects](#report-object)
-**templates** | array | Array of [Template objects](#template-object)
-**workspaces** | array | Array of [Workspace objects](#workspace-object)
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
+**folders** | [Folder](#folder-object)[] | Array of Folder objects
+**reports** | [Report](#report-object)[] | Array of Report objects
+**templates** | [Template](#template-object)[] | Array of Template objects
+**workspaces** | [Workspace](#workspace-object)[] | Array of Workspace objects
 
 ## List All Contents
 
@@ -3394,7 +3420,7 @@ Extends the [Sheet object](#sheet-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**sourceSheet** | array | Array of [Sheet objects](#sheet-object) (without rows), representing the sheets that rows in the report originated from.  Only included in the [Get Report](#get-report) response if the **include** parameter specifies "sourceSheets".
+**sourceSheets** | [Sheet](#sheet-object)[] | Array of Sheet objects (without rows), representing the sheets that rows in the report originated from.  Only included in the [Get Report](#get-report) response if the **include** parameter specifies "sourceSheets".
 
 ### Report Cell Object
 
@@ -3613,8 +3639,8 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **lockedForUser** | boolean | `true` if the row is locked for the requesting user. Returned if the row is locked.
 **expanded** | boolean | Flag to indicate if the row is expanded or collapsed
 **accessLevel** | string | User's permission level on the Sheet that contains the Row
-**format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
-**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format**.
+**format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a non-default format applied.
+**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a conditional format applied.
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
 **cells** | [Cell](#cell-object)[] | Array of Cell objects belonging to the row
@@ -3945,7 +3971,7 @@ Use the *Search* operations to search a specific Sheet or to search across all S
      |     |     |
 -----|-----|-----|
 **totalCount** | number | Total number of search results
-**results** | array | Array of [SearchResultItem objects](#searchresultitem-object)
+**results** | [SearchResultItem](#searchresultitem-object)[] | Array of SearchResultItem objects
 
 ### SearchResultItem Object
 
@@ -4025,10 +4051,16 @@ Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
      |     |     |
 -----|-----|-----|
-**sendTo**  | array  | Array of [Recipient objects](#recipient-object). Required.
+**sendTo**  | [Recipient](#recipient-object)[]  | Array of Recipient objects. Required.
 **subject** | string | The subject of the email. Optional.
 **message** | string | The message of the email. Optional.
 **ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
+
+### FormatDetails Object
+
+     |     |     |
+-----|-----|-----|
+**paperSize**   | string | One of the following values: LETTER, LEGAL, WIDE, ARCHD, A4, A3, A2, A1, A0.
 
 ### Recipient Object
 
@@ -4056,7 +4088,7 @@ Extends the [Email object](#email-object), adding the following:
      |     |     |
 -----|-----|-----|
 **format** | string | Can either be "PDF" or "EXCEL".
-**formatDetails** | FormatDetails | Currently, only the **paperSize** attribute can be set on the FormatDetails object. The value of the **paperSize** attribute can be one of: LETTER,LEGAL,WIDE,ARCHD,A4,A3,A2,A1,A0.
+**formatDetails** | [FormatDetails](#formatdetails-object) | A FormatDetails object.
 
 ## Send Report
 
@@ -4081,7 +4113,7 @@ For developer convenience, the Smartsheet API provides access to application con
      |     |     |
 -----|-----|-----|
 **supportedLocales** | array | Array of strings representing all Smartsheet-supported locales.
-**formats** | FormatTables | Definition of [Format Tables](#formattables-object) that are used in Column, Row, and Cell **format** property.  For more information, see [Formatting](#formatting).
+**formats** | [FormatTables](#formattables-object) | Definition of format tables that are used in Column, Row, and Cell **format** property.  For more information, see [Formatting](#formatting).
 
 ## Get Server Info
 
@@ -5242,7 +5274,7 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 
-### User Profile Object
+### UserProfile Object
 
      |     |     |
 -----|-----|-----|
@@ -5252,7 +5284,7 @@ Revokes the access token used to make this request.  The access token will no lo
 **lastName** | string | Current user's last name
 **timeZone** | string | Current user's time zone ID
 **locale** | string | Current user's locale (see [Server Information](#server-information))
-**account** | Account | [Account object](#account-object) representing the current user's customer account
+**account** | [Account](#account-object) | Account object representing the current user's customer account
 
 ### Account Object
 
@@ -5337,7 +5369,7 @@ Gets the current User.
 -----|-----|
 <%= SCOPE %> | all scopes
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [User Profile object](#user-profile-object)
+<%= RETURNS %> | [UserProfile object](#userprofile-object)
 
 ## Get User
 
@@ -5367,7 +5399,7 @@ Gets the User specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [User Profile object](#user-profile-object)
+<%= RETURNS %> | [UserProfile object](#userprofile-object)
 
 ## List All Org Sheets
 
@@ -5499,10 +5531,10 @@ Updates the User specified in the URL.
 **favorite** | boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
 **accessLevel** | string | User's permissions on the Workspace
 **permalink** | string | Direct URL to the Workspace
-**sheets** | array |  Array of [Sheet objects](#sheet-object)
-**folders** | array |  Array of [Folder objects](#folder-object)
-**reports** | array | Array of [Report objects](#report-object)
-**templates** | array | Array of [Template objects](#template-object)
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
+**folders** | [Folder](#folder-object)[] | Array of Folder objects
+**reports** | [Report](#report-object)[] | Array of Report objects
+**templates** | [Template](#template-object)[] | Array of Template objects
 
 ## Copy Workspace 
 
@@ -5738,32 +5770,6 @@ Object that describes how the the System Column type of "AUTO_NUMBER" is auto-ge
 **fill** | string | Indicates zero-padding. Must be between 0 and 10 "0" (zero) characters.
 **startingNumber** | number | The starting number for the auto-id
  
-## CellLink Object
-
-Represents a link to a Cell in a different Sheet.
-
-<aside class="notice">If status is not "OK" (i.e. there is a problem with the link), any or all of the following attributes may be null: <ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></aside>
-
-     |     |     |
------|-----|-----|
-**status** | string | One of the following values:<ul><li>**OK**: the link is in a good state</li><li>**BROKEN**: the row or sheet linked to was deleted</li><li>**INACCESSIBLE**: the sheet linked to cannot be viewed by this user</li><li>Several other values indicating unusual error conditions: **NOT_SHARED**, **BLOCKED**, **CIRCULAR**, **INVALID**, and **DISABLED**.</li></ul>
-**sheetId** | number | Sheet ID of the sheet that the linked cell belongs to
-**rowId** | number | Row ID of the linked cell
-**columnId** | number | Column ID of the linked cell
-**sheetname** | string | Sheet name of the linked cell
-
-## Hyperlink Object
-
-Represents a hyperlink to a URL, a Sheet, or a Report.
- 
-<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
-
-     |     |     |
------|-----|-----|
-**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
-**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
-**reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
-
 ## IndexResult Object
 
 Object returned for all `GET` operations against index endpoints.  This object provides metadata which can be used to perform paging on potentially large data sets.  See the [Paging](#paging) section for more information.
