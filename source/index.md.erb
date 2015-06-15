@@ -5,10 +5,6 @@ language_tabs:
   - shell: cURL
   
 toc_footers:
-  - <a href='https://www.smartsheet.com/developers' target='_blank'>Developer Portal</a>
-  - <a href='https://www.smartsheet.com/developers/register' target='_blank'>Developer Registration</a>
-  - <a href='https://www.smartsheet.com/developers/api-faq' target='_blank'>FAQs</a>
-  - <a href='https://www.smartsheet.com/blog/development' target='_blank'>Blog</a>
 
 includes:
 
@@ -30,6 +26,18 @@ search: false
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
+<aside class="notice">
+	<b>Smartsheet API 1.1 Deprecation</b><br/><br/>
+	<p>
+		Version 1.1 of the Smartsheet API has been officially deprecated as of June 20, 2015 (coinciding with the release of Smartsheet API 2.0). 
+		Any new development from that date forward should use Smartsheet API 2.0.
+	</p>
+	<p>
+		Smartsheet API 1.1 will continue to be supported (and <a href="http://smartsheet-platform.github.io/api-docs-v1" target="_blank">documented</a>) until <b>June 30, 2016</b>, at which time it will be permanently disabled. 
+		See the <a href="https://www.smartsheet.com/blog/june-2015-api-v2-launch" target="_blank">Smartsheet API 2.0 Release Notes</a> for information about migrating from version 1.1 to version 2.0 of the Smartsheet API.
+	</p>
+</aside>
+
 # Overview
 
 ## Introduction
@@ -40,8 +48,6 @@ The Smartsheet API provides programmatic access to Smartsheet features and data.
 In designing the API, our goal was to make it simple, intuitive, and predictable. 
 We do our best to adhere to common open and widely accepted standards, including REST for access, JSON format for the data, and OAuth for Authentication and Authorization. 
 This API assumes a good working knowledge of the Smartsheet application UI, concepts and terminology.
-
-<aside class="success">This documentation applies to Smartsheet API 2.0. For Smartsheet API 1.1 documentation, see <a href="https://www.smartsheet.com/developers/api-documentation">here</a></aside>
 
 ## RESTful Architecture
 
@@ -107,6 +113,11 @@ Also, please make sure your code does not depend on the order in which records a
 **Breaking changes**: We intend to maintain the current API version for the foreseeable future. 
 If and when we decide to add functionality that breaks the contract of the current API, we will publish it with a new version number, so as to keep the existing API functionality backwards compatible.
 
+**Deprecations**: Smartsheet occasionally deprecates APIs to indicate that those APIs should no longer be used in active development. 
+Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
+You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, we recommend that you update that code as soon as possible. 
+For a list of Smartsheet API 2.0 deprecations, see [Deprecations](#deprecations).
+
 If new functionality is added to the API, we will let you know via our [Developer Portal](http://www.smartsheet.com/developers) and other means of communication, such as Twitter, Facebook or email. 
 Please follow these sources to stay up to date on the latest changes.
 
@@ -132,6 +143,21 @@ See [Direct API Access](#direct-api-access) for more information on user-generat
 
 Third-party developers are able to build applications that can acquire Access Tokens using OAuth 2.0. 
 See [Third Party App Development](#third-party-app-development) for more information.
+
+## Access Levels
+
+Throughout the API we have "Share" objects that represent the shared user's access level. 
+Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
+This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
+The **accessLevel** attribute has one of the following values:
+
+     |     |
+-----|-----|
+VIEWER | The user has read-only access to the resource.
+EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
+EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
+ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
+OWNER | The user has complete control over the resource.
 
 ## Rate Limiting
 
@@ -259,7 +285,7 @@ The full list of error codes is below:
 1082 | You cannot add options to the given column {0} because it is not a PICKLIST.
 1083 | Auto number formatting cannot be added to a column {0}
 1084 | The auto number format is invalid.
-1085 | The column specified is either a calendar, Gantt, or dependency column and the type cannot be changed.
+1085 | To change this column's type you must first disable Dependencies for this sheet.
 1086 | Google was not able to verify your access.
 1087 | The column specified is used in a conditional formatting rule, so the column cannot be deleted and its type cannot be changed.
 1088 | Invalid length for concatenated auto number format. Concatenated format is {0}, with a length of {1}. Must be less than or equal to 40.
@@ -301,7 +327,7 @@ The full list of error codes is below:
 1124 | Invalid Content-Type header. Media type not supported.
 1125 | Each part in a multipart payload must have a name
 1126 | Multipart payload contained duplicate part names: {0}
-1127 | Required multipart part was missing: {0}
+1127 | Required multipart part was missing: '{0}'
 1128 | Multipart upload size limit exceeded.
 1129 | The resource you tried to create already exists.
 1130 | One of cell.value or objectValue may be set, but not both.
@@ -320,6 +346,8 @@ The full list of error codes is below:
 1143 | To set {0}, you must first enable dependencies on the sheet.
 1144 | The user owns one or more groups and must be added as a Group Admin.
 1145 | Multipart upload request was invalid. Please check your request headers and payload.
+1146 | Unsupported operation: {0}.
+1147 | Multipart request contained an invalid part name: '{0}'
 2000 | Invalid username and/or password.
 2001 | Your account is locked out.
 2002 | Invalid email address
@@ -333,134 +361,175 @@ The full list of error codes is below:
 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly.
 4002 | Server timeout exceeded. Request has failed.
 4003 | Rate limit exceeded.
-5xxx | Please contact customer support.
+5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.
 
-## Access Levels
+## Column Types
 
-Throughout the API we have "Share" objects that represent the shared user's access level. 
-Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
-This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
-The **accessLevel** attribute has one of the following values:
+Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
 
-     |     |
------|-----|
-VIEWER | The user has read-only access to the resource.
-EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
-EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
-ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
-OWNER | The user has complete control over the resource.
+Column Type | Column.type Value | Notes |
+------------|--------------------------|-------|
+Text/Number		| TEXT_NUMBER	|
+Contact List	| CONTACT_LIST	|
+Date			| DATE			|
+Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
+Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
+Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
+Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
 
-## About Columns
+<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
 
-### Column Types
+### Symbol Columns
 
-Smartsheet has 5 basic column types: 
-<ul>
-<li>Text/Number</li>
-<li>Contact List</li>
-<li>Date</li>
-<li>Dropdown List (custom, RYG, Harvey Ball, Priority types, etc.)</li>
-<li>Checkbox (checkbox, star, and flag types)</li>
-</ul>
+In addition to the basic column types above, the Smartsheet app also supports columns that display symbols. These are simply specialized columns of type PICKLIST or CHECKBOX,
+whose **[symbol](#column-object)** attribute is set to one of the values below:
 
-These types are referred to as  the following constant values in the API: 
-<ul>
-<li>TEXT_NUMBER</li>
-<li>CONTACT_LIST</li>
-<li>DATE</li>
-<li>PICKLIST</li>
-<li>CHECKBOX</li>
-</ul>
- 
-In addition to the column types, there are symbols available within Smartsheet. These are simply specialized PICKLIST or CHECKBOX types. 
+**Symbols for CHECKBOX columns:**
 
-The available CHECKBOX symbols are:
-<ul>
-<li>FLAG</li>
-<li>STAR</li>
-</ul>
+<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
 
-The available PICKLIST symbols are:
-<ul>
-<li>HARVEY_BALLS</li>
-<li>RYG</li>
-<li>PRIORITY</li>
-<li>PRIORITY_HML</li>
-<li>DECISION_SYMBOLS</li>
-<li>DECISION_SHAPES</li>
-<li>VCR</li>
-<li>RYGB</li>
-<li>RYGG</li>
-<li>WEATHER</li>
-<li>PROGRESS</li>
-<li>ARROWS_3_WAY</li>
-<li>ARROWS_4_WAY</li>
-<li>ARROWS_5_WAY</li>
-<li>DIRECTIONS_3_WAY</li>
-<li>DIRECTIONS_4_WAY</li>
-<li>SKI</li>
-<li>SIGNAL</li>
-<li>STAR_RATING</li>
-<li>HEARTS</li>
-<li>MONEY</li>
-<li>EFFORT</li>
-<li>PAIN</li>
-</ul>
+<%= CHECKBOX_SYMBOL_LIST %>
+
+**Symbols for PICKLIST columns:**
+
+<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
+
+<%= PICKLIST_SYMBOL_LIST %>
  
 <aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
 
-### Strict vs. Lenient Parsing
+### System Columns
 
-Within the Smartsheet web application, the column types are flexible and generally, any column can contain any type of data.
-This allows for a very flexible UI and is one of the key benefits to using Smartsheet. This flexibility, however, poses a
-challenge for an API. Being too flexible will likely result in unexpected behavior. For instance, if you write code to post
-a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
+In addition to the standard column types and symbols, Smartsheet has a number of *system columns*, which represent data that is
+filled in by Smartsheet and whose values cannot be changed by the user. These columns are represented with standard
+[column types](#column-types), with the **[Column.systemColumnType](#column-object)** attribute set to one of the following:
+
+Column.systemColumnType Value | Column Type | Notes
+-----|-----|-----|
+MODIFIED_DATE | DATETIME
+MODIFIED_BY | CONTACT_LIST
+CREATED_DATE | DATETIME
+CREATED_BY  | CONTACT_LIST
+AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
+
+## Cell Values
+
+Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either
+a value specific to the column type (e.g. dates, checkboxes, symbols, etc.) or a free-form text value.  This allows for a very
+flexible UI and is one of the key benefits to using Smartsheet.
+
+<aside class="notice">See the <a href="#column-types">Column Types</a> section for information on the different column types.</aside>
+
+### Cell Value Representation
+
+[Cell objects](#cell-object) retrieved through the Smartsheet API's have two attributes representing cell values: **Cell.value**, and
+**Cell.displayValue**.  An empty cell is always represented by **null** for both.
+
+**Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
+be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
+like 1234.5678, but its **displayValue** would be "$1,234.57".
+
+**Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **boolean**,
+depending on the column type.  Complex types are represented as strings, formatted as described below:
+
+<% PROJECT_COLUMN_HELP_URL = "http://help.smartsheet.com/customer/portal/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
+
+| Column Type | Possible Types for Cell.value | Returns Cell.displayValue?
+|-------------|-------------------------------|---------------------------
+| TEXT_NUMBER	| **string**: free-form text values<br/>**number**: numeric values											| Yes: same as **value** for strings; for number values, the number with formatting applied.
+| CONTACT_LIST	| **string**: an email address representing a contact, or a free-form text value.							| Yes: same as **value** for free-form strings; for contacts, the contact's name if any, else their email address.
+| DATE			| **string**: a date in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+| PICKLIST		| **string**: one of the picklist's column options, or a free-form text value.<br/>**number**: numeric values| Yes: same as **value** for strings; for number values, the number with formatting applied.
+| CHECKBOX		| **boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
+| DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
+| PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
+| ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+
+### Cell Value Parsing
+
+The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
+for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
+to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
 as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
 as a Text value? Probably not.
  
-To address this problem, Smartsheet has employed a simple scheme to indicate whether you want a more predictable and strict
-interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules. If, however, you want
-the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
-sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) of your request.
+To address this problem, the Smartsheet API employs a simple scheme to indicate whether you want a more predictable and strict
+interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules for the type of the cell's column.
+If an input value doesn't conform, the API will return [error code 1042](#errors).
 
-The parsing rules are as follows:
+If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
+sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) in your request body.
+
+The parsing rules for the various column types are as follows:
 
 **TEXT_NUMBER**:
 
      |     |
 -----|-----|
 *Strict* | All numeric and text values are valid and are interpreted literally.
-*Lenient* |  All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
+*Lenient* | All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
 
 **PICKLIST**:
 
      |     |
 -----|-----|
 *Strict* | The value must be a string and must be one of the options for the Picklist.
-*Lenient* |  All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
+*Lenient* | All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
 
 **DATE**:
 
      |     |
 -----|-----|
 *Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
-*Lenient* |  We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+*Lenient* | We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+
+<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 
 **CONTACT_LIST**:
 
      |     |
 -----|-----|
 *Strict* | The value must be a valid email address. If "displayValue" is set, we use that as the name, otherwise if we find a match among the the Access Token owner's contacts, we will associate this cell with that existing contact.
-*Lenient* |  If the value is a valid email address, we handle it the same way as Strict. If not, we save the value as a text value.
+*Lenient* | If the value is a valid email address, we handle it the same way as Strict. If not, we save the value as a text value.
+
+<aside class="notice">See <a href="#contact-list-columns">Contact List Columns</a> for more information.</aside>
 
 **CHECKBOX**:
 
      |     |
 -----|-----|
 *Strict* | Only boolean values (true or false) are valid.
-*Lenient* |  Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
+*Lenient* | Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
 
-### Contact List Columns
+**DURATION**:
+
+     |     |
+-----|-----|
+*Strict* | Only valid duration strings in the user's locale are valid.  Information on duration strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
+*Lenient* | Numeric values are treated as duration values in days.  String values which are valid duration strings in the user's locale are treated as durations, and any other values are treated as free-form text values.
+
+<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
+
+**PREDECESSOR**:
+
+     |     |
+-----|-----|
+*Strict* | Only valid predecessor strings in the user's locale are valid. Information on predecessor strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
+*Lenient* | String values which are valid predecessor strings in the user's locale are treated as predecessors, and any other values are treated as free-form text values.
+
+<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
+
+**ABSTRACT_DATETIME**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string value and a valid ISO 8601 date and time.
+*Lenient* | We will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, we will recognize the date and store it as such. All other values are simply text values.
+
+<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
+
+#### Contact List Columns
 
 With columns of type CONTACT_LIST, cells’ “value” and “displayValue” attributes are treated independently. 
 The contact’s email address is represented by **value**, while the contact’s name (and the value displayed in the cell in the Smartsheet app) is represented by **displayValue**.
@@ -471,18 +540,6 @@ When creating or updating cells for a contact list column, the **displayValue** 
 <li>If **displayValue** is an empty string, the Smartsheet cell will display the email address.</li>
 <li>If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.</li>
 </ul>
-
-### System Columns
-
-In addition to the standard column types and symbols, there are system columns - columns whose values cannot be changed by the user. These include the following **systemColumnType** values:
-
-     |     |
------|-----|
-MODIFIED_DATE | type DATETIME
-MODIFIED_BY | type CONTACT_LIST
-CREATED_DATE | type DATETIME
-CREATED_BY  | type CONTACT_LIST
-AUTO_NUMBER | type TEXT_NUMBER<br/><br/>When a column is of this **systemColumnType**, it will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
 
 ## Paging
 
@@ -523,7 +580,7 @@ and existing code will continue to function.</aside>
 ## Dates and Times
 
 The Smartsheet API returns all dates and times in the [UTC](http://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain using [/me](#me).
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
 
 You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
 This flag works for any API request.
@@ -885,7 +942,7 @@ Attachments can exist on a [Comment](#comments), on a [Row](#rows), or on a [She
 **attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, or EVERNOTE)
 **attachmentSubType** | string | Attachment sub type, only for GOOGLE_DRIVE type attachments; one of (DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING)
 **createdAt** | timestamp | A timestamp of when the attachment was originally added
-**createdBy** | User | [User object](#user-object) containing name and email of the creator of this attachment
+**createdBy** | [User](#user-object) | User object containing name and email of the creator of this attachment
 **mimeType** | string | Attachment MIME type (PNG, etc.)
 **parentType** | string | The type of object the attachment belongs to. One of “SHEET”, “ROW”, or “COMMENT”
 **parentId** | number | The id of the parent 
@@ -1529,21 +1586,22 @@ A collection of Cells comprises each Row in a Sheet.
 
      |     |     |
 -----|-----|-----|
-**type** | string | See type definition on the [Column object](#column-object).
-**value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell
-**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI
 **columnId** | number | The ID of the column that the cell is located in
+**columnType** | string | See type definition on the [Column object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
+**value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
+**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
+**formula** | string | The  formula for a cell, if set
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
-**linksOutToCells** | array | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
-**formula** | string | The  formula for a cell, if set
-**format** | string | The format descriptor (see [Formats](#formatting))
+**linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
+**format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a non-default format applied.
+**conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formats](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a conditional format applied.
 
 **Request-only attributes** (i.e. never returned in a response):
 
      |     |     |
 -----|-----|-----|
-**strict** | boolean | Set to false to enable lenient parsing.  Defaults to **true**.  See [Strict vs. Lenient Parsing](#strict-vs.-lenient-parsing).
+**strict** | boolean | Set to false to enable lenient parsing.  Defaults to **true**.  See [Cell Value Parsing](#cell-value-parsing).
 
 ### Cell History Object
 
@@ -1552,7 +1610,33 @@ Extends the [Cell object](#cell-object).
      |     |     |
 -----|-----|-----|
 **modifiedAt** | timestamp | The datetime for when the change was made to the cell
-**modifiedBy** | User | [User object](#user-object) containing the name and email of the User that made the change
+**modifiedBy** | [User](#user-object) | User object containing the name and email of the User that made the change
+
+### CellLink Object
+
+Represents a link to a Cell in a different Sheet.
+
+<aside class="notice">If status is not "OK" (i.e. there is a problem with the link), any or all of the following attributes may be null: <ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></aside>
+
+     |     |     |
+-----|-----|-----|
+**status** | string | One of the following values:<ul><li>**OK**: the link is in a good state</li><li>**BROKEN**: the row or sheet linked to was deleted</li><li>**INACCESSIBLE**: the sheet linked to cannot be viewed by this user</li><li>Several other values indicating unusual error conditions: **NOT_SHARED**, **BLOCKED**, **CIRCULAR**, **INVALID**, and **DISABLED**.</li></ul>
+**sheetId** | number | Sheet ID of the sheet that the linked cell belongs to
+**rowId** | number | Row ID of the linked cell
+**columnId** | number | Column ID of the linked cell
+**sheetname** | string | Sheet name of the linked cell
+
+### Hyperlink Object
+
+Represents a hyperlink to a URL, a Sheet, or a Report.
+ 
+<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
+
+     |     |     |
+-----|-----|-----|
+**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
+**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
+**reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
 
 ## Get Cell History
 
@@ -1663,24 +1747,24 @@ A Column is a component of a Sheet.
 **index** | number | Column index
 **title** | string | Column title
 **primary** | boolean | Returned only if the column is the Primary Column (value = "true")
-**type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li></ul>
+**type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
 **options** | string[] | Array of the options available for the column
 **hidden** | boolean | Flag indicating whether the column is hidden
-**symbol** | string | When applicable for CHECKBOX column type:<ul><li>STAR</li><li>FLAG</li></ul>When applicable for PICKLIST column type:<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>
-**systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>
-**autoNumberFormat** | AutoNumberFormat | Present when systemColumnType == AUTO_NUMBER
+**symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
+**systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
+**autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
 **width** | number | Display width of the column in pixels
-**format** | string | [Format Descriptor object](#format-descriptor)
-**filter** | Filter | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters" and the column has a filter applied to it
+**format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
+**filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
 
 ### Criteria Object
 
      |     |     |
 -----|-----|-----|
 **operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
-**value1** | object | Optional. Present if a custom filter criteria's operator has one or more arguments.
-**value2** | object | Optional.  Present if a custom filter criteria's operator has two arguments.
+**value1** | string or number | Optional. Present if a custom filter criteria's operator has one or more arguments.
+**value2** | string or number | Optional.  Present if a custom filter criteria's operator has two arguments.
 
 ### Filter Object
 
@@ -1690,26 +1774,24 @@ Smartsheet users can define and save personal column filters on sheets they can 
 -----|-----|-----|
 **type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
 **excludeSelected** | boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
-**values** | array | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
-**criteria** | array | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
+**values** | object[] containing strings, numbers, and booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
+**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
 
 ## Add Column(s)
 
-> Example Request:
+> Example Request (add one column):
 
 ```shell
-#
-# Add One Column:
-#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"], "index":1}'
+```
 
-#
-# Add Zero or More Columns
-#
+> Example Request (add multiple columns):
+
+```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
@@ -1731,12 +1813,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 ]'
 ```
 
-> Example Response:
+> Example Response (one column added):
 
 ```json
-#
-# For One Column:
-#
 {
     "message": "SUCCESS",
     "result": {
@@ -1749,10 +1828,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
     },
     "resultCode": 0
 }
+```
 
-#
-# For Zero or More Columns:
-#
+> Example Response (multiple columns added):
+
+```json
 {
     "resultCode": 0,
     "result": [
@@ -1794,7 +1874,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 `POST /sheets/{sheetId}/columns`
 
-Inserts zero or more Columns into the Sheet specified in the URL.
+Inserts Column(s) into the Sheet specified in the URL.
 
      |     |
 -----|-----|
@@ -1861,7 +1941,7 @@ Gets the Column specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the filter that the user has applied to the column (if any)
 <%= RETURNS %> | [Column object](#column-object)
 
 ## Get All Columns
@@ -1916,7 +1996,7 @@ Gets a list of all Columns belonging to the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", includes the user's column filters defined for the sheet
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the filter that the user has applied to each column (if any)
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Column objects](#column-object)
 
 ## Update Column
@@ -1950,7 +2030,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 
 Updates properties of the column, moves the column, and/or renames the column.
 
-<aside class="notice">You cannot change the type of a Primary column, or of any special calendar/Gantt columns. Also, if the column type is changed,  all cells in the column will be converted to the new column type.  Type is optional when moving or renaming, but required when changing type or dropdown values.</aside>
+**Notes:**
+
+* You cannot change the type of a Primary column.
+* While dependencies are enabled on a sheet, you can't change the type of any special calendar/Gantt columns.
+* If the column type is changed, all cells in the column will be converted to the new column type.
+* Type is optional when moving or renaming, but required when changing type or dropdown values.
 
      |     |
 -----|-----|
@@ -1971,10 +2056,10 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 -----|-----|-----|
 **id** | number | Comment ID
 **text** | string | Comment body
-**createdBy** | User | [User object](#user-object) containing name and email of the Comment's author
+**createdBy** | [User](#user-object) | User object containing name and email of the Comment's author
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
-**attachments** | array | Array of [Attachment objects](#attachment-object)
+**attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects
 **discussionId** | number (optional) | Discussion ID
 
 ## Add Comment
@@ -1982,9 +2067,6 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 > Example Request (without attachment):
 
 ```shell
-#
-# Without Attachment
-#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
@@ -1995,9 +2077,6 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 > Example Request (with attachment):
 
 ```shell
-#
-# With Attachment:
-#
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X POST \
@@ -2129,13 +2208,13 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 -----|-----|-----|
 **id** | number | Discussion ID
 **title** | string | Discussion title
-**comments** | array | Array of [Comment objects](#comment-object)
-**commentAttachments** | array | Array of [Attachment objects](#attachment-object)
+**comments** | [Comment](#comment-object)[] | Array of Comment objects
+**commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment objects
 **parentId** | number | ID of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **parentType** | string | “SHEET” or “ROW”: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **lastCommentedAt** | timestamp | Time of most recent comment
-**lastCommentedUser** | User | [User object](#user-object) containing name and email of the author of the most recent Comment
-**createdBy** | User | [User object](#user-object) containing name and email of the creator of the Discussion
+**lastCommentedUser** | [User](#user-object) | User object containing name and email of the author of the most recent Comment
+**createdBy** | [User](#user-object) | User object containing name and email of the creator of the Discussion
 
 ## Create Discussion on Row
 
@@ -2652,11 +2731,10 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **name** | string | Folder name
 **favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | Direct URL to Folder
-**sheets** | array | Array of [Sheet](#sheets) objects
-**folders** | array | Array of [Folder](#folders) objects
-**reports** | array | Array of [Report](#reports) objects
-**templates** | array | Array of [Template](#templates) objects
-**workspaces** | array | Array of [Workspace](#workspaces) objects
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
+**folders** | [Folder](#folder-object)[] | Array of Folder objects
+**reports** | [Report](#report-object)[] | Array of Report objects
+**templates** | [Template](#template-object)[] | Array of Template objects
 
 ## Copy Folder
 
@@ -2781,13 +2859,13 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 {
     "id": 7116448184199044,
     "name": "Projects",
-    "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=B0_lvAtnWygeMrWr4Rfoa",
+    "permalink": "https://https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
     "sheets": [
         {
             "id": 4509918431602564,
             "name": "Project Timeline",
             "accessLevel": "OWNER",
-            "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=uWicCItTmkbxJwpCfQ5wiwW"
+            "permalink": "https://app.smartsheet.com/b/home?lx=uWicCItTmkbxJwpCfQ5wiwW"
         }
     ]
 }
@@ -2925,7 +3003,7 @@ A Group is a collection of [Group Members](#group-members).
 **description** | string | Group description
 **owner** | string | Group owner’s email address
 **ownerId** | number | Group owner's User ID
-**members** | array | Array of [Group Member objects](#group-member-object)
+**members** | [GroupMember](#groupmember-object)[] | Array of GroupMember objects
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
 
@@ -2978,7 +3056,7 @@ Creates a new Group.
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Group object](#group-object), limited to the following attributes:<ul><li>name (required) -- must be unique within the organization</li><li>description (optional)</li><li>members (optional) -- array of [Group Member objects](#group-member-object), each limited to the following attribute:<ul><li>email</li></ul></li></ul>
+<%= REQUEST %> | [Group object](#group-object), limited to the following attributes:<ul><li>name (required) -- must be unique within the organization</li><li>description (optional)</li><li>members (optional) -- array of [GroupMember objects](#groupmember-object), each limited to the following attribute:<ul><li>email</li></ul></li></ul>
 <%= RETURNS %> | [Result object](#result-object), containing a [Group object](#group-object) for the newly created Group
 
 ## Delete Group
@@ -3054,7 +3132,7 @@ Gets the Group specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Group object](#group-object) that includes the list of [Group Members](#group-member-object)
+<%= RETURNS %> | [Group object](#group-object) that includes the list of [GroupMembers](#groupmember-object)
 
 ## List All Org Groups
 
@@ -3156,7 +3234,7 @@ A Group Member is a User that belongs to a [Group](#groups).
 
 ## <%= OBJECTS %>
 
-### Group Member Object
+### GroupMember Object
 
      |     |     |
 -----|-----|-----|
@@ -3202,7 +3280,7 @@ Adds member(s) to a Group.
 
 <%= SUPPORTS_BULK %>
 
-If called with a single [Group Member object](#group-member-object), and that group member already exists, [error code 1129](#errors) will be returned.  If called with an array,
+If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code 1129](#errors) will be returned.  If called with an array,
 and one or more users in the array are already group members, they will be ignored and omitted from the response.
 
 <aside class="notice">This operation is only available to group administrators and system administrators.</aside>
@@ -3211,8 +3289,8 @@ and one or more users in the array are already group members, they will be ignor
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A single [Group Member object](#group-member-object) or an array, limited to the following attribute:<ul><li>email</li></ul>
-<%= RETURNS %> | [Result object](#result-object), containing a single [group member](#group-member-object) or array of group members (depending on what was passed in) that will be added to the group.
+<%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array, limited to the following attribute:<ul><li>email</li></ul>
+<%= RETURNS %> | [Result object](#result-object), containing a single [group member](#groupmember-object) or array of group members (depending on what was passed in) that will be added to the group.
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -3259,11 +3337,11 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 
      |     |     |
 -----|-----|-----|
-**sheets** | array | Array of [Sheet objects](#sheet-object)
-**folders** | array | Array of [Folder objects](#folder-object)
-**reports** | array | Array of [Report objects](#report-object)
-**templates** | array | Array of [Template objects](#template-object)
-**workspaces** | array | Array of [Workspace objects](#workspace-object)
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
+**folders** | [Folder](#folder-object)[] | Array of Folder objects
+**reports** | [Report](#report-object)[] | Array of Report objects
+**templates** | [Template](#template-object)[] | Array of Template objects
+**workspaces** | [Workspace](#workspace-object)[] | Array of Workspace objects
 
 ## List All Contents
 
@@ -3317,7 +3395,7 @@ Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>[source](#source-object)</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -3342,7 +3420,7 @@ Extends the [Sheet object](#sheet-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**sourceSheet** | array | Array of [Sheet objects](#sheet-object) (without rows), representing the sheets that rows in the report originated from.  Only included in the [Get Report](#get-report) response if the **include** parameter specifies "sourceSheets".
+**sourceSheets** | [Sheet](#sheet-object)[] | Array of Sheet objects (without rows), representing the sheets that rows in the report originated from.  Only included in the [Get Report](#get-report) response if the **include** parameter specifies "sourceSheets".
 
 ### Report Cell Object
 
@@ -3454,30 +3532,20 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 
 ## Get Report as Excel / CSV
 
-> Example Request:
+> Example Request (Excel):
 
 ```shell
-#
-# Excel
-#
 curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: application/vnd.ms-excel"
+```
 
-#
-# CSV
-#
+> Example Request (CSV):
+
+```shell
 curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: text/csv"
-```
-
-> Example Response:
-
-```shell
-#
-# Streaming response for either Excel or CSV.
-#
 ```
 
 `GET /reports/{reportId}`
@@ -3489,7 +3557,8 @@ Gets the Report in the format specified, based on the Report ID.
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/>**Accept**: `application/vnd.ms-excel` or `text/csv`
+<%= HEADERS %> | <%= HEADER_AUTH %>
+ | **Accept** -- must be set to one of the following values:<ul><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
   | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
@@ -3515,13 +3584,13 @@ curl https://api.smartsheet.com/2.0/reports -H "Authorization: Bearer ACCESS_TOK
             "id": 6761305928427396,
             "name": "r1",
             "accessLevel": "OWNER",
-            "permalink": "https://kbmine.lab.smartsheet.com/dev2/home?lx=zWThapjNSR8LxW_kTdxPhQ"
+            "permalink": "https://app.smartsheet.com/b/home?lx=zWThapjNSR8LxW_kTdxPhQ"
         },  
         {   
             "id": 4508956358928260,
             "name": "r2",
             "accessLevel": "OWNER",
-            "permalink": "https://kbmine.lab.smartsheet.com/dev2/home?lx=33-Y5QkQw6ZNSoApMKntbw"
+            "permalink": "https://app.smartsheet.com/b/home?lx=33-Y5QkQw6ZNSoApMKntbw"
         }   
     ]   
 }
@@ -3563,21 +3632,21 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **parentId** | number | If this is a child row, the ID of the parent row, else omitted from response
 **siblingId** | number | The ID of the previous sibling row at the same hierarchical level of this row, if any, else omitted from response
 **version** | number | Number that is incremented every time a sheet is modified
-**permalink** | string | URL to the row on the sheet. Returned if the **include** query parameter contains **rowPermalink**.
-**filteredOut** | boolean | Only returned in the [Get Sheet](#get-sheet-(incl.-rows)) response if the **include** query string parameter specifies "filters".  Contains "true" if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), "false" if the row is not filtered out.
-**inCriticalPath** | boolean | Only returned, with a value of true, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
-**locked** | boolean | True if the row is locked by the sheet owner or the admin. Returned if the row is locked.
-**lockedForUser** | boolean | True if the row is locked for the requesting user. Returned if the row is locked.
+**permalink** | string | URL to the row on the sheet.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **rowPermalink**.
+**filteredOut** | boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
+**inCriticalPath** | boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
+**locked** | boolean | `true` if the row is locked by the sheet owner or the admin. Returned if the row is locked.
+**lockedForUser** | boolean | `true` if the row is locked for the requesting user. Returned if the row is locked.
 **expanded** | boolean | Flag to indicate if the row is expanded or collapsed
 **accessLevel** | string | User's permission level on the Sheet that contains the Row
-**format** | string | Format descriptor (see [Formatting](#formatting))
-**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))
+**format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a non-default format applied.
+**conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a conditional format applied.
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
-**cells** | array | Array of [Cell objects](#cell-object)
-**discussions** | array | Array of [Discussion objects](#discussion-object)
-**attachments** | array | Array of [Attachment objects](#attachment-object)
-**columns** | array | Array of [Column objects](#column-object)
+**cells** | [Cell](#cell-object)[] | Array of Cell objects belonging to the row
+**discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **discussions**.
+**attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **attachments**.
+**columns** | [Column](#column-object)[] | Array of Column objects.<br/>Only returned if the [Get Row](#get-row) **include** query string parameter contains **columns**.
 
 **Request attributes** (use these to specify the location at which to create or move a row):
 
@@ -3656,7 +3725,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 `POST /sheets/{sheetId}/rows`
 
-Inserts Rows into the Sheet specified in the URL.
+Inserts Row(s) into the Sheet specified in the URL.
 
 <%= SUPPORTS_BULK %>
 
@@ -3671,7 +3740,7 @@ Currently, if multiple rows are specified in the request, all rows must be inser
 <%= REQUEST %> | A single [Row object](#row-object) or an array that contains the following attributes:<ul><li>A location specifier:<ul><li>toTop</li><li>toBottom</li><li>parentId</li><li>siblingId</li><li>above</li></ul><li>format (optional)</li><li>expanded (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly inserted [Row object](#row-object) or array of rows (depending on what was passed in), as well as the new version of the Sheet. 
 
-## Copy Row to Another Sheet
+## Copy Row(s) to Another Sheet
 
 > Example Request:
 
@@ -3685,16 +3754,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
-`POST /2.0/sheets/{sheetId}/rows/copy`
+`POST /sheets/{sheetId}/rows/copy`
 
-Copies zero or more rows from a source sheet to the bottom of a destination sheet.
-<aside class="notice">Up to 5,000 source row IDs are allowed in the request, but if the total number of rows on the destination sheet after the copy exceeds the Smartsheet row limit, it shall result in an error.</aside>
+Copies Row(s) from the Sheet specified in the URL to (the bottom of) another sheet.
 
+<aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the copy exceeds the Smartsheet row limit, an error response will be returned.</aside>
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - If specified, all descendants of all source rows shall be copied to the destination sheet while preserving relationships among them; otherwise, only the source rows shall be copied.</li></ul>**ignoreRowsNotFound** -- true or false: default is false. If set to true, source rows not found on the source sheet shall not cause an error response. If false, source rows shall be copied in the listed order in the **rowIds** field.
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - if specified, any child rows of the rows specified in the request will also be copied to the destination sheet, and parent-child relationships amongst rows will be preserved within the destination sheet; if not specified, only the rows specified in the request will be copied.</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If set to false, rows shall be copied in the sequence that row Ids are specified in the request.
+<%= REQUEST %> | ?object? ...kkb
+<%= RETURNS %> | ?object? ...kkb
 
 ## Delete Row
 
@@ -3771,11 +3842,11 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>columns</li><li>[format](#formatting)</li><li>filters</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.<br/><br/>Including **columns** will provide all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
-  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which will add a columns array which includes all the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>**nonexistentCells**: omit cells which have never contained any data</li></ul>
 <%= RETURNS %> | [Row object](#row-object)
 
-## Move Row to Another Sheet
+## Move Row(s) to Another Sheet
 
 > Example Request:
 
@@ -3789,17 +3860,19 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/move \
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
-`POST /2.0/sheets/{sheetId}/rows/move`
+`POST /sheets/{sheetId}/rows/move`
 
-Moves zero or more rows from a source sheet to the bottom of a destination sheet.
-<aside class="notice">Up to 5,000 source row IDs are allowed in the request, but if the total number of rows on the destination sheet after the move exceeds the Smartsheet row limit, it shall result in an error.</aside>
-<aside class="notice">All descendants of the source rows shall also be moved: parent-child relationships among rows shall be preserved on the destination sheet.</aside>
+Moves Row(s) from the Sheet specified in the URL to (the bottom of) another sheet.
+<aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the move exceeds the Smartsheet row limit, an error response will be returned.</aside>
+<aside class="notice">Any child rows of the rows specified in the request will also be moved. Parent-child relationships amongst rows will be preserved within the destination sheet.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to move in addition to the cell data:<ul><li>attachments</li><li>discussions</li></ul>**ignoreRowsNotFound** -- true or false: default is false. If set to true, source rows not found on the source sheet shall not cause an error response. If false, source rows shall be moved in the listed order in the **rowIds** field.
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to move in addition to the cell data:<ul><li>attachments</li><li>discussions</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If set to false, rows shall be moved in the sequence that row Ids are specified in the request.
+<%= REQUEST %> | ?object? ...kkb
+<%= RETURNS %> | ?object? ...kkb
 
 ## Send Row via Email
 
@@ -3873,6 +3946,20 @@ For details about working with a Row's cells, see [Cells](#cells).
 
 For details about working with a Row's discussions, see [Discussions](#discussions).
 
+### Row Include Flags
+
+Endpoints which returns rows (e.g. [get sheet](#get-sheet), [get row](#get-row)) support the optional **include** query string parameter, whose value is a
+comma-delimited list of include flags which if specified, will add additional attributes to the returned [Row objects](#row-object).
+
+Include Flag | Notes |
+-------------|-------|
+**discussions**	| Includes row **discussions** array.<br/>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.
+**attachments**	| Includes row **attachments** array.<br/>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.
+**format**		| Includes **format** attribute on the row and its cells.  See [Formatting](#formatting).
+**filters**		| Includes **filteredOut** attribute indicating if the row should be displayed or hidden according to the sheet's filters.
+**rowPermalink**| Includes **permalink** attribute that contains a deep link to the row in the Smartsheet application.
+**columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
+
 # Searching
 
 Use the *Search* operations to search a specific Sheet or to search across all Sheets that a User can access.
@@ -3884,7 +3971,7 @@ Use the *Search* operations to search a specific Sheet or to search across all S
      |     |     |
 -----|-----|-----|
 **totalCount** | number | Total number of search results
-**results** | array | Array of [SearchResultItem objects](#searchresultitem-object)
+**results** | [SearchResultItem](#searchresultitem-object)[] | Array of SearchResultItem objects
 
 ### SearchResultItem Object
 
@@ -3892,9 +3979,9 @@ Use the *Search* operations to search a specific Sheet or to search across all S
 -----|-----|-----|
 **text** | string | Search result text excerpt
 **objectId** | number | Search result object ID
-**objectType** | string | Search result object type (row, discussion, attach)
+**objectType** | string | Search result object type (row, sheet, report, template, discussion, attachment)
 **parentObjectId** | number | Search result parent object ID
-**parentObjectType** | string | Search result parent object type (row, discussion, attach)
+**parentObjectType** | string | Search result parent object type (workspace, folder, sheet, report, template)
 **parentObjectName** | string | Search result parent object name
 **contextData** | array | Additional info on search result context (row num...)
 
@@ -3960,6 +4047,21 @@ Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
 ## <%= OBJECTS %>
 
+### Email Object
+
+     |     |     |
+-----|-----|-----|
+**sendTo**  | [Recipient](#recipient-object)[]  | Array of Recipient objects. Required.
+**subject** | string | The subject of the email. Optional.
+**message** | string | The message of the email. Optional.
+**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
+
+### FormatDetails Object
+
+     |     |     |
+-----|-----|-----|
+**paperSize**   | string | One of the following values: LETTER, LEGAL, WIDE, ARCHD, A4, A3, A2, A1, A0.
+
 ### Recipient Object
 
 Specifies the recipient of an [Email](#email-object).  The recipient may be either an individual or a group.  To specify an individual, set the **email** attribute; to specify a group, set the **groupId** attribute.
@@ -3969,15 +4071,6 @@ Either **email** and **groupId** may be set, but not both.
 -----|-----|-----|
 **email**   | string | The email address of an individual recipient. Optional.
 **groupId** | number | The ID of a group recipient. Optional.
-
-### Email Object
-
-     |     |     |
------|-----|-----|
-**sendTo**  | array  | Array of [Recipients](#recipient-object). Required.
-**subject** | string | The subject of the email. Optional.
-**message** | string | The message of the email. Optional.
-**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
 
 ### RowEmail Object
 
@@ -3995,7 +4088,7 @@ Extends the [Email object](#email-object), adding the following:
      |     |     |
 -----|-----|-----|
 **format** | string | Can either be "PDF" or "EXCEL".
-**formatDetails** | FormatDetails | Currently, only the **paperSize** attribute can be set on the FormatDetails object. The value of the **paperSize** attribute can be one of: LETTER,LEGAL,WIDE,ARCHD,A4,A3,A2,A1,A0.
+**formatDetails** | [FormatDetails](#formatdetails-object) | A FormatDetails object.
 
 ## Send Report
 
@@ -4020,7 +4113,7 @@ For developer convenience, the Smartsheet API provides access to application con
      |     |     |
 -----|-----|-----|
 **supportedLocales** | array | Array of strings representing all Smartsheet-supported locales.
-**formats** | FormatTables | Definition of [Format Tables](#formattables-object) that are used in Column, Row, and Cell **format** property.  For more information, see [Formatting](#formatting).
+**formats** | [FormatTables](#formattables-object) | Definition of format tables that are used in Column, Row, and Cell **format** property.  For more information, see [Formatting](#formatting).
 
 ## Get Server Info
 
@@ -4051,7 +4144,7 @@ Gets application constants.
 
 # Sharing
 
-Use the *Share* operations to control sharing of Reports, Sheets, and Workspaces.
+Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspaces.
 
 ## <%= OBJECTS %>
 
@@ -4091,7 +4184,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
 
-`DELETE /reports/(reportId)/shares/{shareId}`
+`DELETE /reports/{reportId}/shares/{shareId}`
 
 Deletes the Share specified in the URL. 
 
@@ -4110,7 +4203,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 
 <%= partial "snippets/getShare_response.md.erb" %>
 
-`GET /reports/(reportId)/shares/{shareId}`
+`GET /reports/{reportId}/shares/{shareId}`
 
 Gets the Share specified in the URL. 
 
@@ -4129,7 +4222,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 
 <%= partial "snippets/listShares_response.md.erb" %>
 
-`GET /reports/(reportId)/shares`
+`GET /reports/{reportId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
@@ -4202,7 +4295,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
 
-`DELETE /sheets/(sheetId)/shares/{shareId}`
+`DELETE /sheets/{sheetId}/shares/{shareId}`
 
 Deletes the Share specified in the URL. 
 
@@ -4221,7 +4314,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 <%= partial "snippets/getShare_response.md.erb" %>
 
-`GET /sheets/(sheetId)/shares/{shareId}`
+`GET /sheets/{sheetId}/shares/{shareId}`
 
 Gets the Share specified in the URL. 
 
@@ -4240,7 +4333,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 
 <%= partial "snippets/listShares_response.md.erb" %>
 
-`GET /sheets/(sheetId)/shares`
+`GET /sheets/{sheetId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
 
@@ -4312,7 +4405,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
 
-`DELETE /workspaces/(workspaceId)/shares/{shareId}`
+`DELETE /workspaces/{workspaceId}/shares/{shareId}`
 
 Deletes the Share specified in the URL. 
 
@@ -4335,7 +4428,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 
 <%= partial "snippets/getShare_response.md.erb" %>
 
-`GET /workspaces/(workspaceId)/shares/{shareId}`
+`GET /workspaces/{workspaceId}/shares/{shareId}`
 
 Gets the Share specified in the URL. 
 
@@ -4354,7 +4447,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 
 <%= partial "snippets/listShares_response.md.erb" %>
 
-`GET /workspaces/(workspaceId)/shares`
+`GET /workspaces/{workspaceId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
 
@@ -4431,27 +4524,27 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**id** | number | Attachment ID
+**id** | number | Sheet ID
 **name** | string | Sheet name
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
 **accessLevel** | string | User's permissions on the Sheet
-**effectiveAttachmentOptions** | array | An array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
+**effectiveAttachmentOptions** | array | Array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
 **readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
 **ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
 **dependenciesEnabled** | boolean | Flag to indicate that dependencies are enabled
 **resourceManagementEnabled** | boolean | Flag to indicate that resource management is enabled
 **favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
 **showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
-**userSettings** | SheetUserSettings | A [Sheet User Settings object](#sheet-user-settings-object) containing the current user's sheet-specific settings.
+**userSettings** | [SheetUserSettings](#sheetusersettings-object) | A SheetUserSettings object containing the current user's sheet-specific settings.
 **permalink** | string | Direct URL to the Sheet
-**source** | Source | A [Source object](#source-object) indicating the Sheet or Template from which this sheet was created
+**source** | [Source](#source-object) | A Source object indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
 **modifiedAt** | timestamp | Time that the Sheet was modified
-**columns** | array | An array of [Column objects](#column-object)
-**rows** | array | An array of [Row objects](#row-object)
-**discussions** | array | An array of [Discussion objects](#discussion-object)
-**attachments** | array | An array of [Attachment objects](#attachment-object)
+**columns** | [Column](#column-object)[] | Array of Column objects
+**rows** | [Row](#row-object)[] | Array of Row objects
+**discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
+**attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
 
 Request-only attributes (i.e. never returned in a response):
 
@@ -4459,7 +4552,7 @@ Request-only attributes (i.e. never returned in a response):
 -----|-----|-----|
 **fromId** | number | The ID of the Sheet or Template from which to create the Sheet
 
-### Sheet Publish Object 
+### SheetPublish Object 
 
      |     |     |
 -----|-----|-----|
@@ -4472,7 +4565,7 @@ Request-only attributes (i.e. never returned in a response):
 **readWriteUrl** | string | URL for Edit by Anyone
 **icalUrl** | string | URL for iCal
 
-### Sheet User Settings Object
+### SheetUserSettings Object
 
 Represents individual user settings for a specific sheet.  User settings may be updated even on sheets where the current user only has read access (e.g. viewer permissions or a read-only sheet).
 
@@ -4710,7 +4803,7 @@ The following actions increment Sheet version:
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | A simple object with only a **version** attribute
 
-## Get Sheet (incl. Rows)
+## Get Sheet
 
 > Example Request:
 
@@ -4761,8 +4854,8 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>filters</li><li>[source](#source-object)</li><li>rowPermalink</li></ul>To include discussion attachments, both **attachments** and **discussions** parameters must be present in the include list.
-  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>nonexistentCells: omit cells which have never contained any data</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.</li>
+  | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>**nonexistentCells**: omit cells which have never contained any data</li></ul>
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
   | **columnIds** (optional): a comma-separated list of Column IDs. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
@@ -4882,7 +4975,7 @@ Gets the status of the Publish settings of the Sheet, including the URLs of any 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Sheet Publish object](#sheet-publish-object)
+<%= RETURNS %> | [SheetPublish object](#sheetpublish-object)
 
 ### Set Sheet Publish Status
 
@@ -4920,8 +5013,8 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet Publish object](#sheet-publish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing a [Sheet Publish object](#sheet-publish-object)
+<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [SheetPublish object](#sheetpublish-object)
 
 ## Search Sheet 
 
@@ -4959,7 +5052,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 		"userSettings": {
 			"criticalPathEnabled": true
 		},
-        "permalink": "https://ktao.lab.smartsheet.com/dev2/home?lx=RE8LkzA48kPRWTzcgEYOga"
+        "permalink": "https://app.smartsheet.com/b/home?lx=RE8LkzA48kPRWTzcgEYOga"
     },
     "resultCode": 0
 }
@@ -4978,7 +5071,7 @@ only has read-only access to the sheet (i.e. the user has viewer permissions, or
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [Sheet User Settings object](#sheet-user-settings-object) for updating this user's settings for the sheet</li></ul>
+<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating this user's settings for the sheet</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet
 
 ## <%= RELATED %>
@@ -5155,8 +5248,12 @@ curl https://api.smartsheet.com/2.0/token \
 
 `DELETE /token`
 
-Revokes the access token used to make this request.  The access token will no longer be valid, and subsequent API calls made using that token will fail.
+Revokes the access token used to make this request.  The access token will no longer be valid, and subsequent API calls made using the token will fail.
 
+     |     |
+-----|-----|
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
 
 # Users
 
@@ -5177,7 +5274,7 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 
-### User Profile Object
+### UserProfile Object
 
      |     |     |
 -----|-----|-----|
@@ -5187,7 +5284,7 @@ Revokes the access token used to make this request.  The access token will no lo
 **lastName** | string | Current user's last name
 **timeZone** | string | Current user's time zone ID
 **locale** | string | Current user's locale (see [Server Information](#server-information))
-**account** | Account | [Account object](#account-object) representing the current user's customer account
+**account** | [Account](#account-object) | Account object representing the current user's customer account
 
 ### Account Object
 
@@ -5272,7 +5369,7 @@ Gets the current User.
 -----|-----|
 <%= SCOPE %> | all scopes
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [User Profile object](#user-profile-object)
+<%= RETURNS %> | [UserProfile object](#userprofile-object)
 
 ## Get User
 
@@ -5302,7 +5399,7 @@ Gets the User specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [User Profile object](#user-profile-object)
+<%= RETURNS %> | [UserProfile object](#userprofile-object)
 
 ## List All Org Sheets
 
@@ -5434,8 +5531,10 @@ Updates the User specified in the URL.
 **favorite** | boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
 **accessLevel** | string | User's permissions on the Workspace
 **permalink** | string | Direct URL to the Workspace
-**sheets** | array |  Array of [Sheet objects](#sheet-object)
-**folders** | array |  Array of [Folder objects](#folder-object)
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
+**folders** | [Folder](#folder-object)[] | Array of Folder objects
+**reports** | [Report](#report-object)[] | Array of Report objects
+**templates** | [Template](#template-object)[] | Array of Template objects
 
 ## Copy Workspace 
 
@@ -5671,32 +5770,6 @@ Object that describes how the the System Column type of "AUTO_NUMBER" is auto-ge
 **fill** | string | Indicates zero-padding. Must be between 0 and 10 "0" (zero) characters.
 **startingNumber** | number | The starting number for the auto-id
  
-## CellLink Object
-
-Represents a link to a Cell in a different Sheet.
-
-<aside class="notice">If status is not "OK" (i.e. there is a problem with the link), any or all of the following attributes may be null: <ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></aside>
-
-     |     |     |
------|-----|-----|
-**status** | string | One of the following values:<ul><li>**OK**: the link is in a good state</li><li>**BROKEN**: the row or sheet linked to was deleted</li><li>**INACCESSIBLE**: the sheet linked to cannot be viewed by this user</li><li>Several other values indicating unusual error conditions: **NOT_SHARED**, **BLOCKED**, **CIRCULAR**, **INVALID**, and **DISABLED**.</li></ul>
-**sheetId** | number | Sheet ID of the sheet that the linked cell belongs to
-**rowId** | number | Row ID of the linked cell
-**columnId** | number | Column ID of the linked cell
-**sheetname** | string | Sheet name of the linked cell
-
-## Hyperlink Object
-
-Represents a hyperlink to a URL, a Sheet, or a Report.
- 
-<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
-
-     |     |     |
------|-----|-----|
-**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
-**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
-**reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
-
 ## IndexResult Object
 
 Object returned for all `GET` operations against index endpoints.  This object provides metadata which can be used to perform paging on potentially large data sets.  See the [Paging](#paging) section for more information.
@@ -5791,6 +5864,11 @@ The FormatTables object is retrieved via the `GET /serverinfo` operation and con
 **code** | string | The ISO 4217 currency code (e.g. "EUR")
 **symbol** | string | The currency symbol (e.g. "€")
 
-# <span class="customTOCSectionHeading_DevResources">Developer Resources</span>
+# <span class="customTOCSectionHeading">Deprecations</span>
 
+Smartsheet occasionally deprecates APIs to indicate that those APIs should no longer be used in active development. 
+Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
+You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, we recommend that you update that code as soon as possible. 
+
+<aside class="notice">There are currently no deprecations for version 2.0 of the Smartsheet API.</aside>
 
