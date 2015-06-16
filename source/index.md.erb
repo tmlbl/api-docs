@@ -22,7 +22,7 @@ search: false
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% SUPPORTS_BULK = "*This operation supports both single-object and bulk semantics.  See [Bulk Operations](#bulk-operations).*" %>
-<% SUPPORTS_PAGING = "*This operation supports additional query string parameters for paging.  See [Paging](#paging).*" %>
+<% SUPPORTS_PAGING = "*This operation supports additional query string parameters for pagination of results.  For more information, see [Paging](#paging).*" %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
@@ -755,7 +755,7 @@ Other errors that may be returned include:
 unsupported_response_type | response_type must be set to “code”
 invalid_scope | one or more of the requested access scopes are invalid. Please check the list of access scopes
 
-#### Obtaining an Access Token
+#### Obtaining an access token
 
 > Request an access token:
 
@@ -956,7 +956,8 @@ Like the Smartsheet web application, the Smartsheet API allows attaching files t
 * [Attach File to Row](#attach-file-to-row)
 * [Attach File to Comment](#attach-file-to-comment)
 
-You can perform either [multipart](#multipart-uploads) or [simple uploads](#simple-uploads).  See those individual sections for details on putting together upload requests.
+You can attach a file by performing either a [multipart upload](#multipart-uploads) or a [simple upload](#simple-uploads). 
+See those individual sections for details about content and format of upload requests.
 
 Multipart uploads have the added benefit of allowing both a JSON object and a file upload to be sent in a single request.  The following operations allow you to create a
 new object with a file attached in a single request:
@@ -967,29 +968,12 @@ new object with a file attached in a single request:
 <aside class="notice">Important Notes:<ul><li>Max file size for uploads through the API is currently limited to 30mb.</li><li>This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</li></ul></aside>
 
 ### Multipart Uploads
-> Example Request:
 
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X POST \
--F "comment=<comment.json;type=application/json" \
--F "file=@picture.jpg;type=image/jpeg"
-
-    #
-    # Content of the comment.json file:
-    #
-    {
-        "text":"Please review the attached image."
-    }
-```
-
-The recommended way to upload files through the API is using multipart uploads.  Multipart uploads allow you to specify one or more *parts* which can contain JSON or files
-to upload.
+A multipart upload request allows you to specify one or more *parts* which can contain JSON or files to upload. This is the recommended way to upload files through the API. 
 
 <aside class="notice">Most programming languages have libraries that can be used to assemble multipart requests.</aside>
 
-When posting a multipart upload, you must include the following HTTP headers:
+A multipart upload request must include the following HTTP headers:
 
      |     |
 -----|-----|
@@ -1004,12 +988,12 @@ contain the following part headers:
 **Content-Disposition** | Contains the following semicolon-delimited items:<ul><li>`form-data`</li><li>`name=`"*part name*"</li><li>`filename=`"*filename*" (only required for file parts)</li></ul>
 **Content-Type** | The content type of the part: `application/json` for JSON objects, or the applicable MIME type for file parts
 
-The last part must be followed by the boundary string, followed by two hyphens.
+The last part in the request must be followed by the boundary string, followed by two hyphens.
 
-Individual endpoint documentation will specify the number and names of parts they expect.  File parts must have the part name "file", and endpoints which allow for JSON object
-parts will specify the required part name.
+The documentation for each operation that supports multipart uploads will specify the number and names of parts that are expected for the operation. 
+File parts must have the part name "file", and documentation for operations which allow for JSON object parts will specify the required part name for the JSON part.
 
-Here's an example request:
+The following example shows a multipart upload request that creates a Comment containing the specified text and file attachment:
 
 `POST https://api.smartsheet.com/2.0/sheets/4509093797881732/discussions/2889925487028100/comments`  
 `Authorization: Bearer ACCESS_TOKEN`  
@@ -1029,21 +1013,10 @@ Here's an example request:
 `------gU8h01zAAp3LagBr--`
 
 ### Simple Uploads
-> Example Request:
 
-```shell
- curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
- -H 'Authorization: Bearer ACCESS_TOKEN'  \
- -H 'Content-Disposition: attachment; filename="ProgressReport.docx"'  \
- -H 'Content-Type: application/msword'  \
- -H 'Content-Length: 5463'  \
- -X POST \
- --data-binary @ProgressReport.docx
- ```
+A simple upload allows you to add a single file attachment to the specified object.
 
-With a simple upload, the payload body will simply be the contents of the file.
-
-<aside class="notice">Simple uploads were the upload mechanism in Smartsheet API v1. In the current version, we recommend doing <a href="#multipart-uploads">multipart uploads</a> instead.</aside>
+<aside class="notice">Simple uploads were the upload mechanism in Smartsheet API v1. In the current version of the API, we recommend doing <a href="#multipart-uploads">multipart uploads</a> instead.</aside>
 
 To perform this kind of upload, you must set specific headers to tell Smartsheet about the file. The following three headers are required: 
 
@@ -1053,7 +1026,7 @@ To perform this kind of upload, you must set specific headers to tell Smartsheet
 **Content-Type** | Can be left blank if it is not known (but must be present), and Smartsheet will make its best guess based on the extension of the file. 
 **Content-Length** | Must be set to the size of the file, in bytes. For example, in UNIX: <p>`$ ls -l ProgressReport.docx`<br/>`5463 ProgressReport.docx`</p>
 
-Here is an example:
+The following example request shows a simple upload that adds a file attachment to a Sheet:
 
 `POST https://api.smartsheet.com/2.0/sheets/4509093797881732/attachments`  
 `Authorization: Bearer ACCESS_TOKEN`  
@@ -1063,7 +1036,7 @@ Here is an example:
 
 *< Binary content for file >*  
 
-All that is left is to include the file in the body of the post. In most programming languages, this is done by reading the file from an input stream and writing it out to the output stream of the HTTP request. 
+As shown in this example, the contents of the file is included in the body of the `POST` request. In most programming languages, this is done by reading the file from an input stream and writing it out to the output stream of the HTTP request. 
 
 ## Attach File to Comment
 
@@ -1798,17 +1771,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -X POST \
 -d '[
     {
-        "title":"New Picklist Column 1",
-        "type":"PICKLIST",
+        "title": "New Picklist Column 1",
+        "type": "PICKLIST",
         "options": ["First", "Second", "Third"],
-        "index":100
+        "index": 4
     } ,
-    {"title":"New Date Column", "type":"DATE", "index":100},
+    {"title":"New Date Column", "type":"DATE", "index":5},
     {
-        "title":"New Picklist Column 2",
-        "type":"PICKLIST",
+        "title": "New Picklist Column 2",
+        "type": "PICKLIST",
         "options": ["1", "2", "3"],
-        "index":100
+        "index": 6
     }
 ]'
 ```
@@ -1824,7 +1797,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
         "width": 150,
         "title": "Status",
         "type": "PICKLIST",
-        "options":["Not Started","Started","Completed"]
+        "options": ["Not Started","Started","Completed"]
     },
     "resultCode": 0
 }
@@ -1874,14 +1847,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 `POST /sheets/{sheetId}/columns`
 
-Inserts Column(s) into the Sheet specified in the URL.
+Inserts one or more columns into the Sheet specified in the URL.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Column object](#column-object) or an array of [Column objects](#column-object) that contains the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the [Column object(s)](#column-object) for the newly created Column(s)
+<%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the the newly created column(s) -- either a single [Column object](#column-object) or an array of Column objects, corresponding to what was specified in the request.
 
 ## Delete Column
 
@@ -1904,7 +1877,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 
 `DELETE /sheets/{sheetId}/columns/{columnId}`
 
-Deletes the column specified in the URL.
+Deletes the Column specified in the URL.
 
      |     |
 -----|-----|
@@ -1941,7 +1914,7 @@ Gets the Column specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the filter that the user has applied to the column (if any)
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the [filter](#filter-object) that the user has applied to the column (if any)
 <%= RETURNS %> | [Column object](#column-object)
 
 ## Get All Columns
@@ -1996,7 +1969,7 @@ Gets a list of all Columns belonging to the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the filter that the user has applied to each column (if any)
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the [filter](#filter-object) that the user has applied to each column (if any)
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Column objects](#column-object)
 
 ## Update Column
@@ -2453,19 +2426,18 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 `POST /favorites`
 
-Adds item(s) to the user's list of Favorite items.
+Adds one or more items to the user's list of Favorite items.
 
 <%= SUPPORTS_BULK %>
 
-If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code 1129](#errors) will be returned.  If called with an array, and one or more favorites in the array already exist, they will be ignored and omitted from the response.
+If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code](#errors) **1129** will be returned.  If called with an array of [Favorite objects](#favorite-object), any objects specified in the array that are already marked as favorites will be ignored and omitted from the response.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A single [Favorite object](#favorite-object) or an array, with the following attributes:<ul><li>type</li><li>objectId</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing an a single [Favorite object](#favorite-object) or an array of Favorites (depending on what was passed in) that were created.
-
+<%= REQUEST %> | [Favorite object](#favorite-object) or an array of Favorite objects, with the following attributes:<ul><li>type</li><li>objectId</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing object(s) that were marked as favorites -- either a single [Favorite object](#favorite-object) or an array of Favorite objects, corresponding to what was specified in the request.
 
 ## List Favorites
 
@@ -3276,12 +3248,12 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 
 `POST /groups/{groupId}/members`
 
-Adds member(s) to a Group.
+Adds one or more members to a Group.
 
 <%= SUPPORTS_BULK %>
 
-If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code 1129](#errors) will be returned.  If called with an array,
-and one or more users in the array are already group members, they will be ignored and omitted from the response.
+If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code](#errors) **1129** will be returned. If called with an array
+of [GroupMember objects](#groupmember-object) any users specified in the array that are already group members will be ignored and omitted from the response.
 
 <aside class="notice">This operation is only available to group administrators and system administrators.</aside>
 
@@ -3289,8 +3261,8 @@ and one or more users in the array are already group members, they will be ignor
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array, limited to the following attribute:<ul><li>email</li></ul>
-<%= RETURNS %> | [Result object](#result-object), containing a single [group member](#groupmember-object) or array of group members (depending on what was passed in) that will be added to the group.
+<%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array of Group Member objects, limited to the following attribute:<ul><li>email</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the members added to the group -- either a single [group member](#groupmember-object) or array of group member objects, corresponding to what was specified in the request.
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -3569,7 +3541,8 @@ Gets the Report in the format specified, based on the Report ID.
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/reports -H "Authorization: Bearer ACCESS_TOKEN"
+curl https://api.smartsheet.com/2.0/reports 
+-H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
 > Example Response:
@@ -3725,7 +3698,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 `POST /sheets/{sheetId}/rows`
 
-Inserts Row(s) into the Sheet specified in the URL.
+Inserts one or more rows into the Sheet specified in the URL.
 
 <%= SUPPORTS_BULK %>
 
@@ -3737,8 +3710,8 @@ Currently, if multiple rows are specified in the request, all rows must be inser
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A single [Row object](#row-object) or an array that contains the following attributes:<ul><li>A location specifier:<ul><li>toTop</li><li>toBottom</li><li>parentId</li><li>siblingId</li><li>above</li></ul><li>format (optional)</li><li>expanded (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the newly inserted [Row object](#row-object) or array of rows (depending on what was passed in), as well as the new version of the Sheet. 
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>A location specifier:<ul><li>toTop</li><li>toBottom</li><li>parentId</li><li>siblingId</li><li>above</li></ul><li>format (optional)</li><li>expanded (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
 
 ## Copy Row(s) to Another Sheet
 
@@ -3842,7 +3815,7 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which will add a columns array which includes all the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column filters with the columns.
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which will add a columns array that specifies all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column [filters](#filter-object) with the columns.
   | **exclude** (optional) -- a comma-separated list of optional objects to exclude in the response:<ul><li>**nonexistentCells**: omit cells which have never contained any data</li></ul>
 <%= RETURNS %> | [Row object](#row-object)
 
@@ -4252,7 +4225,7 @@ Shares a Report with the specified Users and Groups.
 
 <%= SUPPORTS_BULK %>
 
-<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code 1025](#errors) will be returned.  If called with an array, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
+<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <%= SHARING_ERRORS %>
 
 <%= partial "snippets/share_table.md.erb" %>
@@ -4484,8 +4457,8 @@ Shares a Workspace with the specified Users and Groups.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
-<%= REQUEST %> | [Share object](#share-object) with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
-<%= RETURNS %> | [Result object](#result-object) containing a [Share object](#share-object) representing the person or group whose share has just been created.
+<%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
+<%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request.
 
 ### Update Workspace Share
 
@@ -4903,7 +4876,7 @@ Gets the Sheet in the format specified, based on the Sheet ID.
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets \
--H "Authorization: Bearer ACCESS_TOKEN"...
+-H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
 > Example Response:
