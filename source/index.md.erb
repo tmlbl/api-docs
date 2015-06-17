@@ -21,7 +21,7 @@ search: false
 <% RETURNS = "**Returns**" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
-<% SUPPORTS_BULK = "*This operation supports both single-object and bulk semantics.  See [Bulk Operations](#bulk-operations).*" %>
+<% SUPPORTS_BULK = "*This operation supports both single-object and bulk semantics.  See [Bulk-insert Operations](#bulk-insert-operations).*" %>
 <% SUPPORTS_PAGING = "*This operation supports additional query string parameters for pagination of results.  For more information, see [Paging](#paging).*" %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
@@ -29,7 +29,7 @@ search: false
 <aside class="notice">
 	<b>Smartsheet API 1.1 Deprecation</b><br/><br/>
 	<p>
-		Version 1.1 of the Smartsheet API has been officially deprecated as of June 20, 2015 (coinciding with the release of Smartsheet API 2.0). 
+		Version 1.1 of the Smartsheet API has been officially deprecated as of July 11, 2015 (coinciding with the release of Smartsheet API 2.0). 
 		Any new development from that date forward should use Smartsheet API 2.0.
 	</p>
 	<p>
@@ -564,7 +564,7 @@ Index endpoints all return paged responses via an **IndexResult** object which p
 
 <%= partial "snippets/indexResult_object.md.erb" %>
 
-## Bulk Operations
+## Bulk-insert Operations
 
 Several endpoints support optional bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
 Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorite(s)): you can
@@ -659,9 +659,13 @@ In addition to being a powerful work management tool, Smartsheet is a powerful a
 We are committed to making it easy to build applications on top of Smartsheet - whether you are developing a solution for your organization or creating an app for the Smartsheet customer community at large. 
 We are here to support you and would love your feedback on how to improve the API and the developer experience.
  
-As a developer, you will be building applications that allow any Smartsheet user to access his or her Smartsheet data. 
-Your app must implement a 3-legged oAuth flow to redirect your end users to Smartsheet for authentication and app authorization.
+As a developer, you may be building applications that allow any Smartsheet user to access his or her Smartsheet data. 
+Doing so requires that you complete the following steps.
 
+1. [Complete your Developer Profile](#developer-registration) 
+2. [Register your App](#registering-your-app)
+3. Within your app, [implement a 3-legged oAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
+ 
 ### Developer Registration
 
 Third party app registration and management is available via the Developer Tools. 
@@ -711,17 +715,24 @@ ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
 
 ### oAuth Flow
 
-#### Requesting an authorization code
+Your app must implement a 3-legged oAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
+This process involves the following steps:
 
-After completing your Developer Profile and registering your new App, your app will need an Access Token to access Smartsheet on behalf of an end user. 
-To do so, first direct your user to `https://www.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
+1. [Request authorization from the user](#requesting-authorization-from-the-user)
+2. [Obtain the authorization code](#obtaining-the-authorization-code)
+3. [Use the authorization code to obtain an access token](#obtaining-an-access-token)
+4. [Refresh the access token](#refreshing-an-access-token) (as necessary)
+
+#### Requesting authorization from the user
+
+To request authorization from an end user, direct your user to `https://www.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
 
      |     |
 -----|-----|
 response_type (required) | must be set to "code"
 client_id (required) | client id for your app
-redirect_uri | redirect URL you registered for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
-scope (required) | space-delimited list of access scopes to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
+redirect_uri | redirect URL you [registered](#registering-your-app) for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
+scope (required) | space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
 state | arbitrary string that will be returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated
 
 Here is an example of a URL to which you would send your user as a `GET` request:
@@ -793,8 +804,8 @@ To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/
 -----|-----|
 grant_type | must be set to "authorization_code"
 client_id | client id for your app
-code | authorization code returned in the previous step
-redirect_uri | redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
+code | authorization code returned in the [previous step](#obtaining-the-authorization-code)
+redirect_uri | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
 hash | SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The **client_secret** is never sent with the request.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -839,7 +850,7 @@ To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/
 grant_type | must be set to "refresh_token"
 client_id | client id for your app
 refresh_token | refresh_token value that came with the access token
-redirect_uri | redirect URL registered for your app, including the protocol (e.g., "http://")
+redirect_uri | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://")
 hash | SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -965,7 +976,7 @@ new object with a file attached in a single request:
 * [Create Discussion on Sheet](#create-discussion-on-sheet)
 * [Add Comment](#add-comment)
 
-<aside class="notice">Important Notes:<ul><li>Max file size for uploads through the API is currently limited to 30mb.</li><li>This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</li></ul></aside>
+<aside class="notice">Important Notes:<ul><li>Max file size for uploads through the API is currently limited to 30mb.</li><li>Posting an attachment is a resource-intensive operation and incurs 10 additional requests against the rate limit.</li></ul></aside>
 
 ### Multipart Uploads
 
@@ -1752,58 +1763,17 @@ Smartsheet users can define and save personal column filters on sheets they can 
 
 ## Add Column(s)
 
-> Example Request (add one column):
+> Example Request:
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"], "index":1}'
+-d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":5}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 6}]'
 ```
 
-> Example Request (add multiple columns):
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X POST \
--d '[
-    {
-        "title": "New Picklist Column 1",
-        "type": "PICKLIST",
-        "options": ["First", "Second", "Third"],
-        "index": 4
-    } ,
-    {"title":"New Date Column", "type":"DATE", "index":5},
-    {
-        "title": "New Picklist Column 2",
-        "type": "PICKLIST",
-        "options": ["1", "2", "3"],
-        "index": 6
-    }
-]'
-```
-
-> Example Response (one column added):
-
-```json
-{
-    "message": "SUCCESS",
-    "result": {
-        "id": 5005385858869124,
-        "index": 1,
-        "width": 150,
-        "title": "Status",
-        "type": "PICKLIST",
-        "options": ["Not Started","Started","Completed"]
-    },
-    "resultCode": 0
-}
-```
-
-> Example Response (multiple columns added):
+> Example Response:
 
 ```json
 {
@@ -1848,6 +1818,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 `POST /sheets/{sheetId}/columns`
 
 Inserts one or more columns into the Sheet specified in the URL.
+
+<%= SUPPORTS_BULK %>
 
      |     |
 -----|-----|
@@ -2708,15 +2680,6 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **reports** | [Report](#report-object)[] | Array of Report objects
 **templates** | [Template](#template-object)[] | Array of Template objects
 
-## Copy Folder
-
-To create a copy of an existing Folder, use one of the following operations:
-<ul>
-<li>[Create Folder](#create-folder) - create the new Folder in the user's **Sheets** folder ([Home](#home))</li>
-<li>[Create Folder (Folder)](#create-folder-(folder)) - create the new Folder in another Folder</li>
-<li>[Create Folder (Workspace)](#create-folder-(workspace)) - create the new Folder in a Workspace</li>
-</ul>
-
 ## Create Child Folder
 
 A Folder can be created in the user's **Sheets** folder ([Home](#home)), in another Folder, or in a Workspace.
@@ -3498,7 +3461,7 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
-  | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
+  | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | [Report object](#report-object), populated according to the "include" parameter
 
@@ -3532,7 +3495,7 @@ Gets the Report in the format specified, based on the Report ID.
 <%= HEADERS %> | <%= HEADER_AUTH %>
  | **Accept** -- must be set to one of the following values:<ul><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
-  | **pageSize** (optional): Number of rows per page.  This operation will return a minimum of 1 row, and a maximum of 500.  If not specified, the default value is 100.
+  | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | The file in either Excel or CSV format, containing the Report data according to the **include** parameter.
 
@@ -3631,6 +3594,33 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **siblingId** | number | Puts the row as the next row at the same hierarchical level of this row
 **above** | boolean | Optionally used in conjunction with **siblingId** with a value of `true` to put a row above the specified sibling row
 
+### CopyOrMoveRowDirective Object
+
+     |     |     |
+-----|-----|-----|
+**rowIds** | number[] | The IDs of the rows to move or copy from the source sheet
+**to** | [CopyOrMoveRowDestination](#copyormoverowdestination-object) | A CopyOrMoveRowDestination object that identifies the destination sheet 
+
+### CopyOrMoveRowDestination Object
+
+     |     |     |
+-----|-----|-----|
+**sheetId** | number | ID of the destination sheet
+
+### CopyOrMoveRowResult Object
+
+     |     |     |
+-----|-----|-----|
+**destinationSheetId** | number | ID of the destination sheet
+**rowMappings** | [RowMapping](#rowmapping-object)[] | Array of RowMapping objects 
+
+### RowMapping Object
+
+     |     |     |
+-----|-----|-----|
+**from** | number | Row ID in the source sheet
+**to** | number | Row ID in the destination sheet
+
 ## Add Row(s)
 
 > Example Request:
@@ -3692,6 +3682,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
             ]
         }
     ],
+	"version": 14, 
     "resultCode": 0
 }
 ```
@@ -3702,9 +3693,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 
 <%= SUPPORTS_BULK %>
 
-Currently, if multiple rows are specified in the request, all rows must be inserted at the same location (i.e. the **toTop**, **toBottom**, **parentId**, **siblingId**, and **above** attributes, if specified, must all match).  We may add support for adding rows at different locations in a future update of the API.
-
-<aside class="notice">All rows are added at the same hierarchical level. Currently inserting rows with different levels of hierarchy (using a single request) is not supported.</aside>
+<aside class="notice">If multiple rows are specified in the request, all rows must be inserted at the same location (i.e. the <b>toTop</b>, <b>toBottom</b>, <b>parentId</b>, <b>siblingId</b>, and <b>above</b> attributes must be the same for all rows in the request).</aside>
 
      |     |
 -----|-----|
@@ -3736,9 +3725,9 @@ Copies Row(s) from the Sheet specified in the URL to (the bottom of) another she
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - if specified, any child rows of the rows specified in the request will also be copied to the destination sheet, and parent-child relationships amongst rows will be preserved within the destination sheet; if not specified, only the rows specified in the request will be copied.</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If set to false, rows shall be copied in the sequence that row Ids are specified in the request.
-<%= REQUEST %> | ?object? ...kkb
-<%= RETURNS %> | ?object? ...kkb
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - if specified, any child rows of the rows specified in the request will also be copied to the destination sheet, and parent-child relationships amongst rows will be preserved within the destination sheet; if not specified, only the rows specified in the request will be copied.</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If omitted or set to false, specifying row Ids that do not exist within the source sheet will cause an error response (and no rows will be copied).
+<%= REQUEST %> | [CopyOrMoveRowDirective object](#copyormoverowdirective-object)
+<%= RETURNS %> | [CopyOrMoveRowResult object](#copyormoverowresult-object)
 
 ## Delete Row
 
@@ -3843,9 +3832,9 @@ Moves Row(s) from the Sheet specified in the URL to (the bottom of) another shee
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to move in addition to the cell data:<ul><li>attachments</li><li>discussions</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If set to false, rows shall be moved in the sequence that row Ids are specified in the request.
-<%= REQUEST %> | ?object? ...kkb
-<%= RETURNS %> | ?object? ...kkb
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to move in addition to the cell data:<ul><li>attachments</li><li>discussions</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If omitted or set to false, specifying row Ids that do not exist within the source sheet will cause an error response (and no rows will be moved).
+<%= REQUEST %> | [CopyOrMoveRowDirective object](#copyormoverowdirective-object)
+<%= RETURNS %> | [CopyOrMoveRowResult object](#copyormoverowresult-object)
 
 ## Send Row via Email
 
@@ -4014,7 +4003,7 @@ Searches all Sheets that the User can access, for the specified text.
 
 <%= partial "snippets/searchSheet.md.erb" %>
 
-# Sending
+# Sending via Email
 
 Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
@@ -4554,10 +4543,6 @@ Represents individual user settings for a specific sheet.  User settings may be 
 **id** | number | ID of the Sheet or Template from which the enclosing sheet was created
 **type** | string | "sheet" or "template"
 
-## Copy Sheet
-
-To create a copy of an existing Sheet, see [Create Sheet from Existing Sheet or Template](#create-sheet-from-existing-sheet-or-template).
-
 ## Create Sheet
 
 To create a Sheet from scratch, use one of the following operations (according to where you want to create the Sheet):
@@ -4566,7 +4551,7 @@ To create a Sheet from scratch, use one of the following operations (according t
 <li>[Create Sheet in Folder](#create-sheet-in-folder)</li>
 <li>[Create Sheet in Workspace](#create-sheet-in-workspace)</li>
 </ul>
-<p>To create a Sheet from a Sheet (i.e., "copy sheet") or from a Template, see [Create Sheet from Existing Sheet or Template](#create-sheet-from-existing-sheet-or-template).</p>
+<p>To create a Sheet from a Template, see [Create Sheet from Template](#create-sheet-from-template).</p>
 
 ### Create Sheet in "Sheets" folder
 
@@ -4634,17 +4619,17 @@ Creates a Sheet from scratch at the top-level of the specified Workspace. To cre
 
 <%= partial "snippets/createSheet_table.md.erb" %>
 
-## Create Sheet from Existing Sheet or Template
+## Create Sheet from Template
 
-To create a Sheet from an existing Sheet (i.e., "copy sheet") or from a Template, use one of the following operations (according to where you want to create the Sheet):
+To create a Sheet from a Template, use one of the following operations (according to where you want to create the Sheet):
 <ul>
-<li>[Create Sheet from Sheet or Template](#create-sheet-from-sheet-or-template)</li>
-<li>[Create Sheet in Folder from Sheet or Template](#create-sheet-in-folder-from-sheet-or-template)</li>
-<li>[Create Sheet in Workspace from Sheet or Template](#create-sheet-in-workspace-from-sheet-or-template)</li>
+<li>[Create Sheet in "Sheets" folder from Template](#create-sheet-in-"sheets"-folder-from-template)</li>
+<li>[Create Sheet in Folder from Template](#create-sheet-in-folder-from-template)</li>
+<li>[Create Sheet in Workspace from Template](#create-sheet-in-workspace-from-template)</li>
 </ul>
 <p>To create a Sheet from scratch, see [Create Sheet](#create-sheet).</p>
 
-### Create Sheet from Sheet or Template
+### Create Sheet in "Sheets" folder from Template
 
 > Example Request:
 
@@ -4662,11 +4647,11 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 
 `POST /sheets`
 
-Creates a Sheet in the user's **Sheets** folder ([Home](#home)), from the specified Sheet or Template. To create a Sheet in a subfolder of the **Sheets** folder, use [Create Sheet in Folder from Sheet or Template](#create-sheet-in-folder-from-sheet-or-template).
+Creates a Sheet in the user's **Sheets** folder ([Home](#home)), from the specified Template. To create a Sheet in a subfolder of the **Sheets** folder, use [Create Sheet in Folder from Template](#create-sheet-in-folder-from-template).
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
-### Create Sheet in Folder from Sheet or Template
+### Create Sheet in Folder from Template
 
 > Example Request:
 
@@ -4684,11 +4669,11 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 
 `POST /folders/{folderId}/sheets`
 
-Creates a Sheet in the specified Folder, from the specified Sheet or Template.
+Creates a Sheet in the specified Folder, from the specified Template.
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
-### Create Sheet in Workspace from Sheet or Template
+### Create Sheet in Workspace from Template
 
 > Example Request:
 
@@ -4706,7 +4691,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 
 `POST /workspaces/{workspaceId}/sheets`
 
-Creates a Sheet at the top-level of the specified Workspace, from the specified Sheet or Template. To create a Sheet in a Folder within a Workspace, use [Create Sheet in Folder from Sheet or Template](#create-sheet-in-folder-from-sheet-or-template).
+Creates a Sheet at the top-level of the specified Workspace, from the specified Template. To create a Sheet in a Folder within a Workspace, use [Create Sheet in Folder from Template](#create-sheet-in-folder-from-template).
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
@@ -5073,7 +5058,7 @@ For details about working with a Sheet's rows, see [Rows](#rows).
 
 # Templates
 
-A Template can be used to create a Sheet, as described in [Create Sheet from Existing Sheet or Template](#create-sheet-from-existing-sheet-or-template).
+A Template can be used to create a Sheet, as described in [Create Sheet from Template](#create-sheet-from-template).
 
 ## <%= OBJECTS %>
 
@@ -5509,10 +5494,6 @@ Updates the User specified in the URL.
 **reports** | [Report](#report-object)[] | Array of Report objects
 **templates** | [Template](#template-object)[] | Array of Template objects
 
-## Copy Workspace 
-
-To create a copy of an existing Workspace, see [Create Workspace](#create-workspace).
-
 ## Create Workspace
 
 > Example Request:
@@ -5544,17 +5525,11 @@ curl https://api.smartsheet.com/2.0/workspaces \
 
 Creates a Workspace.
 
-<aside class="notice">When using the 'Create Workspace' operation to create a copy of a Workspace:<ul>
-<li>Specify the <b>include</b> parameter to indicate which elements of the Workspace to copy.</li>
-<li>Specify the <b>skipRemap</b> parameter to preserve original references in reports or for cell links in the new workspace.</li>
-<li>Specify the <b>fromId</b> property in the body of the request to indicate the Workspace to copy.</li></ul></aside>
-
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- If copying a workspace - comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand - Applicable when copying a workspace.</li><li>shares - Applicable when copying a workspace.</li></ul>By default, all elements are copied.  See [Copying Folders & Workspaces](http://help.smartsheet.com/customer/portal/articles/1782802-copying-folders-workspaces) help article. If "data" is omitted, attachments, discussions, and cellLinks include elements are ignored even if provided.<br/><br/>**skipRemap** (optional) -- If copying a workspace - comma-separated list of original references to preserve/skip "remapping" for:<ul><li>cellLinks</li><li>reports</li></ul>The cell links and reports should continue to point to the original source sheets if specified via skipRemap. By default, if the cell link source is among the copied, the copied cell link shall point to the copied source NOT the original.
-<%= REQUEST %> | [Workspace object](#workspace-object), limited to the following attributes:<ul><li>name (string) - required</li><li>fromId (number) - optional: if copying a Workspace, the ID of the Workspace from which to copy</li></ul>
+<%= REQUEST %> | [Workspace object](#workspace-object), limited to the following attribute:<ul><li>name (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
 ## Delete Workspace
