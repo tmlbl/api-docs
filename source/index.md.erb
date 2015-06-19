@@ -3698,7 +3698,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>A location specifier:<ul><li>toTop</li><li>toBottom</li><li>parentId</li><li>siblingId</li><li>above</li></ul><li>format (optional)</li><li>expanded (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>A location specifier -- one of the following attributes (optional):<ul><li>**toTop**</li><li>**toBottom**</li><li>**parentId**</li><li>**siblingId**</li><li>**above**</li></ul><li>**format** (optional)</li><li>**expanded** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
 
 ## Copy Row(s) to Another Sheet
@@ -3848,7 +3848,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"parentId": PARENT_ROW_ID, "expanded": true, "cells": [{"columnId": 642523719853956, "value": 73.0}]}'
+-d '[{"id": "6572427401553796", "cells": [{"columnId": 7518312134403972,"value": "new value"}, {"columnId": 1888812600190852,"value": "A"}]}, {"id": "2068827774183300", "cells": [{"columnId": 7518312134403972,"value": "desc_updated"}, {"columnId": 1888812600190852,"value": "B"}]}]'
 ```
 
 > Example Response:
@@ -3858,38 +3858,81 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
     "message": "SUCCESS",
     "result": [
         {
+            "id": 2068827774183300,
+            "rowNumber": 2,
+            "parentRowNumber": 1,
+            "parentId": 4624744004773764,
+            "expanded": true,
+            "createdAt": "2015-01-09T11:41:55-08:00",
+            "modifiedAt": "2015-02-23T15:36:07-08:00",
             "cells": [
                 {
-                    "columnId": 642523719853956,
-                    "displayValue": "1",
+                    "columnId": 7518312134403972,
                     "type": "TEXT_NUMBER",
-                    "value": 73.0
+                    "value": "desc_updated",
+                    "displayValue": "desc_updated"
+                },
+                {
+                    "columnId": 1888812600190852,
+                    "type": "PICKLIST",
+                    "value": "B",
+                    "displayValue": "B"
+                },
+                {
+                    "columnId": 6392412227561348,
+                    "type": "TEXT_NUMBER",
+                    "value": 1,
+                    "displayValue": "1"
                 }
-            ],
-            "createdAt": "2013-02-28T10:48:42-08:00",
+            ]
+        },
+        {
+            "id": 6572427401553796,
+            "rowNumber": 3,
+            "parentRowNumber": 1,
+            "parentId": 4624744004773764,
             "expanded": true,
-            "id": 3377704922834820,
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "parentRowNumber": 4,
-            "rowNumber": 5
+            "createdAt": "2015-01-09T11:41:55-08:00",
+            "modifiedAt": "2015-02-23T15:36:07-08:00",
+            "cells": [
+                {
+                    "columnId": 7518312134403972,
+                    "type": "TEXT_NUMBER",
+                    "value": "new value",
+                    "displayValue": "desc_updated"
+                },
+                {
+                    "columnId": 1888812600190852,
+                    "type": "PICKLIST",
+                    "value": "A",
+                    "displayValue": "A"
+                },
+                {
+                    "columnId": 6392412227561348,
+                    "type": "TEXT_NUMBER",
+                    "value": 1,
+                    "displayValue": "1"
+                }
+            ]
         }
     ],
+    "version": 8,
     "resultCode": 0
 }
 ```
 
-`PUT /sheets/{sheetId}/rows/{rowId}`
+`PUT /sheets/{sheetId}/rows`
 
-Updates cell values in the row, expands/collapses the row, or modifies its position (including indenting/outdenting). 
+Updates cell values in the specified row(s), expands/collapses the specified row(s), and/or modifies the position of specified rows (including indenting/outdenting). 
 
-<aside class="notice">If row position is updated, all child rows are moved with the row.</aside>
+<aside class="notice">If a row's position is updated, all child rows are moved with the row.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Row object](#row-object) that contains the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>ColumnIds must be valid for the sheet to which the row belongs, and must only be used once per operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the array of [Row objects](#row-object) that have been updated and/or moved by the operation. 
+<%= REQUEST %> | [Row object](#row-object) or an array or Row objects, with the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>A location specifier – one of the following attributes (optional): One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the updated row(s) -- either a single [Row object](#row-object) or an array of Row objects, corresponding to what was specified in the request. 
 
 ## <%= RELATED %>
 
