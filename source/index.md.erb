@@ -118,8 +118,7 @@ Deprecated APIs typically remain present and usable for a reasonable period of t
 You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, we recommend that you update that code as soon as possible. 
 For a list of Smartsheet API 2.0 deprecations, see [Deprecations](#deprecations).
 
-If new functionality is added to the API, we will let you know via our [Developer Portal](http://www.smartsheet.com/developers) and other means of communication, such as Twitter, Facebook or email. 
-Please follow these sources to stay up to date on the latest changes.
+<aside class="success">To stay informed about changes to the API, subscribe to our Developer Newsletter (using the <i>Get Developer Updates</i> form on the <a href="http://www.smartsheet.com/developers" target="_blank">Smartsheet Developer Portal</a>) or follow us via <a href="https://twitter.com/smartsheetapi" target="_blank">Twitter</a>.</aside>
 
 # API Fundamentals
 
@@ -729,10 +728,10 @@ To request authorization from an end user, direct your user to `https://www.smar
 
      |     |
 -----|-----|
-response_type (required) | must be set to "code"
-client_id (required) | client id for your app
-redirect_uri | redirect URL you [registered](#registering-your-app) for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
-scope (required) | space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
+response_type<br/>(required) | must be set to "code"
+client_id<br/>(required) | client id for your app
+redirect_uri<br/>(optional) | redirect URL you [registered](#registering-your-app) for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
+scope<br/>(required) | space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
 state | arbitrary string that will be returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated
 
 Here is an example of a URL to which you would send your user as a `GET` request:
@@ -798,15 +797,15 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 Once you’ve successfully obtained an authorization code, the next step is to obtain an access token. 
-To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters (all parameters are required):
+To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
      |     |
 -----|-----|
-grant_type | must be set to "authorization_code"
-client_id | client id for your app
-code | authorization code returned in the [previous step](#obtaining-the-authorization-code)
-redirect_uri | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
-hash | SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The **client_secret** is never sent with the request.
+grant_type<br/>(required) | must be set to "authorization_code"
+client_id<br/>(required) | client id for your app
+code<br/>(required) | authorization code returned in the [previous step](#obtaining-the-authorization-code)
+redirect_uri<br/>(optional) | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
+hash<br/>(required) | SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The **client_secret** is never sent with the request.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -843,15 +842,15 @@ curl https://api.smartsheet.com/2.0/token \
 An access token is valid for one week but you can use the refresh token to obtain a new access token. 
 Once you obtain the new access token, you can use it in place of the old one, which is no longer valid.
  
-To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters (all parameters are required):
+To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
      |     |
 -----|-----|
-grant_type | must be set to "refresh_token"
-client_id | client id for your app
-refresh_token | refresh_token value that came with the access token
-redirect_uri | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://")
-hash | SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
+grant_type<br/>(required)| must be set to "refresh_token"
+client_id<br/>(required)| client id for your app
+refresh_token<br/>(required)| refresh_token value that came with the access token
+redirect_uri<br/>(optional)| redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://")
+hash<br/>(required)| SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -1683,7 +1682,7 @@ Gets the cell modification history.
 
 <%= SUPPORTS_PAGING %>
 
-<aside>This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
+<aside class="notice">This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
 
      |     |
 -----|-----|
