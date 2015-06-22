@@ -21,8 +21,10 @@ search: false
 <% RETURNS = "**Returns**" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
-<% SUPPORTS_BULK = "*This operation supports both single-object and bulk semantics.  See [Bulk-insert Operations](#bulk-insert-operations).*" %>
-<% SUPPORTS_PAGING = "*This operation supports additional query string parameters for pagination of results.  For more information, see [Paging](#paging).*" %>
+<% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
+<% SUPPORTS_PAGING = "This operation supports pagination of results." %>
+<% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
+<% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
@@ -960,26 +962,21 @@ Attachments can exist on a [Comment](#comments), on a [Row](#rows), or on a [She
 
 ## Posting an Attachment
 
-Like the Smartsheet web application, the Smartsheet API allows attaching files to Sheets, Rows and Comments. To upload a file, you can use one of the following operations:
+Like the Smartsheet web application, the Smartsheet API allows uploading files to Sheets, Rows and Comments. 
+You can upload a file by performing either a *simple upload* or a *multipart upload*. 
 
-* [Attach File to Sheet](#attach-file-to-sheet)
-* [Attach File to Row](#attach-file-to-row)
-* [Attach File to Comment](#attach-file-to-comment)
+A [simple upload](#simple-uploads) allows you to add a single file attachment to the specified object. 
+For example, you can perform a simple upload to upload a file to a [sheet](#attach-file-to-sheet), [row](#attach-file-to-row), or [comment](#attach-file-to-comment). 
 
-You can attach a file by performing either a [multipart upload](#multipart-uploads) or a [simple upload](#simple-uploads). 
-See those individual sections for details about content and format of upload requests.
-
-Multipart uploads have the added benefit of allowing both a JSON object and a file upload to be sent in a single request.  The following operations allow you to create a
-new object with a file attached in a single request:
-
-* [Create Discussion on Sheet](#create-discussion-on-sheet)
-* [Add Comment](#add-comment)
+A [multipart upload](#multipart-uploads) allows you to add a single file attachment to the specified object (i.e., attach a file to a [sheet](#attach-file-to-sheet), [row](#attach-file-to-row), or [comment](#attach-file-to-comment)), or to create an object and attach a file using a single request. 
+For example, you can perform a multipart upload to [create a new Comment](#add-comment) that contains a single file attachment or to [add a new Discussion to a Sheet](#create-discussion-on-sheet) that contains a single file attachment.
 
 <aside class="notice">Important Notes:<ul><li>Max file size for uploads through the API is currently limited to 30mb.</li><li>Posting an attachment is a resource-intensive operation and incurs 10 additional requests against the rate limit.</li></ul></aside>
 
 ### Multipart Uploads
 
-A multipart upload request allows you to specify one or more *parts* which can contain JSON or files to upload. This is the recommended way to upload files through the API. 
+A multipart upload request allows you to add a single file attachment to the specified object (i.e., attach a file to a [sheet](#attach-file-to-sheet), [row](#attach-file-to-row), or [comment](#attach-file-to-comment)), or to create an object and upload a file using a single request. 
+For example, you can perform a multipart upload to [create a new Comment](#add-comment) that contains a single file attachment or to [add a new Discussion to a Sheet](#create-discussion-on-sheet) that contains a single file attachment.
 
 <aside class="notice">Most programming languages have libraries that can be used to assemble multipart requests.</aside>
 
@@ -990,8 +987,9 @@ A multipart upload request must include the following HTTP headers:
 **Content-Type** | Must be set to `multipart/form-data`, and include the boundary string that will separate the parts in the request payload.
 **Content-Length** | The length of the request payload.
 
-The request payload must contain at least one part.  Each part must start with the boundary string specified in the **Content-Type** request header, and must
-contain the following part headers:
+The request body of a multipart upload request contains one or more *parts*, each part containing either JSON or a file to upload. 
+The request body must contain at least one part. 
+Each part must start with the boundary string specified in the **Content-Type** request header, and must contain the following part headers:
 
      |     |
 -----|-----|
@@ -1024,9 +1022,8 @@ The following example shows a multipart upload request that creates a Comment co
 
 ### Simple Uploads
 
-A simple upload allows you to add a single file attachment to the specified object.
-
-<aside class="notice">Simple uploads were the upload mechanism in Smartsheet API v1. In the current version of the API, we recommend doing <a href="#multipart-uploads">multipart uploads</a> instead.</aside>
+A [simple upload](#simple-uploads) allows you to add a single file attachment to the specified object. 
+For example, you can perform a simple upload to upload a file to a [sheet](#attach-file-to-sheet), [row](#attach-file-to-row), or [comment](#attach-file-to-comment). 
 
 To perform this kind of upload, you must set specific headers to tell Smartsheet about the file. The following three headers are required: 
 
@@ -1034,7 +1031,7 @@ To perform this kind of upload, you must set specific headers to tell Smartsheet
 -----|-----|
 **Content-Disposition** | `attachment` to tell the API that a file is in the body of the POST request, followed by a semicolon, followed by `filename=` and the filename in quotes
 **Content-Type** | Can be left blank if it is not known (but must be present), and Smartsheet will make its best guess based on the extension of the file. 
-**Content-Length** | Must be set to the size of the file, in bytes. For example, in UNIX: <p>`$ ls -l ProgressReport.docx`<br/>`5463 ProgressReport.docx`</p>
+**Content-Length** | Must be set to the size of the file, in bytes. For example to determine file size using in UNIX: <p>`$ ls -l ProgressReport.docx`<br/>`5463 ProgressReport.docx`</p>
 
 The following example request shows a simple upload that adds a file attachment to a Sheet:
 
@@ -1077,7 +1074,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 
 `POST /sheets/{sheetId}/comments/{commentId}/attachments`
 
-Attaches a file to the Comment.
+<% SUPPORTS_MULTIPART = "This operation can be performed using a [simple upload](#simple-uploads) or a [multipart upload](#multipart-uploads). For more information, see [Posting an Attachment](#posting-an-attachment)." %>
+
+Attaches a file to the Comment. <%= SUPPORTS_MULTIPART %>
 
 <% NEW_ATTACHMENT = "This operation will always create a new attachment.  To upload a new version of the same attachment, use the [Attach New Version](#attach-new-version) operation." %>
 
@@ -1113,7 +1112,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 
 `POST /sheets/{sheetId}/rows/{rowId}/attachments`
 
-Attaches a file to the Row.
+Attaches a file to the Row. <%= SUPPORTS_MULTIPART %>
 
 <%= NEW_ATTACHMENT %>
 
@@ -1147,7 +1146,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 
 `POST /sheets/{sheetId}/attachments`
 
-Attaches a file to the Sheet.
+Attaches a file to the Sheet. <%= SUPPORTS_MULTIPART %>
 
 <%= NEW_ATTACHMENT %>
 
@@ -1324,12 +1323,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 
 Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion level Attachments.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 ## Get Discussion Attachments
@@ -1374,12 +1374,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 Gets a list of all Attachments that are in the Discussion.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 ## Get Row Attachments
@@ -1424,12 +1425,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 
 Gets a list of all Attachments that are on the Row, including Row and Discussion level Attachments.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 ## Versioning 
@@ -1474,7 +1476,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 `POST /sheets/{sheetId}/attachments/{attachmentId}/versions`
 
-Uploads a new version of a file to a Sheet or Row.
+Uploads a new version of a file to a Sheet or Row. <%= SUPPORTS_MULTIPART %>
 
 <aside class="notice">Uploading new versions is not supported for attachments on Comments or for URL attachments.</aside>
 
@@ -1549,12 +1551,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 Gets a list of all versions of the given Attachment ID, in order from newest to oldest.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
 <aside class="notice">To retrieve a download URL for a file attachment, use the Get Attachment operation for the specific version you want to download.</aside>
@@ -1579,12 +1582,7 @@ A collection of Cells comprises each Row in a Sheet.
 **linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
 **format** | string | The format descriptor (see [Formats](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a non-default format applied.
 **conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formats](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a conditional format applied.
-
-**Request-only attributes** (i.e. never returned in a response):
-
-     |     |     |
------|-----|-----|
-**strict** | boolean | Set to false to enable lenient parsing.  Defaults to **true**.  See [Cell Value Parsing](#cell-value-parsing).
+**strict** | boolean | Set to **false** to enable lenient parsing. Defaults to **true**. <%= REQUEST_ONLY_ATTRIBUTE %> See [Cell Value Parsing](#cell-value-parsing) for more information about using this attribute. 
 
 ### Cell History Object
 
@@ -1680,7 +1678,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 
 Gets the cell modification history. 
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <aside class="notice">This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
 
@@ -1688,6 +1686,7 @@ Gets the cell modification history.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Cell History objects](#cell-history-object)
 
 ## Update Cell(s)
@@ -1818,7 +1817,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 Inserts one or more columns into the Sheet specified in the URL.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
      |     |
 -----|-----|
@@ -1934,13 +1933,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 Gets a list of all Columns belonging to the Sheet specified in the URL.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the [filter](#filter-object) that the user has applied to each column (if any)
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response will include the [filter](#filter-object) that the user has applied to each column (if any)<br/><br/><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Column objects](#column-object)
 
 ## Update Column
@@ -2059,7 +2058,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 Adds a Comment to a Discussion.
 
-**Without Attachment:**
+<aside class="notice">This operation supports multipart requests. Using a multipart request allows you to create a new Comment and upload a file to that Comment in a single step (i.e., using a single request). For more information, see <a href="#multipart-uploads">Multipart Uploads</a>.</aside>
+
+<br/><br/>
+**Creating a Comment without an Attachment:**
 
      |     |
 -----|-----|
@@ -2068,7 +2070,9 @@ Adds a Comment to a Discussion.
 <%= REQUEST %> | [Comment object](#comment-object) with the following attribute:<ul><li>text</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing [Comment object](#comment-object) that was created
 
-**With Attachment:**
+<br/><br/>
+**Creating a Comment with an Attachment:**
+
 <%= partial "snippets/createCommentMultipart_table.md.erb" %>
 
 ## Delete Comment
@@ -2227,10 +2231,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 Creates a new Discussion on a Sheet.
 
-**Without Attachment:**
+<aside class="notice">This operation supports multipart requests. Using a multipart request allows you to create a new Discussion and upload a file to the first Comment within that Discussion in a single step (i.e., using a single request). For more information, see <a href="#multipart-uploads">Multipart Uploads</a>.</aside>
+
+<br/><br/>
+**Creating a Discussion without an Attachment:**
 <%= partial "snippets/createDiscussion_table.md.erb" %>
 
-**With Attachment:**
+<br/>
+**Creating a Discussion with an Attachment:**
 <%= partial "snippets/createDiscussionMultipart_table.md.erb" %>
 
 ## Delete Discussion
@@ -2279,7 +2287,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 
 Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -2338,7 +2346,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?in
 
 Gets a list of all Discussions associated with the specified Row.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -2399,7 +2407,7 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 Adds one or more items to the user's list of Favorite items.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
 If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code](#errors) **1129** will be returned.  If called with an array of [Favorite objects](#favorite-object), any objects specified in the array that are already marked as favorites will be ignored and omitted from the response.
 
@@ -2444,12 +2452,13 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 Gets a list of all of the user's Favorite items.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Favorite objects](#favorite-object)
 
 ## Remove Favorite
@@ -2838,7 +2847,7 @@ curl https://api.smartsheet.com/2.0/home/folders \
 
 Gets a list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -2860,7 +2869,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 
 Gets a list of the top-level child Folders within the specified Folder.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -2882,7 +2891,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 
 Gets a list of the top-level child Folders within the specified Workspace.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -3103,12 +3112,13 @@ curl https://api.smartsheet.com/2.0/groups \
 
 Gets the list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Group objects](#group-object)
 
 ## Update Group
@@ -3212,7 +3222,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 
 Adds one or more members to a Group.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
 If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code](#errors) **1129** will be returned. If called with an array
 of [GroupMember objects](#groupmember-object) any users specified in the array that are already group members will be ignored and omitted from the response.
@@ -3549,12 +3559,13 @@ curl https://api.smartsheet.com/2.0/reports
 
 Gets the list of all Reports that the User has access to, in alphabetical order, by name.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Report objects](#report-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Send Report via Email
@@ -3595,16 +3606,11 @@ A Row is a component of a Sheet. Each Row is composed of a collection of Cells, 
 **discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **attachments**.
 **columns** | [Column](#column-object)[] | Array of Column objects.<br/>Only returned if the [Get Row](#get-row) **include** query string parameter contains **columns**.
-
-**Request attributes** (use these to specify the location at which to create or move a row):
-
-     |     |     |
------|-----|-----|
-**toTop** | boolean | Flag to indicate that row(s) should be put at the top of the sheet
-**toBottom** | boolean | Flag to indicate that row(s) should be put at the bottom of the sheet, or, if used in conjuction with **parentId**, as the last child of the parent
-**parentId** | number | Puts the row as the first child of this row
-**siblingId** | number | Puts the row as the next row at the same hierarchical level of this row
-**above** | boolean | Optionally used in conjunction with **siblingId** with a value of `true` to put a row above the specified sibling row
+**toTop** | boolean | Flag used to specify the location at which to create or move a row. Indicates that the row should be added to the top of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
+**toBottom** | boolean | Flag used to specify the location at which to create or move a row. Indicates that the row should be added to the bottom of the sheet, or, if used in conjunction with **parentId**, added as the last child of the parent. <%= REQUEST_ONLY_ATTRIBUTE %>
+**parentId** | number | Flag used to specify the location at which to create or move a row. Indicates that the row  should be added as the first child of this row. <%= REQUEST_ONLY_ATTRIBUTE %>
+**siblingId** | number | Flag used to specify the location at which to create or move a row. Indicates that the row should be added as the next row at the same hierarchical level of this row. <%= REQUEST_ONLY_ATTRIBUTE %>
+**above** | boolean | Flag used to specify the location at which to create or move a row. Optionally used in conjunction with **siblingId** with a value of `true` to indicate that the row should be added above the specified sibling row. <%= REQUEST_ONLY_ATTRIBUTE %>
 
 ### CopyOrMoveRowDirective Object
 
@@ -3703,7 +3709,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 Inserts one or more rows into the Sheet specified in the URL.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
 <aside class="notice">If multiple rows are specified in the request, all rows must be inserted at the same location (i.e. the <b>toTop</b>, <b>toBottom</b>, <b>parentId</b>, <b>siblingId</b>, and <b>above</b> attributes must be the same for all rows in the request).</aside>
 
@@ -4175,14 +4181,9 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspac
 **email**       | string | User's email address for user shares; null for group shares.
 **name**        | string | If a user share and user is also a contact, the user's full name.  If a group share, the group's name.
 **accessLevel** | string | User or group's [access level](#access-levels) on shared object.
-
-**Request-only attributes** (i.e. never returned in a response):
-
-     |     |     |
------|-----|-----|
-**subject**		| string | The subject of the email that will optionally be sent to notify the recipient.
-**message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient.
-**ccMe**		| boolean | Flag to indicate whether or not to CC the user sharing the sheet.
+**subject**		| string | The subject of the email that will optionally be sent to notify the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
+**message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
+**ccMe**		| boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
 
 ## Report Sharing
 
@@ -4242,7 +4243,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 
 Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -4266,7 +4267,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 
 Shares a Report with the specified Users and Groups.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
 <% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <%= SHARING_ERRORS %>
@@ -4353,7 +4354,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 
 Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -4377,7 +4378,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 
 Shares a Sheet with the specified Users and Groups.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
 <%= SHARING_ERRORS %>
 
@@ -4467,7 +4468,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 
 Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -4491,7 +4492,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 
 Shares a Workspace with the specified Users and Groups.
 
-<%= SUPPORTS_BULK %>
+<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
 
 <%= SHARING_ERRORS %>
 
@@ -4561,12 +4562,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **rows** | [Row](#row-object)[] | Array of Row objects
 **discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
-
-Request-only attributes (i.e. never returned in a response):
-
-     |     |     |
------|-----|-----|
-**fromId** | number | The ID of the Sheet or Template from which to create the Sheet
+**fromId** | number | The ID of the Template from which to create the Sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
 
 ### SheetPublish Object 
 
@@ -4947,13 +4943,13 @@ curl https://api.smartsheet.com/2.0/sheets \
 
 Gets the list of all Sheets that the User has access to, in alphabetical order, by name.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- element to include in the response:<ul><li>[source](#source-object)</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- element to include in the response:<ul><li>[source](#source-object)</li></ul><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li></ul>
 
 ## Publish Sheet
@@ -5142,7 +5138,7 @@ curl https://api.smartsheet.com/2.0/templates/public \
 
 Gets the list of public Templates to which the user has access.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -5163,7 +5159,7 @@ curl https://api.smartsheet.com/2.0/templates \
 
 Gets the list of user-created Templates to which the user has access.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -5451,13 +5447,13 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 
 Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results
+<%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results<br/><br/><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)
 
 ## Remove User
@@ -5697,12 +5693,13 @@ curl https://api.smartsheet.com/2.0/workspaces \
 
 Gets the list of Workspaces to which the user has access.
 
-<%= SUPPORTS_PAGING %>
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Workspace objects](#workspace-object)
 
 ## Share Workspace
