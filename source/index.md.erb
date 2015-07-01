@@ -1304,7 +1304,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
 			"id": 4583173393803140,
-			"parent" : "SHEET",
+			"parentType" : "SHEET",
 			"parentId" : 341847495283
 		},
 		{
@@ -1312,7 +1312,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
 			"id": 4583173393803140,
-			"parent" : "ROW",
+			"parentType" : "ROW",
 			"parentId" : 684956754834557
 		}
 	]
@@ -1355,7 +1355,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
 			"id": 4583173393803140,
-			"parent" : "COMMENT",
+			"parentType" : "COMMENT",
 			"parentId" : 341847495283
 		},
 		{
@@ -1363,7 +1363,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
 			"id": 4583173393803140,
-			"parent" : "COMMENT",
+			"parentType" : "COMMENT",
 			"parentId" : 684956754834557
 		}
 	]
@@ -1406,7 +1406,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
 			"id": 4583173393803140,
-			"parent" : "ROW",
+			"parentType" : "ROW",
 			"parentId" : 341847495283
 		},
 		{
@@ -1414,7 +1414,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
 			"id": 4583173393803140,
-			"parent" : "COMMENT",
+			"parentType" : "COMMENT",
 			"parentId" : 684956754834557
 		}
 	]
@@ -1717,7 +1717,7 @@ If null, the cell's value will be derived from the hyperlink:
 
 # Columns
 
-A Column is a component of a Sheet. 
+A Column is a component of a Sheet or Report. 
 
 ## <%= OBJECTS %>
 
@@ -1990,6 +1990,8 @@ Updates properties of the column, moves the column, and/or renames the column.
 # Comments
 
 A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
+
+<aside class="notice">The operations in this section describe how to add, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row, use one of the following operations:<ul><li><a href="#get-all-discussions">Get All Discussions</a></li><li><a href="#get-row-discussions">Get Row Discussions</a></li></ul></aside>
 
 ## <%= OBJECTS %>
 
@@ -3576,9 +3578,33 @@ Gets the list of all Reports that the User has access to, in alphabetical order,
 
 For details about Report sharing, see [Report Sharing](#report-sharing).
 
+## <%= RELATED %>
+
+A Report is comprised of Columns, Rows, and Cells, and may optionally contain Attachments and/or Discussions.
+
+### Report Attachments
+
+For details about working with a Report's attachments, see [Attachments](#attachments).
+
+### Report Cells
+
+For details about working with a Report's cells, see [Cells](#cells).
+
+### Report Columns
+
+For details about working with a Report's columns, see [Columns](#columns).
+
+### Report Discussions
+
+For details about working with a Report's discussions, see [Discussions](#discussions).
+
+### Report Rows 
+
+For details about working with a Report's rows, see [Rows](#rows).
+
 # Rows
 
-A Row is a component of a Sheet. Each Row is composed of a collection of Cells, and may optionally contain Discussions and/or Attachments.
+A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Discussions and/or Attachments.
 
 ## <%= OBJECTS %>
 
@@ -5100,7 +5126,14 @@ For details about working with a Sheet's columns, see [Columns](#columns).
 
 ### Sheet Discussions
 
-For details about working with a Sheet's discussions, see [Discussions](#discussions).
+There are two ways to get discussion-related information for a Sheet:
+
+Operation | Returns
+----------|----------|-----------
+[Get Sheet](#get-sheet)<br/>(with **include** parameter value "discussions") | Response does *not* contain the Comments that comprise each Discussion.
+[Get All Discussions](#get-all-discussions)<br/>(with **include** parameter value "comments") |  Response *does* contain the Comments that comprise each Discussion.
+
+For more information about working with a Sheet's discussions, see [Discussions](#discussions).
 
 ### Sheet Rows 
 
