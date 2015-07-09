@@ -1624,7 +1624,7 @@ Represents a hyperlink to a URL, a Sheet, or a Report.
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history?include=columnType \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
@@ -1640,7 +1640,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 		{
 			"columnId":642523719853956,
 			"displayValue": "Revision 3",
-			"type": "TEXT_NUMBER",
+			"columnType": "TEXT_NUMBER",
 			"value": "Revision 3",
 			"modifiedAt": "2013-06-24T00:10:18Z",
 			"modifiedBy" : {
@@ -1651,7 +1651,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 		{
 			"columnId":642523719853956,
 			"displayValue": "Revision 2",
-			"type": "TEXT_NUMBER",
+			"columnType": "TEXT_NUMBER",
 			"value": "Revision 2",
 			"modifiedAt": "2013-06-23T00:10:18Z",
 			"modifiedBy" : {
@@ -1662,7 +1662,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 		{
 			"columnId":642523719853956,
 			"displayValue": "Revision 1",
-			"type": "TEXT_NUMBER",
+			"columnType": "TEXT_NUMBER",
 			"value": "Revision 1",
 			"modifiedAt": "2013-06-22T00:10:18Z",
 			"modifiedBy" : {
@@ -1686,7 +1686,8 @@ Gets the cell modification history.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional): when specified with a value of "columnType", response will include the **columnType** attribute for each [cell] (#cell-object)
+ | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Cell History objects](#cell-history-object)
 
 ## Update Cell(s)
@@ -3809,7 +3810,7 @@ Deletes the Row specified in the URL.
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns,columnType \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
@@ -3823,13 +3824,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discus
     "expanded": true,
     "cells": [
         {
-            "type": "TEXT_NUMBER",
+            "columnType": "TEXT_NUMBER",
             "value": "Revision 1",
             "displayValue": "Revision 1",
             "columnId": 4583173393803140
         },
         {
-            "type": "PICKLIST",
+            "columnType": "PICKLIST",
             "value": "completed",
             "displayValue": "completed",
             "columnId": 2331373580117892
@@ -3976,7 +3977,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Row object](#row-object) or an array or Row objects, with the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>A location specifier – one of the following attributes (optional): One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>A location specifier – one of the following attributes (optional): One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the updated row(s) -- either a single [Row object](#row-object) or an array of Row objects, corresponding to what was specified in the request. 
 
 ## <%= RELATED %>
