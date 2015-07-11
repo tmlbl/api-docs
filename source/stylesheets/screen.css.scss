@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 @import 'normalize';
 @import 'compass';
 @import 'variables';
@@ -72,14 +72,15 @@ html, body {
   overflow-x: hidden;
   position: fixed;
   z-index: 30;
-  top: 0;
+  top: 60px;
   left: 0;
   bottom: 0;
   width: $nav-width;
   background-color: $nav-bg;
-  font-size: 13px; /*13px*/
+  font-size: 13px;
   letter-spacing: 1px;
-  font-weight: bold;
+  z-index: 5000; 
+  padding-bottom: 30px; 
 
   // language selector for mobile devices
   .lang-selector {
@@ -125,7 +126,7 @@ html, body {
   }
 
   .search-results {
-    margin-top: 0;
+    margin-top: 10px; 
     @include box-sizing(border-box);
     height: 0;
     overflow-y: auto;
@@ -155,13 +156,23 @@ html, body {
     }
   }
 
-
   .tocify-item>a, .toc-footer li {
     padding: 0 $nav-padding 0 $nav-padding;
     display: block;
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  // For truncated TOC entries, show additional text on hover
+  .tocify-item>a:hover, .toc-footer li:hover {
+    text-overflow: inherit;
+    overflow-x: visible;
+  }
+
+  // Change text color on hover
+  .tocify-hover {
+    color: $nav-hover-text;
   }
 
   // The Table of Contents is composed of multiple nested
@@ -183,29 +194,13 @@ html, body {
 
   // This is the currently selected ToC entry
   .tocify-focus {
-    @include box-shadow(0px 0px 0px $nav-active-shadow); /*box-shadow(0px 1px 0px $nav-active-shadow)*/
+    @include box-shadow(0px 0px 0px $nav-active-shadow); 
     background-color: $nav-active-bg;
     color: $nav-active-text;
   }
 
   // Subheaders are the submenus that slide open
   // in the table of contents.
-  .tocify-subheader_ORIG {
-    display: none; // tocify will override this when needed
-    background-color: $nav-subitem-bg;
-    font-weight: 500;
-    .tocify-item>a {
-      padding-left: $nav-padding + $nav-indent;
-      font-size: 12px;
-    }
-
-    // for embossed look:
-    @include embossed-bg;
-    &>li:last-child {
-      box-shadow: none; // otherwise it'll overflow out of the subheader
-    }
-  }
-  
   .tocify-subheader {
     .tocify-item>a {
 		  // Styling here for a level 2 nesting. For example -> 
@@ -228,9 +223,9 @@ html, body {
   }
 
   .toc-footer {
-    padding: 1em 0;
-    margin-top: 1em;
-    border-top: 1px dashed $nav-footer-border-color;
+    //padding: 1em 0;
+    //margin-top: 1em;
+    //border-top: 1px solid $nav-footer-border-color;
 
     li,a {
       color: $nav-text;
@@ -238,49 +233,35 @@ html, body {
     }
 
     a:hover {
-      text-decoration: underline;
+      //text-decoration: underline;
     }
 
     li {
-      font-size: 0.8em;
+      font-size: 12px; 
       line-height: 1.7;
       text-decoration: none;
     }
   }
 
-}
-
-// button to show navigation on mobile devices
-#nav-button {
-  span {
-    display: block;
-    $side-pad: $main-padding / 2 - 8px;
-    padding: $side-pad $side-pad $side-pad;
-    background-color: rgba($main-bg, 0.7);
-    @include transform-origin(0, 0);
-    @include transform(rotate(-90deg) translate(-100%, 0));
-    border-radius: 0 0 0 5px;
-  }
-  padding: 0 1.5em 5em 0; // increase touch size area
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  color: #000;
-  text-decoration: none;
-  font-weight: bold;
-  opacity: 0.7;
-  line-height: 16px;
-  img {
-    height: 16px;
-    vertical-align: bottom;
+  // Section headers
+  .tocify-item[data-unique="api-reference"], .tocify-item[data-unique|="smartsheet-api"] {
+	text-transform: uppercase;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px solid $nav-footer-border-color;
+	font-weight: bold;
   }
 
-  @include transition(left ease-in-out 0.3s);
+  .tocify-item[data-unique="api-reference"]:hover, .tocify-item[data-unique|="smartsheet-api"]:hover, .tocify-item[data-unique="additional-reference"]:hover, .tocify-item[data-unique="deprecations"]:hover {
+	color: $nav-text;
+  }
 
-  &:hover { opacity: 1; }
-  &.open {left: $nav-width}
+ .tocify-item[data-unique="additional-reference"], .tocify-item[data-unique="deprecations"] {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px dashed $nav-footer-border-color;
+	font-weight: bold;
+  }
 }
 
 
@@ -294,7 +275,7 @@ html, body {
   z-index: 10;
   background-color: $main-bg;
   min-height: 100%;
-
+  margin-top: 60px; 
   padding-bottom: 1px; // prevent margin overflow
 
   // The dark box is what gives the code samples their dark background.
@@ -354,10 +335,36 @@ html, body {
 ////////////////////////////////////////////////////////////////////////////////
 // This is all the stuff with the light background in the left half of the page
 
+.customTOCSectionHeading {
+    font-size: 40px;
+    border-bottom: 0px;
+}
+
+h1.section-header, h2.section-header, h3.section-header, h4.section-header {
+    padding-top: 70px !important;
+}
+
 .content {
   // to place content above the dark box
   position: relative;
   z-index: 30;
+  margin-bottom: 0 !important;
+  padding-bottom: 30px;
+
+  a {
+    color: $content-link-text;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+  }
+
+ .content:after {  
+  content: '';
+  display: block;
+  clear: both;
+ }
 
   &:after {
     content: '';
@@ -371,12 +378,11 @@ html, body {
     @include box-sizing(border-box);
     display: block;
     @include text-shadow($main-embossed-text-shadow);
-
     @extend %left-col;
   }
 
   &>ul, &>ol {
-    padding-left: $main-padding + 15px;
+    padding-left: $main-padding + 40px;
   }
 
   // the div is the tocify hidden div for placeholding stuff
@@ -392,10 +398,6 @@ html, body {
     border-bottom: 1px solid #ccc;
     margin-bottom: $h1-margin-bottom;
     margin-top: 2em;
-    border-top: 1px solid #ddd;
-    @include background-image(
-      linear-gradient(top, #fff, #f9f9f9)
-    );
   }
 
   h1:first-child, div:first-child + h1 {
@@ -406,14 +408,11 @@ html, body {
   h2 {
     @extend %header-font;
     font-size: 20px;
-    margin-top: 4em;
+    //margin-top: 4em;
     margin-bottom: 0;
-    border-top: 1px solid #ccc;
+    //border-top: 1px solid #ccc;
     padding-top: 1.2em;
     padding-bottom: 1.2em;
-    @include background-image(
-      linear-gradient(top, rgba(#fff,0.4), rgba(#fff, 0))
-    );
   }
 
   // h2s right after h1s should bump right up
@@ -426,11 +425,7 @@ html, body {
   h3, h4, h5, h6 {
     @extend %header-font;
     font-size: 16px;
-    margin-top: 2.5em;
-    margin-bottom: 0.8em;
 	padding-top: 1.2em;
-    padding-bottom: 1.2em;
-    /*text-transform: uppercase;*/
   }
 
   h4, h5, h6 {
@@ -467,11 +462,11 @@ html, body {
     }
 
     tr:nth-child(odd)>td {
-      background-color: lighten($main-bg,4.2%);
+      background-color: $table-odd-bg; 
     }
 
     tr:nth-child(even)>td {
-      background-color: lighten($main-bg,2.4%);
+      background-color: $table-even-bg;
     }
   }
 
@@ -493,7 +488,7 @@ html, body {
   }
 
   code {
-    background-color: rgba(0,0,0,0.05);
+    background-color: #e9eaf1; //rgba(0,0,0,0.05);
     padding: 3px;
     border-radius: 3px;
     @extend %break-words;
@@ -508,20 +503,25 @@ html, body {
   aside {
     padding-top: 1em;
     padding-bottom: 1em;
-    @include text-shadow(0 0px 0 lighten($aside-notice-bg, 15%));  /*text-shadow(0 1px 0 lighten($aside-notice-bg, 15%));*/
+    @include text-shadow(0 0px 0 lighten($aside-notice-bg, 15%));  
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     background: $aside-notice-bg;
     line-height: 1.6;
+    margin-left: 20px;
+    margin-right: 43%;
+    border-left: 4px solid $aside-notice-border;
 
     &.warning {
       background-color: $aside-warning-bg;
-      @include text-shadow(0 0px 0 lighten($aside-warning-bg, 15%)); /*text-shadow(0 1px 0 lighten($aside-warning-bg, 15%));*/
+      border-color: $aside-warning-border;
+      @include text-shadow(0 0px 0 lighten($aside-warning-bg, 15%)); 
     }
 
     &.success {
       background-color: $aside-success-bg;
-      @include text-shadow(0 0px 0 lighten($aside-success-bg, 15%));   /*text-shadow(0 1px 0 lighten($aside-success-bg, 15%));*/
+      border-color: $aside-success-border;
+      @include text-shadow(0 0px 0 lighten($aside-success-bg, 15%));   
     }
   }
 
@@ -551,12 +551,7 @@ html, body {
     @include text-shadow(1px 1px 0 #666);
     @include background(linear-gradient(bottom right, #F7E633 0%, #F1D32F 100%));
   }
-    
-  .customTOCSectionHeading {
-	font-weight: bold;
-	font-size: 40px;
-  }
-  
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -577,7 +572,7 @@ html, body {
     clear:right;
 
     @include box-sizing(border-box);
-    @include text-shadow(0px 0px 0px rgba(0,0,0,0.4));  /*text-shadow(0px 1px 2px rgba(0,0,0,0.4));*/
+    @include text-shadow(0px 0px 0px rgba(0,0,0,0.4));  
 
     @extend %right-col;
 
@@ -592,18 +587,170 @@ html, body {
 
   pre {
     @extend %code-font;
+    padding: 5px $main-padding; //2em $main-padding;
   }
 
   blockquote {
+    padding: 34px $main-padding 5px $main-padding; //2em $main-padding;
+
     &>p {
       background-color: $code-annotation-bg;
       border-radius: 5px;
       padding: $code-annotation-padding;
       color: #ccc;
-      border-top: 1px solid #000;
+      border-top: 1px solid #404040;
       border-bottom: 1px solid #404040;
+      font-weight: 300;
+      //font-size: 15px;
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// BANNER STYLES
+////////////////////////////////////////////////////////////////////////////////
+// This is the banner that appears across the top of the page
+
+.navbar-container .navbar {
+  position: fixed !important;
+  width: 100% !important;
+  height: 60px;
+  background: $banner-bg;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 5000;
+}
+
+.navbar {
+  width: 100%;
+}
+
+nav {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+nav .logo {
+  height: 50px;
+  width: 244px;
+  margin: 0 auto;
+  background-image: url("../images/logo.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100%;
+  color: transparent;
+  text-shadow: none;
+  position: relative;
+}
+
+@media (min-width: 48em) {
+    nav .logo {
+      display: inline-block;
+      margin: 6px 0 0 15px;
+    }
+}
+
+nav .logo-container {
+  width: 100%;
+}
+
+@media (min-width: 48em) {
+    nav .logo-container {
+      width: auto;
+    }
+}
+
+nav ul {
+  padding: 0;
+  margin-top: 15px;
+  display: none;
+}
+
+@media (min-width: 48em) {
+    nav ul {
+      display: block;
+    }
+}
+
+nav ul li {
+  list-style: none;
+  float: left;
+}
+
+nav li {
+  list-style: none !important;
+  color: #FFF;
+  padding: 10px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-family: 'proxima_nova_reg';
+  font-weight: normal;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+nav li {
+  list-style: none !important;
+  color: #FFF;
+  padding: 10px;
+  text-decoration: none;
+}
+
+a {
+  background-color: transparent;
+  text-decoration: none;
+}
+
+nav ul li a {
+  color: #fff;
+  padding: 10px;
+  text-decoration: none;
+}
+
+nav li > a:only-child:after {
+  content: '';
+}
+
+@media (min-width: 48em) {
+    nav {
+      -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+    }
+}
+
+// button to show navigation on mobile devices
+#nav-button {
+  padding: 17px 15px;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 100% !important;
+  margin-left: -60px;
+  z-index: 5000;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  opacity: 0.7;
+  line-height: 16px;
+  -moz-transition: left 0.3s ease-in-out;
+  -o-transition: left 0.3s ease-in-out;
+  -webkit-transition: left 0.3s ease-in-out;
+  transition: left 0.3s ease-in-out;
+}
+
+#nav-button img {
+  height: 16px;
+  vertical-align: bottom;
+}
+
+#nav-button:hover {
+  opacity: 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -661,3 +808,4 @@ html, body {
     margin-top: $main-padding;
   }
 }
+
