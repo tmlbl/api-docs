@@ -351,6 +351,7 @@ The full list of error codes is below:
 1145 | Multipart upload request was invalid. Please check your request headers and payload.
 1146 | Unsupported operation: {0}.
 1147 | Multipart request contained an invalid part name: '{0}'
+1148 | Numeric cell values must be between {0} and {1}.
 2000 | Invalid username and/or password.
 2001 | Your account is locked out.
 2002 | Invalid email address
@@ -472,6 +473,8 @@ The parsing rules for the various column types are as follows:
 -----|-----|
 *Strict* | All numeric and text values are valid and are interpreted literally.
 *Lenient* | All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
+
+<aside class="notice">The Smartsheet application only supports numeric values in the range -9007199254740992 to 9007199254740992. If using strict parsing, any numeric value outside that range will result in <a href="#errors">error code 1148</a>. If using lenient parsing, the value will be silently converted to text.</aside>
 
 **PICKLIST**:
 
