@@ -4654,6 +4654,14 @@ Represents individual user settings for a specific sheet.  User settings may be 
 **id** | number | ID of the Sheet or Template from which the enclosing sheet was created
 **type** | string | "sheet" or "template"
 
+## Copy Sheet
+
+`POST /sheets/{sheetId}/copy`
+
+Copies a sheet to a new location.
+
+<%= partial "snippets/copySheet_table.md.erb" %>
+
 ## Create Sheet
 
 To create a Sheet from scratch, use one of the following operations (according to where you want to create the Sheet):
@@ -5854,13 +5862,13 @@ Object that describes how the the System Column type of "AUTO_NUMBER" is auto-ge
 
 ## ContainerDestination Object
 
-Object that describes the new parent container for copy or move operations for Folders and Workspaces.
+Object that describes the new parent container for copy or move operations for Sheets, Folders and/or Workspaces (a Workspace can only be copied).
 
      |     |     |
 -----|-----|-----|
-**destinationType** | string | The type of the destination container:<ul><li>home</li><li>workspace</li><li>folder</li></ul> It applies to folders only since a Folder can be copied/moved to under Home, a Workspace or another Folder.
-**destinationId** | number | ID of the destination container. Required for **destinationType** of **folder** or **workspace**: for **home**, this value must be null.
-**newName** | string | The new name for the copied folder or workspace. It applies to the copy operation only: a moved Folder or Workspace retains its original name.
+**destinationType** | string | The type of the destination container:<ul><li>home</li><li>workspace</li><li>folder</li></ul> It applies to Sheets and Folders only.
+**destinationId** | number | ID of the destination container. It applies to Sheets and Folders only. Required for **destinationType** of **folder** or **workspace**: for **home**, this value must be null.
+**newName** | string | The new name for the copy. A moved Sheet, Folder or Workspace retains its original name.
  
 ## IndexResult Object
 
