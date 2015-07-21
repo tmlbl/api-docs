@@ -5022,6 +5022,19 @@ Gets the list of all Sheets that the User has access to, in alphabetical order, 
 <%= PARAMETERS %> | **include** (optional): when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template<br/><br/><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li></ul>
 
+## Move Sheet
+
+`POST /sheets/{sheetId}/move`
+
+Move a sheet to a new location.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | CREATE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attribute(s):<ul><li>destinationType</li><li>destinationId</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the moved Sheet, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+
 ## Publish Sheet
 
 ### Get Sheet Publish Status
@@ -5868,7 +5881,7 @@ Object that describes the new parent container for copy or move operations for S
 -----|-----|-----|
 **destinationType** | string | The type of the destination container:<ul><li>home</li><li>workspace</li><li>folder</li></ul> It applies to Sheets and Folders only.
 **destinationId** | number | ID of the destination container. It applies to Sheets and Folders only. Required for **destinationType** of **folder** or **workspace**: for **home**, this value must be null.
-**newName** | string | The new name for the copy. A moved Sheet, Folder or Workspace retains its original name.
+**newName** | string | The new name for the copy. It is not allowed for the **move** operation: a moved Sheet, Folder or Workspace retains its original name.
  
 ## IndexResult Object
 
