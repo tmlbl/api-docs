@@ -4830,6 +4830,19 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
+## Create Update Request
+
+`POST /sheets/{sheetId}/updaterequests`
+
+Creates an update request for one or more rows on the sheet. An email notification will be asynchronously sent to the specified recipient(s) with a link to the newly created update request.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [UpdateRequestEmail object](#updaterequestemail-object)
+<%= RETURNS %> | [Result object](#result-object) containing the newly created [UpdateRequest object](#updaterequest-object), limited to **id**.
+
 ## Delete Sheet
 
 > Example Request:
@@ -5134,6 +5147,7 @@ Sets the publish status of the Sheet and returns the new status, including the U
 ## Share Sheet
 
 For details about Sheet sharing, see [Sheet Sharing](#sheet-sharing).
+
 
 ## Update Sheet
 
@@ -5915,6 +5929,29 @@ Object returned for all `PUT` operations and `POST` operations (and for some oth
 **message** | string | Message that indicates the outcome of the request
 **result** | Object | Object that was created or updated (if applicable)
 **version** | number | New version of the Sheet (only available on select operations)
+
+## UpdateRequest Object
+
+Object that describes an UpdateRequest. An update request MUST contain at least one column ID or either attachments or discussions.
+
+     |     |     |
+-----|-----|-----|
+**id** | number | ID of the update request. 
+
+## UpdateRequestEmail Object
+
+Object that describes a request to create an update request. The request MUST contain at least one column ID or either attachments or discussions.
+
+     |     |     |
+-----|-----|-----|
+**sendTo** | list | One or more [Recipient objects](#recipient-object).
+**subject** | string | The subject of the email. Optional.
+**message** | string | The message of the email. Optional.
+**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
+**rowIds** | list | One or more row IDs to include in the update request.
+**columnIds** | list | 0 or more column IDs to include in the update request. If no column IDs are listed, no columns are included in the update request.
+**includeAttachments** | boolean | A flag to indicate whether or not to include Attachments in the email.
+**includeDiscussions** | boolean | A flag to indicate whether or not to include Discussions in the email.
 
 # Formatting
 
