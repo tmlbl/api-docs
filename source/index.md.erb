@@ -2692,6 +2692,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **name** | string | Folder name
 **favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | Direct URL to Folder
+**distributionLink** | string | Direct URL to provision the Folder. It enables a user to get a copy this Folder without the Folder owner/admin sharing it. This is only generated if the API requester of this Folder object is the owner or admin of the distribution-enabled Workspace which contains the Folder.
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
 **folders** | [Folder](#folder-object)[] | Array of Folder objects
 **reports** | [Report](#report-object)[] | Array of Report objects
@@ -2840,7 +2841,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template
+<%= PARAMETERS %> | **include** (optional): <ul><li>distributionLink</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder object](#folder-object)<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
 
 ## List Child Folders
@@ -2889,7 +2890,7 @@ Gets a list of the top-level child Folders within the specified Folder.
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
-<%= partial "snippets/listFolders_table.md.erb" %>
+<%= partial "snippets/listFolders_table_v2.md.erb" %>
 
 ### List Folders (Workspace)
 
@@ -2911,7 +2912,7 @@ Gets a list of the top-level child Folders within the specified Workspace.
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
-<%= partial "snippets/listFolders_table.md.erb" %>
+<%= partial "snippets/listFolders_table_v2.md.erb" %>
 
 ## Update Folder
 
@@ -3357,7 +3358,7 @@ Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template
+<%= PARAMETERS %> | **include** (optional) <ul><li>distributionLink - include **distributionLink** in Folder objects</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -5718,7 +5719,7 @@ Gets the specified Workspace (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
-    | **include** (optional): when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template 
+    | **include** (optional): <ul><li>distributionLink - include **distributionLink** in Folder objects under this Workspace</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul> 
 <%= RETURNS %> | [Workspace object](#workspace-object)
 
 ## List Workspaces
