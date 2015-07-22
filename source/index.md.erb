@@ -2175,7 +2175,7 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 
 ## Create Discussion on Row
 
-> Example Request:
+> Example Request (without attachment):
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
@@ -2183,6 +2183,27 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+```
+
+> Example Request (with attachment):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-F "discussion=<discussion.json;type=application/json" \
+-F "file=@datafile;type=application/octet-stream"
+
+    #
+    # Content of the discussion.json file:
+    #
+    {
+        "title": "This is a new discussion with an attachment", 
+        "comment": {
+            "text":"This text is the body of the first comment"
+        }
+    }
 ```
 
 > Example Response:
@@ -2706,6 +2727,35 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 
 ## Copy Folder
 
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{ \
+    "destinationType": "workspace|folder|home", \
+    "destinationId": workspace_or_folder_id, \
+    "newName": "newFolderName" \
+}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": new_folder_id,
+        "name": "newFolderName",
+        "accessLevel": "OWNER",
+        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
+    },
+    "message": "SUCCESS"
+}
+```
+
 `POST /folders/{folderId}/copy`
 
 Copies a Folder to another location.
@@ -2833,7 +2883,9 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
             "id": 4509918431602564,
             "name": "Project Timeline",
             "accessLevel": "OWNER",
-            "permalink": "https://app.smartsheet.com/b/home?lx=uWicCItTmkbxJwpCfQ5wiwW"
+            "permalink": "https://app.smartsheet.com/b/home?lx=uWicCItTmkbxJwpCfQ5wiwW",
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
         }
     ]
 }
@@ -2922,6 +2974,34 @@ Gets a list of the top-level child Folders within the specified Workspace.
 
 
 ## Move Folder
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{ \
+    "destinationType": "workspace|folder|home", \
+    "destinationId": workspace_or_folder_id \
+}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": original_folder_id,
+        "name": "original_folder_name",
+        "accessLevel": "OWNER",
+        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
+    },
+    "message": "SUCCESS"
+}
+```
 
 `POST /folders/{folderId}/move`
 
@@ -3352,13 +3432,17 @@ curl https://api.smartsheet.com/2.0/home?include=source \
             "id": 4583173393803140,
             "name": "sheet 1",
             "accessLevel": "OWNER",
-            "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Za"
+            "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Za", 
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
         },
         {
             "id": 2331373580117892,
             "name": "Copy of sheet 1",
             "accessLevel": "OWNER",
             "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Zb",
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
 			"source": {
                 "id": 4583173393803140,
                 "type": "sheet"
@@ -3843,6 +3927,28 @@ Deletes the Row specified in the URL.
 <%= RETURNS %> | [Result object](#result-object)
 
 ## Delete Rows
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids=id1,id2,id3&ignoreRowsNotFound=true \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": [
+        id1,
+        id2,
+        id_of_child_of_id2,
+       id3 
+    ],
+    "message": "SUCCESS"
+}
+```
 
 `DELETE /sheets/{sheetId}/rows?ids=rowId1,rowId2,...`
 
@@ -4691,6 +4797,35 @@ Represents individual user settings for a specific sheet.  User settings may be 
 
 ## Copy Sheet
 
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{ \
+    "destinationType": "workspace|folder|home", \
+    "destinationId": workspace_or_folder_id, \
+    "newName": "newSheetName" \
+}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": new_sheet_id,
+        "name": "newSheetName",
+        "accessLevel": "OWNER",
+        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
+    },
+    "message": "SUCCESS"
+}
+```
+
 `POST /sheets/{sheetId}/copy`
 
 Copies a sheet to a new location.
@@ -4850,6 +4985,41 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
 ## Create Update Request
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ \
+    "sendTo": [ \
+        {"email": "email789@smartsheet.com"}, \
+        {"email": "email0123@smartsheet.com"} \
+    ], \
+    "subject": "some subject", \
+    "message": "some message", \
+    "ccMe": (true|false), \
+    "rowIds": [rowId1], \
+    "columnIds": [colId1, colId2], \
+    "includeAttachments": (true|false), \
+    "includeDiscussions": (true|false) \
+}'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": update_request_ID
+    },
+    "message": "SUCCESS"
+}
+```
+
 
 `POST /sheets/{sheetId}/updaterequests`
 
@@ -5045,13 +5215,17 @@ curl https://api.smartsheet.com/2.0/sheets \
 			"accessLevel": "OWNER",
 			"id": 4583173393803140,
 			"name": "sheet 1",
-			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ"
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
 		},
 		{
 			"accessLevel": "OWNER",
 			"id": 2331373580117892,
 			"name": "sheet 2",
-			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG"
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
 		}
 	]
 }
@@ -5071,6 +5245,34 @@ Gets the list of all Sheets that the User has access to, in alphabetical order, 
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sheet
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{ \
+    "destinationType": "workspace|folder|home", \
+    "destinationId": workspace_or_folder_id, \
+}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": original_sheet_id,
+        "name": "original_sheet_name",
+        "accessLevel": "OWNER",
+        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
+    },
+    "message": "SUCCESS"
+}
+```
 
 `POST /sheets/{sheetId}/move`
 
@@ -5508,7 +5710,11 @@ curl https://api.smartsheet.com/2.0/users/me \
     "email": "john.doe@smartsheet.com",
     "firstName": "John",
     "lastName": "Doe",
-    "id": 48569348493401200
+    "id": 48569348493401200, 
+    "admin": true,
+    "licensedSheetCreator": true,
+    "groupAdmin": true,
+    "resourceViewer": true
 }
 ```
 
@@ -5538,7 +5744,12 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
     "email": "john.doe@smartsheet.com",
     "firstName": "John",
     "lastName": "Doe",
-    "id": 48569348493401200
+    "id": 48569348493401200,
+    "status": "ACTIVE",
+    "admin": true,
+    "licensedSheetCreator": true,
+    "groupAdmin": true,
+    "resourceViewer": true
 }
 ```
 
@@ -5579,8 +5790,11 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 			"admin": true,
 			"email": "john.doe@smartsheet.com",
 			"name": "John Doe",
-			"licensedSheetCreator": true,
-			"status": "ACTIVE"
+            "status": "ACTIVE",
+            "admin": true,
+            "licensedSheetCreator": true,
+            "groupAdmin": true,
+            "resourceViewer": true
 		}
 	]
 }
@@ -5689,6 +5903,31 @@ Updates the User specified in the URL.
 
 ## Copy Workspace
 
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"newName": "newWorkspaceName"}' \
+-X POST
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": new_workspace_id,
+        "name": "newWorkspaceName",
+        "accessLevel": "OWNER",
+        "permalink": "https://{url}?lx=VL4YlIUnyYgASeX02grbLQ"
+    },
+    "message": "SUCCESS"
+}
+```
+
 `POST /workspaces/{workspaceId}/copy`
 
 Creates a Workspace as a copy of another Workspace.
@@ -5788,7 +6027,9 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
             "id": 4583173393803140,
             "name": "sheet 1",
             "accessLevel": "OWNER",
-			"permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zg1"
+			"permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zg1",
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
        }
 	],
     "accessLevel": "OWNER",
@@ -5936,7 +6177,7 @@ Object that describes the new parent container for copy or move operations for S
 -----|-----|-----|
 **destinationType** | string | The type of the destination container:<ul><li>home</li><li>workspace</li><li>folder</li></ul> It applies to Sheets and Folders only.
 **destinationId** | number | ID of the destination container. It applies to Sheets and Folders only. Required for **destinationType** of **folder** or **workspace**: for **home**, this value must be null.
-**newName** | string | The new name for the copy. It is not allowed for the **move** operation: a moved Sheet, Folder or Workspace retains its original name.
+**newName** | string | Required for the **copy** operation: the new name for the copy. It is not allowed for the **move** operation: a moved Sheet, Folder or Workspace retains its original name.
  
 ## IndexResult Object
 
