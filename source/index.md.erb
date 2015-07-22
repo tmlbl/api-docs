@@ -2847,7 +2847,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): <ul><li>distributionLink</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional): <ul><li>distributionLink</li><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder object](#folder-object)<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
 
 ## List Child Folders
@@ -3379,7 +3379,7 @@ Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) <ul><li>distributionLink - include **distributionLink** in Folder and/or Sheet objects</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) <ul><li>distributionLink - include **distributionLink** in Folder and/or Sheet objects</li><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -4979,7 +4979,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**distributionLink**: includes distributionLink</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**distributionLink**: includes distributionLink</li><li>**ownerInfo**: includes owner email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional): when specified with a value of "nonexistentCells", response will <i>not include</i> cells that have never contained any data
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
@@ -5067,7 +5067,7 @@ Gets the list of all Sheets that the User has access to, in alphabetical order, 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "source", response will include the [source](#source-object) for any sheet that was created from another sheet or template<br/><br/><%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional): <ul><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul><br/><br/><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sheet
@@ -5811,7 +5811,7 @@ Gets the specified Workspace (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
-    | **include** (optional): <ul><li>distributionLink - include **distributionLink** in Folder and/or Sheet objects under this Workspace</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul> 
+    | **include** (optional): <ul><li>distributionLink - include **distributionLink** in Folder and/or Sheet objects under this Workspace</li><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul> 
 <%= RETURNS %> | [Workspace object](#workspace-object)
 
 ## List Workspaces
