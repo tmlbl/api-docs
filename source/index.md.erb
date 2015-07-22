@@ -5433,6 +5433,12 @@ Revokes the access token used to make this request.  The access token will no lo
 **timeZone** | string | Current user's time zone ID
 **locale** | string | Current user's locale (see [Server Information](#server-information))
 **account** | [Account](#account-object) | Account object representing the current user's customer account
+**admin** | boolean | **true** if user admin of the organization; otherwise, **false**
+**licensedSheetCreator** | boolean | **true** if licensed to create sheets; otherwise, **false**
+**groupAdmin** | boolean | **true** if group admin of the organization; otherwise, **false**
+**resourceViewer** | boolean | **true** if the user can view resources; otherwise, **false**
+**status** | string | Member status in the associated organization: <ul><li>**ACTIVE**</li><li>**PENDING**</li><li>**DECLINED**</li></ul>
+
 
 ### Account Object
 
@@ -5515,7 +5521,7 @@ Gets the current User.
 -----|-----|
 <%= SCOPE %> | all scopes
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [UserProfile object](#userprofile-object)
+<%= RETURNS %> | [UserProfile object](#userprofile-object) except the organization member status.
 
 ## Get User
 
@@ -5539,7 +5545,7 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 
 `GET /users/{userId}`
 
-Gets the User specified in the URL.
+Gets the User specified in the URL. If the API requester is not the user administrator of the organization, the role indicators and member status will not be returned.
 
      |     |
 -----|-----|
@@ -5583,7 +5589,7 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 
 `GET /users`
 
-Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
+Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. If the API requester is not the user administrator of the organization, the role indicators and member status will not be returned.
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
