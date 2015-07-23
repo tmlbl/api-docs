@@ -1,7 +1,7 @@
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/emails \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -12,6 +12,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/emails \
     "subject": "some subject", \
     "message": "some message", \
     "ccMe": false, \
+    "rowIds": [ \
+        rId1, \
+        rId2 \
+    ], \
     "columnIds": [ \
         cId1, \
         cId2 \
@@ -25,18 +29,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/emails \
 
 ```json
 {
-    "message": "SUCCESS",
-    "resultCode": 0
+  "resultCode": 0,
+    "message": "SUCCESS"
 }
 ```
 
-`POST /sheets/{sheetId}/rows/{rowId}/emails`
+`POST /sheets/{sheetId}/rows/emails`
 
-Sends a Row via email.
+Sends one or more Rows via email.
 
      |     |
 -----|-----|
 <%= SCOPE %> | SHARE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [RowEmail object](#rowemail-object). If **columnIds** is null, all columns except hidden columns shall be included. If it is empty, no columns shall be included: if empty, either **includeAttachments** or **includeDiscussions** must be specified.
+<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object). If **columnIds** is null, all columns except hidden columns shall be included. If it is empty, no columns shall be included: if empty, either **includeAttachments** or **includeDiscussions** must be specified.
 <%= RETURNS %> | [Result object](#result-object)
