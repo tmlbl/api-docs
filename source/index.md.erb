@@ -3303,6 +3303,16 @@ curl https://api.smartsheet.com/2.0/home?include=source \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+smartsheet.home.listContents()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 ```json
@@ -4515,6 +4525,28 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
+```javascript
+var shares = [
+  {
+    email: "john.doe@smartsheet.com",
+    accessLevel: "EDITOR"
+  }
+];
+
+var options = {
+  workspaceId: 7960873114331012,
+  body: shares
+};
+
+smartsheet.workspaces.share(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -4646,6 +4678,57 @@ curl https://api.smartsheet.com/2.0/sheets \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
 ```
 
+```javascript
+var sheet = {
+  name: 'New Sheet',
+  columns: [
+    {
+      title: 'Primary Column',
+      type: 'TEXT_NUMBER',
+      primary: true,
+      width: 150
+    },
+    {
+      title: 'Column2',
+      type: 'TEXT_NUMBER',
+      width: 150
+    },
+    {
+      title: 'Column3',
+      type: 'TEXT_NUMBER',
+      width: 150
+    },
+    {
+      title: 'Column4',
+      type: 'TEXT_NUMBER',
+      width: 150
+    },
+    {
+      title: 'Column5',
+      type: 'TEXT_NUMBER',
+      width: 150
+    },
+    {
+      title: 'Column6',
+      type: 'TEXT_NUMBER',
+      width: 150
+    }
+  ]
+};
+
+var options = {
+	body: sheet
+};
+
+smartsheet.sheets.createSheet(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -4668,6 +4751,46 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
 ```
 
+```javascript
+var sheet = {
+    "name": "newsheet",
+    "columns": [
+        {
+            "title": "Favorite",
+            "type": "CHECKBOX",
+            "symbol": "STAR"
+        },
+        {
+            "title": "Primary Column",
+            "primary": true,
+            "type": "TEXT_NUMBER"
+        },
+        {
+            "title": "Status",
+            "type": "PICKLIST",
+            "options": [
+                "Not Started",
+                "Started",
+                "Completed"
+            ]
+        }
+    ]
+};
+
+var options = {
+    body: sheet,
+    folderId: 3734419270854532
+};
+
+smartsheet.sheets.createSheetInFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -4688,6 +4811,46 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+```
+
+```javascript
+var sheet = {
+  "name":"newsheet",
+  "columns":[
+    {
+      "title":"Favorite",
+      "type":"CHECKBOX",
+      "symbol":"STAR"
+    },
+    {
+      "title":"Primary Column",
+      "primary":true,
+      "type":"TEXT_NUMBER"
+    },
+    {
+      "title":"Status",
+      "type":"PICKLIST",
+      "options":[
+        "Not Started",
+        "Started",
+        "Completed"
+      ]
+    }
+  ]
+};
+
+var options = {
+	body: sheet,
+	workspaceId: 1656220827314052
+};
+
+smartsheet.sheets.createSheetInWorkspace(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
 ```
 
 > Example Response:
@@ -4722,6 +4885,24 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
 
+```javascript
+var sheet = {
+    name: "newsheet",
+    fromId: 7679398137620356
+};
+
+var options = {
+    body: sheet
+};
+smartsheet.sheets.createSheetFromExisting(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -4742,6 +4923,26 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
+```
+
+``` javascript
+var sheet = {
+    name: "newsheet",
+    fromId: 7679398137620356
+};
+
+var options = {
+    body: sheet,
+    folderId: 3734419270854532
+};
+
+smartsheet.sheets.createSheetFromExisting(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -4851,6 +5052,20 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+  id: 4583173393803140
+};
+
+smartsheet.sheets.getSheet(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 ```json
@@ -4913,6 +5128,36 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 -o  output.pdf
 ```
 
+```javascript
+var options = {
+  id: 4583173393803140
+};
+
+smartsheet.sheets.getSheetAsPDF(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+
+smartsheet.sheets.getSheetAsCSV(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+
+smartsheet.sheets.getSheetAsExcel(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 ```desc
@@ -4944,6 +5189,16 @@ Gets the Sheet in the format specified, based on the Sheet ID.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+smartsheet.sheets.listSheets()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
 ```
 
 > Example Response:
@@ -4995,6 +5250,20 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+  sheetId: 4583614634583940
+};
+
+smartsheet.sheets.getPublishStatus(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 ```json
@@ -5027,6 +5296,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"readOnlyLiteEnabled": true,"readOnlyFullEnabled": false,"readWriteEnabled": false,"icalEnabled": false}'
+```
+
+```javascript
+var publishStatus = {
+  readOnlyLiteEnabled: false,
+  readOnlyFullEnabled: false,
+  readWriteEnabled: false,
+  icalEnabled: false
+};
+
+var options = {
+  body: publishStatus,
+  sheetId: 4583614634583940
+};
+
+smartsheet.sheets.setPublishStatus(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
 ```
 
 > Example Response:
@@ -5352,6 +5643,27 @@ curl https://api.smartsheet.com/2.0/users?sendEmail=true \
 -d '{"firstName": "John", "lastName": "Doe", "email": "NEW_USER_EMAIL", "admin": false, "licensedSheetCreator": true}'
 ```
 
+```javascript
+var user = {
+	firstName: "John",
+	lastName: "Doe",
+	email: "NEW_USER_EMAIL",
+	admin: false,
+	licensedSheetCreator: true
+};
+
+var options = {
+	body: user
+};
+
+smartsheet.users.createUser(options)
+	.then(function(data) {
+		console.log(data)
+	}).catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 ```json
@@ -5395,6 +5707,16 @@ curl https://api.smartsheet.com/2.0/users/me \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+smartsheet.users.getCurrentUser()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+    	console.log(error);
+  	});
+```
+
 > Example Response:
 
 ```json
@@ -5423,6 +5745,20 @@ Gets the current User.
 ```shell
 curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+	id: 48569348493401200	// ID of user
+};
+
+smartsheet.users.getUser(options)
+  	.then(function(data) {
+    	console.log(data)
+  	})
+  	.catch(function(error) {
+    	console.log(error);
+  	});
 ```
 
 > Example Response:
@@ -5457,6 +5793,16 @@ Gets the User specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript 
+smartsheet.users.listAllUsers()
+	.then(function(data) {
+		console.log(data)
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
 ```
 
 > Example Response:
@@ -5503,6 +5849,20 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFrom
 -X DELETE
 ```
 
+```javascript
+var options = {
+	id: 94094820842
+};
+
+smartsheet.users.removeUser(options)
+	.then(function(data) {
+		console.log(data)
+	})	
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
 > Example Response:
 
 ```json
@@ -5537,6 +5897,24 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"admin": false, "licensedSheetCreator": true}'
+```
+
+```javascript
+var user = {
+	admin: false,
+	licensedSheetCreator: true
+};
+
+var options = {
+	body: user
+};
+
+smartsheet.users.updateUser(options)
+	.then(function(data) {
+		console.log(data)
+	}).catch(function(error) {
+		console.log(error);
+	});
 ```
 
 > Example Response:
@@ -5699,6 +6077,16 @@ Gets the specified Workspace (and lists its contents).
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```
+smartsheet.workspaces.listWorkspaces()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
 ```
 
 > Example Response:
