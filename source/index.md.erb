@@ -2710,6 +2710,12 @@ curl https://api.smartsheet.com/2.0/home/folders \
 -d '{"name": "New folder"}'
 ```
 
+```csharp
+Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+
+smartsheet.HomeResources().FolderResources().CreateFolder(folder);
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -2730,6 +2736,13 @@ curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name": "New folder"}'
+```
+
+
+```csharp
+Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+
+smartsheet.FolderResources().CreateFolder(destinationFolderId, folder);
 ```
 
 > Example Response:
@@ -2754,6 +2767,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid}/folders \
 -d '{"name": "New folder"}'
 ```
 
+```csharp
+Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+
+smartsheet.WorkspaceResources().FolderResources().CreateFolder(workspaceId, folder);
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -2772,6 +2791,10 @@ Creates a Folder in the specified Workspace.
 curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.FolderResources().DeleteFolder(folderId);
 ```
 
 > Example Response:
@@ -2800,6 +2823,14 @@ Deletes the Folder (and its contents) specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'include' parameter:
+smartsheet.FolderResources().GetFolder(folderId, null);
+
+// To specify 'include' parameter with value of "source":
+smartsheet.FolderResources().GetFolder(folderId, new SourceInclusion[] { SourceInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -2845,6 +2876,14 @@ curl https://api.smartsheet.com/2.0/home/folders \
 -H "Content-Type: application/json"
 ```
 
+```csharp
+// To omit pagination parameters:
+smartsheet.HomeResources().FolderResources().ListFolders(null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.HomeResources().FolderResources().ListFolders(new PaginationParameters(true, null, null));
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -2865,6 +2904,14 @@ Gets a list of the top-level child Folders within the user's **Sheets** folder (
 curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.FolderResources().ListFolders(folderId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.FolderResources().ListFolders(folderId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2889,6 +2936,14 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 -H "Content-Type: application/json"
 ```
 
+```csharp
+// To omit pagination parameters:
+smartsheet.WorkspaceResources().FolderResources().ListFolders(folderId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.WorkspaceResources().FolderResources().ListFolders(folderId, new PaginationParameters(true, null, null));
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -2911,6 +2966,12 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name": "New name for folder"}'
+```
+
+```csharp
+Folder folder = new Folder.UpdateFolderBuilder("New name for folder").Build();
+
+smartsheet.FolderResources().UpdateFolder(folderId, folder);
 ```
 
 > Example Response:
