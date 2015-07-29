@@ -1073,6 +1073,26 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 --data-binary @ProgressReport.docx
 ```
 
+```javascript
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668,
+    commentId: 4293147074291588
+};
+
+smartsheet.sheets.addCommentAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
+
 > Example Response:
 
 <%= partial "snippets/attachFile_response.md.erb" %>
@@ -1111,6 +1131,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 --data-binary @ProgressReport.docx
 ```
 
+```javascript
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.addRowAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
 > Example Response:
 
 <%= partial "snippets/attachFile_response.md.erb" %>
@@ -1145,6 +1184,24 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 --data-binary @ProgressReport.docx
 ```
 
+```javascript
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.addAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
 > Example Response:
 
 <%= partial "snippets/attachFile_response.md.erb" %>
@@ -1169,6 +1226,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
+```javascript
+var attachment = {
+    "name":"Search Engine",
+    "attachmentType":"LINK",
+    "url":"http://www.google.com"
+};
+
+var options = {
+    body: attachment,
+    sheetId: 2252168947361668,
+    commentId: 4445024629876612
+};
+
+smartsheet.sheets.addCommentAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1189,6 +1268,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+```
+
+```javascript
+var attachment = {
+    "name":"Search Engine",
+    "description":"A popular search engine",
+    "attachmentType":"LINK",
+    "url":"http://www.google.com"
+};
+
+var options = {
+    body: attachment,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.addRowAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1213,6 +1315,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
+```javascript
+var attachment = {
+    "name":"Search Engine",
+    "description":"A popular search engine",
+    "attachmentType":"LINK",
+    "url":"http://www.google.com"
+};
+
+var options = {
+    body: attachment,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.addAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1231,6 +1356,21 @@ Attaches a URL to the Sheet.
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 7169782752536452,
+};
+
+smartsheet.sheets.deleteAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1263,6 +1403,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 4583173393803140
+};
+
+smartsheet.sheets.getAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -1293,6 +1448,20 @@ Fetches the Attachment specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.listAttachments(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1346,6 +1515,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    discussionId: 3962273862576004
+};
+
+smartsheet.sheets.listDiscussionAttachments(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -1395,6 +1579,21 @@ Gets a list of all Attachments that are in the Discussion.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.getRowAttachments(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1463,6 +1662,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 --data-binary @ProgressReport.docx
 ```
 
+```javascript
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.attachNewVersion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
 > Example Response:
 
 ```json
@@ -1497,6 +1715,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -X DELETE
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 5510069950408580
+};
+
+smartsheet.sheets.deleteAllAttachmentVersions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -1523,6 +1756,21 @@ Deletes all versions of the attachment corresponding to the specified Attachment
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 5510069950408580
+};
+
+smartsheet.sheets.listAttachmentVersions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1777,6 +2025,49 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":5}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 6}]'
 ```
 
+```javascript
+var column = [
+    {
+        "title": "New Picklist Column 1",
+        "type": "PICKLIST",
+        "options":[
+            "First",
+            "Second",
+            "Third"
+        ],
+        "index": 4
+    },
+    {
+        "title": "New Date Column",
+        "type": "DATE",
+        "index": 5
+    },
+    {
+        "title": "New Picklist Column 2",
+        "type": "PICKLIST",
+        "options":[
+            "1",
+            "2",
+            "3"
+        ],
+        "index": 6
+    }
+];
+
+var options = {
+    body: column,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.addColumn(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -1842,6 +2133,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    columnId: 7881817631025028
+};
+
+smartsheet.sheets.deleteColumn(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -1868,6 +2174,21 @@ Deletes the Column specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    columnId: 7960873114331012
+};
+
+smartsheet.sheets.getColumns(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1900,6 +2221,20 @@ Gets the Column specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.getColumns(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -1957,6 +2292,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X PUT \
 -d '{"title":"First Column","index":0, "type" : "PICKLIST", "options" :["One","Two"]}'
+```
+
+```javascript
+var column = {
+    "index": 0,
+    "title": "First Column",
+    "type": "PICKLIST",
+    "options": ["One", "Two"]
+};
+
+var options = {
+    body: column,
+    sheetId: 2252168947361668,
+    columnId: 5005385858869124
+};
+
+smartsheet.sheets.updateColumn(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2092,6 +2450,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 -X 'DELETE'
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    commentId: 4952999001909124
+};
+
+smartsheet.sheets.deleteComment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -2118,6 +2491,21 @@ Deletes the Comment specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{id} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    commentId: 48569348493401200
+};
+
+smartsheet.sheets.getComment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2183,6 +2571,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
 ```
 
+```javascript
+var discussion = {
+    title: "This is a new discussion",
+    comment: {
+        "text": "This text is the body of the first comment"
+    }
+};
+
+var options = {
+    body: discussion,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.createRowDiscussion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/createDiscussion_response.md.erb" %>
@@ -2208,6 +2619,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
         "text":"This text is the body of the first comment"
     }
 }'
+```
+
+```javascript
+var discussion = {
+    title: "This is a new discussion",
+    comment: {
+        "text": "This text is the body of the first comment"
+    }
+};
+
+var options = {
+    body: discussion,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.createDiscussion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Request (with attachment):
@@ -2258,6 +2691,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 -X 'DELETE'
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    discussionId: 991393444325252
+};
+
+smartsheet.sheets.deleteDiscussion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -2286,6 +2734,20 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript 
+var options = {
+    sheetId: 3138415114905476
+};
+
+smartsheet.sheets.getDiscussions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -2305,6 +2767,21 @@ Gets a list of all Discussions associated with the specified Sheet (both sheet-l
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    discussionId: 2331373580117892
+};
+
+smartsheet.sheets.getDiscussions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2343,6 +2820,21 @@ Gets the Discussion specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?include=comments,attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.getRowDiscussions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2395,6 +2887,27 @@ curl https://api.smartsheet.com/2.0/favorites \
 -d '[{"type": "sheet", "objectId": 8400677765441412}]'
 ```
 
+```javascript 
+var favorites = [
+	{
+    	type: "sheet",
+    	objectId: 8400677765441412
+	}
+];
+
+var options = {
+    body: favorites
+};
+
+smartsheet.favorites.addItemsToFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -2432,6 +2945,16 @@ If called with a single [Favorite object](#favorite-object), and that favorite a
 ```shell
 curl https://api.smartsheet.com/2.0/favorites \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+smartsheet.favorites.listFavorites()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2480,6 +3003,20 @@ curl https://api.smartsheet.com/2.0/favorites/folder/{folderId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    objectId: 2252168947361668
+};
+
+smartsheet.favorites.removeFolderFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2500,6 +3037,20 @@ curl https://api.smartsheet.com/2.0/favorites/report/{reportId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    objectId: 2252168947361668
+};
+
+smartsheet.favorites.removeReportFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2518,6 +3069,20 @@ Removes a single Report from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    objectId: 2252168947361668
+};
+
+smartsheet.favorites.removeSheetFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });	
 ```
 
 > Example Response:
@@ -2544,6 +3109,20 @@ curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    objectId: 2252168947361668
+};
+
+smartsheet.favorites.removeWorkspaceFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2562,6 +3141,20 @@ Removes a single Workspace from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    objectId: 2252168947361668
+};
+
+smartsheet.favorites.removeTemplateFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2586,6 +3179,22 @@ curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{fold
 -X DELETE
 ```
 
+```javascript
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+smartsheet.favorites.removeFoldersFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2604,6 +3213,22 @@ Removes multiple Folders from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{reportId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+smartsheet.favorites.removeReportsFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2626,6 +3251,22 @@ curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetI
 -X DELETE
 ```
 
+```javascript
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+smartsheet.favorites.removeSheetsFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2646,6 +3287,22 @@ curl https://api.smartsheet.com/2.0/favorites/template?objectIds={templateId1},{
 -X DELETE
 ```
 
+```javascript
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+smartsheet.favorites.removeTemplatesFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2664,6 +3321,22 @@ Removes multiple Templates from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds={workspaceId1},{workspaceId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+smartsheet.favorites.removeWorkspacesFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2709,6 +3382,24 @@ curl https://api.smartsheet.com/2.0/home/folders \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name": "New folder"}'
+```
+
+```javascript
+var folder = {
+    name: "New folder"
+};
+
+var options = {
+    body: folder
+};
+
+smartsheet.home.createFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2775,6 +3466,20 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    id: 965780272637828
+};
+
+smartsheet.folders.deleteFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -2801,6 +3506,20 @@ Deletes the Folder (and its contents) specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    id: 7116448184199044
+};
+
+smartsheet.folders.getFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2846,6 +3565,16 @@ curl https://api.smartsheet.com/2.0/home/folders \
 -H "Content-Type: application/json"
 ```
 
+```javascript
+smartsheet.home.listFolders()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -2866,6 +3595,20 @@ Gets a list of the top-level child Folders within the user's **Sheets** folder (
 curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json"
+```
+
+```javascript
+var options = {
+    folderId: 5107651446105988
+};
+
+smartsheet.folders.listChildFolders(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -2890,6 +3633,20 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 -H "Content-Type: application/json"
 ```
 
+```javascript
+var options = {
+    workspaceId: 1656220827314052
+};
+
+smartsheet.workspaces.listWorkspaceFolders(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -2912,6 +3669,25 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name": "New name for folder"}'
+```
+
+```javascript
+var folder = {
+    name: "New name for folder"
+};
+
+var options = {
+    id: 1486948649985924,
+    body: folder
+};
+
+smartsheet.folders.updateFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3421,6 +4197,20 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+    id: 4583173393803140
+};
+
+smartsheet.reports.getReport(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -3502,6 +4292,20 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -o output.xls
 ```
 
+```javascript
+var options = {
+    id: 3882962191181700
+};
+
+smartsheet.reports.getReportAsExcel(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```desc
@@ -3515,6 +4319,20 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: text/csv" \
 -o output.csv
+```
+
+```javascript
+var options = {
+    id: 3882962191181700
+};
+
+smartsheet.reports.getReportAsCSV(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3546,6 +4364,16 @@ Gets the Report in the format specified, based on the Report ID.
 ```shell
 curl https://api.smartsheet.com/2.0/reports 
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+smartsheet.reports.listReports()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3692,6 +4520,52 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -d '[{"toTop":true, "cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }, {"toTop":true, "cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }]'
 ```
 
+```javascript
+var row = [
+    {
+        "toTop":true,
+        "cells":[
+            {
+                "columnId":7960873114331012,
+                "value":true
+            },
+            {
+                "columnId":642523719853956,
+                "value":"New status",
+                "strict":false
+            }
+        ]
+    },
+    {
+        "toTop":true,
+        "cells":[
+            {
+                "columnId":7960873114331012,
+                "value":true
+            },
+            {
+                "columnId":642523719853956,
+                "value":"New status",
+                "strict":false
+            }
+        ]
+    }
+];
+
+var options = {
+    body: row,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.addRows(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -3773,6 +4647,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
 -d '{ "rowIds": [145417762563972, 8026717110462340], "to": {"sheetId": 2258256056870788} }'
 ```
 
+```javascript
+var copyRow = {
+    "rowIds": [145417762563972, 8026717110462340],
+    "to": {
+        "sheetId": 2258256056870788
+    }
+};
+
+var options = {
+    body: copyRow,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.copyRowToAnotherSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
 `POST /sheets/{sheetId}/rows/copy`
@@ -3796,6 +4692,21 @@ Copies Row(s) from the Sheet specified in the URL to (the bottom of) another she
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 207098194749316
+};
+
+smartsheet.sheets.deleteRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3826,6 +4737,21 @@ Deletes the Row specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns,columnType \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 4583173393803140,
+    rowId: 2361756178769796
+};
+
+smartsheet.sheets.getRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3879,6 +4805,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/move \
 -d '{ "rowIds": [145417762563972, 8026717110462340], "to": {"sheetId": 2258256056870788} }'
 ```
 
+```javascript
+var moveRow = {
+    "rowIds": [145417762563972, 8026717110462340],
+    "to": {
+        "sheetId": 2258256056870788
+    }
+};
+
+var options = {
+    body: moveRow,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.moveRowToAnotherSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    }
+```
+
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
 `POST /sheets/{sheetId}/rows/move`
@@ -3909,6 +4857,50 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '[{"id": "6572427401553796", "cells": [{"columnId": 7518312134403972,"value": "new value"}, {"columnId": 1888812600190852,"value": "A"}]}, {"id": "2068827774183300", "cells": [{"columnId": 7518312134403972,"value": "desc_updated"}, {"columnId": 1888812600190852,"value": "B"}]}]'
+```
+
+```javascript
+var row = [
+    {
+        "id":"6572427401553796",
+        "cells":[
+            {
+                "columnId":7518312134403972,
+                "value":"new value"
+            },
+            {
+                "columnId":1888812600190852,
+                "value":"A"
+            }
+        ]
+    },
+    {
+        "id":"2068827774183300",
+        "cells":[
+            {
+                "columnId":7518312134403972,
+                "value":"desc_updated"
+            },
+            {
+                "columnId":1888812600190852,
+                "value":"B"
+            }
+        ]
+    }
+];
+
+var options = {
+    body: row,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.updateRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -4057,6 +5049,20 @@ curl https://api.smartsheet.com/2.0/search?query=stuff \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+    query: "stuff"
+};
+
+smartsheet.search.searchAll(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -4184,6 +5190,16 @@ For developer convenience, the Smartsheet API provides access to application con
 
 ```shell
 curl https://api.smartsheet.com/2.0/serverinfo
+```
+
+```javascript
+smartsheet.server.getInfo()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response: (*too long to list in its entirety*)
@@ -5460,6 +6476,16 @@ curl https://api.smartsheet.com/2.0/templates/public \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+smartsheet.templates.listPublicTemplates()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/listTemplates_response.md.erb" %>
@@ -5479,6 +6505,16 @@ Gets the list of public Templates to which the user has access.
 ```shell
 curl https://api.smartsheet.com/2.0/templates \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+smartsheet.templates.listUserCreatedTemplates()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5906,7 +6942,8 @@ var user = {
 };
 
 var options = {
-	body: user
+	body: user,
+	id: 82349925918590
 };
 
 smartsheet.users.updateUser(options)
