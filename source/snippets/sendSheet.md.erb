@@ -6,7 +6,40 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/emails \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"sendTo" : [{"email": "john.doe@smartsheet.com"}, {"groupId": 2258118617917316}], "subject": "Check these rows out!", "message": "Here are the rows I mentioned in our meeting", "ccMe": false, "format": "PDF", formatDetails": {"paperSize": "A4"}}'
- 
+
+```
+
+```javascript	
+var email = {
+    "sendTo":[
+        {
+            "email":"john.doe@smartsheet.com"
+        },
+        {
+            "groupId":2258118617917316
+        }
+    ],
+    "subject":"Check these rows out!",
+    "message":"Here are the rows I mentioned in our meeting",
+    "ccMe":false,
+    "format":"PDF",
+    "formatDetails":{
+        "paperSize":"A4"
+    }
+};
+
+var options = {
+    body: email,
+    sheetId: 2252168947361668
+};
+
+smartsheet.sheets.sendSheetViaEmail(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:

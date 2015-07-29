@@ -8,6 +8,38 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/emails \
 -d '{"sendTo" : [{"email": "john.doe@smartsheet.com"}, {"groupId": 2258118617917316}], "subject": "Check these rows out!", "message": "Here are the rows I mentioned in our meeting", "ccMe": false, "includeAttachments": "true", "includeDiscussions": "false"}'
 ```
 
+```javascript
+var email = {
+    "sendTo":[
+        {
+            "email":"john.doe@smartsheet.com"
+        },
+        {
+            "groupId":2258118617917316
+        }
+    ],
+    "subject":"Check these rows out!",
+    "message":"Here are the rows I mentioned in our meeting",
+    "ccMe":false,
+    "includeDiscussions": false,
+    "includeAttachments": true
+};
+
+var options = {
+    body: email,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+smartsheet.sheets.sendRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json

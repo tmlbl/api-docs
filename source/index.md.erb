@@ -3745,6 +3745,30 @@ curl https://api.smartsheet.com/2.0/groups \
 -d '{ "name": "API-created Group", "description": "Group created via API", "members": [{ "email": "john.doe@smartsheet.com" }]}'
 ```
 
+```javascript
+var group = {
+    "name":"API-created Group",
+    "description":"Group created via API",
+    "members":[
+        {
+            "email":"john.doe@smartsheet.com"
+        }
+    ]
+};
+
+var options = {
+    body: group
+};
+
+smartsheet.groups.createGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -3795,6 +3819,20 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    id: 6932724448552836
+};
+
+smartsheet.groups.deleteGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -3825,6 +3863,20 @@ Deletes the Group specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    id: 4583173393803140
+};
+
+smartsheet.groups.getGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3867,6 +3919,16 @@ Gets the Group specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/groups \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+smartsheet.groups.listGroups()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -3914,6 +3976,26 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{ "name": "Renamed Group", "description": "Some new description" }'
+```
+
+```javascript
+var group = {
+    "name":"API-created Group",
+    "description":"Group created via API"
+};
+
+var options = {
+    body: group,
+    id: 2331373580117892
+};
+
+smartsheet.groups.updateGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5254,6 +5336,21 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    reportId: 665829219035012,
+    shareId: "AAAQSF82F1eE"
+};
+
+smartsheet.reports.deleteShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -5273,6 +5370,21 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```javascript 
+var options = {
+    reportId: 6932724448552836,
+    shareId: "AQAISF82FOeE"
+};
+
+smartsheet.reports.getShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -5290,6 +5402,20 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+var options = {
+    reportId: 665829219035012
+};
+
+smartsheet.reports.listShares(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5314,6 +5440,23 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 -H "Content-Type: application/json" \
 -X POST \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```javascript
+var share = [{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}];
+
+var options = {
+    body: share,
+    reportId: 665829219035012
+};
+
+smartsheet.reports.share(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5343,6 +5486,24 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -d '{"accessLevel": "VIEWER"}'
 ```
 
+```javascript
+var share = {"accessLevel": "EDITOR"};
+
+var options = {
+    body: share,
+    reportId: 665829219035012,
+    shareId: "AAAFeF82FOeE"
+};
+
+smartsheet.reports.updateShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -5365,6 +5526,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    sheetId: 4583614634583940,
+    shareId: "AAAASuWWFOeE"
+};
+
+smartsheet.sheets.deleteShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -5384,6 +5560,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```javascript
+var options = {
+    sheetId: 4583614634583940,
+    shareId: "AQAISF82FOeE"
+};
+
+smartsheet.sheets.getShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -5401,6 +5592,21 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+var options = {
+    sheetId: 4583614634583940
+};
+
+smartsheet.sheets.listShares(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
 ```
 
 > Example Response:
@@ -5427,6 +5633,23 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
+```javascript
+var share = [{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}];
+
+var options = {
+    body: share,
+    sheetId: 4583614634583940
+};
+
+smartsheet.sheets.share(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -5446,11 +5669,29 @@ Shares a Sheet with the specified Users and Groups.
 > Example Request: 
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{reportId}/shares/{shareId} \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"accessLevel": "VIEWER"}'
+```
+
+```javascript
+var share = {"accessLevel": "VIEWER"};
+
+var options = {
+    body: share,
+    sheetId: 4583614634583940,
+    shareId: "AAAFeF82FOeE"
+};
+
+smartsheet.sheets.updateShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5473,6 +5714,21 @@ Updates the access level of a User or Group for the specified Sheet.
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    workspaceId: 1656220827314052,
+    shareId: "AAAEQesWFOeE"
+};
+
+smartsheet.workspaces.deleteShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5498,6 +5754,21 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```javascript
+var options = {
+    workspaceId: 1656220827314052,
+    shareId: "AQAISF82FOeE"
+};
+
+smartsheet.workspaces.getShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -5515,6 +5786,20 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+var options = {
+    workspaceId: 1656220827314052
+};
+
+smartsheet.workspaces.listShares(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -5593,6 +5878,24 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"accessLevel": "VIEWER"}'
+```
+
+```javascript
+var share = {"accessLevel": "VIEWER"};
+
+var options = {
+    body: share,
+    workspaceId: 1656220827314052,
+    shareId: "AAAFeF82FOeE"
+};
+
+smartsheet.workspaces.updateShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
