@@ -6286,6 +6286,26 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
 
+```javascript
+var sheet = {
+    name: "newsheet",
+    fromId: 7679398137620356
+};
+
+var options = {
+    body: sheet,
+    workspaceId: 1656220827314052
+};
+
+smartsheet.sheets.createSheetFromExisting(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -6304,6 +6324,20 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 ...curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    id: 1531988831168388
+};
+
+smartsheet.sheets.deleteSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -6332,6 +6366,20 @@ Deletes the Sheet specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    sheetId: 1531988831168388
+};
+
+smartsheet.sheets.getSheetVersion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -6690,6 +6738,27 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -d '{"name":"New Sheet Name", "userSettings": {"criticalPathEnabled": true}}'
 ```
 
+```javascript
+var sheet = {
+    name: "New Sheet Name",
+    userSettings: {
+    	criticalPathEnabled: true,
+	}
+};
+
+var options = {
+    body: sheet,
+    id: 7960873114331012
+};
+
+smartsheet.sheets.updateSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
 > Example Response:
 
 ```json
@@ -7311,6 +7380,22 @@ curl https://api.smartsheet.com/2.0/workspaces \
 -d '{"name": "New workspace"}'
 ```
 
+```javascript
+var workspace = {"name": "New workspace"};
+
+var options = {
+    body: workspace
+};
+
+smartsheet.workspaces.createWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -7347,6 +7432,20 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 -X DELETE
 ```
 
+```javascript
+var options = {
+    workspaceId: 6621332407379844
+};
+
+smartsheet.workspaces.deleteWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -7373,6 +7472,20 @@ Deletes the specified Workspace (and its contents).
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+var options = {
+    workspaceId: 7116448184199044
+};
+
+smartsheet.workspaces.getWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -7419,7 +7532,7 @@ curl https://api.smartsheet.com/2.0/workspaces \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
-```
+```javascript
 smartsheet.workspaces.listWorkspaces()
 	.then(function(data) {
 		console.log(data);
@@ -7481,6 +7594,23 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name": "Updated workspace"}'
+```
+
+```javascript
+var workspace = {"name": "Updated workspace"};
+
+var options = {
+    body: workspace,
+    workspaceId: 7960873114331012
+};
+
+smartsheet.workspaces.updateWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
