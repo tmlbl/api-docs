@@ -2155,6 +2155,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 -d '{"text":"This is a new comment."}'
 ```
 
+```csharp
+Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+
+smartsheet.SheetResources().DiscussionResources().CommentResources().AddComment(sheetId, discussionId, comment);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -2170,6 +2176,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
     {
         "text":"This text is the body of the new comment"
     }
+```
+
+```csharp
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the new comment").Build();
+
+smartsheet.SheetResources().DiscussionResources().CommentResources().AddCommentWithAttachment(sheetId, discussionId, comment, filePath, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2222,6 +2234,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 -X 'DELETE'
 ```
 
+```csharp
+smartsheet.SheetResources().CommentResources().DeleteComment(sheetId, commentId);
+```
+
 > Example Response:
 
 ```json
@@ -2248,6 +2264,10 @@ Deletes the Comment specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{id} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+smartsheet.SheetResources().CommentResources().GetComment(sheetId, commentId);
 ```
 
 > Example Response:
