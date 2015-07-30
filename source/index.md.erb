@@ -1060,6 +1060,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
 
+```csharp
+smartsheet.SheetResources().CommentResources().AttachmentResources().AttachFile(sheetId, commentId, filePath, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1070,6 +1074,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```csharp
+smartsheet.SheetResources().CommentResources().AttachmentResources().AttachFile(sheetId, commentId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1098,6 +1106,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -X POST \
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
+
+```csharp
+smartsheet.SheetResources().RowResources().AttachmentResources().AttachFile(sheetId, rowId, filePath, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1108,6 +1121,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```csharp
+smartsheet.SheetResources().RowResources().AttachmentResources().AttachFile(sheetId, rowId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1132,6 +1149,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -X POST \
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
+
+```csharp
+smartsheet.SheetResources().AttachmentResources().AttachFile(sheetId, filePath, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1142,6 +1164,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```csharp
+smartsheet.SheetResources().AttachmentResources().AttachFile(sheetId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1168,6 +1194,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
+```csharp
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
+
+smartsheet.SheetResources().CommentResources().AttachmentResources().AttachUrl(sheetId, commentId, attachment);
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1188,6 +1220,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+```
+
+```csharp
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
+
+smartsheet.SheetResources().RowResources().AttachmentResources().AttachUrl(sheetId, rowId, attachment);
 ```
 
 > Example Response:
@@ -1212,6 +1250,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
+```csharp
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
+
+smartsheet.SheetResources().AttachmentResources().AttachUrl(sheetId, attachment);
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1230,6 +1274,10 @@ Attaches a URL to the Sheet.
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.SheetResources().AttachmentResources().DeleteAttachment(sheetId, attachmentId);
 ```
 
 > Example Response:
@@ -1262,6 +1310,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```csharp
+smartsheet.SheetResources().AttachmentResources().GetAttachment(sheetId, attachmentId);
+```
+
 > Example Response:
 
 ```json
@@ -1292,6 +1344,14 @@ Fetches the Attachment specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.SheetResources().AttachmentResources().ListAttachments(sheetId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().AttachmentResources().ListAttachments(sheetId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1345,6 +1405,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```csharp
+// To omit pagination parameters:
+smartsheet.SheetResources().DiscussionResources().AttachmentResources().ListAttachments(sheetId, discussionId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().DiscussionResources().AttachmentResources().ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
+```
+
 > Example Response:
 
 ```json
@@ -1394,6 +1462,14 @@ Gets a list of all Attachments that are in the Discussion.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.SheetResources().RowResources().AttachmentResources().ListAttachments(sheetId, rowId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().RowResources().AttachmentResources().ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1450,6 +1526,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -X POST \
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
+
+```csharp
+smartsheet.SheetResources().AttachmentResources().VersioningResources().AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1460,6 +1541,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```csharp
+smartsheet.SheetResources().AttachmentResources().VersioningResources().AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1496,6 +1581,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -X DELETE
 ```
 
+```csharp
+smartsheet.SheetResources().AttachmentResources().VersioningResources().DeleteAllVersions(sheetId, attachmentId);
+```
+
 > Example Response:
 
 ```json
@@ -1522,6 +1611,14 @@ Deletes all versions of the attachment corresponding to the specified Attachment
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.SheetResources().AttachmentResources().VersioningResources().ListVersions(sheetId, attachmentId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().AttachmentResources().VersioningResources().ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
