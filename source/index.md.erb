@@ -1873,6 +1873,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":5}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 6}]'
 ```
 
+```csharp
+Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST).SetOptions(new string[] { "First", "Second", "Third" }).Build();
+Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
+Column columnC = new Column.AddColumnBuilder("New Picklist Column 2", 4, ColumnType.PICKLIST).SetOptions(new string[] { "1", "2", "3" }).Build();
+
+smartsheet.SheetResources().ColumnResources().AddColumns(sheetId, new Column[] { columnA, columnB, columnC });
+```
+
 > Example Response:
 
 ```json
@@ -1938,6 +1946,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.SheetResources().ColumnResources().DeleteColumn(sheetId, columnId);
+```
+
 > Example Response:
 
 ```json
@@ -1964,6 +1976,14 @@ Deletes the Column specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'include' parameter:
+smartsheet.SheetResources().ColumnResources().GetColumn(sheetId, columnId, null);
+
+// To specify 'include' parameter with value of "filters":
+smartsheet.SheetResources().ColumnResources().GetColumn(sheetId, columnId, new FilterInclusion[] { FilterInclusion.FILTERS });
 ```
 
 > Example Response:
@@ -1996,6 +2016,14 @@ Gets the Column specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'include' parameter and pagination parameters:
+smartsheet.SheetResources().ColumnResources().ListColumns(sheetId, null, null);
+
+// To specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().ColumnResources().ListColumns(sheetId, new FilterInclusion[] { FilterInclusion.FILTERS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2053,6 +2081,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X PUT \
 -d '{"title":"First Column","index":0, "type" : "PICKLIST", "options" :["One","Two"]}'
+```
+
+```csharp
+Column column = new Column.UpdateColumnBuilder("First Column", 0).SetType(ColumnType.PICKLIST).SetOptions(new string[] { "One", "Two" }).Build();
+
+smartsheet.SheetResources().ColumnResources().UpdateColumn(sheetId, columnId, column);
 ```
 
 > Example Response:
