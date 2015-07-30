@@ -1881,6 +1881,22 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588,
+    columnId: 642523719853956
+};
+
+smartsheet.sheets.getCellHistory(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -2381,6 +2397,24 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"text":"This is a new comment."}'
+```
+
+```javascript
+var comment = { "text": "This is a new comment" };
+
+var options = {
+    body: comment,
+    sheetId: 2252168947361668,
+    discussionId: 3962273862576004
+};
+
+smartsheet.sheets.addDiscussionComment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Request (with attachment):
@@ -3424,6 +3458,25 @@ curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
 -d '{"name": "New folder"}'
 ```
 
+```javascript
+var folder = {
+    name: "New folder"
+};
+
+var options = {
+    body: folder,
+    folderId: 1486948649985925
+};
+
+smartsheet.folders.createChildFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -3444,6 +3497,25 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid}/folders \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name": "New folder"}'
+```
+
+```javascript
+var folder = {
+    name: "New folder"
+};
+
+var options = {
+    body: folder,
+    workspaceId: 1656220827314052
+};
+
+smartsheet.workspaces.createFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
@@ -4065,6 +4137,23 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 -d '[{ "email": "jane.doe@smartsheet.com" }]'
 ```
 
+```javascript
+var members = [{ "email": "jane.doe@smartsheet.com" }];
+
+var options = {
+    body: members,
+    groupId: 7917992160847748
+};
+
+smartsheet.groups.addGroupMembers(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 > Example Response:
 
 ```json
@@ -4111,6 +4200,21 @@ of [GroupMember objects](#groupmember-object) any users specified in the array t
 curl https://api.smartsheet.com/2.0/groups/{groupId}/members/{userId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+var options = {
+    groupId: 7917992160847748,
+    userId: 1539725208119172
+};
+
+smartsheet.groups.removeGroupMember(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 > Example Response:
