@@ -3546,6 +3546,12 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 -d '[{ "email": "jane.doe@smartsheet.com" }]'
 ```
 
+```csharp
+GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
+
+smartsheet.GroupResources().AddGroupMembers(groupId, new GroupMember[] { member });
+```
+
 > Example Response:
 
 ```json
@@ -3592,6 +3598,10 @@ of [GroupMember objects](#groupmember-object) any users specified in the array t
 curl https://api.smartsheet.com/2.0/groups/{groupId}/members/{userId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.GroupResources().RemoveGroupMember(groupId, userId);
 ```
 
 > Example Response:
