@@ -2333,6 +2333,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
 ```
 
+```csharp
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+
+smartsheet.SheetResources().RowResources().DiscussionResources().CreateDiscussion(sheetId, rowId, discussion);
+```
+
 > Example Response:
 
 <%= partial "snippets/createDiscussion_response.md.erb" %>
@@ -2360,6 +2367,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 }'
 ```
 
+```csharp
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+
+smartsheet.SheetResources().DiscussionResources().CreateDiscussion(sheetId, discussion);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -2378,6 +2392,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
             "text":"This text is the body of the first comment"
         }
     }
+```
+
+```csharp
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", comment).Build();
+
+smartsheet.SheetResources().DiscussionResources().CreateDiscussionWithAttachment(sheetId, discussion, filePath, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2408,6 +2429,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 -X 'DELETE'
 ```
 
+```csharp
+smartsheet.SheetResources().DiscussionResources().DeleteDiscussion(sheetId, discussionId);
+```
+
 > Example Response:
 
 ```json
@@ -2436,6 +2461,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```csharp
+// To omit 'include' parameter and pagination parameters:
+smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, null, null);
+
+// To specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -2455,6 +2488,10 @@ Gets a list of all Discussions associated with the specified Sheet (both sheet-l
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+smartsheet.SheetResources().DiscussionResources().GetDiscussion(sheetId, discussionId);
 ```
 
 > Example Response:
@@ -2493,6 +2530,14 @@ Gets the Discussion specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?include=comments,attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'include' parameter and pagination parameters:
+smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, null, null);
+
+// To specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2545,6 +2590,12 @@ curl https://api.smartsheet.com/2.0/favorites \
 -d '[{"type": "sheet", "objectId": 8400677765441412}]'
 ```
 
+```csharp
+Favorite[] favorites = new Favorite[] { new Favorite.AddFavoriteBuilder(ObjectType.SHEET, objectId).Build() };
+
+smartsheet.FavoriteResources().AddFavorites(favorites);
+```
+
 > Example Response:
 
 ```json
@@ -2582,6 +2633,14 @@ If called with a single [Favorite object](#favorite-object), and that favorite a
 ```shell
 curl https://api.smartsheet.com/2.0/favorites \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.FavoriteResources().ListFavorites(null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.FavoriteResources().ListFavorites(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2630,6 +2689,10 @@ curl https://api.smartsheet.com/2.0/favorites/folder/{folderId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.FOLDER, new long[] { folderId });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2650,6 +2713,10 @@ curl https://api.smartsheet.com/2.0/favorites/report/{reportId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.REPORT, new long[] { reportId });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2668,6 +2735,10 @@ Removes a single Report from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.SHEET, new long[] { sheetId });
 ```
 
 > Example Response:
@@ -2694,6 +2765,10 @@ curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2712,6 +2787,10 @@ Removes a single Workspace from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId });
 ```
 
 > Example Response:
@@ -2736,6 +2815,10 @@ curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{fold
 -X DELETE
 ```
 
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.FOLDER, new long[] { folderId, folderId2 });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2754,6 +2837,10 @@ Removes multiple Folders from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{reportId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.REPORT, new long[] { reportId1, reportId2 });
 ```
 
 > Example Response:
@@ -2776,6 +2863,10 @@ curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetI
 -X DELETE
 ```
 
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.SHEET, new long[] { sheetId1, sheetId2 });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2796,6 +2887,10 @@ curl https://api.smartsheet.com/2.0/favorites/template?objectIds={templateId1},{
 -X DELETE
 ```
 
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId1, templateId2 });
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2814,6 +2909,10 @@ Removes multiple Templates from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds={workspaceId1},{workspaceId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.FavoriteResources().RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId1, workspaceId2 });
 ```
 
 > Example Response:
