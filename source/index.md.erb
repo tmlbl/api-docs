@@ -4669,6 +4669,10 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.ReportResources().ShareResources().DeleteShare(reportId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -4688,6 +4692,10 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```csharp
+smartsheet.ReportResources().ShareResources().GetShare(reportId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -4705,6 +4713,14 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.ReportResources().ShareResources().ListShares(reportId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.ReportResources().ShareResources().ListShares(reportId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -4729,6 +4745,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 -H "Content-Type: application/json" \
 -X POST \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```csharp
+Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
+
+smartsheet.ReportResources().ShareResources().ShareTo(reportId, shares, true);
 ```
 
 > Example Response:
@@ -4758,6 +4780,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -d '{"accessLevel": "VIEWER"}'
 ```
 
+```csharp
+Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+
+smartsheet.ReportResources().ShareResources().UpdateShare(reportId, shareId, share);
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -4780,6 +4808,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.SheetResources().ShareResources().DeleteShare(sheetId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -4799,6 +4831,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```csharp
+smartsheet.SheetResources().ShareResources().GetShare(sheetId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -4816,6 +4852,14 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.SheetResources().ShareResources().ListShares(sheetId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().ShareResources().ListShares(sheetId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -4840,6 +4884,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 -H "Content-Type: application/json" \
 -X POST \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```csharp
+Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
+
+smartsheet.SheetResources().ShareResources().ShareTo(sheetId, shares, true);
 ```
 
 > Example Response:
@@ -4868,6 +4918,12 @@ curl https://api.smartsheet.com/2.0/sheets/{reportId}/shares/{shareId} \
 -d '{"accessLevel": "VIEWER"}'
 ```
 
+```csharp
+Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+
+smartsheet.SheetResources().ShareResources().UpdateShare(sheetId, shareId, share);
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -4888,6 +4944,10 @@ Updates the access level of a User or Group for the specified Sheet.
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.WorkspaceResources().ShareResources().DeleteShare(workspaceId, shareId);
 ```
 
 > Example Response:
@@ -4913,6 +4973,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```csharp
+smartsheet.WorkspaceResources().ShareResources().GetShare(workspaceId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -4930,6 +4994,14 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.WorkspaceResources().ShareResources().ListShares(workspaceId, null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.WorkspaceResources().ShareResources().ListShares(workspaceId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -4954,6 +5026,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 -H "Content-Type: application/json" \
 -X POST \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```csharp
+Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
+
+smartsheet.WorkspaceResources().ShareResources().ShareTo(workspaceId, shares, true);
 ```
 
 > Example Response:
@@ -4986,6 +5064,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"accessLevel": "VIEWER"}'
+```
+
+```csharp
+Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+
+smartsheet.WorkspaceResources().ShareResources().UpdateShare(workspaceId, shareId, share);
 ```
 
 > Example Response:
