@@ -3279,6 +3279,13 @@ curl https://api.smartsheet.com/2.0/groups \
 -d '{ "name": "API-created Group", "description": "Group created via API", "members": [{ "email": "john.doe@smartsheet.com" }]}'
 ```
 
+```csharp
+GroupMember member = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
+Group group = new Group.CreateGroupBuilder("API-created Group", "Group created via API").SetMembers(new GroupMember[] { member }).Build();
+
+smartsheet.GroupResources().CreateGroup(group);
+```
+
 > Example Response:
 
 ```json
@@ -3329,6 +3336,10 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.GroupResources().DeleteGroup(groupId);
+```
+
 > Example Response:
 
 ```json
@@ -3359,6 +3370,10 @@ Deletes the Group specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+smartsheet.GroupResources().GetGroup(groupId);
 ```
 
 > Example Response:
@@ -3401,6 +3416,14 @@ Gets the Group specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/groups \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.GroupResources().ListGroups(null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.GroupResources().ListGroups(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3448,6 +3471,12 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{ "name": "Renamed Group", "description": "Some new description" }'
+```
+
+```csharp
+Group group = new Group.UpdateGroupBuilder().SetName("Renamed Group").SetDescription("Some new description").Build();
+
+smartsheet.GroupResources().UpdateGroup(groupId, group);
 ```
 
 > Example Response:
