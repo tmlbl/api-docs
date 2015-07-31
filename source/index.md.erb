@@ -6265,6 +6265,12 @@ curl https://api.smartsheet.com/2.0/workspaces \
 -d '{"name": "New workspace"}'
 ```
 
+```csharp
+Workspace workspace = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
+
+smartsheet.WorkspaceResources().CreateWorkspace(workspace);
+```
+
 > Example Response:
 
 ```json
@@ -6301,6 +6307,10 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 -X DELETE
 ```
 
+```csharp
+smartsheet.WorkspaceResources().DeleteWorkspace(workspaceId);
+```
+
 > Example Response:
 
 ```json
@@ -6327,6 +6337,14 @@ Deletes the specified Workspace (and its contents).
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'loadAll' and 'include' parameters:
+smartsheet.WorkspaceResources().GetWorkspace(workspaceId, null, null);
+
+// To specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source":
+smartsheet.WorkspaceResources().GetWorkspace(workspaceId, false, new SourceInclusion[] { SourceInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -6371,6 +6389,14 @@ Gets the specified Workspace (and lists its contents).
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit pagination parameters:
+smartsheet.WorkspaceResources().ListWorkspaces(null);
+
+// To specify 'includeAll' parameter with value of "true":
+smartsheet.WorkspaceResources().ListWorkspaces(new PaginationParameters(true, null, null)););
 ```
 
 > Example Response:
@@ -6425,6 +6451,12 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name": "Updated workspace"}'
+```
+
+```csharp
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder("Updated workspace").Build();
+
+smartsheet.WorkspaceResources().UpdateWorkspace(workspaceId, workspace);
 ```
 
 > Example Response:
