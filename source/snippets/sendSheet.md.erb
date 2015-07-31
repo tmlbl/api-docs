@@ -9,6 +9,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/emails \
  
 ```
 
+```csharp
+Recipient[] recipients = new Recipient[] { new Recipient { Email = "john.doe@smartsheet.com" }, new Recipient { GroupId = 2258118617917316 } };
+SheetEmail sheetEmail = new SheetEmail { SendTo = recipients, Subject = "Check this report out!", Message = "Here are the rows I mentioned in our meeting", CcMe = false, Format = SheetEmailFormat.PDF, FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 } };
+
+smartsheet.SheetResources().SendSheet(sheetId, sheetEmail);
+```
+
 > Example Response:
 
 ```json
