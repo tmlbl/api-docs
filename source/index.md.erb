@@ -5983,6 +5983,12 @@ curl https://api.smartsheet.com/2.0/users?sendEmail=true \
 -d '{"firstName": "John", "lastName": "Doe", "email": "NEW_USER_EMAIL", "admin": false, "licensedSheetCreator": true}'
 ```
 
+```csharp
+User user = new User.AddUserBuilder("NEW_USER_EMAIL", false, true).SetFirstName("John").SetLastName("Doe").Build();
+
+smartsheet.UserResources().AddUser(user, true);
+```
+
 > Example Response:
 
 ```json
@@ -6026,6 +6032,10 @@ curl https://api.smartsheet.com/2.0/users/me \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```csharp
+smartsheet.UserResources().GetCurrentUser();
+```
+
 > Example Response:
 
 ```json
@@ -6054,6 +6064,10 @@ Gets the current User.
 ```shell
 curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+smartsheet.UserResources().GetUser(userId);
 ```
 
 > Example Response:
@@ -6088,6 +6102,14 @@ Gets the User specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'email' parameter and pagination parameters:
+smartsheet.UserResources().ListUsers(null, null);
+
+// To specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true":
+smartsheet.UserResources().ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -6134,6 +6156,11 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFrom
 -X DELETE
 ```
 
+```csharp
+// To specify 'transferTo' parameter with value of "transferToUserId" and 'removeFromSharing' parameter with value of "true":
+smartsheet.UserResources().RemoveUser(userId, transferToUserId, null, true);
+```
+
 > Example Response:
 
 ```json
@@ -6168,6 +6195,12 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"admin": false, "licensedSheetCreator": true}'
+```
+
+```csharp
+User user = new User.UpdateUserBuilder(false, true).Build()
+
+smartsheet.UserResources().UpdateUser(userId, user);
 ```
 
 > Example Response:
