@@ -5171,6 +5171,12 @@ curl https://api.smartsheet.com/2.0/sheets \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
 ```
 
+```csharp
+Column[] columns = new Column[] { new Column.CreateSheetColumnBuilder("Favorite", null, ColumnType.CHECKBOX).SetSymbol(Symbol.STAR).Build(), new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.TEXT_NUMBER).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
+
+smartsheet.SheetResources().CreateSheet(new Sheet.CreateSheetBuilder("newsheet", columns).Build());
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -5193,6 +5199,12 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
 ```
 
+```csharp
+Column[] columns = new Column[] { new Column.CreateSheetColumnBuilder("Favorite", null, ColumnType.CHECKBOX).SetSymbol(Symbol.STAR).Build(), new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.TEXT_NUMBER).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
+
+smartsheet.FolderResources().SheetResources().CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", columns).Build());
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -5213,6 +5225,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+```
+
+```csharp
+Column[] columns = new Column[] { new Column.CreateSheetColumnBuilder("Favorite", null, ColumnType.CHECKBOX).SetSymbol(Symbol.STAR).Build(), new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.TEXT_NUMBER).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
+
+smartsheet.WorkspaceResources().SheetResources().CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", columns).Build());
 ```
 
 > Example Response:
@@ -5247,6 +5265,16 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
 
+```csharp
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", 7679398137620356).Build();
+
+// To omit 'include' parameter:
+smartsheet.SheetResources().CreateSheetFromTemplate(sheet, null);
+
+// To specify 'include' parameter with values of "data", "attachments", and "discussions":
+smartsheet.SheetResources().CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -5267,6 +5295,16 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
+```
+
+```csharp
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", 7679398137620356).Build();
+
+// To omit 'include' parameter:
+smartsheet.FolderResources().SheetResources().CreateSheetFromTemplate(folderId, sheet, null);
+
+// To specify 'include' parameter with values of "data", "attachments", and "discussions":
+smartsheet.FolderResources().SheetResources().CreateSheetFromTemplate(folderId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
 ```
 
 > Example Response:
@@ -5291,6 +5329,16 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
 
+```csharp
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", 7679398137620356).Build();
+
+// To omit 'include' parameter:
+smartsheet.WorkspaceResources().SheetResources().CreateSheetFromTemplate(workspaceId, sheet, null);
+
+// To specify 'include' parameter with values of "data", "attachments", and "discussions":
+smartsheet.WorkspaceResources().SheetResources().CreateSheetFromTemplate(workspaceId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -5309,6 +5357,10 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 ...curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```csharp
+smartsheet.SheetResources().DeleteSheet(sheetId);
 ```
 
 > Example Response:
@@ -5337,6 +5389,10 @@ Deletes the Sheet specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+smartsheet.SheetResources().GetSheetVersion(sheetId);
 ```
 
 > Example Response:
@@ -5374,6 +5430,11 @@ The following actions increment Sheet version:
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'include', 'exclude', 'rowIds', 'rowNumbers', 'columnIds', 'pageSize', and 'page' parameters:
+smartsheet.SheetResources().GetSheet(sheetId, null, null, null, null, null, null, null);
 ```
 
 > Example Response:
@@ -5438,6 +5499,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 -o  output.pdf
 ```
 
+```csharp
+smartsheet.SheetResources().GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
+```
+
 > Example Response:
 
 ```desc
@@ -5469,6 +5534,14 @@ Gets the Sheet in the format specified, based on the Sheet ID.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// To omit 'include' parameter and pagination parameters:
+smartsheet.SheetResources().ListSheets(null, null);
+
+// To specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true":
+smartsheet.SheetResources().ListSheets(new SourceInclusion[] { SourceInclusion.SOURCE }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -5520,6 +5593,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```csharp
+smartsheet.SheetResources().GetPublishStatus(sheetId);
+```
+
 > Example Response:
 
 ```json
@@ -5552,6 +5629,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"readOnlyLiteEnabled": true,"readOnlyFullEnabled": false,"readWriteEnabled": false,"icalEnabled": false}'
+```
+
+```csharp
+// To specify 'readOnlyLiteEnabled' parameter with value of "true", 'readOnlyFullEnabled' parameter with value of "false", 'readWriteEnabled' parameter with value of "false", and 'icalEnabled' parameter with value of "false":
+SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(true, false, false, false).Build();
+
+smartsheet.SheetResources().UpdatePublishStatus(sheetId, sheetPublish);
 ```
 
 > Example Response:
@@ -5603,6 +5687,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name":"New Sheet Name", "userSettings": {"criticalPathEnabled": true}}'
+```
+
+```csharp
+Sheet sheet = new Sheet.UpdateSheetBuilder().SetName("New Sheet Name").SetUserSettings(new SheetUserSettings { CriticalPathEnabled = true }).Build();
+
+smartsheet.SheetResources().UpdateSheet(sheetId, sheet);
 ```
 
 > Example Response:
