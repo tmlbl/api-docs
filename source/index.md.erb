@@ -611,7 +611,26 @@ See our [SDK page](http://www.smartsheet.com/developers/sdks) for available SDKs
 ### C# Sample Code
 
 The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
-The SDK Readme contains complete instructions for installing and using the SDK.
+Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created as follows:
+
+<code>
+// Set the Access Token<br/>
+Token token = new Token();<br/>
+token.AccessToken = "INSERT_YOUR_TOKEN_HERE";<br/>
+</code>
+
+<code>
+// Use the Smartsheet Builder to create a Smartsheet<br/>
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+</code>
+
+For operations that support querystring parameters, the C# code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
+The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
+
+Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
+
+<code>smartsheet.SheetResources().RowResources().DiscussionResources().CreateDiscussion(sheetId, rowId, discussion);</code>
 
 ## Direct API Access
 
@@ -1888,9 +1907,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 ```csharp
 Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST).SetOptions(new string[] { "First", "Second", "Third" }).Build();
+
 Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
+
 Column columnC = new Column.AddColumnBuilder("New Picklist Column 2", 4, ColumnType.PICKLIST).SetOptions(new string[] { "1", "2", "3" }).Build();
 
+// Add the 3 columns to the sheet.
 smartsheet.SheetResources().ColumnResources().AddColumns(sheetId, new Column[] { columnA, columnB, columnC });
 ```
 
@@ -2192,7 +2214,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 ```
 
 ```csharp
-Comment comment = new Comment.AddCommentBuilder("This text is the body of the new comment").Build();
+Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
 smartsheet.SheetResources().DiscussionResources().CommentResources().AddCommentWithAttachment(sheetId, discussionId, comment, filePath, "application/octet-stream");
 ```
@@ -2348,6 +2370,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 
 ```csharp
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
 smartsheet.SheetResources().RowResources().DiscussionResources().CreateDiscussion(sheetId, rowId, discussion);
@@ -2382,6 +2405,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 ```csharp
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
 smartsheet.SheetResources().DiscussionResources().CreateDiscussion(sheetId, discussion);
@@ -2409,6 +2433,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 ```csharp
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", comment).Build();
 
 smartsheet.SheetResources().DiscussionResources().CreateDiscussionWithAttachment(sheetId, discussion, filePath, "application/octet-stream");
@@ -2604,6 +2629,7 @@ curl https://api.smartsheet.com/2.0/favorites \
 ```
 
 ```csharp
+// Mark a single sheet as a Favorite.
 Favorite[] favorites = new Favorite[] { new Favorite.AddFavoriteBuilder(ObjectType.SHEET, objectId).Build() };
 
 smartsheet.FavoriteResources().AddFavorites(favorites);
@@ -3201,10 +3227,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 
 ```csharp
 // To omit pagination parameters:
-smartsheet.WorkspaceResources().FolderResources().ListFolders(folderId, null);
+smartsheet.WorkspaceResources().FolderResources().ListFolders(workspaceId, null);
 
 // To specify 'includeAll' parameter with value of "true":
-smartsheet.WorkspaceResources().FolderResources().ListFolders(folderId, new PaginationParameters(true, null, null));
+smartsheet.WorkspaceResources().FolderResources().ListFolders(workspaceId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3232,6 +3258,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```
 
 ```csharp
+// Change the name of the folder.
 Folder folder = new Folder.UpdateFolderBuilder("New name for folder").Build();
 
 smartsheet.FolderResources().UpdateFolder(folderId, folder);
@@ -3293,9 +3320,13 @@ curl https://api.smartsheet.com/2.0/groups \
 ```
 
 ```csharp
+// Create group member.
 GroupMember member = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
+
+// Add member to group.
 Group group = new Group.CreateGroupBuilder("API-created Group", "Group created via API").SetMembers(new GroupMember[] { member }).Build();
 
+// Create group.
 smartsheet.GroupResources().CreateGroup(group);
 ```
 
@@ -3487,6 +3518,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```
 
 ```csharp
+// Change the name and description of the group.
 Group group = new Group.UpdateGroupBuilder().SetName("Renamed Group").SetDescription("Some new description").Build();
 
 smartsheet.GroupResources().UpdateGroup(groupId, group);
@@ -3560,8 +3592,10 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 ```
 
 ```csharp
+// Create group member.
 GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
 
+// Add member to group.
 smartsheet.GroupResources().AddGroupMembers(groupId, new GroupMember[] { member });
 ```
 
@@ -3871,11 +3905,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```csharp
-// To omit 'include', 'pageSize', and 'page' parameters:
 smartsheet.ReportResources().GetReportAsExcel(reportId, outputStream, null, null, null);
-
-// To specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2":
-smartsheet.ReportResources().GetReportAsExcel(reportId, outputStream, new ReportInclusion[] { ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS }, 500, 2);
 ```
 
 > Example Response:
@@ -3894,11 +3924,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```csharp
-// To omit 'include', 'pageSize', and 'page' parameters:
 smartsheet.ReportResources().GetReportAsCSV(reportId, outputStream, null, null, null);
-
-// To specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2":
-smartsheet.ReportResources().GetReportAsCSV(reportId, outputStream, new ReportInclusion[] { ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS }, 500, 2);
 ```
 
 > Example Response:
@@ -4086,8 +4112,11 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 ```csharp
 Cell[] cellsA = new Cell[] { new Cell.AddCellBuilder(7960873114331012, true).Build(), new Cell.AddCellBuilder(642523719853956, "New status").SetStrict(false).Build() };
+
 Row rowA = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsA).Build();
+
 Cell[] cellsB = new Cell[] { new Cell.AddCellBuilder(7960873114331012, true).Build(), new Cell.AddCellBuilder(642523719853956, "New status").SetStrict(false).Build() };
+
 Row rowB = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsB).Build();
 
 smartsheet.SheetResources().RowResources().AddRows(sheetId, new Row[] { rowA, rowB });
@@ -4771,6 +4800,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 ```
 
 ```csharp
+// Share to one user as Editor.
 Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
 
 smartsheet.ReportResources().ShareResources().ShareTo(reportId, shares, true);
@@ -4804,6 +4834,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```csharp
+// Set the access level to Viewer.
 Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 
 smartsheet.ReportResources().ShareResources().UpdateShare(reportId, shareId, share);
