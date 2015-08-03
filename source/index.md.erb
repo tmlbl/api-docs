@@ -630,7 +630,7 @@ The code samples are intended for example purposes only and should not be consid
 Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
 For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
 
-<code>smartsheet.SheetResources().RowResources().DiscussionResources().CreateDiscussion(sheetId, rowId, discussion);</code>
+<code>smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);</code>
 
 ## Direct API Access
 
@@ -1086,7 +1086,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 
 ```csharp
 // Attach file to comment.
-smartsheet.SheetResources().CommentResources().AttachmentResources().AttachFile(sheetId, commentId, filePath, "application/msword");
+smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, filePath, "application/msword");
 ```
 
 > Example Request (simple):
@@ -1103,7 +1103,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 
 ```csharp
 // Attach file to comment.
-smartsheet.SheetResources().CommentResources().AttachmentResources().AttachFile(sheetId, commentId, filePath, "application/msword");
+smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1135,7 +1135,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 
 ```csharp
 // Attach file to row.
-smartsheet.SheetResources().RowResources().AttachmentResources().AttachFile(sheetId, rowId, filePath, "application/msword");
+smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, filePath, "application/msword");
 ```
 
 > Example Request (simple):
@@ -1152,7 +1152,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 
 ```csharp
 // Attach file to row.
-smartsheet.SheetResources().RowResources().AttachmentResources().AttachFile(sheetId, rowId, filePath, "application/msword");
+smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1180,7 +1180,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 
 ```csharp
 // Attach file to sheet.
-smartsheet.SheetResources().AttachmentResources().AttachFile(sheetId, filePath, "application/msword");
+smartsheet.SheetResources.AttachmentResources.AttachFile(sheetId, filePath, "application/msword");
 ```
 
 > Example Request (simple):
@@ -1197,7 +1197,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 
 ```csharp
 // Attach file to sheet.
-smartsheet.SheetResources().AttachmentResources().AttachFile(sheetId, filePath, "application/msword");
+smartsheet.SheetResources.AttachmentResources.AttachFile(sheetId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1229,7 +1229,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
 
 // Attach URL to comment.
-smartsheet.SheetResources().CommentResources().AttachmentResources().AttachUrl(sheetId, commentId, attachment);
+smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(sheetId, commentId, attachment);
 ```
 
 > Example Response:
@@ -1259,7 +1259,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
 
 // Attach URL to row.
-smartsheet.SheetResources().RowResources().AttachmentResources().AttachUrl(sheetId, rowId, attachment);
+smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(sheetId, rowId, attachment);
 ```
 
 > Example Response:
@@ -1289,7 +1289,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
 
 // Attach URL to sheet.
-smartsheet.SheetResources().AttachmentResources().AttachUrl(sheetId, attachment);
+smartsheet.SheetResources.AttachmentResources.AttachUrl(sheetId, attachment);
 ```
 
 > Example Response:
@@ -1314,7 +1314,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 
 ```csharp
 // Delete attachment.
-smartsheet.SheetResources().AttachmentResources().DeleteAttachment(sheetId, attachmentId);
+smartsheet.SheetResources.AttachmentResources.DeleteAttachment(sheetId, attachmentId);
 ```
 
 > Example Response:
@@ -1349,7 +1349,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 
 ```csharp
 // Get attachment.
-smartsheet.SheetResources().AttachmentResources().GetAttachment(sheetId, attachmentId);
+smartsheet.SheetResources.AttachmentResources.GetAttachment(sheetId, attachmentId);
 ```
 
 > Example Response:
@@ -1386,10 +1386,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 
 ```csharp
 // Get all attachments (omit pagination parameters).
-smartsheet.SheetResources().AttachmentResources().ListAttachments(sheetId, null);
+smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, null);
 
 // Get all attachments (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().AttachmentResources().ListAttachments(sheetId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1445,10 +1445,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 ```csharp
 // Get discussion attachments (omit pagination parameters).
-smartsheet.SheetResources().DiscussionResources().AttachmentResources().ListAttachments(sheetId, discussionId, null);
+smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, null);
 
 // Get discussion attachments (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().DiscussionResources().AttachmentResources().ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1504,10 +1504,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 
 ```csharp
 // Get row attachments (omit pagination parameters).
-smartsheet.SheetResources().RowResources().AttachmentResources().ListAttachments(sheetId, rowId, null);
+smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, null);
 
 // Get row attachments (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().RowResources().AttachmentResources().ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1567,7 +1567,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 ```csharp
 // Attach new version of file.
-smartsheet.SheetResources().AttachmentResources().VersioningResources().AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
+smartsheet.SheetResources.AttachmentResources.VersioningResources().AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
 ```
 
 > Example Request (simple):
@@ -1584,7 +1584,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 ```csharp
 // Attach new version of file.
-smartsheet.SheetResources().AttachmentResources().VersioningResources().AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
+smartsheet.SheetResources.AttachmentResources.VersioningResources().AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
 ```
 
 > Example Response:
@@ -1623,7 +1623,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 ```csharp
 // Delete all versions of the attachment. 
-smartsheet.SheetResources().AttachmentResources().VersioningResources().DeleteAllVersions(sheetId, attachmentId);
+smartsheet.SheetResources.AttachmentResources.VersioningResources().DeleteAllVersions(sheetId, attachmentId);
 ```
 
 > Example Response:
@@ -1656,10 +1656,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 
 ```csharp
 // List all versions of the attachment (omit pagination parameters).
-smartsheet.SheetResources().AttachmentResources().VersioningResources().ListVersions(sheetId, attachmentId, null);
+smartsheet.SheetResources.AttachmentResources.VersioningResources().ListVersions(sheetId, attachmentId, null);
 
 // List all versions of the attachment (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().AttachmentResources().VersioningResources().ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.AttachmentResources.VersioningResources().ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1772,10 +1772,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 
 ```csharp
 // Get cell history (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources().RowResources().CellResources().GetCellHistory(sheetId, rowId, columnId, null);
+smartsheet.SheetResources.RowResources.CellResources().GetCellHistory(sheetId, rowId, columnId, null);
 
 // Get cell history (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().RowResources().CellResources().GetCellHistory(sheetId, rowId, columnId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.RowResources.CellResources().GetCellHistory(sheetId, rowId, columnId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -1933,7 +1933,7 @@ Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DA
 Column columnC = new Column.AddColumnBuilder("New Picklist Column 2", 4, ColumnType.PICKLIST).SetOptions(new string[] { "1", "2", "3" }).Build();
 
 // Add the 3 columns to the sheet.
-smartsheet.SheetResources().ColumnResources().AddColumns(sheetId, new Column[] { columnA, columnB, columnC });
+smartsheet.SheetResources.ColumnResources.AddColumns(sheetId, new Column[] { columnA, columnB, columnC });
 ```
 
 > Example Response:
@@ -2003,7 +2003,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 
 ```csharp
 // Delete column.
-smartsheet.SheetResources().ColumnResources().DeleteColumn(sheetId, columnId);
+smartsheet.SheetResources.ColumnResources.DeleteColumn(sheetId, columnId);
 ```
 
 > Example Response:
@@ -2036,10 +2036,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 
 ```csharp
 // Get column (omit 'include' parameter).
-smartsheet.SheetResources().ColumnResources().GetColumn(sheetId, columnId, null);
+smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, null);
 
 // Get column (specify 'include' parameter with value of "filters").
-smartsheet.SheetResources().ColumnResources().GetColumn(sheetId, columnId, new FilterInclusion[] { FilterInclusion.FILTERS });
+smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, new FilterInclusion[] { FilterInclusion.FILTERS });
 ```
 
 > Example Response:
@@ -2076,10 +2076,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 
 ```csharp
 // Get all columns (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources().ColumnResources().ListColumns(sheetId, null, null);
+smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, null, null);
 
 // Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().ColumnResources().ListColumns(sheetId, new FilterInclusion[] { FilterInclusion.FILTERS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new FilterInclusion[] { FilterInclusion.FILTERS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2144,7 +2144,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 Column column = new Column.UpdateColumnBuilder("First Column", 0).SetType(ColumnType.PICKLIST).SetOptions(new string[] { "One", "Two" }).Build();
 
 // Update column.
-smartsheet.SheetResources().ColumnResources().UpdateColumn(sheetId, columnId, column);
+smartsheet.SheetResources.ColumnResources.UpdateColumn(sheetId, columnId, column);
 ```
 
 > Example Response:
@@ -2218,7 +2218,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
 // Add comment to discussion.
-smartsheet.SheetResources().DiscussionResources().CommentResources().AddComment(sheetId, discussionId, comment);
+smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(sheetId, discussionId, comment);
 ```
 
 > Example Request (with attachment):
@@ -2243,7 +2243,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
 // Add comment (with attachment) to discussion.
-smartsheet.SheetResources().DiscussionResources().CommentResources().AddCommentWithAttachment(sheetId, discussionId, comment, filePath, "application/octet-stream");
+smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(sheetId, discussionId, comment, filePath, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2298,7 +2298,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 
 ```csharp
 // Delete comment.
-smartsheet.SheetResources().CommentResources().DeleteComment(sheetId, commentId);
+smartsheet.SheetResources.CommentResources.DeleteComment(sheetId, commentId);
 ```
 
 > Example Response:
@@ -2331,7 +2331,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{id} \
 
 ```csharp
 // Get comment.
-smartsheet.SheetResources().CommentResources().GetComment(sheetId, commentId);
+smartsheet.SheetResources.CommentResources.GetComment(sheetId, commentId);
 ```
 
 > Example Response:
@@ -2405,7 +2405,7 @@ Comment comment = new Comment.AddCommentBuilder("This text is the body of the fi
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
 // Add discussion to row.
-smartsheet.SheetResources().RowResources().DiscussionResources().CreateDiscussion(sheetId, rowId, discussion);
+smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);
 ```
 
 > Example Response:
@@ -2443,7 +2443,7 @@ Comment comment = new Comment.AddCommentBuilder("This text is the body of the fi
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
 // Add discussion to sheet.
-smartsheet.SheetResources().DiscussionResources().CreateDiscussion(sheetId, discussion);
+smartsheet.SheetResources.DiscussionResources.CreateDiscussion(sheetId, discussion);
 ```
 
 > Example Request (with attachment):
@@ -2474,7 +2474,7 @@ Comment comment = new Comment.AddCommentBuilder("This text is the body of the fi
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", comment).Build();
 
 // Add discussion (inclding comment with attachment) to sheet.
-smartsheet.SheetResources().DiscussionResources().CreateDiscussionWithAttachment(sheetId, discussion, filePath, "application/octet-stream");
+smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, discussion, filePath, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2507,7 +2507,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 
 ```csharp
 // Delete discussion.
-smartsheet.SheetResources().DiscussionResources().DeleteDiscussion(sheetId, discussionId);
+smartsheet.SheetResources.DiscussionResources.DeleteDiscussion(sheetId, discussionId);
 ```
 
 > Example Response:
@@ -2540,10 +2540,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 
 ```csharp
 // Get all discussions (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, null, null);
+smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, null, null);
 
 // Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2569,7 +2569,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 
 ```csharp
 // Get discussion.
-smartsheet.SheetResources().DiscussionResources().GetDiscussion(sheetId, discussionId);
+smartsheet.SheetResources.DiscussionResources.GetDiscussion(sheetId, discussionId);
 ```
 
 > Example Response:
@@ -2612,10 +2612,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?in
 
 ```csharp
 // Get row discussions (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, null, null);
+smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, null, null);
 
 // Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().RowResources().DiscussionResources().ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2672,7 +2672,7 @@ curl https://api.smartsheet.com/2.0/favorites \
 // Mark a single sheet as a Favorite.
 Favorite[] favorites = new Favorite[] { new Favorite.AddFavoriteBuilder(ObjectType.SHEET, objectId).Build() };
 
-smartsheet.FavoriteResources().AddFavorites(favorites);
+smartsheet.FavoriteResources.AddFavorites(favorites);
 ```
 
 > Example Response:
@@ -2716,10 +2716,10 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 ```csharp
 // List favorites (omit pagination parameters).
-smartsheet.FavoriteResources().ListFavorites(null);
+smartsheet.FavoriteResources.ListFavorites(null);
 
 // List favorites (specify 'includeAll' parameter with value of "true").
-smartsheet.FavoriteResources().ListFavorites(new PaginationParameters(true, null, null));
+smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2770,7 +2770,7 @@ curl https://api.smartsheet.com/2.0/favorites/folder/{folderId} \
 
 ```csharp
 // Remove folder from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.FOLDER, new long[] { folderId });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] { folderId });
 ```
 
 > Example Response:
@@ -2795,7 +2795,7 @@ curl https://api.smartsheet.com/2.0/favorites/report/{reportId} \
 
 ```csharp
 // Remove report from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.REPORT, new long[] { reportId });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] { reportId });
 ```
 
 > Example Response:
@@ -2820,7 +2820,7 @@ curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
 
 ```csharp
 // Remove sheet from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.SHEET, new long[] { sheetId });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] { sheetId });
 ```
 
 > Example Response:
@@ -2849,7 +2849,7 @@ curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
 
 ```csharp
 // Remove workspace from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId });
 ```
 
 > Example Response:
@@ -2874,7 +2874,7 @@ curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
 
 ```csharp
 // Remove template from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId });
 ```
 
 > Example Response:
@@ -2901,7 +2901,7 @@ curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{fold
 
 ```csharp
 // Remove folders from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.FOLDER, new long[] { folderId, folderId2 });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] { folderId, folderId2 });
 ```
 
 > Example Response:
@@ -2926,7 +2926,7 @@ curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{repo
 
 ```csharp
 // Remove reports from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.REPORT, new long[] { reportId1, reportId2 });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] { reportId1, reportId2 });
 ```
 
 > Example Response:
@@ -2951,7 +2951,7 @@ curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetI
 
 ```csharp
 // Remove sheets from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.SHEET, new long[] { sheetId1, sheetId2 });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] { sheetId1, sheetId2 });
 ```
 
 > Example Response:
@@ -2976,7 +2976,7 @@ curl https://api.smartsheet.com/2.0/favorites/template?objectIds={templateId1},{
 
 ```csharp
 // Remove templates from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId1, templateId2 });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId1, templateId2 });
 ```
 
 > Example Response:
@@ -3001,7 +3001,7 @@ curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds={workspaceId1}
 
 ```csharp
 // Remove workspaces from list of favorites.
-smartsheet.FavoriteResources().RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId1, workspaceId2 });
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId1, workspaceId2 });
 ```
 
 > Example Response:
@@ -3054,7 +3054,7 @@ curl https://api.smartsheet.com/2.0/home/folders \
 Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
 
 // Create folder in "Sheets" folder (Home).
-smartsheet.HomeResources().FolderResources().CreateFolder(folder);
+smartsheet.HomeResources.FolderResources.CreateFolder(folder);
 ```
 
 > Example Response:
@@ -3085,7 +3085,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
 Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
 
 // Create folder in another folder.
-smartsheet.FolderResources().CreateFolder(destinationFolderId, folder);
+smartsheet.FolderResources.CreateFolder(destinationFolderId, folder);
 ```
 
 > Example Response:
@@ -3115,7 +3115,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid}/folders \
 Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
 
 // Create folder in a workspace.
-smartsheet.WorkspaceResources().FolderResources().CreateFolder(workspaceId, folder);
+smartsheet.WorkspaceResources.FolderResources.CreateFolder(workspaceId, folder);
 ```
 
 > Example Response:
@@ -3140,7 +3140,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 
 ```csharp
 // Delete folder.
-smartsheet.FolderResources().DeleteFolder(folderId);
+smartsheet.FolderResources.DeleteFolder(folderId);
 ```
 
 > Example Response:
@@ -3173,10 +3173,10 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 
 ```csharp
 // Get folder (omit 'include' parameter).
-smartsheet.FolderResources().GetFolder(folderId, null);
+smartsheet.FolderResources.GetFolder(folderId, null);
 
 // Get folder (specify 'include' parameter with value of "source").
-smartsheet.FolderResources().GetFolder(folderId, new SourceInclusion[] { SourceInclusion.SOURCE });
+smartsheet.FolderResources.GetFolder(folderId, new SourceInclusion[] { SourceInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -3224,10 +3224,10 @@ curl https://api.smartsheet.com/2.0/home/folders \
 
 ```csharp
 // List folders (omit pagination parameters).
-smartsheet.HomeResources().FolderResources().ListFolders(null);
+smartsheet.HomeResources.FolderResources.ListFolders(null);
 
 // List folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
-smartsheet.HomeResources().FolderResources().ListFolders(new PaginationParameters(true, null, null));
+smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3254,10 +3254,10 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 
 ```csharp
 // List folders in another folder (omit pagination parameters).
-smartsheet.FolderResources().ListFolders(folderId, null);
+smartsheet.FolderResources.ListFolders(folderId, null);
 
 // List folders in another folder (specify 'includeAll' parameter with value of "true").
-smartsheet.FolderResources().ListFolders(folderId, new PaginationParameters(true, null, null));
+smartsheet.FolderResources.ListFolders(folderId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3284,10 +3284,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 
 ```csharp
 // List folders in workspace (omit pagination parameters).
-smartsheet.WorkspaceResources().FolderResources().ListFolders(workspaceId, null);
+smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, null);
 
 // List folders in workspace (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources().FolderResources().ListFolders(workspaceId, new PaginationParameters(true, null, null));
+smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3319,7 +3319,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 Folder folder = new Folder.UpdateFolderBuilder("New name for folder").Build();
 
 // Update folder.
-smartsheet.FolderResources().UpdateFolder(folderId, folder);
+smartsheet.FolderResources.UpdateFolder(folderId, folder);
 ```
 
 > Example Response:
@@ -3385,7 +3385,7 @@ GroupMember member = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.
 Group group = new Group.CreateGroupBuilder("API-created Group", "Group created via API").SetMembers(new GroupMember[] { member }).Build();
 
 // Create group.
-smartsheet.GroupResources().CreateGroup(group);
+smartsheet.GroupResources.CreateGroup(group);
 ```
 
 > Example Response:
@@ -3440,7 +3440,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 
 ```csharp
 // Delete group.
-smartsheet.GroupResources().DeleteGroup(groupId);
+smartsheet.GroupResources.DeleteGroup(groupId);
 ```
 
 > Example Response:
@@ -3477,7 +3477,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 
 ```csharp
 // Get group.
-smartsheet.GroupResources().GetGroup(groupId);
+smartsheet.GroupResources.GetGroup(groupId);
 ```
 
 > Example Response:
@@ -3524,10 +3524,10 @@ curl https://api.smartsheet.com/2.0/groups \
 
 ```csharp
 // List all org groups (omit pagination parameters).
-smartsheet.GroupResources().ListGroups(null);
+smartsheet.GroupResources.ListGroups(null);
 
 // List all org groups (specify 'includeAll' parameter with value of "true").
-smartsheet.GroupResources().ListGroups(new PaginationParameters(true, null, null));
+smartsheet.GroupResources.ListGroups(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3582,7 +3582,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 Group group = new Group.UpdateGroupBuilder().SetName("Renamed Group").SetDescription("Some new description").Build();
 
 // Update group.
-smartsheet.GroupResources().UpdateGroup(groupId, group);
+smartsheet.GroupResources.UpdateGroup(groupId, group);
 ```
 
 > Example Response:
@@ -3657,7 +3657,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
 
 // Add member to group.
-smartsheet.GroupResources().AddGroupMembers(groupId, new GroupMember[] { member });
+smartsheet.GroupResources.AddGroupMembers(groupId, new GroupMember[] { member });
 ```
 
 > Example Response:
@@ -3710,7 +3710,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members/{userId} \
 
 ```csharp
 // Remove member from group.
-smartsheet.GroupResources().RemoveGroupMember(groupId, userId);
+smartsheet.GroupResources.RemoveGroupMember(groupId, userId);
 ```
 
 > Example Response:
@@ -3763,10 +3763,10 @@ curl https://api.smartsheet.com/2.0/home?include=source \
 
 ```csharp
 // List all contents (omit 'include' parameter).
-smartsheet.HomeResources().GetHome(null);
+smartsheet.HomeResources.GetHome(null);
 
 // List all contents (specify 'include' parameter with value of "source").
-smartsheet.HomeResources().GetHome(new SourceInclusion[] { SourceInclusion.SOURCE });
+smartsheet.HomeResources.GetHome(new SourceInclusion[] { SourceInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -3879,10 +3879,10 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 
 ```csharp
 // Get report (omit 'include', 'pageSize', and 'page' parameters).
-smartsheet.ReportResources().GetReport(reportId, null, null, null);
+smartsheet.ReportResources.GetReport(reportId, null, null, null);
 
 // Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
-smartsheet.ReportResources().GetReport(reportId, new ReportInclusion[] { ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS }, 500, 2);
+smartsheet.ReportResources.GetReport(reportId, new ReportInclusion[] { ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS }, 500, 2);
 ```
 
 > Example Response:
@@ -3968,7 +3968,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 
 ```csharp
 // Get report as Excel.
-smartsheet.ReportResources().GetReportAsExcel(reportId, outputStream, null, null, null);
+smartsheet.ReportResources.GetReportAsExcel(reportId, outputStream, null, null, null);
 ```
 
 > Example Response:
@@ -3988,7 +3988,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 
 ```csharp
 // Get report as CSV.
-smartsheet.ReportResources().GetReportAsCSV(reportId, outputStream, null, null, null);
+smartsheet.ReportResources.GetReportAsCSV(reportId, outputStream, null, null, null);
 ```
 
 > Example Response:
@@ -4024,10 +4024,10 @@ curl https://api.smartsheet.com/2.0/reports
 
 ```csharp
 // List reports (omit pagination parameters).
-smartsheet.ReportResources().ListReports(null);
+smartsheet.ReportResources.ListReports(null);
 
 // List reports (specify 'includeAll' parameter with value of "true").
-smartsheet.ReportResources().ListReports(new PaginationParameters(true, null, null));
+smartsheet.ReportResources.ListReports(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -4188,7 +4188,7 @@ Cell[] cellsB = new Cell[] { new Cell.AddCellBuilder(7960873114331012, true).Bui
 Row rowB = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsB).Build();
 
 // Add rows to sheet.
-smartsheet.SheetResources().RowResources().AddRows(sheetId, new Row[] { rowA, rowB });
+smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { rowA, rowB });
 ```
 
 > Example Response:
@@ -4280,10 +4280,10 @@ CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
 
 // Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
-smartsheet.SheetResources().RowResources().CopyRowsToAnotherSheet(sheetId, directive, null, null);
+smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, null, null);
 
 // Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
-smartsheet.SheetResources().RowResources().CopyRowsToAnotherSheet(sheetId, directive, new CopyRowInclusion[] { CopyRowInclusion.CHILDREN }, true);
+smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, new CopyRowInclusion[] { CopyRowInclusion.CHILDREN }, true);
 ```
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
@@ -4313,7 +4313,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
 
 ```csharp
 // Delete row.
-smartsheet.SheetResources().RowResources().DeleteRow(sheetId, rowId);
+smartsheet.SheetResources.RowResources.DeleteRow(sheetId, rowId);
 ```
 
 > Example Response:
@@ -4348,10 +4348,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discus
 
 ```csharp
 // Get row (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources().RowResources().GetRow(sheetId, rowId, null, null);
+smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, null, null);
 
 // Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
-smartsheet.SheetResources().RowResources().GetRow(sheetId, rowId, new RowIncludeFlags[] { RowIncludeFlags.COLUMNS, RowIncludeFlags.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
+smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, new RowIncludeFlags[] { RowIncludeFlags.COLUMNS, RowIncludeFlags.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
 ```
 
 > Example Response:
@@ -4413,10 +4413,10 @@ CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
 
 // Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
-smartsheet.SheetResources().RowResources().MoveRowsToAnotherSheet(sheetId, directive, null, null);
+smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(sheetId, directive, null, null);
 
 // Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
-smartsheet.SheetResources().RowResources().MoveRowsToAnotherSheet(sheetId, directive, new MoveRowInclusion[] { MoveRowInclusion.ATTACHMENTS, MoveRowInclusion.DISCUSSIONS }, true);
+smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(sheetId, directive, new MoveRowInclusion[] { MoveRowInclusion.ATTACHMENTS, MoveRowInclusion.DISCUSSIONS }, true);
 ```
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
@@ -4465,7 +4465,7 @@ Cell[] cellsB = new Cell[] { new Cell.UpdateCellBuilder(7518312134403972, "desc_
 Row rowB = new Row.UpdateRowBuilder(2068827774183300).SetCells(cellsB).Build();
 
 // Update rows in sheet.
-smartsheet.SheetResources().RowResources().UpdateRows(sheetId, new Row[] { rowA, rowB });
+smartsheet.SheetResources.RowResources.UpdateRows(sheetId, new Row[] { rowA, rowB });
 ```
 
 > Example Response:
@@ -4619,7 +4619,7 @@ curl https://api.smartsheet.com/2.0/search?query=stuff \
 string query = "stuff";
 
 // Search everything.
-smartsheet.SearchResources().Search(query);
+smartsheet.SearchResources.Search(query);
 ```
 
 > Example Response:
@@ -4753,7 +4753,7 @@ curl https://api.smartsheet.com/2.0/serverinfo
 
 ```csharp
 // Get server info.
-smartsheet.ServerInfoResources().GetServerInfo();
+smartsheet.ServerInfoResources.GetServerInfo();
 ```
 
 > Example Response: (*too long to list in its entirety*)
@@ -4810,7 +4810,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 
 ```csharp
 // Delete report share.
-smartsheet.ReportResources().ShareResources().DeleteShare(reportId, shareId);
+smartsheet.ReportResources.ShareResources.DeleteShare(reportId, shareId);
 ```
 
 > Example Response:
@@ -4834,7 +4834,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 
 ```csharp
 // Get report share.
-smartsheet.ReportResources().ShareResources().GetShare(reportId, shareId);
+smartsheet.ReportResources.ShareResources.GetShare(reportId, shareId);
 ```
 
 > Example Response:
@@ -4858,10 +4858,10 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 
 ```csharp
 // List report shares (omit pagination parameters).
-smartsheet.ReportResources().ShareResources().ListShares(reportId, null);
+smartsheet.ReportResources.ShareResources.ListShares(reportId, null);
 
 // List report shares (specify 'includeAll' parameter with value of "true").
-smartsheet.ReportResources().ShareResources().ListShares(reportId, new PaginationParameters(true, null, null));
+smartsheet.ReportResources.ShareResources.ListShares(reportId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -4893,7 +4893,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
 
 // Share report.
-smartsheet.ReportResources().ShareResources().ShareTo(reportId, shares, true);
+smartsheet.ReportResources.ShareResources.ShareTo(reportId, shares, true);
 ```
 
 > Example Response:
@@ -4928,7 +4928,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 
 // Update report share.
-smartsheet.ReportResources().ShareResources().UpdateShare(reportId, shareId, share);
+smartsheet.ReportResources.ShareResources.UpdateShare(reportId, shareId, share);
 ```
 
 > Example Response:
@@ -4955,7 +4955,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 ```csharp
 // Delete sheet share.
-smartsheet.SheetResources().ShareResources().DeleteShare(sheetId, shareId);
+smartsheet.SheetResources.ShareResources.DeleteShare(sheetId, shareId);
 ```
 
 > Example Response:
@@ -4979,7 +4979,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 ```csharp
 // Get sheet share.
-smartsheet.SheetResources().ShareResources().GetShare(sheetId, shareId);
+smartsheet.SheetResources.ShareResources.GetShare(sheetId, shareId);
 ```
 
 > Example Response:
@@ -5003,10 +5003,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 
 ```csharp
 // List sheet shares (omit pagination parameters).
-smartsheet.SheetResources().ShareResources().ListShares(sheetId, null);
+smartsheet.SheetResources.ShareResources.ListShares(sheetId, null);
 
 // List sheet shares (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().ShareResources().ListShares(sheetId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ShareResources.ListShares(sheetId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -5038,7 +5038,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
 
 // Share sheet.
-smartsheet.SheetResources().ShareResources().ShareTo(sheetId, shares, true);
+smartsheet.SheetResources.ShareResources.ShareTo(sheetId, shares, true);
 ```
 
 > Example Response:
@@ -5072,7 +5072,7 @@ curl https://api.smartsheet.com/2.0/sheets/{reportId}/shares/{shareId} \
 Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 
 // Update sheet share.
-smartsheet.SheetResources().ShareResources().UpdateShare(sheetId, shareId, share);
+smartsheet.SheetResources.ShareResources.UpdateShare(sheetId, shareId, share);
 ```
 
 > Example Response:
@@ -5099,7 +5099,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 
 ```csharp
 // Delete workspace share.
-smartsheet.WorkspaceResources().ShareResources().DeleteShare(workspaceId, shareId);
+smartsheet.WorkspaceResources.ShareResources.DeleteShare(workspaceId, shareId);
 ```
 
 > Example Response:
@@ -5127,7 +5127,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 
 ```csharp
 // Get workspace share.
-smartsheet.WorkspaceResources().ShareResources().GetShare(workspaceId, shareId);
+smartsheet.WorkspaceResources.ShareResources.GetShare(workspaceId, shareId);
 ```
 
 > Example Response:
@@ -5151,10 +5151,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 
 ```csharp
 // List workspace shares (omit pagination parameters).
-smartsheet.WorkspaceResources().ShareResources().ListShares(workspaceId, null);
+smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, null);
 
 // List workspace shares (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources().ShareResources().ListShares(workspaceId, new PaginationParameters(true, null, null));
+smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -5186,7 +5186,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 Share[] shares = new Share[] { new Share.ShareToOneBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
 
 // Share workspace.
-smartsheet.WorkspaceResources().ShareResources().ShareTo(workspaceId, shares, true);
+smartsheet.WorkspaceResources.ShareResources.ShareTo(workspaceId, shares, true);
 ```
 
 > Example Response:
@@ -5226,7 +5226,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 
 // Update workspace share.
-smartsheet.WorkspaceResources().ShareResources().UpdateShare(workspaceId, shareId, share);
+smartsheet.WorkspaceResources.ShareResources.UpdateShare(workspaceId, shareId, share);
 ```
 
 > Example Response:
@@ -5339,7 +5339,7 @@ Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, Col
 Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
 	
 // Create sheet in "Sheets" folder (specifying the 3 columns to include in the sheet).
-smartsheet.SheetResources().CreateSheet(new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
 ```
 
 > Example Response:
@@ -5375,7 +5375,7 @@ Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, Col
 Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
 	
 // Create sheet in folder (specifying the 3 columns to include in the sheet).
-smartsheet.FolderResources().SheetResources().CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+smartsheet.FolderResources.SheetResources.CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
 ```
 
 > Example Response:
@@ -5411,7 +5411,7 @@ Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, Col
 Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
 	
 // Create sheet in workspace (specifying the 3 columns to include in the sheet).
-smartsheet.WorkspaceResources().SheetResources().CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+smartsheet.WorkspaceResources.SheetResources.CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
 ```
 
 > Example Response:
@@ -5451,10 +5451,10 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
 
 // Create sheet from template (omit 'include' parameter).
-smartsheet.SheetResources().CreateSheetFromTemplate(sheet, null);
+smartsheet.SheetResources.CreateSheetFromTemplate(sheet, null);
 
 // Create sheet from template (including data, attachments, and discussions).
-smartsheet.SheetResources().CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
 ```
 
 > Example Response:
@@ -5484,10 +5484,10 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
-smartsheet.FolderResources().SheetResources().CreateSheetFromTemplate(folderId, sheet, null);
+smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, sheet, null);
 
 // Create sheet from template in the specified folder (including data, attachments, and discussions).
-smartsheet.FolderResources().SheetResources().CreateSheetFromTemplate(folderId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
 ```
 
 > Example Response:
@@ -5517,10 +5517,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
 
 // Create sheet from template in the specified workspace (omit 'include' parameter).
-smartsheet.WorkspaceResources().SheetResources().CreateSheetFromTemplate(workspaceId, sheet, null);
+smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId, sheet, null);
 
 // Create sheet from template in the specified workspace (including data, attachments, and discussions).
-smartsheet.WorkspaceResources().SheetResources().CreateSheetFromTemplate(workspaceId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
 ```
 
 > Example Response:
@@ -5545,7 +5545,7 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 
 ```csharp
 // Delete sheet.
-smartsheet.SheetResources().DeleteSheet(sheetId);
+smartsheet.SheetResources.DeleteSheet(sheetId);
 ```
 
 > Example Response:
@@ -5578,7 +5578,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
 
 ```csharp
 // Get sheet version.
-smartsheet.SheetResources().GetSheetVersion(sheetId);
+smartsheet.SheetResources.GetSheetVersion(sheetId);
 ```
 
 > Example Response:
@@ -5620,7 +5620,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 
 ```csharp
 // Get sheet (omit all parameters).
-smartsheet.SheetResources().GetSheet(sheetId, null, null, null, null, null, null, null);
+smartsheet.SheetResources.GetSheet(sheetId, null, null, null, null, null, null, null);
 ```
 
 > Example Response:
@@ -5687,7 +5687,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 
 ```csharp
 // Get sheet as PDF.
-smartsheet.SheetResources().GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
+smartsheet.SheetResources.GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 ```
 
 > Example Response:
@@ -5725,10 +5725,10 @@ curl https://api.smartsheet.com/2.0/sheets \
 
 ```csharp
 // List sheets (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources().ListSheets(null, null);
+smartsheet.SheetResources.ListSheets(null, null);
 
 // List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources().ListSheets(new SourceInclusion[] { SourceInclusion.SOURCE }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ListSheets(new SourceInclusion[] { SourceInclusion.SOURCE }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -5782,7 +5782,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 
 ```csharp
 // Get sheet publish status.
-smartsheet.SheetResources().GetPublishStatus(sheetId);
+smartsheet.SheetResources.GetPublishStatus(sheetId);
 ```
 
 > Example Response:
@@ -5824,7 +5824,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(true, false, false, false).Build();
 
 // Set sheet publish status.
-smartsheet.SheetResources().UpdatePublishStatus(sheetId, sheetPublish);
+smartsheet.SheetResources.UpdatePublishStatus(sheetId, sheetPublish);
 ```
 
 > Example Response:
@@ -5883,7 +5883,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 Sheet sheet = new Sheet.UpdateSheetBuilder().SetName("New Sheet Name").SetUserSettings(new SheetUserSettings { CriticalPathEnabled = true }).Build();
 
 // Update sheet.
-smartsheet.SheetResources().UpdateSheet(sheetId, sheet);
+smartsheet.SheetResources.UpdateSheet(sheetId, sheet);
 ```
 
 > Example Response:
@@ -5977,10 +5977,10 @@ curl https://api.smartsheet.com/2.0/templates/public \
 
 ```csharp
 // List public templates (omit pagination parameters).
-smartsheet.TemplateResources().ListPublicTemplates(null);
+smartsheet.TemplateResources.ListPublicTemplates(null);
 
 // List public templates (specify 'includeAll' parameter with value of "true").
-smartsheet.TemplateResources().ListPublicTemplates(new PaginationParameters(true, null, null));
+smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -6006,10 +6006,10 @@ curl https://api.smartsheet.com/2.0/templates \
 
 ```csharp
 // List user-created templates (omit pagination parameters).
-smartsheet.TemplateResources().ListUserCreatedTemplates(null);
+smartsheet.TemplateResources.ListUserCreatedTemplates(null);
 
 // List user-created templates (specify 'includeAll' parameter with value of "true").
-smartsheet.TemplateResources().ListUserCreatedTemplates(new PaginationParameters(true, null, null));
+smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -6194,7 +6194,7 @@ curl https://api.smartsheet.com/2.0/users?sendEmail=true \
 User user = new User.AddUserBuilder("NEW_USER_EMAIL", false, true).SetFirstName("John").SetLastName("Doe").Build();
 
 // Add user.
-smartsheet.UserResources().AddUser(user, true);
+smartsheet.UserResources.AddUser(user, true);
 ```
 
 > Example Response:
@@ -6242,7 +6242,7 @@ curl https://api.smartsheet.com/2.0/users/me \
 
 ```csharp
 // Get current user.
-smartsheet.UserResources().GetCurrentUser();
+smartsheet.UserResources.GetCurrentUser();
 ```
 
 > Example Response:
@@ -6277,7 +6277,7 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 
 ```csharp
 // Get user.
-smartsheet.UserResources().GetUser(userId);
+smartsheet.UserResources.GetUser(userId);
 ```
 
 > Example Response:
@@ -6316,10 +6316,10 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 
 ```csharp
 // List users (omit 'email' parameter and pagination parameters).
-smartsheet.UserResources().ListUsers(null, null);
+smartsheet.UserResources.ListUsers(null, null);
 
 // List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
-smartsheet.UserResources().ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
+smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -6368,7 +6368,7 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFrom
 
 ```csharp
 // Remove user (transferring ownership of groups and sheets to another user, and removing the user from sharing).
-smartsheet.UserResources().RemoveUser(userId, transferToUserId, true, true);
+smartsheet.UserResources.RemoveUser(userId, transferToUserId, true, true);
 ```
 
 > Example Response:
@@ -6412,7 +6412,7 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 User user = new User.UpdateUserBuilder(false, true).Build()
 
 // Update user.
-smartsheet.UserResources().UpdateUser(userId, user);
+smartsheet.UserResources.UpdateUser(userId, user);
 ```
 
 > Example Response:
@@ -6474,7 +6474,7 @@ curl https://api.smartsheet.com/2.0/workspaces \
 Workspace workspace = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
 
 // Create workspace.
-smartsheet.WorkspaceResources().CreateWorkspace(workspace);
+smartsheet.WorkspaceResources.CreateWorkspace(workspace);
 ```
 
 > Example Response:
@@ -6515,7 +6515,7 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 
 ```csharp
 // Delete workspace.
-smartsheet.WorkspaceResources().DeleteWorkspace(workspaceId);
+smartsheet.WorkspaceResources.DeleteWorkspace(workspaceId);
 ```
 
 > Example Response:
@@ -6548,10 +6548,10 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 
 ```csharp
 // Get workspace (omit 'loadAll' and 'include' parameters).
-smartsheet.WorkspaceResources().GetWorkspace(workspaceId, null, null);
+smartsheet.WorkspaceResources.GetWorkspace(workspaceId, null, null);
 
 // Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
-smartsheet.WorkspaceResources().GetWorkspace(workspaceId, false, new SourceInclusion[] { SourceInclusion.SOURCE });
+smartsheet.WorkspaceResources.GetWorkspace(workspaceId, false, new SourceInclusion[] { SourceInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -6600,10 +6600,10 @@ curl https://api.smartsheet.com/2.0/workspaces \
 
 ```csharp
 // List workspaces (omit pagination parameters).
-smartsheet.WorkspaceResources().ListWorkspaces(null);
+smartsheet.WorkspaceResources.ListWorkspaces(null);
 
 // List workspaces (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources().ListWorkspaces(new PaginationParameters(true, null, null)););
+smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true, null, null)););
 ```
 
 > Example Response:
@@ -6665,7 +6665,7 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 Workspace workspace = new Workspace.UpdateWorkspaceBuilder("Updated workspace").Build();
 
 // Update workspace.
-smartsheet.WorkspaceResources().UpdateWorkspace(workspaceId, workspace);
+smartsheet.WorkspaceResources.UpdateWorkspace(workspaceId, workspace);
 ```
 
 > Example Response:
