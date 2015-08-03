@@ -1,7 +1,7 @@
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/emails \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -29,7 +29,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 
 ```json
 {
-  "resultCode": 0,
+    "resultCode": 0,
     "message": "SUCCESS"
 }
 ```
@@ -42,5 +42,5 @@ Sends one or more Rows via email.
 -----|-----|
 <%= SCOPE %> | SHARE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object). If **columnIds** is null, all columns except hidden columns shall be included. If it is empty, no columns shall be included: if empty, either **includeAttachments** or **includeDiscussions** must be specified.
+<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object). <br/><br/>The columns included for each row in the email will be populated according to the following rules:<ul><li>If the **columnIds** attribute of the MultiRowEmail object is specified as an array of column IDs, those specific columns will be included.</li><li>If the **columnIds** attribute of the MultiRowEmail object is omitted, all columns except hidden columns shall be included.</li><li>If the **columnIds** attribute of the MultiRowEmail object is specified as *empty*, no columns shall be included. (Note: In this case, either **includeAttachments**:true or **includeDiscussions**:true must be specified.)
 <%= RETURNS %> | [Result object](#result-object)
