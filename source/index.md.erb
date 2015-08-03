@@ -1772,10 +1772,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 
 ```csharp
 // Get cell history (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources.RowResources.CellResources().GetCellHistory(sheetId, rowId, columnId, null);
+smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, rowId, columnId, null, null);
 
-// Get cell history (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.RowResources.CellResources().GetCellHistory(sheetId, rowId, columnId, new PaginationParameters(true, null, null));
+// Get cell history (specify 'include' parameter with value of "columnType" and 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, rowId, columnId, new CellInclusion[] { CellInclusion.COLUMN_TYPE }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -2540,10 +2540,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 
 ```csharp
 // Get all discussions (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, null, null);
+smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, null, null);
 
 // Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
