@@ -2719,7 +2719,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **name** | string | Folder name
 **favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | Direct URL to Folder
-**distributionLink** | string | Direct URL to provision the Folder. It enables a user to get a copy this Folder without the Folder owner/admin sharing it. This is only generated if the API requester of this Folder object is the owner or admin of the distribution-enabled Workspace which contains the Folder.
+**distributionLink** | string | A URL that can be used to provision the Folder. It enables a user to create their own copy of this Folder without having access to the Workspace that contains the Folder. <br/><br/>This attribute is only present if the Folder exists in a distribution-enabled Workspace and the API requester has either owner or admin access to the containing Workspace.
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
 **folders** | [Folder](#folder-object)[] | Array of Folder objects
 **reports** | [Report](#report-object)[] | Array of Report objects
@@ -2747,7 +2747,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 {
     "resultCode": 0,
     "result": {
-        "id": new_folder_id,
+        "id": 7116448184199044,
         "name": "newFolderName",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
@@ -2758,10 +2758,16 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 
 `POST /folders/{folderId}/copy`
 
-Copies a Folder to another location.
+Creates a copy of the specified Folder.
 
-<%= partial "snippets/copyFolder_table.md.erb" %>
-
+     |     |    
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - include all data, attachments, discussions, cellLinks, and forms</li></ul> 
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li></ul>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets. If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the newly created Folder
 
 ## Create Child Folder
 
@@ -2899,8 +2905,8 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): <ul><li>distributionLink</li><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
-<%= RETURNS %> | [Folder object](#folder-object)<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>distributionLink</li><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
 
 ## List Child Folders
 
@@ -2994,8 +3000,8 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 {
     "resultCode": 0,
     "result": {
-        "id": original_folder_id,
-        "name": "original_folder_name",
+        "id": 4509918431602564,
+        "name": "moved_folder_name",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
     },
@@ -3005,13 +3011,13 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 
 `POST /folders/{folderId}/move`
 
-Moves a Folder to another location.
+Moves the specified Folder to another location.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attribute(s):<ul><li>destinationType</li><li>destinationId</li></ul>
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attributes:<ul><li>destinationType</li><li>destinationId</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the moved Folder
 
 
@@ -3442,7 +3448,7 @@ curl https://api.smartsheet.com/2.0/home?include=source \
             "accessLevel": "OWNER",
             "permalink": "https://app.smartsheet.com/b/home?lx=Dsje3YKtpyZScrCX6Zb",
             "createdAt": "2015-06-05T20:05:29Z",
-            "modifiedAt": "2015-06-05T20:05:43Z"
+            "modifiedAt": "2015-06-05T20:05:43Z",
 			"source": {
                 "id": 4583173393803140,
                 "type": "sheet"
@@ -3463,7 +3469,7 @@ Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) <ul><li>distributionLink - include **distributionLink** in Folder and/or Sheet objects</li><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>distributionLink - for Folder and/or Sheet objects in the response</li><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -3593,7 +3599,7 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
   | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | [Report object](#report-object), populated according to the "include" parameter
@@ -3641,7 +3647,7 @@ Gets the Report in the format specified, based on the Report ID.
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
  | **Accept** -- must be set to one of the following values:<ul><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
   | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | The file in either Excel or CSV format, containing the Report data according to the **include** parameter.
@@ -3931,8 +3937,8 @@ Deletes the Row specified in the URL.
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids=id1,id2,id3&ignoreRowsNotFound=true \
--X POST
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}&ignoreRowsNotFound=true \
+-X DELETE
 ```
 
 > Example Response:
@@ -3941,16 +3947,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids=id1,id2,id3&ignore
 {
     "resultCode": 0,
     "result": [
-        id1,
-        id2,
-        id_of_child_of_id2,
-       id3 
+        145417762563972,
+        4508365800925060,
+        8026717110462340,
+        2256565987239812 
     ],
     "message": "SUCCESS"
 }
 ```
 
-`DELETE /sheets/{sheetId}/rows?ids=rowId1,rowId2,...`
+`DELETE /sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}...`
 
 Deletes the Rows specified in the URL.
 
@@ -3961,8 +3967,8 @@ Deletes the Rows specified in the URL.
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **ids** (required) - IDs of rows to delete
- | ignoreRowsNotFound (optional) - true or false. If false, no rows will be deleted, and the not-found error will be returned.
-<%= RETURNS %> | [Result object](#result-object) containing a list of the IDs of all rows that were successfully deleted.
+ | **ignoreRowsNotFound** (optional) - true or false. If set to false and any of the specified Row IDs are not found, no rows will be deleted, and the "not found" [error](#errors) will be returned.
+<%= RETURNS %> | [Result object](#result-object) containing Row IDs corresponding to all rows that were successfully deleted (including any child rows of rows specified in the URL).
 
 ## Get Row
 
@@ -4048,6 +4054,52 @@ Moves Row(s) from the Sheet specified in the URL to (the bottom of) another shee
 
 <%= partial "snippets/sendRows.md.erb" %>
 
+## Send Update Request
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ \
+    "sendTo": [ \
+        {"email": "email789@smartsheet.com"}, \
+        {"email": "email0123@smartsheet.com"} \
+    ], \
+    "subject": "some subject", \
+    "message": "some message", \
+    "ccMe": (true|false), \
+    "rowIds": [rowId1], \
+    "columnIds": [colId1, colId2], \
+    "includeAttachments": (true|false), \
+    "includeDiscussions": (true|false) \
+}'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": 4583173393803140
+    },
+    "message": "SUCCESS"
+}
+```
+
+`POST /sheets/{sheetId}/updaterequests`
+
+Creates an Update Request for the specified Row(s) within the Sheet. An email notification (containing a link to the update request) will be asynchronously sent to the specified recipient(s).
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object)
+<%= RETURNS %> | [Result object](#result-object) containing the newly created [UpdateRequest object](#updaterequest-object), limited to **id**.
 
 ## Update Row(s)
 
@@ -4758,10 +4810,10 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
 **showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
 **userSettings** | [SheetUserSettings](#sheetusersettings-object) | A SheetUserSettings object containing the current user's sheet-specific settings.
-**owner** | string | Sheet owner email address
-**ownerId** | number | Sheet owner's Smartsheet user ID 
+**owner** | string | Email address of the Sheet owner
+**ownerId** | number | User ID of the Sheet owner
 **permalink** | string | Direct URL to the Sheet
-**distributionLink** | string | Direct URL to provision the Sheet. It enables a user to get a copy this Sheet without the Sheet owner/admin sharing it. This is only generated if the API requester of this Sheet object is the owner or admin of the distribution-enabled Workspace which contains the Sheet.
+**distributionLink** | string | A URL that can be used to provision the Sheet. It enables a user to create their own copy of this Sheet having access to the Sheet. <br/><br/>This property is only present if the Sheet exists in a distribution-enabled Workspace and the API requester has either owner or admin access to the containing Workspace.
 **source** | [Source](#source-object) | A Source object indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
 **modifiedAt** | timestamp | Time that the Sheet was modified
@@ -4821,7 +4873,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 {
     "resultCode": 0,
     "result": {
-        "id": new_sheet_id,
+        "id": 4583173393803140,
         "name": "newSheetName",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
@@ -4832,9 +4884,15 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 
 `POST /sheets/{sheetId}/copy`
 
-Copies a sheet to a new location.
+Creates a copy of the specified Sheet.
 
-<%= partial "snippets/copySheet_table.md.erb" %>
+     |     |
+-----|-----|
+<%= SCOPE %> | CREATE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - include data, attachments, discussions, cellLinks, and forms</li></ul>
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object)
+<%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Create Sheet
 
@@ -4988,54 +5046,6 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
-## Create Update Request
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X POST \
--d '{ \
-    "sendTo": [ \
-        {"email": "email789@smartsheet.com"}, \
-        {"email": "email0123@smartsheet.com"} \
-    ], \
-    "subject": "some subject", \
-    "message": "some message", \
-    "ccMe": (true|false), \
-    "rowIds": [rowId1], \
-    "columnIds": [colId1, colId2], \
-    "includeAttachments": (true|false), \
-    "includeDiscussions": (true|false) \
-}'
-```
-
-> Example Response:
-
-```json
-{
-    "resultCode": 0,
-    "result": {
-        "id": update_request_ID
-    },
-    "message": "SUCCESS"
-}
-```
-
-
-`POST /sheets/{sheetId}/updaterequests`
-
-Creates an update request for one or more rows on the sheet. An email notification will be asynchronously sent to the specified recipient(s) with a link to the newly created update request.
-
-     |     |
------|-----|
-<%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object)
-<%= RETURNS %> | [Result object](#result-object) containing the newly created [UpdateRequest object](#updaterequest-object), limited to **id**.
-
 ## Delete Sheet
 
 > Example Request:
@@ -5153,7 +5163,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**distributionLink**: includes distributionLink</li><li>**ownerInfo**: includes owner email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**distributionLink**: includes [distributionLink](#sheet-object) attribute</li><li>**ownerInfo**: includes owner's email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional): when specified with a value of "nonexistentCells", response will <i>not include</i> cells that have never contained any data
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
@@ -5245,8 +5255,8 @@ Gets the list of all Sheets that the User has access to, in alphabetical order, 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): <ul><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul><br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (if **include** parameter specified)</li><li>createdAt</li><li>modifiedAt</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul><%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sheet
 
@@ -5269,8 +5279,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 {
     "resultCode": 0,
     "result": {
-        "id": original_sheet_id,
-        "name": "original_sheet_name",
+        "id": 4583173393803140,
+        "name": "moved_sheet_name",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
     },
@@ -5280,13 +5290,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 
 `POST /sheets/{sheetId}/move`
 
-Move a sheet to a new location.
+Moves the specified sheet to a new location.
 
      |     |
 -----|-----|
 <%= SCOPE %> | CREATE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attribute(s):<ul><li>destinationType</li><li>destinationId</li></ul>
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attributes:<ul><li>destinationType</li><li>destinationId</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the moved Sheet, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Publish Sheet
@@ -5923,7 +5933,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
 {
     "resultCode": 0,
     "result": {
-        "id": new_workspace_id,
+        "id": 7116448184199044,
         "name": "newWorkspaceName",
         "accessLevel": "OWNER",
         "permalink": "https://{url}?lx=VL4YlIUnyYgASeX02grbLQ"
@@ -5934,16 +5944,16 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
 
 `POST /workspaces/{workspaceId}/copy`
 
-Creates a Workspace as a copy of another Workspace.
+Creates a copy of the specified Workspace.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional objects to include in the response:<ul><li>**all** - all available **include** options</li><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li></ul> 
- | **skipRemap** (optional) -- a comma-separated list of references to skip remapping for cellLinks, if sheet cellLinks are included, and/or for reports under the Workspace (the copy operation by default remaps cell links between sheets and sheet references from reports to sheets under the Workspace):<ul><li>cellLinks</li><li>reports</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - include data, attachments, discussions, cellLinks, forms, brand, and shares</li></ul> 
+ | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li></ul>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets. If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets. 
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the copied Workspace
+<%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
 ## Create Workspace
 
@@ -6056,8 +6066,8 @@ Gets the specified Workspace (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
-    | **include** (optional): <ul><li>distributionLink - include **distributionLink** in Folder and/or Sheet objects under this Workspace</li><li>ownerInfo - include owner email address and user ID</li><li>source - response will include the [source](#source-object) for any sheet that was created from another sheet or template</li></ul> 
-<%= RETURNS %> | [Workspace object](#workspace-object)
+	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>distributionLink - for Folder and/or Sheet objects in the response</li><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= RETURNS %> | [Workspace object](#workspace-object), populated according to the **include** parameter
 
 ## List Workspaces
 
@@ -6175,13 +6185,13 @@ Object that describes how the the System Column type of "AUTO_NUMBER" is auto-ge
 
 ## ContainerDestination Object
 
-Object that describes the new parent container for copy or move operations for Sheets, Folders and/or Workspaces (a Workspace can only be copied).
+Object that describes the destination container when a Sheet or Folder is moved, or when a Sheet, Folder, or Workspace is copied.
 
      |     |     |
 -----|-----|-----|
-**destinationType** | string | The type of the destination container:<ul><li>home</li><li>workspace</li><li>folder</li></ul> It applies to Sheets and Folders only.
-**destinationId** | number | ID of the destination container. It applies to Sheets and Folders only. Required for **destinationType** of **folder** or **workspace**: for **home**, this value must be null.
-**newName** | string | Required for the **copy** operation: the new name for the copy. It is not allowed for the **move** operation: a moved Sheet, Folder or Workspace retains its original name.
+**destinationType** | string | Type of the destination container (when copying or moving a Sheet or a Folder). One of the following values:<ul><li>home</li><li>workspace</li><li>folder</li></ul>
+**destinationId** | number | ID of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
+**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder or Workspace retains its original name).
  
 ## IndexResult Object
 
