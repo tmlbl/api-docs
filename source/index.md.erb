@@ -69,6 +69,7 @@ Resources:
 /sheets/{id}/columns
 /sheets/{id}/attachments
 /sheets/{id}/discussions
+/sheets/{id}/updateRequests
 /templates
 /token
 /users
@@ -1741,7 +1742,7 @@ A Column is a component of a Sheet or Report.
 **symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
 **autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
-**tags** | string[] | Set of tags to indicate special columns, one of:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
+**tags** | string[] | Set of tags to indicate special columns. Each element in the array will be set to one of the following values:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
 **width** | number | Display width of the column in pixels
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
@@ -2216,6 +2217,7 @@ Creates a new Discussion on a Row.
 
 <aside class="notice">This operation supports multipart requests. Using a multipart request allows you to create a new Discussion and upload a file to the first Comment within that Discussion in a single step (i.e., using a single request). For more information, see <a href="#multipart-uploads">Multipart Uploads</a>.</aside>
 
+<br/>
 **Creating a Discussion without an Attachment:**
 <%= partial "snippets/createDiscussion_table.md.erb" %>
 <br/>
@@ -2231,12 +2233,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{
-    "title": "This is a new discussion", 
-    "comment": {
-        "text":"This text is the body of the first comment"
-    }
-}'
+-d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
 ```
 
 > Example Request (with attachment):
@@ -2269,7 +2266,7 @@ Creates a new Discussion on a Sheet.
 
 <aside class="notice">This operation supports multipart requests. Using a multipart request allows you to create a new Discussion and upload a file to the first Comment within that Discussion in a single step (i.e., using a single request). For more information, see <a href="#multipart-uploads">Multipart Uploads</a>.</aside>
 
-<br/><br/>
+<br/>
 **Creating a Discussion without an Attachment:**
 <%= partial "snippets/createDiscussion_table.md.erb" %>
 
@@ -2764,7 +2761,7 @@ Creates a copy of the specified Folder.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - include all data, attachments, discussions, cellLinks, and forms</li></ul> 
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified.
  | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li></ul>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets. If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the newly created Folder
@@ -3647,9 +3644,6 @@ Gets the Report in the format specified, based on the Report ID.
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
  | **Accept** -- must be set to one of the following values:<ul><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
-  | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
-  | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | The file in either Excel or CSV format, containing the Report data according to the **include** parameter.
 
 ## List Reports
@@ -3748,8 +3742,8 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **version** | number | Number that is incremented every time a sheet is modified
 **filteredOut** | boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
 **inCriticalPath** | boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
-**locked** | boolean | `true` if the row is locked by the sheet owner or the admin. Returned if the row is locked.
-**lockedForUser** | boolean | `true` if the row is locked for the requesting user. Returned if the row is locked.
+**locked** | boolean | `true` if the row has been locked by the sheet owner or the admin. 
+**lockedForUser** | boolean | `true` if the row is locked for the requesting user. 
 **expanded** | boolean | Flag to indicate if the row is expanded or collapsed
 **accessLevel** | string | User's permission level on the Sheet that contains the Row
 **format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a non-default format applied.
@@ -3897,42 +3891,11 @@ Copies Row(s) from the Sheet specified in the URL to (the bottom of) another she
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>**all** - all available **include** options</li><li>attachments</li><li>discussions</li><li>children - if specified, any child rows of the rows specified in the request will also be copied to the destination sheet, and parent-child relationships amongst rows will be preserved within the destination sheet; if not specified, only the rows specified in the request will be copied.</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If omitted or set to false, specifying row Ids that do not exist within the source sheet will cause an error response (and no rows will be copied).
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of row elements to copy in addition to the cell data:<ul><li>attachments</li><li>discussions</li><li>children - if specified, any child rows of the rows specified in the request will also be copied to the destination sheet, and parent-child relationships amongst rows will be preserved within the destination sheet; if not specified, only the rows specified in the request will be copied.</li><li>**all** - specify a value of "all" to include everything (attachments, discussions, and children)</li></ul>**ignoreRowsNotFound** (optional) -- true or false: default is false. If set to true, specifying row Ids that do not exist within the source sheet will not cause an error response. If omitted or set to false, specifying row Ids that do not exist within the source sheet will cause an error response (and no rows will be copied).
 <%= REQUEST %> | [CopyOrMoveRowDirective object](#copyormoverowdirective-object)
 <%= RETURNS %> | [CopyOrMoveRowResult object](#copyormoverowresult-object)
 
-## Delete Row
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-> Example Response:
-
-```json
-{
-   "message": "SUCCESS",
-   "resultCode": 0
-}
-```
-
-`DELETE /sheets/{sheetId}/rows/{rowId}`
-
-Deletes the Row specified in the URL.
-
-<aside class="warning">This operation will delete ALL child Rows of the specified Row.</aside>
-
-     |     |
------|-----|
-<%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result object](#result-object)
-
-## Delete Rows
+## Delete Row(s)
 
 > Example Request:
 
@@ -3958,15 +3921,15 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids={rowId1},{rowId2},
 
 `DELETE /sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}...`
 
-Deletes the Rows specified in the URL.
+Deletes one or more row(s) from the Sheet specified in the URL.
 
-<aside class="warning">This operation will delete ALL child Rows of the specified Rows.</aside>
+<aside class="warning">This operation will delete ALL child Rows of the specified Row(s).</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **ids** (required) - IDs of rows to delete
+<%= PARAMETERS %> | **ids** (required) - comma-separated list of Row IDs
  | **ignoreRowsNotFound** (optional) - true or false. If set to false and any of the specified Row IDs are not found, no rows will be deleted, and the "not found" [error](#errors) will be returned.
 <%= RETURNS %> | [Result object](#result-object) containing Row IDs corresponding to all rows that were successfully deleted (including any child rows of rows specified in the URL).
 
@@ -4046,60 +4009,13 @@ Moves Row(s) from the Sheet specified in the URL to (the bottom of) another shee
 <%= REQUEST %> | [CopyOrMoveRowDirective object](#copyormoverowdirective-object)
 <%= RETURNS %> | [CopyOrMoveRowResult object](#copyormoverowresult-object)
 
-## Send Row via Email
-
-<%= partial "snippets/sendRow.md.erb" %>
-
-## Send Rows via Email
+## Send Row(s) via Email
 
 <%= partial "snippets/sendRows.md.erb" %>
 
 ## Send Update Request
 
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X POST \
--d '{ \
-    "sendTo": [ \
-        {"email": "email789@smartsheet.com"}, \
-        {"email": "email0123@smartsheet.com"} \
-    ], \
-    "subject": "some subject", \
-    "message": "some message", \
-    "ccMe": (true|false), \
-    "rowIds": [rowId1], \
-    "columnIds": [colId1, colId2], \
-    "includeAttachments": (true|false), \
-    "includeDiscussions": (true|false) \
-}'
-```
-
-> Example Response:
-
-```json
-{
-    "resultCode": 0,
-    "result": {
-        "id": 4583173393803140
-    },
-    "message": "SUCCESS"
-}
-```
-
-`POST /sheets/{sheetId}/updaterequests`
-
-Creates an Update Request for the specified Row(s) within the Sheet. An email notification (containing a link to the update request) will be asynchronously sent to the specified recipient(s).
-
-     |     |
------|-----|
-<%= SCOPE %> | WRITE_SHEETS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object)
-<%= RETURNS %> | [Result object](#result-object) containing the newly created [UpdateRequest object](#updaterequest-object), limited to **id**.
+<%= partial "snippets/sendUpdateRequest.md.erb" %>
 
 ## Update Row(s)
 
@@ -4295,6 +4211,8 @@ curl https://api.smartsheet.com/2.0/search?query=stuff \
 
 Searches all Sheets that the User can access, for the specified text.
 
+<aside class="notice">Newly-created or recently-updated data may not be immediately discoverable via Search.</aside>
+
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
@@ -4343,7 +4261,7 @@ Extends the [Email object](#email-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**columnIds** | list | IDs of the columns to be included.
+**columnIds** | number[] | IDs of the columns to be included.
 **includeAttachments** | boolean | A flag to indicate whether or not to include Attachments in the email.
 **includeDiscussions** | boolean | A flag to indicate whether or not to include Discussions in the email.
 
@@ -4353,7 +4271,7 @@ Extends the [RowEmail object](#rowemail-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**rowIds** | list | IDs of rows to be included in the email.
+**rowIds** | number[] | IDs of rows to be included.
 
 ### SheetEmail Object
 
@@ -4361,24 +4279,24 @@ Extends the [Email object](#email-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**format** | string | Can be one of "PDF" or "PDF_GANTT" or "EXCEL".
+**format** | string | One of the following values:<ul><li>PDF</li><li>PDF_GANTT</li><li>EXCEL</li></ul>
 **formatDetails** | [FormatDetails](#formatdetails-object) | A FormatDetails object.
 
 ## Send Report
 
 <%= partial "snippets/sendReport.md.erb" %>
 
-## Send Row
-
-<%= partial "snippets/sendRow.md.erb" %>
-
-## Send Rows via Email
+## Send Row(s)
 
 <%= partial "snippets/sendRows.md.erb" %>
 
 ## Send Sheet
 
 <%= partial "snippets/sendSheet.md.erb" %>
+
+## Send Update Request
+
+<%= partial "snippets/sendUpdateRequest.md.erb" %>
 
 # Server Information
 
@@ -4821,6 +4739,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **rows** | [Row](#row-object)[] | Array of Row objects
 **discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
+**fromId** | number | The ID of the Template from which to create the Sheet. This attribute can be specified in a request, but will never be present in a response.
 
 ### SheetPublish Object 
 
@@ -4890,7 +4809,7 @@ Creates a copy of the specified Sheet.
 -----|-----|
 <%= SCOPE %> | CREATE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - include data, attachments, discussions, cellLinks, and forms</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified.
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
@@ -5379,6 +5298,10 @@ Sets the publish status of the Sheet and returns the new status, including the U
 
 <%= partial "snippets/sendSheet.md.erb" %>
 
+## Send Update Request
+
+<%= partial "snippets/sendUpdateRequest.md.erb" %>
+
 ## Share Sheet
 
 For details about Sheet sharing, see [Sheet Sharing](#sheet-sharing).
@@ -5618,6 +5541,20 @@ Revokes the access token used to make this request.  The access token will no lo
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Result object](#result-object)
 
+# Update Requests
+
+## <%= OBJECTS %>
+
+### UpdateRequest Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | ID of the update request. 
+
+## Create Update Request
+
+<%= partial "snippets/sendUpdateRequest.md.erb" %>
+
 # Users
 
 ## <%= OBJECTS %>
@@ -5648,11 +5585,11 @@ Revokes the access token used to make this request.  The access token will no lo
 **timeZone** | string | Current user's time zone ID
 **locale** | string | Current user's locale (see [Server Information](#server-information))
 **account** | [Account](#account-object) | Account object representing the current user's customer account
-**admin** | boolean | **true** if user admin of the organization; otherwise, **false**
-**licensedSheetCreator** | boolean | **true** if licensed to create sheets; otherwise, **false**
-**groupAdmin** | boolean | **true** if group admin of the organization; otherwise, **false**
-**resourceViewer** | boolean | **true** if the user can view resources; otherwise, **false**
-**status** | string | Member status in the associated organization: <ul><li>**ACTIVE**</li><li>**PENDING**</li><li>**DECLINED**</li></ul>
+**admin** | boolean | Flag indicating whether the user is a system admin (can manage users and account)
+**licensedSheetCreator** | boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
+**groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
+**resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**status** | string | User status, set to one of the following values: <ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 
 
 ### Account Object
@@ -5740,7 +5677,7 @@ Gets the current User.
 -----|-----|
 <%= SCOPE %> | all scopes
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [UserProfile object](#userprofile-object) except the organization member status.
+<%= RETURNS %> | [UserProfile object](#userprofile-object)
 
 ## Get User
 
@@ -5769,13 +5706,13 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 
 `GET /users/{userId}`
 
-Gets the User specified in the URL. If the API requester is not the user administrator of the organization, the role indicators and member status will not be returned.
+Gets the User specified in the URL. 
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [UserProfile object](#userprofile-object)
+<%= RETURNS %> | [UserProfile object](#userprofile-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following UserProfile attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li></ul>
 
 ## List All Org Sheets
 
@@ -5816,7 +5753,7 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 
 `GET /users`
 
-Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. If the API requester is not the user administrator of the organization, the role indicators and member status will not be returned.
+Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. 
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
@@ -5825,7 +5762,7 @@ Gets the list of Users in the organization. To filter by email, use the optional
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results<br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li></ul>
 
 ## Remove User
 
@@ -5950,7 +5887,7 @@ Creates a copy of the specified Workspace.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - include data, attachments, discussions, cellLinks, forms, brand, and shares</li></ul> 
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified. 
  | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li></ul>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets. If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets. 
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
@@ -6210,14 +6147,6 @@ Object returned for all `PUT` operations and `POST` operations (and for some oth
 **result** | Object | Object that was created or updated (if applicable)
 **version** | number | New version of the Sheet (only available on select operations)
 
-## UpdateRequest Object
-
-Object that describes an UpdateRequest. An update request MUST contain at least one column ID or either attachments or discussions.
-
-     |     |     |
------|-----|-----|
-**id** | number | ID of the update request. 
-
 # Formatting
 
 Formatting data can optionally be included for columns, rows, and cells by adding the "include=format" query string parameter to any API operation that returns any of those objects (for example, `GET /sheets/{sheetId}`, `GET sheets/{sheetId}/rows/{rowId}`, etc.).  When this parameter is included, objects that contain non-default formatting will include a **format** property.  Objects which do not have any non-default format settings applied will exclude this property.
@@ -6301,5 +6230,41 @@ Smartsheet occasionally deprecates APIs to indicate that those APIs should no lo
 Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
 You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, we recommend that you update that code as soon as possible. 
 
-<aside class="notice">There are currently no deprecations for version 2.0 of the Smartsheet API.</aside>
+# Endpoints
 
+This section specifies the endpoints and parameters that have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Endpoints
+
+The following endpoints have been deprecated in version 2.0 of the Smartsheet API.
+
+Operation | Deprecated Endpoint | Replaced by 
+-------- | -------- | ----- | -----------------
+ Delete Row (singular) | DELETE /sheets/{sheetId}/rows/{rowId} | new endpoint for [Delete Row(s)](#delete-row(s))
+ Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Row(s)](#send-row(s))
+ 
+## Deprecated Parameters
+
+Operation | Deprecated Parameter | Replaced by
+-------- | -------- | --------
+[Create Child Folder](#create-child-folder) | include | new endpoint for [Copy Folder](#copy-folder)
+[Create Sheet](#create-sheet) | include | new endpoint for [Copy Sheet](#copy-sheet)
+[Create Workspace](#create-workspace) | include | new endpoint for [Copy Workspace](#copy-workspace)
+
+# Objects
+
+This section specifies the objects and attributes that have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Objects
+
+No objects have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Attributes
+
+The following attributes have been deprecated in version 2.0 of the Smartsheet API.
+
+Object | Deprecated Attribute | Replaced by
+-------- | -------- | --------
+[Folder object](#folder-object) | fromId | new endpoint for [Copy Folder](#copy-folder)
+[Sheet object](#sheet-object) | fromId | new endpoint for [Copy Sheet](#copy-sheet)
+[Workspace object](#workspace-object) | fromId | new endpoint for [Copy Workspace](#copy-workspace)
