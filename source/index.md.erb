@@ -135,7 +135,7 @@ An **Authorization** HTTP header containing an Access Token is required to authe
 Access Tokens can be acquired in one of two ways:
 <ul>
 <li>via the Smartsheet UI ([User-generated Access Tokens](#user-generated-access-tokens)) </li>
-<li>via oAuth 2.0 (see [Third-party Access Tokens](#third-party-access-tokens))</li>
+<li>via OAuth 2.0 (see [Third-party Access Tokens](#third-party-access-tokens))</li>
 </ul> 
 
 ### User-generated Access Tokens
@@ -672,7 +672,7 @@ Doing so requires that you complete the following steps.
 
 1. [Complete your Developer Profile](#developer-registration) 
 2. [Register your App](#registering-your-app)
-3. Within your app, [implement a 3-legged oAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
+3. Within your app, [implement a 3-legged OAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
  
 ### Developer Registration
 
@@ -695,7 +695,7 @@ To build a third party app, you must first register it with Smartsheet using Dev
 <li>Login to Smartsheet.</li>
 <li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Developer Tools**.</li>
 <li>Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.</li>
-<li>Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [oAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
+<li>Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
 </ol>
 
 ### Access Scopes
@@ -719,11 +719,11 @@ ADMIN_USERS | Add and remove users from your Smartsheet organization; create gro
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
  
-<aside class="notice">Third-party apps should only request the scopes necessary. User-generated Access Tokens are granted all of these permissions.</aside>
+<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
-### oAuth Flow
+### OAuth Flow
 
-Your app must implement a 3-legged oAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
+Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
 This process involves the following steps:
 
 1. [Request authorization from the user](#requesting-authorization-from-the-user)
@@ -733,7 +733,7 @@ This process involves the following steps:
 
 #### Requesting authorization from the user
 
-To request authorization from an end user, direct your user to `https://www.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
+To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
 
      |     |
 -----|-----|
@@ -745,7 +745,7 @@ state | arbitrary string that will be returned to your app; intended to be used 
 
 Here is an example of a URL to which you would send your user as a `GET` request:
  
-`https://www.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
+`https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
  
 If your user has not logged in to Smartsheet, he/she will first be directed to the Smartsheet login page. 
 After a successful login, your user will be prompted to allow or deny the access scopes you requested.
@@ -780,7 +780,7 @@ invalid_scope | one or more of the requested access scopes are invalid. Please c
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(client_secret|code)}' \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
 -X POST
 ```
 
@@ -814,7 +814,7 @@ grant_type<br/>(required) | must be set to "authorization_code"
 client_id<br/>(required) | client id for your app
 code<br/>(required) | authorization code returned in the [previous step](#obtaining-the-authorization-code)
 redirect_uri<br/>(optional) | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
-hash<br/>(required) | SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The **client_secret** is never sent with the request.
+hash<br/>(required) | SHA-256 hash of your App secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -824,7 +824,7 @@ Possible OAuth error types:
 -----|-----|
 invalid_request | The request parameters are invalid or missing.
 invalid_client | The client information is invalid. Ensure your client id is correct.
-invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the client secret and/or code.
+invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the App secret and/or code.
 unsupported_grant_type | grant_type must equal “authorization_code” or “refresh_token”.
 
 #### Refreshing an access token
@@ -833,7 +833,7 @@ unsupported_grant_type | grant_type must equal “authorization_code” or “re
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(client_secret|refresh_token)}' \
+-d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|refresh_token)}' \
 -X POST
 ```
 
@@ -859,7 +859,7 @@ grant_type<br/>(required)| must be set to "refresh_token"
 client_id<br/>(required)| client id for your app
 refresh_token<br/>(required)| refresh_token value that came with the access token
 redirect_uri<br/>(optional)| redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://")
-hash<br/>(required)| SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
+hash<br/>(required)| SHA-256 hash of your App secret concatenated with a pipe and the refresh token value
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -1271,7 +1271,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 {
     "name": "at3.png",
     "url": "URL_TO_ATTACHMENT",
-    "attachmentType": "file",
+    "attachmentType": "FILE",
     "mimeType": "image/png",
     "id": 4583173393803140,
     "urlExpiresInMillis": 120000
@@ -1778,7 +1778,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":5}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 6}]'
+-d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":4}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 4}]'
 ```
 
 > Example Response:
@@ -1801,14 +1801,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
         },
         {
             "id": 4503594425063547,
-            "index": 5,
+            "index": 4,
             "title": "New Date Column",
             "type": "DATE",
             "width": 150
         },
         {
             "id": 6755394238748795,
-            "index": 6,
+            "index": 4,
             "title": "New Picklist Column 2",
             "type": "PICKLIST",
             "options": [
@@ -1828,6 +1828,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 Inserts one or more columns into the Sheet specified in the URL.
 
 <aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+
+<aside class="notice">If multiple columns are specified in the request, the <b>index</b> attribute must be set to the same value for all columns. Columns will be inserted into the sheet starting at the specified position (<b>index</b>), in the sequence that the columns appear in the request.</aside>
 
      |     |
 -----|-----|
@@ -5542,7 +5544,7 @@ The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An *
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(client_secret|code)}' \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
 -X POST
 ```
 
@@ -5559,7 +5561,7 @@ curl https://api.smartsheet.com/2.0/token \
 
 `POST /token`
 
-Gets an access token, as part of the oAuth process. For more information, see [oAuth Flow](#oauth-flow).
+Gets an access token, as part of the OAuth process. For more information, see [OAuth Flow](#oauth-flow).
 
      |     |
 -----|-----|
@@ -5567,7 +5569,7 @@ Gets an access token, as part of the oAuth process. For more information, see [o
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned in the previous step
  | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
- | **hash** (required) -- SHA-256 hash of your client secret concatenated with a pipe and the authorization code.  The client_secret is never sent with the request.
+ | **hash** (required) -- SHA-256 hash of your App secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 ## Refresh Access Token
 
@@ -5577,7 +5579,7 @@ Gets an access token, as part of the oAuth process. For more information, see [o
 curl https://api.smartsheet.com/2.0/token \
 -d 'grant_type=refresh_token&refresh_token={your_refresh_token}
 &client_id={your_client_id}&redirect_uri={redirect_uri}
-&hash={SHA_256(client_secret|refresh_token)}' \
+&hash={SHA_256(app_secret|refresh_token)}' \
 -X POST
 ```
 
@@ -5594,7 +5596,7 @@ curl https://api.smartsheet.com/2.0/token \
 
 `POST /token`
 
-Refreshes an access token, as part of the oAuth process. For more information, see [oAuth Flow](#oauth-flow).
+Refreshes an access token, as part of the OAuth process. For more information, see [OAuth Flow](#oauth-flow).
 
      |     |
 -----|-----|
@@ -5602,7 +5604,7 @@ Refreshes an access token, as part of the oAuth process. For more information, s
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
  | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://")
- | **hash** (required) -- SHA-256 hash of your client secret concatenated with a pipe and the refresh token value
+ | **hash** (required) -- SHA-256 hash of your App secret concatenated with a pipe and the refresh token value
 
 ## Revoke Access Token
 
