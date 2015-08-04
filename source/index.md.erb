@@ -2039,7 +2039,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, null);
 
 // Get column (specify 'include' parameter with value of "filters").
-smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, new FilterInclusion[] { FilterInclusion.FILTERS });
+smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, new ColumnInclusion[] { ColumnInclusion.FILTERS });
 ```
 
 > Example Response:
@@ -2079,7 +2079,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, null, null);
 
 // Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new FilterInclusion[] { FilterInclusion.FILTERS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new ColumnInclusion[] { ColumnInclusion.FILTERS }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3176,7 +3176,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 smartsheet.FolderResources.GetFolder(folderId, null);
 
 // Get folder (specify 'include' parameter with value of "source").
-smartsheet.FolderResources.GetFolder(folderId, new SourceInclusion[] { SourceInclusion.SOURCE });
+smartsheet.FolderResources.GetFolder(folderId, new FolderInclusion[] { FolderInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -3766,7 +3766,7 @@ curl https://api.smartsheet.com/2.0/home?include=source \
 smartsheet.HomeResources.GetHome(null);
 
 // List all contents (specify 'include' parameter with value of "source").
-smartsheet.HomeResources.GetHome(new SourceInclusion[] { SourceInclusion.SOURCE });
+smartsheet.HomeResources.GetHome(new HomeInclusion[] { HomeInclusion.SOURCE });
 ```
 
 > Example Response:
@@ -4351,7 +4351,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discus
 smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, null, null);
 
 // Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
-smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, new RowIncludeFlags[] { RowIncludeFlags.COLUMNS, RowIncludeFlags.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
+smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, new RowInclusion[] { RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
 ```
 
 > Example Response:
@@ -5676,7 +5676,27 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 
 ## Get Sheet as Excel / PDF / CSV
 
-> Example Request:
+> Example Request (Excel):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: application/vnd.ms-excel" \
+-o output.xls
+```
+
+```csharp
+smartsheet.SheetResources.GetSheetAsExcel(sheetId, outputStream);
+```
+
+> Example Response:
+
+```desc
+cURL: See local file named "output.pdf"
+C#: contents of Excel file will be written to "outputStream"
+```
+
+> Example Request (PDF):
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
@@ -5686,14 +5706,34 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```
 
 ```csharp
-// Get sheet as PDF.
 smartsheet.SheetResources.GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 ```
 
 > Example Response:
 
 ```desc
-See local file named "output.pdf"
+cURL: See local file named "output.pdf"
+C#: contents of PDF file will be written to "outputStream"
+```
+
+> Example Request (CSV):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: text/csv" \
+-o output.csv
+```
+
+```csharp
+smartsheet.SheetResources.GetSheetAsCSV(sheetId, writer);
+```
+
+> Example Response:
+
+```desc
+cURL: See local file named "output.pdf"
+C#: contents of CSV file will be written to "outputStream"
 ```
 
 `GET /sheets/{sheetId}`
@@ -5728,7 +5768,7 @@ curl https://api.smartsheet.com/2.0/sheets \
 smartsheet.SheetResources.ListSheets(null, null);
 
 // List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.ListSheets(new SourceInclusion[] { SourceInclusion.SOURCE }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ListSheets(new SheetInclusion[] { SheetInclusion.SOURCE }, new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -6551,7 +6591,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 smartsheet.WorkspaceResources.GetWorkspace(workspaceId, null, null);
 
 // Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
-smartsheet.WorkspaceResources.GetWorkspace(workspaceId, false, new SourceInclusion[] { SourceInclusion.SOURCE });
+smartsheet.WorkspaceResources.GetWorkspace(workspaceId, false, new WorkspaceInclusion[] { WorkspaceInclusion.SOURCE });
 ```
 
 > Example Response:
