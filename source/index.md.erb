@@ -57,6 +57,7 @@ This API assumes a good working knowledge of the Smartsheet application UI, conc
 ```apires
 Resources:
 
+/contacts
 /favorites
 /folders
 /groups
@@ -957,7 +958,7 @@ Attachments can exist on a [Comment](#comments) (i.e., within a Discussion), on 
 **name** | string | Attachment name
 **url** | string | Attachment temporary URL (files only)
 **urlExpiresInMillis** | number | Attachment temporary URL time to live (files only) 
-**attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, or EVERNOTE)
+**attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)
 **attachmentSubType** | string | Attachment sub type, only for GOOGLE_DRIVE type attachments; one of (DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING)
 **createdAt** | timestamp | A timestamp of when the attachment was originally added
 **createdBy** | [User](#user-object) | User object containing name and email of the creator of this attachment
@@ -1735,7 +1736,7 @@ A Column is a component of a Sheet or Report.
 **id** | number | Column ID
 **index** | number | Column index
 **title** | string | Column title
-**primary** | boolean | Returned only if the column is the Primary Column (value = "true")
+**primary** | boolean | Returned only if the column is the Primary Column (value = `true`)
 **type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
 **options** | string[] | Array of the options available for the column
 **hidden** | boolean | Flag indicating whether the column is hidden
@@ -1746,6 +1747,8 @@ A Column is a component of a Sheet or Report.
 **width** | number | Display width of the column in pixels
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
+**locked** | boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
+**lockedForUser** | boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
 
 ### Criteria Object
 
@@ -1830,7 +1833,7 @@ Inserts one or more columns into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li></ul>
+<%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>locked (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the the newly created column(s) -- either a single [Column object](#column-object) or an array of Column objects, corresponding to what was specified in the request.
 
 ## Delete Column
@@ -1991,7 +1994,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>format (optional)</li></ul>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
 
 # Comments
@@ -2151,6 +2154,94 @@ A Comment can contain one or more Attachments.
 ### Comment Attachments
 
 For details about working with a Comment's attachments, see [Attachments](#attachments).
+
+# Contacts
+
+A Contact is a user's personal contact in Smartsheet (as described [here](http://help.smartsheet.com/customer/portal/articles/796143-managing-contacts)).
+
+## <%= OBJECTS %>
+
+### Contact Object
+
+     |     |     |
+-----|-----|-----|
+**id** | string | Contact ID
+**name** | string | Contact's full name
+**email** | string | Contact's email address
+
+## Get Contact
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/contacts/{contactId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response
+
+```json
+{
+    "id": "AAAAATYU54QAD7_fNhTnhA",
+    "name": "David Davidson",
+    "email": "dd@example.com"
+}
+```
+
+`GET /contacts/{contactId}`
+
+Gets the specified Contact.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_CONTACTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Contact object](#contact-object)
+
+## List Contacts
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/contacts \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+> Example Response
+
+```json
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+    "data": [
+        {
+            "id": "AAAAATYU54QAD7_fNhTnhA",
+            "name": "David Davidson",
+            "email": "dd@example.com"
+        },
+        {
+            "id": "AAAAATYU54QAH7_fNhTnhA",
+            "name": "Ed Edwin",
+            "email": "ee@example.com"
+        }
+    ]
+}
+```
+
+`GET /contacts`
+
+Gets a list of the user's Smartsheet Contacts.
+
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_CONTACTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Contact objects](#contact-object)
 
 # Discussions
 
@@ -3742,8 +3833,8 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **version** | number | Number that is incremented every time a sheet is modified
 **filteredOut** | boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
 **inCriticalPath** | boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
-**locked** | boolean | `true` if the row has been locked by the sheet owner or the admin. 
-**lockedForUser** | boolean | `true` if the row is locked for the requesting user. 
+**locked** | boolean | Flag indicating whether the row is locked. In a response, a value of `true` indicates that the row has been locked by the sheet owner or the admin.
+**lockedForUser** | boolean | Flag indicating whether the row is locked for the requesting user. This attribute may be present in a response, but cannot be specified in a request.
 **expanded** | boolean | Flag to indicate if the row is expanded or collapsed
 **accessLevel** | string | User's permission level on the Sheet that contains the Row
 **format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a non-default format applied.
