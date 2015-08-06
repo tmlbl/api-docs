@@ -960,7 +960,7 @@ Attachments can exist on a [Comment](#comments) (i.e., within a Discussion), on 
 **url** | string | Attachment temporary URL (files only)
 **urlExpiresInMillis** | number | Attachment temporary URL time to live (files only) 
 **attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)
-**attachmentSubType** | string | Attachment sub type, only for GOOGLE_DRIVE type attachments; one of (DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING)
+**attachmentSubType** | string | Attachment sub type, valid only for either GOOGLE_DRIVE attachments or EGNYTE attachments:<ul><li>possible values for GOOGLE_DRIVE attachments: DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING</li><li>possible values for EGNYTE attachments: FOLDER</li></ul>
 **createdAt** | timestamp | A timestamp of when the attachment was originally added
 **createdBy** | [User](#user-object) | User object containing name and email of the creator of this attachment
 **mimeType** | string | Attachment MIME type (PNG, etc.)
@@ -2810,7 +2810,6 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **name** | string | Folder name
 **favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | URL that represents a direct link to the Folder in Smartsheet
-**distributionLink** | string | A URL that can be used to provision the Folder. It enables a user to create their own copy of this Folder without having access to the Workspace that contains the Folder. <br/><br/>This attribute is only present if the Folder exists in a distribution-enabled Workspace and the API requester has either owner or admin access to the containing Workspace.
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
 **folders** | [Folder](#folder-object)[] | Array of Folder objects
 **reports** | [Report](#report-object)[] | Array of Report objects
@@ -2996,7 +2995,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>distributionLink</li><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
 
 ## List Child Folders
@@ -3045,7 +3044,7 @@ Gets a list of the top-level child Folders within the specified Folder.
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
-<%= partial "snippets/listFolders_table_v2.md.erb" %>
+<%= partial "snippets/listFolders_table.md.erb" %>
 
 ### List Folders (Workspace)
 
@@ -3067,7 +3066,7 @@ Gets a list of the top-level child Folders within the specified Workspace.
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
-<%= partial "snippets/listFolders_table_v2.md.erb" %>
+<%= partial "snippets/listFolders_table.md.erb" %>
 
 
 ## Move Folder
@@ -3560,7 +3559,7 @@ Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>distributionLink - for Folder and/or Sheet objects in the response</li><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Home object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -4827,7 +4826,6 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **owner** | string | Email address of the Sheet owner
 **ownerId** | number | User ID of the Sheet owner
 **permalink** | string | URL that represents a direct link to the Sheet in Smartsheet
-**distributionLink** | string | A URL that can be used to provision the Sheet. It enables a user to create their own copy of this Sheet having access to the Sheet. <br/><br/>This property is only present if the Sheet exists in a distribution-enabled Workspace and the API requester has either owner or admin access to the containing Workspace.
 **source** | [Source](#source-object) | A Source object indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
 **modifiedAt** | timestamp | Time that the Sheet was modified
@@ -5178,7 +5176,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**distributionLink**: includes [distributionLink](#sheet-object) attribute</li><li>**ownerInfo**: includes owner's email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**ownerInfo**: includes owner's email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional): when specified with a value of "nonexistentCells", response will <i>not include</i> cells that have never contained any data
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
@@ -6099,7 +6097,7 @@ Gets the specified Workspace (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
-	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>distributionLink - for Folder and/or Sheet objects in the response</li><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Workspace object](#workspace-object), populated according to the **include** parameter
 
 ## List Workspaces
