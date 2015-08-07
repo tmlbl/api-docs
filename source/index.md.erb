@@ -3830,8 +3830,6 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **id** | number | Row ID
 **sheetId** | number | Parent Sheet ID
 **rowNumber** | number | Row number within the sheet (1-based - starts at 1)
-**parentId** | number | If this is a child row, the ID of the parent row, else omitted from response
-**siblingId** | number | The ID of the previous sibling row at the same hierarchical level of this row, if any, else omitted from response
 **version** | number | Number that is incremented every time a sheet is modified
 **filteredOut** | boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
 **inCriticalPath** | boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
@@ -3847,12 +3845,12 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **attachments**.
 **columns** | [Column](#column-object)[] | Array of Column objects.<br/>Only returned if the [Get Row](#get-row) **include** query string parameter contains **columns**.
-**toTop** | boolean | Flag used to specify the location at which to create or move a row. Indicates that the row should be added to the top of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
-**toBottom** | boolean | Flag used to specify the location at which to create or move a row. Indicates that the row should be added to the bottom of the sheet, or, if used in conjunction with **parentId**, added as the last child of the parent. <%= REQUEST_ONLY_ATTRIBUTE %>
-**parentId** | number | Flag used to specify the location at which to create or move a row. Indicates that the row  should be added as the first child of this row. <%= REQUEST_ONLY_ATTRIBUTE %>
-**siblingId** | number | Flag used to specify the location at which to create or move a row. Indicates that the row should be added as the next row at the same hierarchical level of this row. <%= REQUEST_ONLY_ATTRIBUTE %>
-**above** | boolean | Flag used to specify the location at which to create or move a row. Optionally used in conjunction with **siblingId** with a value of `true` to indicate that the row should be added above the specified sibling row. <%= REQUEST_ONLY_ATTRIBUTE %>
 **permalink** | string | URL that represents a direct link to the Row in Smartsheet<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **rowPermalink**.
+**parentId** | number | In a response - the ID of the parent row (if any).<br/><br/>In a request - the ID of the desired parent row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
+**siblingId** | number | In a response - the ID of the previous sibling row at the same hierarchical level of this row (if any).<br/><br/>In a request - the ID of the desired sibling row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
+**toTop** | boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
+**toBottom** | boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
+**above** | boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
 
 ### CopyOrMoveRowDirective Object
 
@@ -3959,7 +3957,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>A location specifier -- one of the following attributes (optional):<ul><li>**toTop**</li><li>**toBottom**</li><li>**parentId**</li><li>**siblingId**</li><li>**above**</li></ul><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
 
 ## Copy Row(s) to Another Sheet
@@ -4203,7 +4201,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**expanded** (optional)</li><li>**format** (optional)</li><li>A location specifier – one of the following attributes (optional): One of:<ul><li>**toTop**: Moves the row (and its child rows, if any) to the top of the sheet.</li><li>**toBottom**: Moves the row (and its child rows, if any) to the bottom of the sheet</li><li>**parentId**: Moves the row (and its child rows, if any) as the first child row of the parent. **toBottom** = true can also be set to move the row as the last child of the parent</li><li>**siblingId**: Moves the row (and its child rows, if any) as the next sibling of the row ID provided</li></ul></li></ul><ul><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>linkInFromCell (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the updated row(s) -- either a single [Row object](#row-object) or an array of Row objects, corresponding to what was specified in the request. 
 
 ## <%= RELATED %>
@@ -4235,6 +4233,28 @@ Include Flag | Notes |
 **filters**		| Includes **filteredOut** attribute indicating if the row should be displayed or hidden according to the sheet's filters.
 **columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
 **rowPermalink** | Includes **permalink** attribute that represents a direct link to the [row](#row-object) in the Smartsheet application.
+
+### Row Location
+
+When using the [Add Row(s)](#add-row(s)) operation to insert new rows into a sheet or the [Update Row(s)](#update-row(s)) move rows in a sheet, 
+the following "location-specifer" [Row](#row-object) attributes can be used to specify where the rows get added or moved in the sheet:
+
+* toTop
+* toBotom
+* above
+* siblingId
+* parentId
+
+The following table describes which *location-specifier* Row attribute(s) should be set to implement various actions.
+
+Action | Row attribute(s)
+-------|--------
+Add or move the Row to the top of the Sheet. | **toTop** = `true`
+Add or move the Row to the bottom of the Sheet. | **toBottom** = `true`
+Add or move the Row directly above the specified sibling Row (at the same hierarchical level). | **above** = `true`<br/>**siblingId** = (ID of sibling row)
+Add or move the Row directly below the specified sibling Row (at the same hierarchical level). | **siblingId** = (ID of sibling row)
+Add or move the Row so that it is the first child row of the specified parent Row. | **parentId** = (ID of parent row)
+Add or move the Row so that it is the last child row of the specified parent Row. | **parentId** = (ID of parent row)<br/>**toBottom** = `true`
 
 # Searching
 
