@@ -943,6 +943,32 @@ To backup all of the org data, follow these steps:
 
 You can use the sheet version number to enable incremental backups. [Fetch the sheet version number](#get-sheet-version) and compare it to the last backed up version number (you will need to store the sheet ID and the last backup up version number) - if they are the same, no need to include the sheet in your incremental backup run.
 
+# API Change Log
+
+This section documents the evolution of Smartsheet API 2.0 over time. 
+To stay informed about changes to the API, we recommend that you periodically review this list for new information, subscribe to our Developer Newsletter (using the *Get Developer Updates* form on the [Smartsheet Developer Portal](http://www.smartsheet.com/developers)) or follow us via [Twitter](https://twitter.com/smartsheetapi).
+
+## August 14, 2015
+
+Backwards-compatible updates to Smartsheet API 2.0. 
+
+* New endpoints for accessing Contacts, copy/move Folder/Sheet, copy Workspace, bulk Row delete, bulk Send Rows, Send Update Request.
+
+* API enhancements that enable you to attach a link to a file in Egnyte, lock and unlock Rows/Columns, get more information about Sheets/Reports/Users, choose Columns to include when sending Rows via email, send a Gantt view of a Sheet via email (in PDF format), create Discussion on Row using a multipart upload, include everything when copying a Row from one sheet to another, and retrieve a permalink for a Row.
+
+* New access scope for retrieving Contacts.
+
+* Deprecations: **Delete (single) Row** endpoint, **Send (single) Row** endpoint, **fromId** attribute and **include** parameter on the **Create Sheet/Folder/Workspace** endpoints. 
+
+* Bug fixes: **Add Column(s)** operation now returns correct Ids for new columns; **Revoke Token** operation no longer returns error code 1004 "not authorized".
+
+For more detailed information about this release, see the [release notes](https://www.smartsheet.com/blog/august-2015-api-update).
+
+## July 11, 2015
+
+Initial release of Smartsheet API 2.0. 
+For detailed information about API 2.0 features and guidance for migrating from API 1.1 to API 2.0, see the [release notes](https://www.smartsheet.com/blog/july-2015-api-v2-launch).
+
 # <span class="customTOCSectionHeading">API Reference</span>
 
 # Attachments
@@ -2855,7 +2881,7 @@ Creates a copy of the specified Folder.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified.
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li></ul>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets. If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li></ul>By default, all cell links and reports that reference sheets in the source folder will be re-mapped to reference corresponding sheets in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the newly created Folder
 
@@ -3953,6 +3979,8 @@ Inserts one or more rows into the Sheet specified in the URL.
 
 <aside class="notice">If multiple rows are specified in the request, all rows must be inserted at the same location (i.e. the <b>toTop</b>, <b>toBottom</b>, <b>parentId</b>, <b>siblingId</b>, and <b>above</b> attributes must be the same for all rows in the request).</aside>
 
+<aside class="notice">In a parent row, values of the following fields will be auto-calculated based upon values in the child rows (and therefore cannot be updated using the API): Start Date, End Date, Duration, % Complete.</aside>
+
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
@@ -4196,6 +4224,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 Updates cell values in the specified row(s), expands/collapses the specified row(s), and/or modifies the position of specified rows (including indenting/outdenting). 
 
 <aside class="notice">If a row's position is updated, all child rows are moved with the row.</aside>
+
+<aside class="notice">In a parent row, values of the following fields are auto-calculated based upon values in the child rows (and therefore cannot be updated using the API): Start Date, End Date, Duration, % Complete.</aside>
 
      |     |
 -----|-----|
@@ -4859,10 +4889,10 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**readOnlyLiteEnabled** | boolean | Status of Read-Only HTML
-**readOnlyFullEnabled** | boolean | Status of Read-Only Full
-**readWriteEnabled** | boolean | Status of Edit by Anyone
-**icalEnabled** | boolean | Status of iCal
+**readOnlyLiteEnabled** | boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
+**readOnlyFullEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
+**readWriteEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
+**icalEnabled** | boolean | If `true`, a webcal will be available for the calendar in the sheet.
 **readOnlyLiteUrl** | string | URL for Read-Only HTML
 **readOnlyFullUrl** | string | URL for Read-Only Full
 **readWriteUrl** | string | URL for Edit by Anyone
@@ -6002,7 +6032,7 @@ Creates a copy of the specified Workspace.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified. 
- | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li></ul>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets. If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets. 
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li></ul>By default, all cell links and reports that reference sheets in the source workspace will be re-mapped to reference corresponding sheets in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
