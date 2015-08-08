@@ -2141,10 +2141,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 
 ```csharp
 // Specify column properties.
-Column column = new Column.UpdateColumnBuilder("First Column", 0).SetType(ColumnType.PICKLIST).SetOptions(new string[] { "One", "Two" }).Build();
+Column column = new Column.UpdateColumnBuilder(columnId, "First Column", 0).SetType(ColumnType.PICKLIST).SetOptions(new string[] { "One", "Two" }).Build();
 
 // Update column.
-smartsheet.SheetResources.ColumnResources.UpdateColumn(sheetId, columnId, column);
+smartsheet.SheetResources.ColumnResources.UpdateColumn(sheetId, column);
 ```
 
 > Example Response:
@@ -3316,10 +3316,10 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 
 ```csharp
 // Set folder name.
-Folder folder = new Folder.UpdateFolderBuilder("New name for folder").Build();
+Folder folder = new Folder.UpdateFolderBuilder(folderId, "New name for folder").Build();
 
 // Update folder.
-smartsheet.FolderResources.UpdateFolder(folderId, folder);
+smartsheet.FolderResources.UpdateFolder(folder);
 ```
 
 > Example Response:
@@ -3579,10 +3579,10 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 
 ```csharp
 // Specify the name and description of the group.
-Group group = new Group.UpdateGroupBuilder().SetName("Renamed Group").SetDescription("Some new description").Build();
+Group group = new Group.UpdateGroupBuilder(groupId).SetName("Renamed Group").SetDescription("Some new description").Build();
 
 // Update group.
-smartsheet.GroupResources.UpdateGroup(groupId, group);
+smartsheet.GroupResources.UpdateGroup(group);
 ```
 
 > Example Response:
@@ -5937,10 +5937,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 
 ```csharp
 // Specify updated sheet properties.
-Sheet sheet = new Sheet.UpdateSheetBuilder().SetName("New Sheet Name").SetUserSettings(new SheetUserSettings { CriticalPathEnabled = true }).Build();
+Sheet sheet = new Sheet.UpdateSheetBuilder(sheetId).SetName("New Sheet Name").SetUserSettings(new SheetUserSettings { CriticalPathEnabled = true }).Build();
 
 // Update sheet.
-smartsheet.SheetResources.UpdateSheet(sheetId, sheet);
+smartsheet.SheetResources.UpdateSheet(sheet);
 ```
 
 > Example Response:
@@ -6719,10 +6719,10 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 
 ```csharp
 // Specify updated workspace name.
-Workspace workspace = new Workspace.UpdateWorkspaceBuilder("Updated workspace").Build();
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder(workspaceId, "Updated workspace").Build();
 
 // Update workspace.
-smartsheet.WorkspaceResources.UpdateWorkspace(workspaceId, workspace);
+smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
 ```
 
 > Example Response:
