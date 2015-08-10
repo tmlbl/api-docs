@@ -38,6 +38,26 @@ smartsheet.sheets.sendRow(options)
     .catch(function (error) {
         console.log(error);
     });
+
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+	new Recipient { Email = "john.doe@smartsheet.com" }, 
+	new Recipient { GroupId = 2258118617917316 } 
+};
+
+// Configure email.
+RowEmail rowEmail = new RowEmail { 
+	SendTo = recipients, 
+	Subject = "Check these rows out!", 
+	Message = "Here are the rows I mentioned in our meeting", 
+	CcMe = false, 
+	IncludeAttachments = true, 
+	IncludeDiscussions = false 
+};
+
+// Send row via email.
+smartsheet.SheetResources.RowResources.SendRow(sheetId, rowId, rowEmail);
 ```
 
 > Example Response:

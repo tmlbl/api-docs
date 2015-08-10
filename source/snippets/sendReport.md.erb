@@ -39,6 +39,26 @@ smartsheet.reports.sendReportViaEmail(options)
     .catch(function (error) {
         console.log(error);
     });
+
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+	new Recipient { Email = "john.doe@smartsheet.com" }, 
+	new Recipient { GroupId = 2258118617917316 } 
+};
+
+// Configure email.
+SheetEmail sheetEmail = new SheetEmail { 
+	SendTo = recipients, 
+	Subject = "Check this report out!", 
+	Message = "Here is the report I mentioned in our meeting", 
+	CcMe = false, 
+	Format = SheetEmailFormat.PDF, 
+	FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 } 
+};
+
+// Send Report via email.
+smartsheet.ReportResources.SendReport(reportId, sheetEmail);
 ```
 
 > Example Response:
