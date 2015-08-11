@@ -4785,6 +4785,17 @@ Group group = new Group.CreateGroupBuilder("API-created Group", "Group created v
 smartsheet.GroupResources.CreateGroup(group);
 ```
 
+```java
+// Create group member.
+GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("john.doe@smartsheet.com").build(); 
+
+// Add member to group.
+Group group = new Group.CreateGroupBuilder().setName("API-created Group").setDescription("Group created via API").setMembers(Arrays.asList(member)).build();
+
+// Create group.
+smartsheet.groupResources().createGroup(group);
+```
+
 > Example Response:
 
 ```json
@@ -4854,6 +4865,11 @@ smartsheet.groups.deleteGroup(options)
 smartsheet.GroupResources.DeleteGroup(groupId);
 ```
 
+```java
+// Delete group.
+smartsheet.groupResources().deleteGroup(groupId);
+```
+
 > Example Response:
 
 ```json
@@ -4903,6 +4919,11 @@ smartsheet.groups.getGroup(options)
 ```csharp
 // Get group.
 smartsheet.GroupResources.GetGroup(groupId);
+```
+
+```java
+// Get group.
+smartsheet.groupResources().getGroup(groupId);
 ```
 
 > Example Response:
@@ -4963,6 +4984,17 @@ smartsheet.GroupResources.ListGroups(null);
 
 // List all org groups (specify 'includeAll' parameter with value of "true").
 smartsheet.GroupResources.ListGroups(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List all org groups (specify 'includeAll' parameter with value of "true").
+smartsheet.groupResources().listGroups(parameters);
+
+// List all org groups (omit pagination parameters).
+smartsheet.groupResources().listGroups(null);
 ```
 
 > Example Response:
@@ -5038,6 +5070,14 @@ Group group = new Group.UpdateGroupBuilder(groupId).SetName("Renamed Group").Set
 
 // Update group.
 smartsheet.GroupResources.UpdateGroup(group);
+```
+
+```java
+// Specify the name and description of the group.
+Group group = new Group.UpdateGroupBuilder().setId(groupId).setName("Renamed Group").setDescription("Some new description").build();
+
+// Update group.
+smartsheet.groupResources().updateGroup(group);
 ```
 
 > Example Response:
@@ -5132,6 +5172,14 @@ GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.
 smartsheet.GroupResources.AddGroupMembers(groupId, new GroupMember[] { member });
 ```
 
+```java
+// Create group member.
+GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
+
+// Add member to group.
+smartsheet.groupResources().members().addGroupMembers(groupId, Arrays.asList(member));
+```
+
 > Example Response:
 
 ```json
@@ -5200,6 +5248,11 @@ smartsheet.groups.removeGroupMember(options)
 smartsheet.GroupResources.RemoveGroupMember(groupId, userId);
 ```
 
+```java
+// Remove member from group.
+smartsheet.groupResources().members().deleteGroupMember(groupId, userId)
+```
+
 > Example Response:
 
 ```json
@@ -5264,6 +5317,14 @@ smartsheet.HomeResources.GetHome(null);
 
 // List all contents (specify 'include' parameter with value of "source").
 smartsheet.HomeResources.GetHome(new HomeInclusion[] { HomeInclusion.SOURCE });
+```
+
+```java
+// List all contents (omit 'include' parameter).
+smartsheet.homeResources().getHome(null);
+
+// List all contents (specify 'include' parameter with value of "source").
+smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
 ```
 
 > Example Response:
