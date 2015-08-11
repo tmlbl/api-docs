@@ -612,14 +612,62 @@ Submit your vote for additional language coverage by emailing us at <a href="mai
 This API documentation currently contains sample code in the following languages: 
 <ul>
 <li>cURL</li>
-<li>C#</li>
-<li>Java</li>
 <li>Node.js</li>
+<li>Java</li>
+<li>C#</li>
 </ul>
 
 For each operation, you'll see sample code displayed in the dark blue panel next to the operation. 
 To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
 Each C#, Java, and Node.js code sample demonstrates how to execute an operation using the corresponding Smartsheet SDK.
+
+### C# Sample Code
+
+The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
+Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created as follows:
+
+<code>
+// Set the Access Token<br/>
+Token token = new Token();<br/>
+token.AccessToken = "INSERT_YOUR_TOKEN_HERE";<br/>
+</code>
+
+<code>
+// Use the Smartsheet Builder to create a Smartsheet<br/>
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+</code>
+
+For operations that support querystring parameters, the C# code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
+The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
+
+Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
+
+<code>smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);</code>
+
+### Java Sample Code
+
+The Java code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Java SDK](https://github.com/smartsheet-platform/smartsheet-java-sdk). 
+Each code sample uses a **Smartsheet** object called "smartsheet" that can be created as follows:
+
+<code>
+// Set the Access Token<br/>
+Token token = new Token();<br/>
+token.setAccessToken("INSERT_YOUR_TOKEN_HERE");<br/>
+</code>
+
+<code>
+// Use the Smartsheet Builder to create a Smartsheet<br/>
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();<br/>
+</code>
+
+For operations that support querystring parameters, the Java code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
+The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
+
+Within the Java code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
+
+<code>smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);</code>
 
 ### Node.js Sample Code
 
@@ -645,30 +693,6 @@ smartsheet.users.getCurrentUser()<br/>
 </code>
 
 For more information about using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), including instructions for using callbacks (instead of promises), see the SDK Readme.
-
-### C# Sample Code
-
-The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
-Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created as follows:
-
-<code>
-// Set the Access Token<br/>
-Token token = new Token();<br/>
-token.AccessToken = "INSERT_YOUR_TOKEN_HERE";<br/>
-</code>
-
-<code>
-// Use the Smartsheet Builder to create a Smartsheet<br/>
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
-</code>
-
-For operations that support querystring parameters, the C# code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
-The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
-
-Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
-
-<code>smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);</code>
 
 ## Direct API Access
 
@@ -1131,6 +1155,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, filePath, "application/msword");
 ```
 
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to comment.
+smartsheet.sheetResources().commentResources().attachmentResources().attachFile(sheetId, commentId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1165,6 +1197,14 @@ smartsheet.sheets.addCommentAttachment(options)
 ```csharp
 // Attach file to comment.
 smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to comment.
+smartsheet.sheetResources().commentResources().attachmentResources().attachFile(sheetId, commentId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1203,6 +1243,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, filePath, "application/msword");
 ```
 
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to row.
+smartsheet.sheetResources().rowResources().attachmentResources().attachFile(sheetId, rowId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1239,6 +1287,14 @@ smartsheet.sheets.addRowAttachment(options)
 smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, filePath, "application/msword");
 ```
 
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to row.
+smartsheet.sheetResources().rowResources().attachmentResources().attachFile(sheetId, rowId, file, "application/msword");
+```
+
 > Example Response:
 
 <%= partial "snippets/attachFile_response.md.erb" %>
@@ -1269,6 +1325,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```csharp
 // Attach file to sheet.
 smartsheet.SheetResources.AttachmentResources.AttachFile(sheetId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to sheet.
+smartsheet.sheetResources().attachmentResources().attachFile(sheetId, file, "application/msword");
 ```
 
 > Example Request (simple):
@@ -1304,6 +1368,14 @@ smartsheet.sheets.addAttachment(options)
 ```csharp
 // Attach file to sheet.
 smartsheet.SheetResources.AttachmentResources.AttachFile(sheetId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to sheet.
+smartsheet.sheetResources().attachmentResources().attachFile(sheetId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1360,6 +1432,14 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.googl
 smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(sheetId, commentId, attachment);
 ```
 
+```java
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+ 
+// Attach URL to comment.
+smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(sheetId, commentId, attachment);
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1411,6 +1491,14 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.googl
 
 // Attach URL to row.
 smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(sheetId, rowId, attachment);
+```
+
+```java
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+
+// Attach URL to row.
+smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(sheetId, rowId, attachment);
 ```
 
 > Example Response:
@@ -1465,6 +1553,14 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.googl
 smartsheet.SheetResources.AttachmentResources.AttachUrl(sheetId, attachment);
 ```
 
+```java
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+
+// Attach URL to sheet.
+smartsheet.sheetResources().attachmentResources().attachUrl(sheetId, attachment);
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1503,6 +1599,11 @@ smartsheet.sheets.deleteAttachment(options)
 ```csharp
 // Delete attachment.
 smartsheet.SheetResources.AttachmentResources.DeleteAttachment(sheetId, attachmentId);
+```
+
+```java
+// Delete attachment.
+smartsheet.sheetResources().attachmentResources().deleteAttachment(sheetId, sheetAttachmentId);
 ```
 
 > Example Response:
@@ -1553,6 +1654,11 @@ smartsheet.sheets.getAttachment(options)
 ```csharp
 // Get attachment.
 smartsheet.SheetResources.AttachmentResources.GetAttachment(sheetId, attachmentId);
+```
+
+```java
+// Get attachment.
+smartsheet.sheetResources().attachmentResources().getAttachment(sheetId, attachmentId);
 ```
 
 > Example Response:
@@ -1607,6 +1713,17 @@ smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, null);
 
 // Get all attachments (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all attachments with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, parameters);
+
+// Get all attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, null);
 ```
 
 > Example Response:
@@ -1683,6 +1800,17 @@ smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachment
 smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
 ```
 
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all discussion attachments with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionResources().attachmentResources().getAttachments(sheetId, discussionId, parameters);
+
+// Get all discussion attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionResources().attachmentResources().getAttachments(sheetId, discussionId, null);
+```
+
 > Example Response:
 
 ```json
@@ -1757,6 +1885,17 @@ smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheet
 smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
 ```
 
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all row attachments with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources().attachmentResources().getAttachments(sheetId, rowId, parameters);
+
+// Get all row attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources().attachmentResources().getAttachments(sheetId, rowId, null);
+```
+
 > Example Response:
 
 ```json
@@ -1821,6 +1960,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
 ```
 
+```java
+// Specify the new file to be attached.
+File file = new File(filePath);
+
+// Attach new version of the file.
+smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(sheetId, attachmentId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1855,6 +2002,14 @@ smartsheet.sheets.attachNewVersion(options)
 ```csharp
 // Attach new version of file.
 smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
+```
+
+```java
+// Specify the new file to be attached.
+File file = new File(filePath);
+
+// Attach new version of the file.
+smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(sheetId, attachmentId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1911,6 +2066,11 @@ smartsheet.sheets.deleteAllAttachmentVersions(options)
 smartsheet.SheetResources.AttachmentResources.VersioningResources.DeleteAllVersions(sheetId, attachmentId);
 ```
 
+```java
+// Delete all versions of the attachment.
+smartsheet.sheetResources().attachmentResources().versioningResources().deleteAllVersions(sheetId, attachmentId);
+```
+
 > Example Response:
 
 ```json
@@ -1960,6 +2120,17 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(s
 
 // List all versions of the attachment (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List all attachment versions with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, parameters);
+
+// List all attachment versions without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, null);
 ```
 
 > Example Response:
@@ -2092,6 +2263,17 @@ smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, row
 
 // Get cell history (specify 'include' parameter with value of "columnType" and 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, rowId, columnId, new CellInclusion[] { CellInclusion.COLUMN_TYPE }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get cell history with pagination.
+PagedResult<CellHistory> cellHistory= smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, parameters);
+
+// Get cell history without pagination.
+PagedResult<CellHistory> cellHistory= smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, null);
 ```
 
 > Example Response:
