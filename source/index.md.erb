@@ -5457,6 +5457,14 @@ smartsheet.ReportResources.GetReport(reportId, null, null, null);
 smartsheet.ReportResources.GetReport(reportId, new ReportInclusion[] { ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS }, 500, 2);
 ```
 
+```java
+// Get report (omit 'include', 'pageSize', and 'page' parameters).
+smartsheet.reportResources().getReport(reportId, null, null, null);
+
+// Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
+smartsheet.reportResources().getReport(reportId, EnumSet.of(ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS), 500, 2)
+```
+
 > Example Response:
 
 ```json
@@ -5557,6 +5565,11 @@ smartsheet.reports.getReportAsExcel(options)
 smartsheet.ReportResources.GetReportAsExcel(reportId, outputStream);
 ```
 
+```java
+// Get report as Excel.
+smartsheet.reportResources().getReportAsExcel(reportId, outputStream);
+```
+
 > Example Response:
 
 ```shell
@@ -5564,6 +5577,10 @@ smartsheet.ReportResources.GetReportAsExcel(reportId, outputStream);
 ```
 
 ```csharp
+// Contents of Excel file will be written to "outputStream"
+```
+
+```java
 // Contents of Excel file will be written to "outputStream"
 ```
 
@@ -5595,6 +5612,11 @@ smartsheet.reports.getReportAsCSV(options)
 smartsheet.ReportResources.GetReportAsCSV(reportId, outputStream);
 ```
 
+```java
+// Get report as CSV.
+smartsheet.reportResources().getReportAsCsv(reportId, outputStream);
+```
+
 > Example Response:
 
 ```shell
@@ -5602,6 +5624,10 @@ smartsheet.ReportResources.GetReportAsCSV(reportId, outputStream);
 ```
 
 ```csharp
+// Contents of CSV file will be written to "outputStream"
+```
+
+```java
 // Contents of CSV file will be written to "outputStream"
 ```
 
@@ -5643,6 +5669,17 @@ smartsheet.ReportResources.ListReports(null);
 
 // List reports (specify 'includeAll' parameter with value of "true").
 smartsheet.ReportResources.ListReports(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List reports (specify 'includeAll' parameter with value of "true").
+smartsheet.reportResources().listReports(parameters);
+
+// List reports (omit pagination parameters).
+smartsheet.reportResources().listReports(null);
 ```
 
 > Example Response:
@@ -5852,6 +5889,23 @@ Row rowB = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsB).
 smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { rowA, rowB });
 ```
 
+```java
+// Specify cell values for first row.
+List<Cell> cellsA = new Cell.AddRowCellsBuilder().addCell(7960873114331012, true).addCell(642523719853956, "New status").build();
+
+// Specify contents of first row.
+Row rowA = new Row.AddRowBuilder().setCells(cellsA).setToBottom(true).build();
+
+// Specify cell values for second row.
+List<Cell> cellsB = new Cell.AddRowCellsBuilder().addCell(7960873114331012, true).addCell(642523719853956, "New status").build();
+
+// Specify contents of second row.
+Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
+
+// Add rows to sheet.
+smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
+```
+
 > Example Response:
 
 ```json
@@ -5969,6 +6023,20 @@ smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive
 smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, new CopyRowInclusion[] { CopyRowInclusion.CHILDREN }, true);
 ```
 
+```java
+// Specify destination sheet.
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder().setSheetId(2258256056870788).build();
+
+// Specify rows to be copied (and destination sheet).
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972, 8026717110462340)).setTo(destination).build();
+
+// Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
+smartsheet.sheetResources().rowResources().copyRows(sheetId, null, null, directive);
+
+// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.sheetResources().rowResources().copyRows(sheetId, EnumSet.of(RowCopyInclusion.CHILDREN), true, directive);
+```
+
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
 `POST /sheets/{sheetId}/rows/copy`
@@ -6012,6 +6080,11 @@ smartsheet.sheets.deleteRow(options)
 ```csharp
 // Delete row.
 smartsheet.SheetResources.RowResources.DeleteRow(sheetId, rowId);
+```
+
+```java
+// Delete row.
+smartsheet.sheetResources().rowResources().deleteRow(sheetId, rowId);
 ```
 
 > Example Response:
@@ -6065,6 +6138,14 @@ smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, null, null);
 
 // Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
 smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, new RowInclusion[] { RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
+```
+
+```java
+// Get row (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, null, null);
+
+// Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
+smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, EnumSet.of(RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE), EnumSet.of(ObjectExclusion.NONEXISTENT_CELLS));
 ```
 
 > Example Response:
@@ -6152,6 +6233,20 @@ smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(sheetId, directive
 
 // Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
 smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(sheetId, directive, new MoveRowInclusion[] { MoveRowInclusion.ATTACHMENTS, MoveRowInclusion.DISCUSSIONS }, true);
+```
+
+```java
+// Specify destination sheet.
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder().setSheetId(2258256056870788).build();
+
+// Specify rows to be moved (and destination sheet).
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972, 8026717110462340)).setTo(destination).build();
+
+// Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
+smartsheet.sheetResources().rowResources().moveRows(sheetId, null, null, directive);
+
+// Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.sheetResources().rowResources().moveRows(sheetId, EnumSet.of(EnumSet.of(RowMoveInclusion.ATTACHMENTS, RowMoveInclusion.DISCUSSIONS)), true, directive);
 ```
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
@@ -6245,6 +6340,23 @@ Row rowB = new Row.UpdateRowBuilder(2068827774183300).SetCells(cellsB).Build();
 
 // Update rows in sheet.
 smartsheet.SheetResources.RowResources.UpdateRows(sheetId, new Row[] { rowA, rowB });
+```
+
+```java
+// Specify updated cell values for first row.
+List<Cell> cellsA = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972, "new value").addCell(1888812600190852, "A").build();
+
+// Specify updated contents of first row.
+Row rowA = new Row.UpdateRowBuilder().setCells(cellsA).setRowId(6572427401553796).build();
+
+// Specify updated cell values for second row.
+List<Cell> cellsB = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972, "desc_updated").addCell(1888812600190852, "B").build();
+
+// Specify updated contents of second row.
+Row rowB = new Row.UpdateRowBuilder().setCells(cellsB).setRowId(2068827774183300).build();
+
+// Update rows in sheet.
+smartsheet.sheetResources().rowResources().updateRows(sheetId, Arrays.asList(rowA, rowB));
 ```
 
 > Example Response:
@@ -6413,6 +6525,14 @@ string query = "stuff";
 
 // Search everything.
 smartsheet.SearchResources.Search(query);
+```
+
+```java
+// Set search criteria.
+string query = "stuff";
+
+// Search everything.
+smartsheet.searchResources().search(query);
 ```
 
 > Example Response:
