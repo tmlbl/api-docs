@@ -39,6 +39,7 @@ smartsheet.reports.sendReportViaEmail(options)
     .catch(function (error) {
         console.log(error);
     });
+```
 
 ```csharp
 // Specify recipients.
@@ -59,6 +60,27 @@ SheetEmail sheetEmail = new SheetEmail {
 
 // Send Report via email.
 smartsheet.ReportResources.SendReport(reportId, sheetEmail);
+```
+
+```java
+// Specify an individual recipient.
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder().setEmail("john.doe@smartsheet.com").build();
+
+// Specify a group recipient.
+RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder().setGroupId(2258118617917316).build();
+
+/// Set recipients.
+List<Recipient> recipients = Arrays.asList(recipientEmail, recipientGroup);
+
+// Set format details.
+FormatDetails formatDetails = new FormatDetails();
+formatDetails.setPaperSize(PaperSize.A0); 
+
+// Configure email.
+SheetEmail email = new SheetEmail.AddSheetEmailBuilder().setSendTo(recipients).setSubject("Check this report out!").setMessage("Here is the report I mentioned in our meeting").setCcMe(false).setFormat(SheetEmailFormat.PDF).setFormatDetails(formatDetails).build();
+
+// Send Report via email.
+smartsheet.reportResources().sendReport(reportId, email)
 ```
 
 > Example Response:
