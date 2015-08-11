@@ -2477,6 +2477,18 @@ Column columnC = new Column.AddColumnBuilder("New Picklist Column 2", 4, ColumnT
 smartsheet.SheetResources.ColumnResources.AddColumns(sheetId, new Column[] { columnA, columnB, columnC });
 ```
 
+```java
+// Create columns.
+Column column1 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 1").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("First", "Second", "Third")).build();
+
+Column column2 = new Column.AddColumnToSheetBuilder().setTitle("New Date Column").setType(ColumnType.DATE).setIndex(4).build();
+
+Column column3 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 2").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("1", "2", "3")).build();
+
+// Add columns to sheet.
+smartsheet.sheetResources().columnResources().addColumns(sheetId(), Arrays.asList(column1, column2, column3));
+```
+
 > Example Response:
 
 ```json
@@ -2562,6 +2574,11 @@ smartsheet.sheets.deleteColumn(options)
 smartsheet.SheetResources.ColumnResources.DeleteColumn(sheetId, columnId);
 ```
 
+```java
+// Delete column.
+smartsheet.sheetResources().columnResources().deleteColumn(sheetId, columnId);
+```
+
 > Example Response:
 
 ```json
@@ -2611,6 +2628,14 @@ smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, null);
 
 // Get column (specify 'include' parameter with value of "filters").
 smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, new ColumnInclusion[] { ColumnInclusion.FILTERS });
+```
+
+```java
+// Get column (omit 'include' parameter).
+smartsheet.sheetResources().columnResources().getColumn(sheetId, columnId, null);
+
+// Get column (specify 'include' parameter with value of "filters").
+smartsheet.sheetResources().columnResources().getColumn(sheetId, columnId, EnumSet.of(ColumnInclusion.FILTERS));
 ```
 
 > Example Response:
@@ -2665,6 +2690,17 @@ smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, null, null);
 
 // Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new ColumnInclusion[] { ColumnInclusion.FILTERS }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().columnResources().listColumns(sheetId, EnumSet.of(ColumnInclusion.FILTERS), parameters);
+
+// Get all columns (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().columnResources().listColumns(sheetId, null, null);
 ```
 
 > Example Response:
@@ -2753,6 +2789,14 @@ Column column = new Column.UpdateColumnBuilder(columnId, "First Column", 0).SetT
 
 // Update column.
 smartsheet.SheetResources.ColumnResources.UpdateColumn(sheetId, column);
+```
+
+```java
+// Specify column properties.
+Column column = new Column.UpdateColumnBuilder().setColumnId(columnId).setTitle("First Column").setIndex(0).setType(ColumnType.PICKLIST).setOptions(Arrays.asList("One", "Two")).build();
+
+// Update column.
+smartsheet.sheetResources().columnResources().updateColumn(sheetId, column);
 ```
 
 > Example Response:
@@ -2847,6 +2891,14 @@ Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build(
 smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(sheetId, discussionId, comment);
 ```
 
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+
+// Add comment to discussion.
+smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -2870,6 +2922,16 @@ Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build(
 
 // Add comment (with attachment) to discussion.
 smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(sheetId, discussionId, comment, filePath, "application/octet-stream");
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+
+// Add comment (with attachment) to discussion.
+File file = new File(filePath);
+
+smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(sheetId, discussionId, comment, file, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2942,6 +3004,11 @@ smartsheet.sheets.deleteComment(options)
 smartsheet.SheetResources.CommentResources.DeleteComment(sheetId, commentId);
 ```
 
+```java
+// Delete comment.
+smartsheet.sheetResources().commentResources().deleteComment(sheetId, commentId);
+```
+
 > Example Response:
 
 ```json
@@ -2988,6 +3055,11 @@ smartsheet.sheets.getComment(options)
 ```csharp
 // Get comment.
 smartsheet.SheetResources.CommentResources.GetComment(sheetId, commentId);
+```
+
+```java
+// Get comment.
+smartsheet.sheetResources().commentResources().getComment(sheetId, commentId);
 ```
 
 > Example Response:
@@ -3087,6 +3159,17 @@ Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new di
 smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);
 ```
 
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+
+// Add discussion to row.
+smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
+```
+
 > Example Response:
 
 <%= partial "snippets/createDiscussion_response.md.erb" %>
@@ -3147,6 +3230,17 @@ Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new di
 smartsheet.SheetResources.DiscussionResources.CreateDiscussion(sheetId, discussion);
 ```
 
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+
+// Add discussion to sheet.
+smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -3180,6 +3274,18 @@ Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new di
 
 // Add discussion (inclding comment with attachment) to sheet.
 smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, discussion, filePath, "application/octet-stream");
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+File file = new File(filePath);
+
+// Add discussion (including comment with attachment) to sheet.
+smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(sheetId, discussion, file, "application/octet-stream");
 ```
 
 > Example Response:
@@ -3228,6 +3334,20 @@ smartsheet.sheets.deleteDiscussion(options)
 ```csharp
 // Delete discussion.
 smartsheet.SheetResources.DiscussionResources.DeleteDiscussion(sheetId, discussionId);
+```
+
+```java
+// Delete discussion.
+smartsheet.sheetResources().discussionResources().deleteDiscussion(sheetId, discussionId);
+```
+
+> Example Response:
+
+```json
+{
+   "resultCode": 0,
+   "message" : "SUCCESS"
+}
 ```
 
 > Example Response:
@@ -3280,6 +3400,17 @@ smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, null, nul
 smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
 ```
 
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
+
+// Get all discussions (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, null, null);
+```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -3319,6 +3450,11 @@ smartsheet.sheets.getDiscussions(options)
 ```csharp
 // Get discussion.
 smartsheet.SheetResources.DiscussionResources.GetDiscussion(sheetId, discussionId);
+```
+
+```java
+// Get discussion.
+smartsheet.sheetResources().discussionResources().getDiscussion(sheetId, discussionId);
 ```
 
 > Example Response:
@@ -3380,6 +3516,17 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheet
 
 // Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
+
+// Get row discussions (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, null, null);
 ```
 
 > Example Response:
