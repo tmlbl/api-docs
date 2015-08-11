@@ -9117,6 +9117,14 @@ User user = new User.AddUserBuilder("NEW_USER_EMAIL", false, true).SetFirstName(
 smartsheet.UserResources.AddUser(user, true);
 ```
 
+```java
+// Set user properties.
+User user = new User.AddUserBuilder().setAdmin(false).setEmail("NEW_USER_EMAIL").setFirstName("John").setLastName("Doe").setLicensedSheetCreator(true).build();
+
+// Add user.
+smartsheet.userResources().addUser(user);
+```
+
 > Example Response:
 
 ```json
@@ -9175,6 +9183,11 @@ smartsheet.users.getCurrentUser()
 smartsheet.UserResources.GetCurrentUser();
 ```
 
+```java
+// Get current user.
+smartsheet.userResources().getCurrentUser();
+```
+
 > Example Response:
 
 ```json
@@ -9222,6 +9235,11 @@ smartsheet.users.getUser(options)
 ```csharp
 // Get user.
 smartsheet.UserResources.GetUser(userId);
+```
+
+```java
+// Get user.
+smartsheet.userResources().getUser(userId);
 ```
 
 > Example Response:
@@ -9274,6 +9292,17 @@ smartsheet.UserResources.ListUsers(null, null);
 
 // List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
 smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
+smartsheet.userResources().listUsers(new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
+
+// List users (omit 'email' parameter and pagination parameters).
+smartsheet.userResources().listUsers(null, null);
 ```
 
 > Example Response:
@@ -9339,6 +9368,12 @@ smartsheet.users.removeUser(options)
 smartsheet.UserResources.RemoveUser(userId, transferToUserId, true, true);
 ```
 
+```java
+// Remove user (transferring ownership of groups and sheets to another user, and removing the user from sharing).
+DeleteUserParameters parameters = new DeleteUserParameters(12345L, true, true);
+smartsheet.userResources().deleteUser(userId, parameters);
+```
+
 > Example Response:
 
 ```json
@@ -9400,6 +9435,14 @@ User user = new User.UpdateUserBuilder(false, true).Build()
 
 // Update user.
 smartsheet.UserResources.UpdateUser(userId, user);
+```
+
+```java
+// Specify updated user properties.
+User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(false).setLicensedSheetCreator(true).build();
+
+// Update user.
+smartsheet.userResources().updateUser(user);
 ```
 
 > Example Response:
@@ -9480,6 +9523,14 @@ Workspace workspace = new Workspace.CreateWorkspaceBuilder("New workspace").Buil
 smartsheet.WorkspaceResources.CreateWorkspace(workspace);
 ```
 
+```java
+// Specify workspace name.
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
+
+// Create workspace.
+smartsheet.workspaceResources().createWorkspace(workspace);
+```
+
 > Example Response:
 
 ```json
@@ -9535,6 +9586,11 @@ smartsheet.workspaces.deleteWorkspace(options)
 smartsheet.WorkspaceResources.DeleteWorkspace(workspaceId);
 ```
 
+```java
+// Delete workspace.
+smartsheet.workspaceResources().deleteWorkspace(workspaceId);
+```
+
 > Example Response:
 
 ```json
@@ -9583,6 +9639,14 @@ smartsheet.WorkspaceResources.GetWorkspace(workspaceId, null, null);
 
 // Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
 smartsheet.WorkspaceResources.GetWorkspace(workspaceId, false, new WorkspaceInclusion[] { WorkspaceInclusion.SOURCE });
+```
+
+```java
+// Get workspace (omit 'loadAll' and 'include' parameters).
+smartsheet.workspaceResources().getWorkspace(workspaceId, null, null);
+
+// Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
+smartsheet.workspaceResources().getWorkspace(workspaceId, false, EnumSet.of(SourceInclusion.SOURCE));
 ```
 
 > Example Response:
@@ -9645,6 +9709,17 @@ smartsheet.WorkspaceResources.ListWorkspaces(null);
 
 // List workspaces (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true, null, null)););
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List workspaces (specify 'includeAll' parameter with value of "true").
+smartsheet.workspaceResources().listWorkspaces(parameters);
+
+// List workspaces (omit pagination parameters).
+smartsheet.workspaceResources().listWorkspaces(null);
 ```
 
 > Example Response:
@@ -9724,6 +9799,14 @@ Workspace workspace = new Workspace.UpdateWorkspaceBuilder(workspaceId, "Updated
 
 // Update workspace.
 smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
+```
+
+```java
+// Specify updated workspace properties.
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(workspaceId).build();
+
+// Update workspace.
+smartsheet.workspaceResources().updateWorkspace(workspace);
 ```
 
 > Example Response:
