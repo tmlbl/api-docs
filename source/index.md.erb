@@ -6679,6 +6679,11 @@ smartsheet.server.getInfo()
 smartsheet.ServerInfoResources.GetServerInfo();
 ```
 
+```java
+// Get server info.
+smartsheet.serverInfoResources().getServerInfo();
+```
+
 > Example Response: (*too long to list in its entirety*)
 
 ```json
@@ -6751,6 +6756,11 @@ smartsheet.reports.deleteShare(options)
 smartsheet.ReportResources.ShareResources.DeleteShare(reportId, shareId);
 ```
 
+```java
+// Delete report share.
+smartsheet.reportResources().shareResources().deleteShare(reportId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -6788,6 +6798,11 @@ smartsheet.reports.getShare(options)
 ```csharp
 // Get report share.
 smartsheet.ReportResources.ShareResources.GetShare(reportId, shareId);
+```
+
+```java
+// Get report share.
+smartsheet.reportResources().shareResources().getShare(reportId, shareId);
 ```
 
 > Example Response:
@@ -6829,6 +6844,17 @@ smartsheet.ReportResources.ShareResources.ListShares(reportId, null);
 
 // List report shares (specify 'includeAll' parameter with value of "true").
 smartsheet.ReportResources.ShareResources.ListShares(reportId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List report shares (specify 'includeAll' parameter with value of "true").
+smartsheet.reportResources().shareResources().listShares(reportId, parameters);
+
+// List report shares (omit pagination parameters).
+smartsheet.reportResources().shareResources().listShares(reportId, null);
 ```
 
 > Example Response:
@@ -6885,6 +6911,14 @@ Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet
 smartsheet.ReportResources.ShareResources.ShareTo(reportId, shares, true);
 ```
 
+```java
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+
+// Share report.
+smartsheet.reportResources().shareResources().shareTo(reportId, shares, true);
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -6938,6 +6972,14 @@ Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 smartsheet.ReportResources.ShareResources.UpdateShare(reportId, shareId, share);
 ```
 
+```java
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update report share.
+smartsheet.reportResources().shareResources().updateShare(reportId, share);
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -6980,6 +7022,11 @@ smartsheet.sheets.deleteShare(options)
 smartsheet.SheetResources.ShareResources.DeleteShare(sheetId, shareId);
 ```
 
+```java
+// Delete sheet share.
+smartsheet.sheetResources().shareResources().deleteShare(sheetId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -7017,6 +7064,11 @@ smartsheet.sheets.getShare(options)
 ```csharp
 // Get sheet share.
 smartsheet.SheetResources.ShareResources.GetShare(sheetId, shareId);
+```
+
+```java
+// Get sheet share.
+smartsheet.sheetResources().shareResources().getShare(sheetId, shareId);
 ```
 
 > Example Response:
@@ -7058,6 +7110,17 @@ smartsheet.SheetResources.ShareResources.ListShares(sheetId, null);
 
 // List sheet shares (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.ShareResources.ListShares(sheetId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List sheet shares (specify 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().shareResources().listShares(sheetId, parameters);
+
+// List sheet shares (omit pagination parameters).
+smartsheet.sheetResources().shareResources().listShares(sheetId, null);
 ```
 
 > Example Response:
@@ -7114,6 +7177,14 @@ Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet
 smartsheet.SheetResources.ShareResources.ShareTo(sheetId, shares, true);
 ```
 
+```java
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+
+// Share sheet.
+smartsheet.sheetResources().shareResources().shareTo(sheetId, shares, true);
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -7166,6 +7237,14 @@ Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 smartsheet.SheetResources.ShareResources.UpdateShare(sheetId, shareId, share);
 ```
 
+```java
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update report share.
+smartsheet.sheetResources().shareResources().updateShare(sheetId, share);
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -7206,6 +7285,11 @@ smartsheet.workspaces.deleteShare(options)
 ```csharp
 // Delete workspace share.
 smartsheet.WorkspaceResources.ShareResources.DeleteShare(workspaceId, shareId);
+```
+
+```java
+// Delete workspace share.
+smartsheet.workspaceResources().shareResources().deleteShare(workspaceId, shareId);
 ```
 
 > Example Response:
@@ -7251,6 +7335,11 @@ smartsheet.workspaces.getShare(options)
 smartsheet.WorkspaceResources.ShareResources.GetShare(workspaceId, shareId);
 ```
 
+```java
+// Get workspace share.
+smartsheet.workspaceResources().shareResources().getShare(workspaceId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -7290,6 +7379,17 @@ smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, null);
 
 // List workspace shares (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List workspace shares (specify 'includeAll' parameter with value of "true").
+smartsheet.workspaceResources().shareResources().listShares(workspaceId, parameters);
+
+// List workspace shares (omit pagination parameters).
+smartsheet.workspaceResources().shareResources().listShares(workspaceId, null);
 ```
 
 > Example Response:
@@ -7344,6 +7444,14 @@ Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet
 
 // Share workspace.
 smartsheet.WorkspaceResources.ShareResources.ShareTo(workspaceId, shares, true);
+```
+
+```java
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+
+// Share workspace.
+smartsheet.workspaceResources().shareResources().shareTo(workspaceId, shares, true);
 ```
 
 > Example Response:
@@ -7402,6 +7510,14 @@ Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
 
 // Update workspace share.
 smartsheet.WorkspaceResources.ShareResources.UpdateShare(workspaceId, shareId, share);
+```
+
+```java
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update workspace share.
+smartsheet.workspaceResources().shareResources().updateShare(workspaceId, share);
 ```
 
 > Example Response:
@@ -7556,6 +7672,21 @@ Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.
 smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
 ```
 
+```java
+// Specify properties of the first column.
+Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+
+// Specify properties of the second column.
+Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+
+// Specify properties of the third column.
+Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
+
+// Create sheet in "Sheets" folder (specifying the 3 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+smartsheet.sheetResources().createSheet(sheet);
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -7630,6 +7761,22 @@ Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.
 	
 // Create sheet in folder (specifying the 3 columns to include in the sheet).
 smartsheet.FolderResources.SheetResources.CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+```
+
+```java
+// Specify properties of the first column.
+Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+
+// Specify properties of the second column.
+Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+
+// Specify properties of the third column.
+Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
+
+// Create sheet in folder (specifying the 3 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+
+smartsheet.sheetResources().createSheetInFolder(folderId, sheet);
 ```
 
 > Example Response:
@@ -7708,6 +7855,22 @@ Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.
 smartsheet.WorkspaceResources.SheetResources.CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
 ```
 
+```java
+// Specify properties of the first column.
+Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+
+// Specify properties of the second column.
+Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+
+// Specify properties of the third column.
+Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
+
+// Create sheet in workspace (specifying the 3 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+
+smartsheet.sheetResources().createSheetInWorkspace(workspaceId, sheet);
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -7740,17 +7903,6 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 -d '{"name":"newsheet", "fromId": templateId}'
 ```
 
-```csharp
-// Specify name for the sheet and ID of the template.
-Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
-
-// Create sheet from template (omit 'include' parameter).
-smartsheet.SheetResources.CreateSheetFromTemplate(sheet, null);
-
-// Create sheet from template (including data, attachments, and discussions).
-smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
-```
-
 ```javascript
 var sheet = {
     "name": "newsheet",
@@ -7768,6 +7920,28 @@ smartsheet.sheets.createSheetFromExisting(options)
     .catch(function (error) {
         console.log(error);
     });
+```
+
+```csharp
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
+
+// Create sheet from template (omit 'include' parameter).
+smartsheet.SheetResources.CreateSheetFromTemplate(sheet, null);
+
+// Create sheet from template (including data, attachments, and discussions).
+smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
+```java
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+
+// Create sheet from template (omit 'include' parameter).
+smartsheet.sheetResources().createSheetFromTemplate(sheet, null);
+
+// Create sheet from template (including data, attachments, and discussions).
+smartsheet.sheetResources().createSheetFromTemplate(sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));
 ```
 
 > Example Response:
@@ -7791,7 +7965,6 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 -X POST \
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
-
 
 ``` javascript
 var sheet = {
@@ -7822,6 +7995,17 @@ smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, shee
 
 // Create sheet from template in the specified folder (including data, attachments, and discussions).
 smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
+```java
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+
+// Create sheet from template in the specified folder (omit 'include' parameter).
+smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, null);
+
+// Create sheet from template (including data, attachments, and discussions).
+smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));	
 ```
 
 > Example Response:
@@ -7877,6 +8061,17 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId
 smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
 ```
 
+```java
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+
+// Create sheet from template in the specified folder (omit 'include' parameter).
+smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, null);
+
+// Create sheet from template in the specified workspace (including data, attachments, and discussions).
+smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(folderId, sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));	
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -7914,6 +8109,11 @@ smartsheet.sheets.deleteSheet(options)
 ```csharp
 // Delete sheet.
 smartsheet.SheetResources.DeleteSheet(sheetId);
+```
+
+```java
+// Delete sheet.
+smartsheet.sheetResources().deleteSheet(sheetId);
 ```
 
 > Example Response:
@@ -7961,6 +8161,11 @@ smartsheet.sheets.getSheetVersion(options)
 ```csharp
 // Get sheet version.
 smartsheet.SheetResources.GetSheetVersion(sheetId);
+```
+
+```java
+// Get sheet version.
+smartsheet.sheetResources().getSheetVersion(sheetId);
 ```
 
 > Example Response:
@@ -8017,6 +8222,11 @@ smartsheet.sheets.getSheet(options)
 ```csharp
 // Get sheet (omit all parameters).
 smartsheet.SheetResources.GetSheet(sheetId, null, null, null, null, null, null, null);
+```
+
+```java
+// Get sheet (omit all parameters).
+smartsheet.sheetResources().getSheet(sheetId, null, null, null, null, null, null, null);
 ```
 
 > Example Response:
@@ -8100,6 +8310,11 @@ smartsheet.sheets.getSheetAsExcel(options)
 smartsheet.SheetResources.GetSheetAsExcel(sheetId, outputStream);
 ```
 
+```java
+// Get sheet as Excel.
+smartsheet.sheetResources().getSheetAsExcel(sheetId, outputStream);
+```
+
 > Example Response:
 
 ```shell
@@ -8107,6 +8322,10 @@ smartsheet.SheetResources.GetSheetAsExcel(sheetId, outputStream);
 ```
 
 ```csharp
+// Contents of Excel file will be written to "outputStream"
+```
+
+```java
 // Contents of Excel file will be written to "outputStream"
 ```
 
@@ -8138,6 +8357,11 @@ smartsheet.sheets.getSheetAsPDF(options)
 smartsheet.SheetResources.GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 ```
 
+```java
+// Get report as PDF.
+smartsheet.sheetResources().getSheetAsPDF(sheetId, outputStream, PaperSize.A1);
+```
+
 > Example Response:
 
 ```shell
@@ -8145,6 +8369,10 @@ smartsheet.SheetResources.GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 ```
 
 ```csharp
+// Contents of PDF file will be written to "outputStream"
+```
+
+```java
 // Contents of PDF file will be written to "outputStream"
 ```
 
@@ -8176,6 +8404,11 @@ smartsheet.sheets.getSheetAsCSV(options)
 smartsheet.SheetResources.GetSheetAsCSV(sheetId, outputStream);
 ```
 
+```java
+// Get sheet as CSV.
+smartsheet.sheetResources().getSheetAsCSV(sheetId, outputStream);
+```
+
 > Example Response:
 
 ```shell
@@ -8183,6 +8416,10 @@ smartsheet.SheetResources.GetSheetAsCSV(sheetId, outputStream);
 ```
 
 ```csharp
+// Contents of CSV file will be written to "outputStream"
+```
+
+```java
 // Contents of CSV file will be written to "outputStream"
 ```
 
@@ -8229,6 +8466,17 @@ smartsheet.SheetResources.ListSheets(null, null);
 
 // List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.ListSheets(new SheetInclusion[] { SheetInclusion.SOURCE }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters);
+
+// List sheets (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().listSheets(null, null);
 ```
 
 > Example Response:
@@ -8299,6 +8547,11 @@ smartsheet.sheets.getPublishStatus(options)
 smartsheet.SheetResources.GetPublishStatus(sheetId);
 ```
 
+```java
+// Get sheet publish status.
+smartsheet.sheetResources().getPublishStatus(sheetId);
+```
+
 > Example Response:
 
 ```json
@@ -8361,6 +8614,14 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(true, false, f
 
 // Set sheet publish status.
 smartsheet.SheetResources.UpdatePublishStatus(sheetId, sheetPublish);
+```
+
+```java
+// Specify sheet publish status properties.
+SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder().setIcalEnabled(false).setReadOnlyFullEnabled(false).setReadWriteEnabled(false).setReadOnlyLiteEnabled(true).build();
+
+// Set sheet publish status.
+smartsheet.sheetResources().updatePublishStatus(sheetId, sheetPublish);
 ```
 
 > Example Response:
@@ -8442,6 +8703,14 @@ Sheet sheet = new Sheet.UpdateSheetBuilder(sheetId).SetName("New Sheet Name").Se
 
 // Update sheet.
 smartsheet.SheetResources.UpdateSheet(sheet);
+```
+
+```java
+// Specify updated sheet properties.
+Sheet sheet = new Sheet.UpdateSheetBuilder().setSheetId(sheetId).setName("New Sheet Name").setUserSettings(new SheetUserSettings.AddUserSettingsBuilder().setCriticalPathEnabled(true).build()).build();
+
+// Update sheet.
+smartsheet.sheetResources().updateSheet(sheet);
 ```
 
 > Example Response:
@@ -8551,6 +8820,17 @@ smartsheet.TemplateResources.ListPublicTemplates(null);
 smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true, null, null));
 ```
 
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List public templates (specify 'includeAll' parameter with value of "true").
+smartsheet.templateResources().listPublicTemplates(parameters);
+
+// List public templates (omit pagination parameters).
+smartsheet.templateResources().listPublicTemplates(null);
+```
+
 > Example Response:
 
 <%= partial "snippets/listTemplates_response.md.erb" %>
@@ -8590,6 +8870,17 @@ smartsheet.TemplateResources.ListUserCreatedTemplates(null);
 smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(true, null, null));
 ```
 
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List user-created templates (specify 'includeAll' parameter with value of "true").
+smartsheet.templateResources().listUserCreatedTemplates(parameters);
+
+// List user-created templates (omit pagination parameters).
+smartsheet.templateResources().listUserCreatedTemplates(null);
+```
+
 > Example Response:
 
 <%= partial "snippets/listTemplates_response.md.erb" %>
@@ -8623,6 +8914,12 @@ curl https://api.smartsheet.com/2.0/token \
 ```csharp
 // Get access token.
 oauth.ObtainNewToken(authorizationResult);
+```
+
+```java
+// Get access token.
+OAuthFlow oAuth = new OAuthFlowBuilder().setClientId(clientId).setRedirectURL(redirectUrl).setClientSecret(clientSecret).build();
+oAuth.obtainNewToken(authorizationResult);
 ```
 
 > Example Response:
@@ -8669,6 +8966,12 @@ curl https://api.smartsheet.com/2.0/token \
 oauth.RefreshToken(token);
 ```
 
+```java
+// Refresh access token.
+OAuthFlow oAuth = new OAuthFlowBuilder().setClientId(clientId).setRedirectURL(redirectUrl).setClientSecret(clientSecret).build();
+oAuthFlow.refreshToken(token);
+```
+
 > Example Response:
 
 ```json
@@ -8709,6 +9012,12 @@ curl https://api.smartsheet.com/2.0/token \
 ```csharp
 // Revoke access token.
 oauth.RevokeTokenAccess(token);
+```
+
+```java
+// Revoke access token.
+OAuthFlow oAuth = new OAuthFlowBuilder().setClientId(clientId).setRedirectURL(redirectUrl).setClientSecret(clientSecret).build();
+oAuthFlow.revokeAccessToken(token);
 ```
 
 > Example Response:
