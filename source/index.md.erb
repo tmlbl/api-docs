@@ -2278,10 +2278,10 @@ smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, row
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get cell history with pagination.
-PagedResult<CellHistory> cellHistory= smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, parameters);
+PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, parameters);
 
 // Get cell history without pagination.
-PagedResult<CellHistory> cellHistory= smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, null);
+PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, null);
 ```
 
 > Example Response:
@@ -5185,7 +5185,7 @@ smartsheet.GroupResources.AddGroupMembers(groupId, new GroupMember[] { member })
 GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
 
 // Add member to group.
-smartsheet.groupResources().members().addGroupMembers(groupId, Arrays.asList(member));
+smartsheet.groupResources().memberResources().addGroupMembers(groupId, Arrays.asList(member));
 ```
 
 > Example Response:
@@ -5258,7 +5258,7 @@ smartsheet.GroupResources.RemoveGroupMember(groupId, userId);
 
 ```java
 // Remove member from group.
-smartsheet.groupResources().members().deleteGroupMember(groupId, userId)
+smartsheet.groupResources().memberResources().deleteGroupMember(groupId, userId)
 ```
 
 > Example Response:
@@ -9395,7 +9395,7 @@ smartsheet.UserResources.RemoveUser(userId, transferToUserId, true, true);
 
 ```java
 // Remove user (transferring ownership of groups and sheets to another user, and removing the user from sharing).
-DeleteUserParameters parameters = new DeleteUserParameters(12345L, true, true);
+DeleteUserParameters parameters = new DeleteUserParameters(transferToUserId, true, true);
 smartsheet.userResources().deleteUser(userId, parameters);
 ```
 
