@@ -1044,6 +1044,45 @@ As an org Administrator, you can provision, de-provision and otherwise manage us
 
 ## Assume-User
 
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Assume-User: john.doe%40smartsheet.com" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile user= smartsheet.userResources().getCurrentUser();
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
 As an org Administrator, you can assume the identity of any user in your organization. 
 This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
  
@@ -1060,12 +1099,12 @@ You can then act on behalf of the user and make API calls as though you were tha
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
--H "Assume-User: bob.johnson%40smartsheet.com" \
+-H "Assume-User: john.doe%40smartsheet.com" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"toTop":true", "rows":[{"cells": [ {"columnId": 3738748463671172, "value": "Revision 1"}, {"columnId": 5427598323935108, "value": "New status", "strict": false} ]} ]}'
+-d '{"text":"This is a new comment."}'
 ```
 
 ```javascript
@@ -1073,11 +1112,44 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 ```
 
 ```csharp
-// [todo]
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
+
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+
+// Add comment to discussion (call gets executed as "john.doe@smartsheet.com").
+smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(sheetId, discussionId, comment);
 ```
 
 ```java
-// [todo]
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
+
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+
+// Add comment to discussion (call gets executed as "john.doe@smartsheet.com").
+smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "createdAt": "2013-02-28T22:58:30-08:00",
+        "createdBy": {
+            "email": "john.doe@smartsheet.com",
+            "name": "John Doe"
+        },
+        "id": 6834973207488388,
+        "modifiedAt": "2013-02-28T22:58:30-08:00",
+        "text": "This is a new comment."
+    },
+    "resultCode": 0
+}
 ```
 
 If you are integrating Smartsheet with another API-enabled system, such as Salesforce, it may be useful to maintain attribution when adding data to Smartsheet. 
@@ -5711,10 +5783,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     id: 4583173393803140 // ID of Report
 };
 
+// Get report.
 smartsheet.reports.getReport(options)
     .then(function (data) {
         console.log(data);
@@ -5822,10 +5896,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     id: 3882962191181700 // ID of Report
 };
 
+// Get report as Excel.
 smartsheet.reports.getReportAsExcel(options)
     .then(function (data) {
         console.log(data);
@@ -5873,10 +5949,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     id: 3882962191181700 // ID of Report
 };
 
+// Get report as CSV.
 smartsheet.reports.getReportAsCSV(options)
     .then(function (data) {
         console.log(data);
@@ -5937,6 +6015,7 @@ curl https://api.smartsheet.com/2.0/reports
 ```
 
 ```javascript
+// List reports.
 smartsheet.reports.listReports()
     .then(function (data) {
         console.log(data);
@@ -6110,6 +6189,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 ```
 
 ```javascript
+// Specify rows.
 var row = [
     {
         "toTop": true,
@@ -6141,11 +6221,13 @@ var row = [
     }
 ];
 
+// Set options.
 var options = {
     body: row,
     sheetId: 2252168947361668
 };
 
+// Add rows to sheet.
 smartsheet.sheets.addRows(options)
     .then(function (data) {
         console.log(data);
@@ -6271,6 +6353,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
 ```
 
 ```javascript
+// Specify the directive.
 var copyRow = {
     "rowIds": [145417762563972, 8026717110462340],
     "to": {
@@ -6278,11 +6361,13 @@ var copyRow = {
     }
 };
 
+// Set options.
 var options = {
     body: copyRow,
     sheetId: 2252168947361668
 };
 
+// Copy rows.
 smartsheet.sheets.copyRowToAnotherSheet(options)
     .then(function (data) {
         console.log(data);
@@ -6346,11 +6431,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     sheetId: 2252168947361668,
     rowId: 207098194749316
 };
 
+// Delete row.
 smartsheet.sheets.deleteRow(options)
     .then(function (data) {
         console.log(data);
@@ -6401,11 +6488,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discus
 ```
 
 ```javascript
+// Set options.
 var options = {
     sheetId: 4583173393803140,
     rowId: 2361756178769796
 };
 
+// Get row.
 smartsheet.sheets.getRow(options)
     .then(function (data) {
         console.log(data);
@@ -6483,6 +6572,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/move \
 ```
 
 ```javascript
+// Specify the directive.
 var moveRow = {
     "rowIds": [145417762563972, 8026717110462340],
     "to": {
@@ -6490,11 +6580,13 @@ var moveRow = {
     }
 };
 
+// Set options.
 var options = {
     body: moveRow,
     sheetId: 2252168947361668
 };
 
+// Move rows.
 smartsheet.sheets.moveRowToAnotherSheet(options)
     .then(function (data) {
         console.log(data);
@@ -6565,6 +6657,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 ```
 
 ```javascript
+// Specify updated cell values.
 var row = [
     {
         "id": "6572427401553796",
@@ -6594,11 +6687,13 @@ var row = [
     }
 ];
 
+// Set options.
 var options = {
     body: row,
     sheetId: 2252168947361668
 };
 
+// Update rows in sheet.
 smartsheet.sheets.updateRow(options)
     .then(function (data) {
         console.log(data);
@@ -6789,10 +6884,12 @@ curl https://api.smartsheet.com/2.0/search?query=stuff \
 ```
 
 ```javascript
+// Set options.
 var options = {
     query: "stuff"
 };
 
+// Search everything.
 smartsheet.search.searchAll(options)
     .then(function (data) {
         console.log(data);
@@ -6948,6 +7045,7 @@ curl https://api.smartsheet.com/2.0/serverinfo
 ```
 
 ```javascript
+// Get server info.
 smartsheet.server.getInfo()
     .then(function (data) {
         console.log(data);
@@ -7020,11 +7118,13 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     reportId: 665829219035012,
     shareId: "AAAQSF82F1eE"
 };
 
+// Delete report share.
 smartsheet.reports.deleteShare(options)
     .then(function (data) {
         console.log(data);
@@ -7064,11 +7164,13 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```javascript 
+// Set options.
 var options = {
     reportId: 6932724448552836,
     shareId: "AQAISF82FOeE"
 };
 
+// Get report share.
 smartsheet.reports.getShare(options)
     .then(function (data) {
         console.log(data);
@@ -7108,10 +7210,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 ```
 
 ```javascript
+// Set options.
 var options = {
     reportId: 665829219035012
 };
 
+// List report shares.
 smartsheet.reports.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -7165,6 +7269,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 ```
 
 ```javascript
+// Specify share (to one user as Editor).
 var share = [
 	{
 		"email": "jane.doe@smartsheet.com", 
@@ -7172,11 +7277,13 @@ var share = [
 	}
 ];
 
+// Set options.
 var options = {
     body: share,
     reportId: 665829219035012
 };
 
+// Share report.
 smartsheet.reports.share(options)
     .then(function (data) {
         console.log(data);
@@ -7230,14 +7337,17 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set the access level to Viewer.
 var share = {"accessLevel": "VIEWER"};
 
+// Set options.
 var options = {
     body: share,
     reportId: 665829219035012,
     shareId: "AAAFeF82FOeE"
 };
 
+// Update report share.
 smartsheet.reports.updateShare(options)
     .then(function (data) {
         console.log(data);
@@ -7286,11 +7396,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     sheetId: 4583614634583940,
     shareId: "AAAASuWWFOeE"
 };
 
+// Delete sheet share.
 smartsheet.sheets.deleteShare(options)
     .then(function (data) {
         console.log(data);
@@ -7330,11 +7442,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     sheetId: 4583614634583940,
     shareId: "AQAISF82FOeE"
 };
 
+// Get sheet share.
 smartsheet.sheets.getShare(options)
     .then(function (data) {
         console.log(data);
@@ -7374,10 +7488,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 ```
 
 ```javascript
+// Set options.
 var options = {
     sheetId: 4583614634583940
 };
 
+// List sheet shares.
 smartsheet.sheets.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -7431,6 +7547,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 ```
 
 ```javascript
+// Specify share (to one user as Editor).
 var share = [
 	{
 		"email": "jane.doe@smartsheet.com", 
@@ -7438,11 +7555,13 @@ var share = [
 	}
 ];
 
+// Set options.
 var options = {
     body: share,
     sheetId: 4583614634583940
 };
 
+// Share sheet.
 smartsheet.sheets.share(options)
     .then(function (data) {
         console.log(data);
@@ -7495,14 +7614,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set access level to Viewer.
 var share = {"accessLevel": "VIEWER"};
 
+// Set options.
 var options = {
     body: share,
     sheetId: 4583614634583940,
     shareId: "AAAFeF82FOeE"
 };
 
+// Update sheet share.
 smartsheet.sheets.updateShare(options)
     .then(function (data) {
         console.log(data);
@@ -7551,11 +7673,13 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     workspaceId: 1656220827314052,
     shareId: "AAAEQesWFOeE"
 };
 
+// Delete workspace share.
 smartsheet.workspaces.deleteShare(options)
     .then(function (data) {
         console.log(data);
@@ -7599,11 +7723,13 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     workspaceId: 1656220827314052,
     shareId: "AQAISF82FOeE"
 };
 
+// Get workspace share.
 smartsheet.workspaces.getShare(options)
     .then(function (data) {
         console.log(data);
@@ -7643,10 +7769,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 ```
 
 ```javascript
+// Set options.
 var options = {
     workspaceId: 1656220827314052
 };
 
+// List workspace shares.
 smartsheet.workspaces.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -7700,6 +7828,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 ```
 
 ```javascript
+// Specify share (to one user as Editor).
 var shares = [
 	{
 		"email": "john.doe@smartsheet.com",
@@ -7707,11 +7836,13 @@ var shares = [
 	}
 ];
 
+// Set options.
 var options = {
 	workspaceId: 7960873114331012,
 	body: shares
 };
 
+// Share workspace.
 smartsheet.workspaces.share(options)
 	.then(function(data) {
 		console.log(data);
@@ -7770,14 +7901,17 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 ```
 
 ```javascript
+// Set access level to Viewer.
 var share = {"accessLevel": "VIEWER"};
 
+// Set options.
 var options = {
     body: share,
     workspaceId: 1656220827314052,
     shareId: "AAAFeF82FOeE"
 };
 
+// Update workspace share.
 smartsheet.workspaces.updateShare(options)
     .then(function (data) {
         console.log(data);
@@ -7903,6 +8037,7 @@ curl https://api.smartsheet.com/2.0/sheets \
 ```
 
 ```javascript
+// Specify sheet properties.
 var sheet = {
     "name": "newsheet",
     "columns": [
@@ -7928,10 +8063,12 @@ var sheet = {
     ]
 };
 
+// Set options.
 var options = {
 	body: sheet
 };
 
+// Create sheet in "Sheets" folder.
 smartsheet.sheets.createSheet(options)
 	.then(function(data) {
 		console.log(data);
@@ -7993,6 +8130,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
 ```
 
 ```javascript
+// Specify sheet properties.
 var sheet = {
     "name": "newsheet",
     "columns": [
@@ -8018,11 +8156,13 @@ var sheet = {
     ]
 };
 
+// Set options.
 var options = {
     body: sheet,
     folderId: 3734419270854532
 };
 
+// Create sheet in folder.
 smartsheet.sheets.createSheetInFolder(options)
     .then(function (data) {
         console.log(data);
@@ -8085,6 +8225,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
 ```
 
 ```javascript
+// Specify sheet properties.
 var sheet = {
     "name": "newsheet",
     "columns": [
@@ -8110,11 +8251,13 @@ var sheet = {
     ]
 };
 
+// Set options.
 var options = {
 	body: sheet,
 	workspaceId: 1656220827314052
 };
 
+// Create sheet in workspace.
 smartsheet.sheets.createSheetInWorkspace(options)
 	.then(function(data) {
 		console.log(data);
@@ -8187,15 +8330,18 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 ```
 
 ```javascript
+// Specify the directive.
 var sheet = {
     "name": "newsheet",
     "fromId": 7679398137620356
 };
 
+// Set options.
 var options = {
     body: sheet
 };
 
+// Create sheet from template.
 smartsheet.sheets.createSheetFromExisting(options)
     .then(function (data) {
         console.log(data);
@@ -8250,16 +8396,19 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 ```
 
 ``` javascript
+// Specify the directive.
 var sheet = {
     "name": "newsheet",
     "fromId": 7679398137620356
 };
 
+// Set options.
 var options = {
     body: sheet,
     folderId: 3734419270854532
 };
 
+// Create sheet from template in the specified folder.
 smartsheet.sheets.createSheetFromExisting(options)
     .then(function (data) {
         console.log(data);
@@ -8314,16 +8463,19 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 ```
 
 ```javascript
+// Specify the directive.
 var sheet = {
     "name": "newsheet",
     "fromId": 7679398137620356
 };
 
+// Set options.
 var options = {
     body: sheet,
     workspaceId: 1656220827314052
 };
 
+// Create sheet from template in the specified workspace.
 smartsheet.sheets.createSheetFromExisting(options)
     .then(function (data) {
         console.log(data);
@@ -8376,10 +8528,12 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 ```
 
 ```javascript
+// Set options.
 var options = {
     id: 1531988831168388 // ID of Sheet
 };
 
+// Delete sheet.
 smartsheet.sheets.deleteSheet(options)
     .then(function (data) {
         console.log(data);
@@ -8428,10 +8582,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
 ```
 
 ```javascript
+// Set options.
 var options = {
     sheetId: 1531988831168388
 };
 
+// Get sheet version.
 smartsheet.sheets.getSheetVersion(options)
     .then(function (data) {
         console.log(data);
@@ -8489,10 +8645,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
 	id: 4583173393803140 // ID of Sheet
 };
 
+// Get sheet.
 smartsheet.sheets.getSheet(options)
 	.then(function(data) {
 		console.log(data);
@@ -8575,10 +8733,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
   id: 4583173393803140 // ID of Sheet
 };
 
+// Get sheet as Excel.
 smartsheet.sheets.getSheetAsExcel(options)
 	.then(function(data) {
 		console.log(data);
@@ -8626,10 +8786,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```
 
 ```javascript
+// Set options.
 var options = {
   id: 4583173393803140 // ID of Sheet
 };
 
+// Get sheet as PDF.
 smartsheet.sheets.getSheetAsPDF(options)
 	.then(function(data) {
 		console.log(data);
@@ -8677,10 +8839,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
   id: 4583173393803140 // ID of Sheet
 };
 
+// Get sheet as CSV.
 smartsheet.sheets.getSheetAsCSV(options)
 	.then(function(data) {
 		console.log(data);
@@ -8746,6 +8910,7 @@ curl https://api.smartsheet.com/2.0/sheets \
 ```
 
 ```javascript
+// List sheets.
 smartsheet.sheets.listSheets()
 	.then(function(data) {
 		console.log(data);
@@ -8824,10 +8989,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 ```
 
 ```javascript
+// Set options.
 var options = {
   sheetId: 4583614634583940
 };
 
+// Get sheet publish status.
 smartsheet.sheets.getPublishStatus(options)
 	.then(function(data) {
 		console.log(data);
@@ -8882,6 +9049,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 ```
 
 ```javascript
+// Specify publish status.
 var publishStatus = {
   "readOnlyLiteEnabled": true,
   "readOnlyFullEnabled": false,
@@ -8889,11 +9057,13 @@ var publishStatus = {
   "icalEnabled": false
 };
 
+// Set options.
 var options = {
   body: publishStatus,
   sheetId: 4583614634583940
 };
 
+// Set publish status.
 smartsheet.sheets.setPublishStatus(options)
 	.then(function(data) {
 		console.log(data);
@@ -8971,6 +9141,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+// Specify updated sheet properties.
 var sheet = {
     "name": "New Sheet Name",
     "userSettings": {
@@ -8978,11 +9149,13 @@ var sheet = {
 	}
 };
 
+// Set options.
 var options = {
     body: sheet,
     id: 7960873114331012 // ID of Sheet
 };
 
+// Update sheet.
 smartsheet.sheets.updateSheet(options)
     .then(function (data) {
         console.log(data);
@@ -9098,6 +9271,7 @@ curl https://api.smartsheet.com/2.0/templates/public \
 ```
 
 ```javascript
+// List public templates.
 smartsheet.templates.listPublicTemplates()
     .then(function (data) {
         console.log(data);
@@ -9148,6 +9322,7 @@ curl https://api.smartsheet.com/2.0/templates \
 ```
 
 ```javascript
+// List user-created templates.
 smartsheet.templates.listUserCreatedTemplates()
     .then(function (data) {
         console.log(data);
@@ -9375,6 +9550,7 @@ curl https://api.smartsheet.com/2.0/users?sendEmail=true \
 ```
 
 ```javascript
+// Specify user properties.
 var user = {
 	"firstName": "John",
 	"lastName": "Doe",
@@ -9383,10 +9559,12 @@ var user = {
 	"licensedSheetCreator": true
 };
 
+// Set options.
 var options = {
 	body: user
 };
 
+// Add user.
 smartsheet.users.createUser(options)
 	.then(function(data) {
 		console.log(data)
@@ -9455,6 +9633,7 @@ curl https://api.smartsheet.com/2.0/users/me \
 ```
 
 ```javascript
+// Get current user.
 smartsheet.users.getCurrentUser()
 	.then(function(data) {
 		console.log(data);
@@ -9505,10 +9684,12 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 ```
 
 ```javascript
+// Set options.
 var options = {
 	id: 48569348493401200	// ID of user
 };
 
+// Get user.
 smartsheet.users.getUser(options)
   	.then(function(data) {
     	console.log(data)
@@ -9563,6 +9744,7 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 ```
 
 ```javascript 
+// List users.
 smartsheet.users.listAllUsers()
 	.then(function(data) {
 		console.log(data)
@@ -9636,10 +9818,12 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFrom
 ```
 
 ```javascript
+// Set options.
 var options = {
 	id: 94094820842 // ID of User
 };
 
+// Remove user.
 smartsheet.users.removeUser(options)
 	.then(function(data) {
 		console.log(data)
@@ -9697,16 +9881,19 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 ```
 
 ```javascript
+// Specify updated user properties.
 var user = {
 	"admin": true,
 	"licensedSheetCreator": true
 };
 
+// Set options.
 var options = {
 	body: user,
 	id: 82349925918590 // ID of User
 };
 
+// Update user.
 smartsheet.users.updateUser(options)
 	.then(function(data) {
 		console.log(data)
@@ -9786,12 +9973,15 @@ curl https://api.smartsheet.com/2.0/workspaces \
 ```
 
 ```javascript
+// Specify workspace name.
 var workspace = {"name": "New workspace"};
 
+// Set options.
 var options = {
     body: workspace
 };
 
+// Create workspace.
 smartsheet.workspaces.createWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -9854,10 +10044,12 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 ```
 
 ```javascript
+// Set options.
 var options = {
     workspaceId: 6621332407379844
 };
 
+// Delete workspace.
 smartsheet.workspaces.deleteWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -9906,10 +10098,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 ```
 
 ```javascript
+// Set options.
 var options = {
     workspaceId: 7116448184199044
 };
 
+// Get workspace.
 smartsheet.workspaces.getWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -9980,6 +10174,7 @@ curl https://api.smartsheet.com/2.0/workspaces \
 ```
 
 ```javascript
+// List workspaces.
 smartsheet.workspaces.listWorkspaces()
 	.then(function(data) {
 		console.log(data);
@@ -10063,13 +10258,16 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 ```
 
 ```javascript
+// Specify updated workspace properties.
 var workspace = {"name": "Updated workspace"};
 
+// Set options.
 var options = {
     body: workspace,
     workspaceId: 7960873114331012
 };
 
+// Update workspace.
 smartsheet.workspaces.updateWorkspace(options)
     .then(function (data) {
         console.log(data);
