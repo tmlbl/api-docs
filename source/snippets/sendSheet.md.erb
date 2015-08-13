@@ -10,6 +10,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/emails \
 ```
 
 ```javascript	
+// Configure email.
 var email = {
     "sendTo": [
         {
@@ -28,11 +29,13 @@ var email = {
     }
 };
 
+// Set options.
 var options = {
     body: email,
     sheetId: 2252168947361668
 };
 
+// Send sheet via email.
 smartsheet.sheets.sendSheetViaEmail(options)
     .then(function (data) {
         console.log(data);
@@ -80,7 +83,7 @@ formatDetails.setPaperSize(PaperSize.A0);
 // Configure email.
 RowEmail email = new RowEmail.AddRowEmailBuilder().setSendTo(recipients).setSubject("Check these rows out!").setMessage("Here are the rows I mentioned in our meeting").setCcMe(false).setIncludeAttachments(true).setIncludeDiscussions(true).build();
 
-// Send Sheet via email.
+// Send sheet via email.
 smartsheet.sheetResources().sendSheet(sheetId, email);
 ```
 

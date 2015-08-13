@@ -9,6 +9,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/emails \
 ```
 
 ```javascript
+// Configure email.
 var email = {
     "sendTo": [
         {
@@ -27,11 +28,13 @@ var email = {
     }
 };
 
+// Set options.
 var options = {
     body: email,
     reportId: 8130994621441924
 };
 
+// Send report via email.
 smartsheet.reports.sendReportViaEmail(options)
     .then(function (data) {
         console.log(data);
@@ -58,7 +61,7 @@ SheetEmail sheetEmail = new SheetEmail {
 	FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 } 
 };
 
-// Send Report via email.
+// Send report via email.
 smartsheet.ReportResources.SendReport(reportId, sheetEmail);
 ```
 
@@ -79,7 +82,7 @@ formatDetails.setPaperSize(PaperSize.A0);
 // Configure email.
 SheetEmail email = new SheetEmail.AddSheetEmailBuilder().setSendTo(recipients).setSubject("Check this report out!").setMessage("Here is the report I mentioned in our meeting").setCcMe(false).setFormat(SheetEmailFormat.PDF).setFormatDetails(formatDetails).build();
 
-// Send Report via email.
+// Send report via email.
 smartsheet.reportResources().sendReport(reportId, email)
 ```
 
