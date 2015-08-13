@@ -6,7 +6,85 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/emails \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"sendTo" : [{"email": "john.doe@smartsheet.com"}, {"groupId": 2258118617917316}], "subject": "Check these rows out!", "message": "Here are the rows I mentioned in our meeting", "ccMe": false, "format": "PDF", formatDetails": {"paperSize": "A4"}}'
- 
+
+```
+
+```javascript	
+// Configure email.
+var email = {
+    "sendTo": [
+        {
+            "email": "john.doe@smartsheet.com"
+        },
+        {
+            "groupId": 2258118617917316
+        }
+    ],
+    "subject": "Check these rows out!",
+    "message": "Here are the rows I mentioned in our meeting",
+    "ccMe": false,
+    "format": "PDF",
+    "formatDetails": {
+        "paperSize": "A4"
+    }
+};
+
+// Set options.
+var options = {
+    body: email,
+    sheetId: 2252168947361668
+};
+
+// Send sheet via email.
+smartsheet.sheets.sendSheetViaEmail(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+	new Recipient { Email = "john.doe@smartsheet.com" }, 
+	new Recipient { GroupId = 2258118617917316 } 
+};
+
+// Configure email.
+SheetEmail sheetEmail = new SheetEmail { 
+	SendTo = recipients, 
+	Subject = "Check this report out!", 
+	Message = "Here are the rows I mentioned in our meeting", 
+	CcMe = false, 
+	Format = SheetEmailFormat.PDF, 
+	FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 } 
+};
+
+// Send sheet via email.
+smartsheet.SheetResources.SendSheet(sheetId, sheetEmail);
+```
+
+```java
+// Specify individual recipient.
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder().setEmail("john.doe@smartsheet.com").build();
+
+// Specify group recipient.
+RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder().setGroupId(2258118617917316).build();
+
+// Set recipients.
+List<Recipient> recipients = Arrays.asList(recipientEmail, recipientGroup);
+
+// Set format details.
+FormatDetails formatDetails = new FormatDetails();
+formatDetails.setPaperSize(PaperSize.A0); 
+
+// Configure email.
+RowEmail email = new RowEmail.AddRowEmailBuilder().setSendTo(recipients).setSubject("Check these rows out!").setMessage("Here are the rows I mentioned in our meeting").setCcMe(false).setIncludeAttachments(true).setIncludeDiscussions(true).build();
+
+// Send sheet via email.
+smartsheet.sheetResources().sendSheet(sheetId, email);
 ```
 
 > Example Response:
