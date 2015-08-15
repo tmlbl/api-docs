@@ -1,0 +1,44 @@
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ \
+    "sendTo": [ \
+        {"email": "email789@smartsheet.com"}, \
+        {"email": "email0123@smartsheet.com"} \
+    ], \
+    "subject": "some subject", \
+    "message": "some message", \
+    "ccMe": (true|false), \
+    "rowIds": [rowId1], \
+    "columnIds": [colId1, colId2], \
+    "includeAttachments": (true|false), \
+    "includeDiscussions": (true|false) \
+}'
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": 4583173393803140
+    },
+    "message": "SUCCESS"
+}
+```
+
+`POST /sheets/{sheetId}/updaterequests`
+
+Creates an Update Request for the specified Row(s) within the Sheet. An email notification (containing a link to the update request) will be asynchronously sent to the specified recipient(s).
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object)<br/><br/>The MultiRowEmail object in the request body must specify one or more of the following attributes:<ul><li><b>columnIds</b>: number[]</li><li><b>attachments</b>: true</li><li><b>discussions</b>: true</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the newly created [UpdateRequest object](#updaterequest-object).
