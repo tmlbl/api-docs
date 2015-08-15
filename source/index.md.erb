@@ -3,6 +3,9 @@ title: Smartsheet API 2.0 Documentation
 
 language_tabs:
   - shell: cURL
+  - csharp: C#
+  - java: Java
+  - javascript: Node.js
   
 toc_footers:
 
@@ -27,6 +30,24 @@ search: false
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
+
+> Sample Code (more information [here](#sdks-and-sample-code))
+
+```shell
+# The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool cURL: http://en.wikipedia.org/wiki/CURL. 
+```
+
+```javascript
+// The Node.js code samples included in this API documentation demonstrate how to execute operations using the Smartsheet JavaScript SDK: https://github.com/smartsheet-platform/smartsheet-javascript-sdk.
+```
+
+```csharp
+// The C# code samples included in this API documentation demonstrate how to execute operations using the Smartsheet C# SDK: https://github.com/smartsheet-platform/smartsheet-csharp-sdk.
+```
+
+```java
+// The Java code samples included in this API documentation demonstrate how to execute operations using the Smartsheet Java SDK: https://github.com/smartsheet-platform/smartsheet-java-sdk.
+```
 
 <aside class="notice">
 	<b>Smartsheet API 1.1 Deprecation</b><br/><br/>
@@ -105,9 +126,12 @@ The following HTTP request headers may be required, depending on the operation a
 
 ## Example Requests & Responses
 
-With every API operation we provide a sample request and a sample response. 
-The sample requests shown on the **cURL** tab use the command line data transfer tool [cURL](http://en.wikipedia.org/wiki/CURL). 
-Alternatively, you could also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm).
+For every API operation in this documentation, we show example requests in multiple languages and an example (JSON) response. 
+You'll see the examples displayed in the dark blue panel next to each operation. 
+To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
+For more information about using the sample code in this API documentation, see [SDKs and Sample Code](#sdks-and-sample-code). 
+
+As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm). 
 
 ## Versioning and Changes
 
@@ -607,9 +631,99 @@ Please note that Developer accounts are intended for development and testing pur
 
 ## SDKs and Sample Code
 
-See our [Github repository](https://github.com/smartsheet-platform) for sample / source code in multiple languages and our [tools and sample apps page ](http://www.smartsheet.com/apps)for sample apps.  
- 
-See our [SDK page](http://www.smartsheet.com/developers/sdks) for available SDKs or to submit your vote for additional language coverage.
+Smartsheet SDKs (client libraries) are available in a variety of languages. 
+For the complete list, see our [SDK page](http://www.smartsheet.com/developers/sdks). 
+Submit your vote for additional language coverage by emailing us at <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
+
+This API documentation currently contains sample code in the following languages: 
+<ul>
+<li>cURL</li>
+<li>C#</li>
+<li>Java</li>
+<li>Node.js</li>
+</ul>
+
+For each operation, you'll see sample code displayed in the dark blue panel next to the operation. 
+To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
+Each [C#](#c#-sample-code), [Java](#java-sample-code), and [Node.js](#node.js-sample-code) code sample demonstrates how to execute an operation using the corresponding [Smartsheet SDK](http://www.smartsheet.com/developers/sdks). 
+See the corresponding section below for more information about using the sample code in a specific language.
+
+### cURL Sample Code
+
+The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool [cURL](http://en.wikipedia.org/wiki/CURL). 
+
+### C# Sample Code
+
+The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
+Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created as follows:
+
+<code>
+// Set the Access Token<br/>
+Token token = new Token();<br/>
+token.AccessToken = "INSERT_YOUR_TOKEN_HERE";<br/>
+</code>
+
+<code>
+// Use the Smartsheet Builder to create a Smartsheet<br/>
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+</code>
+
+For operations that support querystring parameters, the C# code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
+The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
+
+Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
+
+<code>smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);</code>
+
+### Java Sample Code
+
+The Java code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Java SDK](https://github.com/smartsheet-platform/smartsheet-java-sdk). 
+Each code sample uses a **Smartsheet** object called "smartsheet" that can be created as follows:
+
+<code>
+// Set the Access Token<br/>
+Token token = new Token();<br/>
+token.setAccessToken("INSERT_YOUR_TOKEN_HERE");<br/>
+</code>
+
+<code>
+// Use the Smartsheet Builder to create a Smartsheet<br/>
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();<br/>
+</code>
+
+For operations that support querystring parameters, the Java code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
+The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
+
+Within the Java code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
+
+<code>smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);</code>
+
+### Node.js Sample Code
+
+The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises. 
+Each code sample uses a root module called "smartsheet" that can be created as follows:
+
+<code>
+var client = require('smartsheet');<br/>
+var smartsheet = client.createClient({accessToken:'INSERT_YOUR_TOKEN_HERE'});
+</code>
+
+Once you've created the **smartsheet** variable, you can use it to execute API operations. 
+For example, the following code example shows how to execute the [Get Current User](#get-current-user) operation.
+
+<code>
+smartsheet.users.getCurrentUser()<br/>
+&#160;&#160;.then(function(data) {<br/>
+&#160;&#160;&#160;&#160;console.log(data);<br/>
+&#160;&#160;})<br/>
+&#160;&#160;.catch(function(error) {<br/>
+&#160;&#160;&#160;&#160;console.log(error);<br/>
+&#160;&#160;});<br/>
+</code>
+
+For more information about using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), including examples of using callbacks (instead of promises), see the [SDK Readme](https://github.com/smartsheet-platform/smartsheet-javascript-sdk).
 
 ## Direct API Access
 
@@ -642,6 +756,41 @@ That way, should any one token become compromised, you can easily revoke it with
 ```shell
 curl https://api.smartsheet.com/2.0/users/me \
 `-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set the access token.
+var client = require('smartsheet');
+var smartsheet = client.createClient({accessToken:'INSERT_YOUR_TOKEN_HERE'});
+
+// Get current user.
+smartsheet.users.getCurrentUser()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+    	console.log(error);
+  	});
+```
+
+```csharp
+// Set the access token.
+Token token = new Token();
+token.AccessToken = "INSERT_YOUR_TOKEN_HERE";
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+
+// Get current user.
+smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Set the access token.
+Token token = new Token();
+token.setAccessToken("INSERT_YOUR_TOKEN_HERE");
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
+
+// Get current user.
+smartsheet.userResources().getCurrentUser();
 ```
 
 > Example Response:
@@ -785,6 +934,18 @@ curl https://api.smartsheet.com/2.0/token \
 -X POST
 ```
 
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
 > Successful Response:
 
 ```json
@@ -838,6 +999,18 @@ curl https://api.smartsheet.com/2.0/token \
 -X POST
 ```
 
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
 > Successful Response:
 
 ```json
@@ -877,6 +1050,45 @@ As an org Administrator, you can provision, de-provision and otherwise manage us
 
 ## Assume-User
 
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Assume-User: john.doe%40smartsheet.com" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile user= smartsheet.userResources().getCurrentUser();
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
 As an org Administrator, you can assume the identity of any user in your organization. 
 This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
  
@@ -893,12 +1105,57 @@ You can then act on behalf of the user and make API calls as though you were tha
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ACCESS_TOKEN" \
--H "Assume-User: bob.johnson%40smartsheet.com" \
+-H "Assume-User: john.doe%40smartsheet.com" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"toTop":true", "rows":[{"cells": [ {"columnId": 3738748463671172, "value": "Revision 1"}, {"columnId": 5427598323935108, "value": "New status", "strict": false} ]} ]}'
+-d '{"text":"This is a new comment."}'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
+
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+
+// Add comment to discussion (call gets executed as "john.doe@smartsheet.com").
+smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(sheetId, discussionId, comment);
+```
+
+```java
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
+
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+
+// Add comment to discussion (call gets executed as "john.doe@smartsheet.com").
+smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "createdAt": "2013-02-28T22:58:30-08:00",
+        "createdBy": {
+            "email": "john.doe@smartsheet.com",
+            "name": "John Doe"
+        },
+        "id": 6834973207488388,
+        "modifiedAt": "2013-02-28T22:58:30-08:00",
+        "text": "This is a new comment."
+    },
+    "resultCode": 0
+}
 ```
 
 If you are integrating Smartsheet with another API-enabled system, such as Salesforce, it may be useful to maintain attribution when adding data to Smartsheet. 
@@ -920,6 +1177,26 @@ curl https://api.smartsheet.com/2.0/users/sheets \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+smartsheet.sheets.listOrganizationSheets()
+	.then(function(data) {
+		console.log(data)
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// List all org sheets.
+smartsheet.UserResources.SheetResources.ListSheets();
+```
+
+```java
+// List all org sheets.
+smartsheet.userResources().listOrgSheets();
+```
+
 > Fetch each sheet (using Assume-User):
 
 ```shell
@@ -928,10 +1205,34 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?include=discussions,attachm
 -H "Assume-User: OWNER_EMAIL"
 ```
 
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
 > Fetch each attachment:
 
 ```shell
 curl -0 URL_TO_ATTACHMENT
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
 ```
 
 To backup all of the org data, follow these steps:
@@ -1090,6 +1391,23 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
 
+```javascript
+// n/a
+```
+
+```csharp
+// Attach file to comment.
+smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to comment.
+smartsheet.sheetResources().commentResources().attachmentResources().attachFile(sheetId, commentId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1100,6 +1418,40 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```javascript
+// Set options.
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668,
+    commentId: 4293147074291588
+};
+
+// Attach file to comment.
+smartsheet.sheets.addCommentAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
+```csharp
+// Attach file to comment.
+smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to comment.
+smartsheet.sheetResources().commentResources().attachmentResources().attachFile(sheetId, commentId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1128,6 +1480,24 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -X POST \
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
+
+```javascript
+// n/a
+```
+
+```csharp
+// Attach file to row.
+smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to row.
+smartsheet.sheetResources().rowResources().attachmentResources().attachFile(sheetId, rowId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1138,6 +1508,40 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```javascript
+// Set options.
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+// Attach file to row.
+smartsheet.sheets.addRowAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+	
+```csharp
+// Attach file to row.
+smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to row.
+smartsheet.sheetResources().rowResources().attachmentResources().attachFile(sheetId, rowId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1162,6 +1566,24 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -X POST \
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
+
+```javascript
+// n/a
+```
+
+```csharp
+// Attach file to sheet.
+smartsheet.SheetResources.AttachmentResources.AttachFile(sheetId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to sheet.
+smartsheet.sheetResources().attachmentResources().attachFile(sheetId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1172,6 +1594,39 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```javascript
+// Set options.
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668
+};
+
+// Attach file to sheet.
+smartsheet.sheets.addAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
+```csharp
+// Attach file to sheet.
+smartsheet.SheetResources.AttachmentResources.AttachFile(sheetId, filePath, "application/msword");
+```
+
+```java
+// Specify file to be attached.
+File file = new File(filePath);
+
+// Attach file to sheet.
+smartsheet.sheetResources().attachmentResources().attachFile(sheetId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1198,6 +1653,47 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
+```javascript
+// Specify URL attachment.
+var attachment = {
+    "name": "Search Engine",
+    "attachmentType": "LINK",
+    "url": "http://www.google.com"
+};
+
+// Set options.
+var options = {
+    body: attachment,
+    sheetId: 2252168947361668,
+    commentId: 4445024629876612
+};
+
+// Attach URL to comment.
+smartsheet.sheets.addCommentAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+	
+```csharp
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
+
+// Attach URL to comment.
+smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(sheetId, commentId, attachment);
+```
+
+```java
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+ 
+// Attach URL to comment.
+smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(sheetId, commentId, attachment);
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1218,6 +1714,48 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+```
+
+```javascript
+// Specify URL attachment.
+var attachment = {
+    "name": "Search Engine",
+    "description": "A popular search engine",
+    "attachmentType": "LINK",
+    "url": "http://www.google.com"
+};
+
+// Set options.
+var options = {
+    body: attachment,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+// Attach URL to row.
+smartsheet.sheets.addRowAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
+
+// Attach URL to row.
+smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(sheetId, rowId, attachment);
+```
+
+```java
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+
+// Attach URL to row.
+smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(sheetId, rowId, attachment);
 ```
 
 > Example Response:
@@ -1242,6 +1780,47 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
+```javascript
+// Specify URL attachment.
+var attachment = {
+    "name": "Search Engine",
+    "description": "A popular search engine",
+    "attachmentType": "LINK",
+    "url": "http://www.google.com"
+};
+
+// Set options.
+var options = {
+    body: attachment,
+    sheetId: 2252168947361668
+};
+
+// Attach URL to sheet.
+smartsheet.sheets.addAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK).SetName("Search Engine").SetDescription("A popular search engine").Build();
+
+// Attach URL to sheet.
+smartsheet.SheetResources.AttachmentResources.AttachUrl(sheetId, attachment);
+```
+
+```java
+// Create attachment.
+Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+
+// Attach URL to sheet.
+smartsheet.sheetResources().attachmentResources().attachUrl(sheetId, attachment);
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1260,6 +1839,33 @@ Attaches a URL to the Sheet.
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 7169782752536452,
+};
+
+// Delete attachment.
+smartsheet.sheets.deleteAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete attachment.
+smartsheet.SheetResources.AttachmentResources.DeleteAttachment(sheetId, attachmentId);
+```
+
+```java
+// Delete attachment.
+smartsheet.sheetResources().attachmentResources().deleteAttachment(sheetId, sheetAttachmentId);
 ```
 
 > Example Response:
@@ -1292,6 +1898,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 4583173393803140
+};
+
+// Get attachment.
+smartsheet.sheets.getAttachment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get attachment.
+smartsheet.SheetResources.AttachmentResources.GetAttachment(sheetId, attachmentId);
+```
+
+```java
+// Get attachment.
+smartsheet.sheetResources().attachmentResources().getAttachment(sheetId, attachmentId);
+```
+
 > Example Response:
 
 ```json
@@ -1322,6 +1955,41 @@ Fetches the Attachment specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668
+};
+
+// Get all attachments.
+smartsheet.sheets.listAttachments(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get all attachments (omit pagination parameters).
+smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, null);
+
+// Get all attachments (specify 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all attachments with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, parameters);
+
+// Get all attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, null);
 ```
 
 > Example Response:
@@ -1375,6 +2043,42 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    discussionId: 3962273862576004
+};
+
+// Get discussion attachments.
+smartsheet.sheets.listDiscussionAttachments(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get discussion attachments (omit pagination parameters).
+smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, null);
+
+// Get discussion attachments (specify 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all discussion attachments with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionResources().attachmentResources().getAttachments(sheetId, discussionId, parameters);
+
+// Get all discussion attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionResources().attachmentResources().getAttachments(sheetId, discussionId, null);
+```
+
 > Example Response:
 
 ```json
@@ -1424,6 +2128,42 @@ Gets a list of all Attachments that are in the Discussion.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+// Get row attachments.
+smartsheet.sheets.getRowAttachments(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get row attachments (omit pagination parameters).
+smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, null);
+
+// Get row attachments (specify 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all row attachments with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources().attachmentResources().getAttachments(sheetId, rowId, parameters);
+
+// Get all row attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources().attachmentResources().getAttachments(sheetId, rowId, null);
 ```
 
 > Example Response:
@@ -1480,6 +2220,24 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -X POST \
 -F "file=@ProgressReport.docx;type=application/msword"
 ```
+
+```javascript
+// n/a
+```
+
+```csharp
+// Attach new version of file.
+smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
+```
+
+```java
+// Specify the new file to be attached.
+File file = new File(filePath);
+
+// Attach new version of the file.
+smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(sheetId, attachmentId, file, "application/msword");
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1490,6 +2248,40 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -H "Content-Length: FILE_SIZE" \
 -X POST \
 --data-binary @ProgressReport.docx
+```
+
+```javascript
+// Set options.
+var options = {
+    contentType: CONTENT_TYPE,
+    fileName: NAME_OF_FILE,
+    fileSize: SIZE_OF_FILE,
+    body: ATTACHMENT_DATA,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+// Attach new version of the file.
+smartsheet.sheets.attachNewVersion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
+```csharp
+// Attach new version of file.
+smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersion(sheetId, attachmentId, filePath, "application/msword");
+```
+
+```java
+// Specify the new file to be attached.
+File file = new File(filePath);
+
+// Attach new version of the file.
+smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(sheetId, attachmentId, file, "application/msword");
 ```
 
 > Example Response:
@@ -1526,6 +2318,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 5510069950408580
+};
+
+// Delete all versions of the attachment.
+smartsheet.sheets.deleteAllAttachmentVersions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete all versions of the attachment. 
+smartsheet.SheetResources.AttachmentResources.VersioningResources.DeleteAllVersions(sheetId, attachmentId);
+```
+
+```java
+// Delete all versions of the attachment.
+smartsheet.sheetResources().attachmentResources().versioningResources().deleteAllVersions(sheetId, attachmentId);
+```
+
 > Example Response:
 
 ```json
@@ -1552,6 +2371,42 @@ Deletes all versions of the attachment corresponding to the specified Attachment
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    attachmentId: 5510069950408580
+};
+
+// List all versions of the attachment.
+smartsheet.sheets.listAttachmentVersions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List all versions of the attachment (omit pagination parameters).
+smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, null);
+
+// List all versions of the attachment (specify 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List all attachment versions with pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, parameters);
+
+// List all attachment versions without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, null);
 ```
 
 > Example Response:
@@ -1660,6 +2515,43 @@ Represents a hyperlink to a URL, a Sheet, or a Report.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history?include=columnType \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588,
+    columnId: 642523719853956
+};
+
+// Get cell history.
+smartsheet.sheets.getCellHistory(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get cell history (omit 'include' parameter and pagination parameters).
+smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, rowId, columnId, null, null);
+
+// Get cell history (specify 'include' parameter with value of "columnType" and 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(sheetId, rowId, columnId, new CellInclusion[] { CellInclusion.COLUMN_TYPE }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get cell history with pagination.
+PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, parameters);
+
+// Get cell history without pagination.
+PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, null);
 ```
 
 > Example Response:
@@ -1808,6 +2700,78 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":4}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 4}]'
 ```
 
+```javascript
+// Specify new columns.
+var column = [
+    {
+        "title": "New Picklist Column 1",
+        "type": "PICKLIST",
+        "options": [
+            "First",
+            "Second",
+            "Third"
+        ],
+        "index": 4
+    },
+    {
+        "title": "New Date Column",
+        "type": "DATE",
+        "index": 5
+    },
+    {
+        "title": "New Picklist Column 2",
+        "type": "PICKLIST",
+        "options":[
+            "1",
+            "2",
+            "3"
+        ],
+        "index": 6
+    }
+];
+
+// Set options.
+var options = {
+    body: column,
+    sheetId: 2252168947361668
+};
+
+// Add columns to the sheet.
+smartsheet.sheets.addColumn(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create a column.
+Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST).SetOptions(new string[] { "First", "Second", "Third" }).Build();
+
+// Create another column.
+Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
+
+// Create a third column.
+Column columnC = new Column.AddColumnBuilder("New Picklist Column 2", 4, ColumnType.PICKLIST).SetOptions(new string[] { "1", "2", "3" }).Build();
+
+// Add columns to the sheet.
+smartsheet.SheetResources.ColumnResources.AddColumns(sheetId, new Column[] { columnA, columnB, columnC });
+```
+
+```java
+// Create columns.
+Column column1 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 1").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("First", "Second", "Third")).build();
+
+Column column2 = new Column.AddColumnToSheetBuilder().setTitle("New Date Column").setType(ColumnType.DATE).setIndex(4).build();
+
+Column column3 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 2").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("1", "2", "3")).build();
+
+// Add columns to the sheet.
+smartsheet.sheetResources().columnResources().addColumns(sheetId(), Arrays.asList(column1, column2, column3));
+```
+
 > Example Response:
 
 ```json
@@ -1875,6 +2839,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    columnId: 7881817631025028
+};
+
+// Delete column.
+smartsheet.sheets.deleteColumn(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete column.
+smartsheet.SheetResources.ColumnResources.DeleteColumn(sheetId, columnId);
+```
+
+```java
+// Delete column.
+smartsheet.sheetResources().columnResources().deleteColumn(sheetId, columnId);
+```
+
 > Example Response:
 
 ```json
@@ -1901,6 +2892,39 @@ Deletes the Column specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    columnId: 7960873114331012
+};
+
+// Get column.
+smartsheet.sheets.getColumns(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get column (omit 'include' parameter).
+smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, null);
+
+// Get column (specify 'include' parameter with value of "filters").
+smartsheet.SheetResources.ColumnResources.GetColumn(sheetId, columnId, new ColumnInclusion[] { ColumnInclusion.FILTERS });
+```
+
+```java
+// Get column (omit 'include' parameter).
+smartsheet.sheetResources().columnResources().getColumn(sheetId, columnId, null);
+
+// Get column (specify 'include' parameter with value of "filters").
+smartsheet.sheetResources().columnResources().getColumn(sheetId, columnId, EnumSet.of(ColumnInclusion.FILTERS));
 ```
 
 > Example Response:
@@ -1933,6 +2957,41 @@ Gets the Column specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668
+};
+
+// Get all columns.
+smartsheet.sheets.getColumns(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get all columns (omit 'include' parameter and pagination parameters).
+smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, null, null);
+
+// Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new ColumnInclusion[] { ColumnInclusion.FILTERS }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'.
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().columnResources().listColumns(sheetId, EnumSet.of(ColumnInclusion.FILTERS), parameters);
+
+// Get all columns (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().columnResources().listColumns(sheetId, null, null);
 ```
 
 > Example Response:
@@ -1990,6 +3049,48 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X PUT \
 -d '{"title":"First Column","index":0, "type" : "PICKLIST", "options" :["One","Two"]}'
+```
+
+```javascript
+// Specify column properties.
+var column = {
+    "index": 0,
+    "title": "First Column",
+    "type": "PICKLIST",
+    "options": ["One", "Two"]
+};
+
+// Set options.
+var options = {
+    body: column,
+    sheetId: 2252168947361668,
+    columnId: 5005385858869124
+};
+
+// Update column.
+smartsheet.sheets.updateColumn(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify column properties.
+Column column = new Column.UpdateColumnBuilder(columnId, "First Column", 0).SetType(ColumnType.PICKLIST).SetOptions(new string[] { "One", "Two" }).Build();
+
+// Update column.
+smartsheet.SheetResources.ColumnResources.UpdateColumn(sheetId, column);
+```
+
+```java
+// Specify column properties.
+Column column = new Column.UpdateColumnBuilder().setColumnId(columnId).setTitle("First Column").setIndex(0).setType(ColumnType.PICKLIST).setOptions(Arrays.asList("One", "Two")).build();
+
+// Update column.
+smartsheet.sheetResources().columnResources().updateColumn(sheetId, column);
 ```
 
 > Example Response:
@@ -2058,6 +3159,43 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 -d '{"text":"This is a new comment."}'
 ```
 
+```javascript
+// Specify comment.
+var comment = { "text": "This is a new comment." };
+
+// Set options.
+var options = {
+    body: comment,
+    sheetId: 2252168947361668,
+    discussionId: 3962273862576004
+};
+
+// Add comment to discussion.
+smartsheet.sheets.addDiscussionComment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+
+// Add comment to discussion.
+smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(sheetId, discussionId, comment);
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+
+// Add comment to discussion.
+smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -2073,6 +3211,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
     {
         "text":"This text is the body of the new comment"
     }
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+
+// Add comment (with attachment) to discussion.
+smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(sheetId, discussionId, comment, filePath, "application/octet-stream");
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+
+// Add comment (with attachment) to discussion.
+File file = new File(filePath);
+
+smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(sheetId, discussionId, comment, file, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2125,6 +3285,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 -X 'DELETE'
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    commentId: 4952999001909124
+};
+
+// Delete comment.
+smartsheet.sheets.deleteComment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete comment.
+smartsheet.SheetResources.CommentResources.DeleteComment(sheetId, commentId);
+```
+
+```java
+// Delete comment.
+smartsheet.sheetResources().commentResources().deleteComment(sheetId, commentId);
+```
+
 > Example Response:
 
 ```json
@@ -2151,6 +3338,33 @@ Deletes the Comment specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{id} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    commentId: 48569348493401200
+};
+
+// Get comment.
+smartsheet.sheets.getComment(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get comment.
+smartsheet.SheetResources.CommentResources.GetComment(sheetId, commentId);
+```
+
+```java
+// Get comment.
+smartsheet.sheetResources().commentResources().getComment(sheetId, commentId);
 ```
 
 > Example Response:
@@ -2306,6 +3520,54 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
 ```
 
+```javascript
+// Specify discussion.
+var discussion = {
+    "title": "This is a new discussion",
+    "comment": {
+        "text": "This text is the body of the first comment"
+    }
+};
+
+// Set options.
+var options = {
+    body: discussion,
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+// Add discussion to row.
+smartsheet.sheets.createRowDiscussion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+
+// Add discussion to row.
+smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+
+// Add discussion to row.
+smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -2325,6 +3587,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
             "text":"This text is the body of the first comment"
         }
     }
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
 ```
 
 > Example Response:
@@ -2356,6 +3630,53 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
 ```
 
+```javascript
+// Specify discussion.
+var discussion = {
+    "title": "This is a new discussion",
+    "comment": {
+        "text": "This text is the body of the first comment"
+    }
+};
+
+// Set options.
+var options = {
+    body: discussion,
+    sheetId: 2252168947361668
+};
+
+// Add discussion to sheet.
+smartsheet.sheets.createDiscussion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+
+// Add discussion to sheet.
+smartsheet.SheetResources.DiscussionResources.CreateDiscussion(sheetId, discussion);
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+
+// Add discussion to sheet.
+smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -2374,6 +3695,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
             "text":"This text is the body of the first comment"
         }
     }
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", comment).Build();
+
+// Add discussion (including comment with attachment) to sheet.
+smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, discussion, filePath, "application/octet-stream");
+```
+
+```java
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+File file = new File(filePath);
+
+// Add discussion (including comment with attachment) to sheet.
+smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(sheetId, discussion, file, "application/octet-stream");
 ```
 
 > Example Response:
@@ -2404,6 +3752,42 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 -X 'DELETE'
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    discussionId: 991393444325252
+};
+
+// Delete discussion.
+smartsheet.sheets.deleteDiscussion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete discussion.
+smartsheet.SheetResources.DiscussionResources.DeleteDiscussion(sheetId, discussionId);
+```
+
+```java
+// Delete discussion.
+smartsheet.sheetResources().discussionResources().deleteDiscussion(sheetId, discussionId);
+```
+
+> Example Response:
+
+```json
+{
+   "resultCode": 0,
+   "message" : "SUCCESS"
+}
+```
+
 > Example Response:
 
 ```json
@@ -2432,6 +3816,41 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript 
+// Set options.
+var options = {
+    sheetId: 3138415114905476
+};
+
+// Get all discussions.
+smartsheet.sheets.getDiscussions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get all discussions (omit 'include' parameter and pagination parameters).
+smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, null, null);
+
+// Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
+
+// Get all discussions (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, null, null);
+```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -2451,6 +3870,33 @@ Gets a list of all Discussions associated with the specified Sheet (both sheet-l
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    discussionId: 2331373580117892
+};
+
+// Get discussion.
+smartsheet.sheets.getDiscussions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get discussion.
+smartsheet.SheetResources.DiscussionResources.GetDiscussion(sheetId, discussionId);
+```
+
+```java
+// Get discussion.
+smartsheet.sheetResources().discussionResources().getDiscussion(sheetId, discussionId);
 ```
 
 > Example Response:
@@ -2489,6 +3935,42 @@ Gets the Discussion specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?include=comments,attachments \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588
+};
+
+// Get row discussions.
+smartsheet.sheets.getRowDiscussions(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get row discussions (omit 'include' parameter and pagination parameters).
+smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, null, null);
+
+// Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
+
+// Get row discussions (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, null, null);
 ```
 
 > Example Response:
@@ -2541,6 +4023,46 @@ curl https://api.smartsheet.com/2.0/favorites \
 -d '[{"type": "sheet", "objectId": 8400677765441412}]'
 ```
 
+```javascript 
+// Specify favorite(s).
+var favorites = [
+	{
+    	"type": "sheet",
+    	"objectId": 8400677765441412
+	}
+];
+
+// Set options.
+var options = {
+    body: favorites
+};
+
+// Add item(s) to favorites.
+smartsheet.favorites.addItemsToFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify favorite(s).
+Favorite[] favorites = new Favorite[] { new Favorite.AddFavoriteBuilder(ObjectType.SHEET, objectId).Build() };
+
+// Add item(s) to favorites.
+smartsheet.FavoriteResources.AddFavorites(favorites);
+```
+
+```java
+// Specify favorite(s).
+List<Favorite> favorites = new Favorite.AddFavoriteBuilder().addFavorite(sheetId, FavoriteType.SHEET).build();
+
+// Add item(s) to favorites.
+smartsheet.favoriteResources().addFavorites(favorites);
+```
+
 > Example Response:
 
 ```json
@@ -2578,6 +4100,36 @@ If called with a single [Favorite object](#favorite-object), and that favorite a
 ```shell
 curl https://api.smartsheet.com/2.0/favorites \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List favorites.
+smartsheet.favorites.listFavorites()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List favorites (omit pagination parameters).
+smartsheet.FavoriteResources.ListFavorites(null);
+
+// List favorites (specify 'includeAll' parameter with value of "true").
+smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List favorites (specify 'includeAll' parameter with value of "true").
+smartsheet.favoriteResources().listFavorites(parameters);
+
+// List favorites (omit pagination parameters).
+smartsheet.favoriteResources().listFavorites(null);
 ```
 
 > Example Response:
@@ -2626,6 +4178,32 @@ curl https://api.smartsheet.com/2.0/favorites/folder/{folderId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    objectId: 2252168947361668
+};
+
+// Remove folder from list of favorites.
+smartsheet.favorites.removeFolderFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove folder from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] { folderId });
+```
+
+```java
+// Remove folder from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(folderId)));
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2644,6 +4222,32 @@ Removes a single Folder from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/report/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    objectId: 2252168947361668
+};
+
+// Remove report from list of favorites.
+smartsheet.favorites.removeReportFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove report from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] { reportId });
+```
+
+```java
+// Remove report from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(reportId)));
 ```
 
 > Example Response:
@@ -2666,6 +4270,31 @@ curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    objectId: 2252168947361668
+};
+
+// Remove sheet from list of favorites.
+smartsheet.favorites.removeSheetFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });	
+```
+```csharp
+// Remove sheet from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] { sheetId });
+```
+
+```java
+// Remove sheet from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(sheetId)));
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2673,30 +4302,6 @@ curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
 `DELETE /favorites/sheet/{sheetId}`
 
 Removes a single Sheet from the user's list of Favorite items.
-
-<%= partial "snippets/removeFavorite_table.md.erb" %>
-
-
-
-
-
-### Remove Favorite Workspace
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-> Example Response:
-
-<%= partial "snippets/removeFavorite_response.md.erb" %>
-
-`DELETE /favorites/workspace/{workspaceId}`
-
-Removes a single Workspace from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorite_table.md.erb" %>
 
@@ -2710,6 +4315,32 @@ curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    objectId: 2252168947361668
+};
+
+// Remove template from list of favorites.
+smartsheet.favorites.removeTemplateFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove template from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId });
+```
+
+```java
+// Remove template from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(templateId)));
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -2717,6 +4348,52 @@ curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
 `DELETE /favorites/template/{templateId}`
 
 Removes a single Template from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorite_table.md.erb" %>
+
+### Remove Favorite Workspace
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    objectId: 2252168947361668
+};
+
+// Remove workspace from list of favorites.
+smartsheet.favorites.removeWorkspaceFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove workspace from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId });
+```
+
+```java
+// Remove workspace from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(workspaceId)));
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorite_response.md.erb" %>
+
+`DELETE /favorites/workspace/{workspaceId}`
+
+Removes a single Workspace from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorite_table.md.erb" %>
 
@@ -2730,6 +4407,34 @@ Removes a single Template from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{folderId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+// Remove folders from list of favorites.
+smartsheet.favorites.removeFoldersFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove folders from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] { folderId, folderId2 });
+```
+
+```java
+// Remove folders from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(folderId1, folderId2)));
 ```
 
 > Example Response:
@@ -2752,6 +4457,34 @@ curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{repo
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+// Remove reports from list of favorites.
+smartsheet.favorites.removeReportsFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove reports from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] { reportId1, reportId2 });
+```
+
+```java
+// Remove reports from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(reportId1, reportId2)));
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2770,6 +4503,34 @@ Removes multiple Reports from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+// Remove sheets from list of favorites.
+smartsheet.favorites.removeSheetsFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove sheets from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] { sheetId1, sheetId2 });
+```
+
+```java
+// Remove sheets from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(sheetId1, sheetId2)));
 ```
 
 > Example Response:
@@ -2792,6 +4553,34 @@ curl https://api.smartsheet.com/2.0/favorites/template?objectIds={templateId1},{
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+// Remove templates from list of favorites.
+smartsheet.favorites.removeTemplatesFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove templates from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] { templateId1, templateId2 });
+```
+
+```java
+// Remove templates from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(templateId1, templateId2)));
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -2810,6 +4599,34 @@ Removes multiple Templates from the user's list of Favorite items.
 curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds={workspaceId1},{workspaceId2} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    queryParameters: {
+        objectIds: "2252168947361668, 2252168947361669"
+    }
+};
+
+// Remove workspaces from list of favorites.
+smartsheet.favorites.removeWorkspacesFromFavorites(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove workspaces from list of favorites.
+smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] { workspaceId1, workspaceId2 });
+```
+
+```java
+// Remove workspaces from list of favorites.
+smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(workspaceId1, workspaceId2)));
 ```
 
 > Example Response:
@@ -2900,6 +4717,43 @@ curl https://api.smartsheet.com/2.0/home/folders \
 -d '{"name": "New folder"}'
 ```
 
+```javascript
+// Set folder name.
+var folder = {
+    "name": "New folder"
+};
+
+// Set options.
+var options = {
+    body: folder
+};
+
+// Create folder in "Sheets" folder (Home).
+smartsheet.home.createFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set folder name.
+Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+
+// Create folder in "Sheets" folder (Home).
+smartsheet.HomeResources.FolderResources.CreateFolder(folder);
+```
+
+```java
+// Set folder name.
+Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
+
+// Create folder in "Sheets" folder (Home).
+smartsheet.homeResources().folderResources().createFolder(folder);
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -2920,6 +4774,44 @@ curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name": "New folder"}'
+```
+
+```javascript
+// Set folder name.
+var folder = {
+    "name": "New folder"
+};
+
+// Set options.
+var options = {
+    body: folder,
+    folderId: 7960873114331012
+};
+
+// Create folder in another folder.
+smartsheet.folders.createChildFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set folder name.
+Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+
+// Create folder in another folder.
+smartsheet.FolderResources.CreateFolder(destinationFolderId, folder);
+```
+
+```java
+// Set folder name.
+Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
+
+// Create folder in another folder.
+smartsheet.folderResources().createFolder(destinationFolderId, folder);
 ```
 
 > Example Response:
@@ -2944,6 +4836,44 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid}/folders \
 -d '{"name": "New folder"}'
 ```
 
+```javascript
+// Set folder name.
+var folder = {
+    "name": "New folder"
+};
+
+// Set options.
+var options = {
+    body: folder,
+    workspaceId: 1656220827314052
+};
+
+// Create folder in a workspace.
+smartsheet.workspaces.createFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set folder name.
+Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+
+// Create folder in a workspace.
+smartsheet.WorkspaceResources.FolderResources.CreateFolder(workspaceId, folder);
+```
+
+```java
+// Set folder name.
+Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
+
+// Create folder in a workspace.
+smartsheet.workspaceResources().folderResources().createFolder(workspaceId, folder);
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -2962,6 +4892,32 @@ Creates a Folder in the specified Workspace.
 curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    id: 965780272637828 // ID of Folder
+};
+
+// Delete folder.
+smartsheet.folders.deleteFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete folder.
+smartsheet.FolderResources.DeleteFolder(folderId);
+```
+
+```java
+// Delete folder.
+smartsheet.folderResources().deleteFolder(folderId);
 ```
 
 > Example Response:
@@ -2990,6 +4946,38 @@ Deletes the Folder (and its contents) specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    id: 7116448184199044 // ID of Folder
+};
+
+// Get folder.
+smartsheet.folders.getFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get folder (omit 'include' parameter).
+smartsheet.FolderResources.GetFolder(folderId, null);
+
+// Get folder (specify 'include' parameter with value of "source").
+smartsheet.FolderResources.GetFolder(folderId, new FolderInclusion[] { FolderInclusion.SOURCE });
+```
+
+```java
+// Get folder (omit 'include' parameter).
+smartsheet.folderResources().getFolder(folderId, null)
+
+// Get folder (specify 'include' parameter with value of "source").
+smartsheet.folderResources().getFolder(folderId, EnumSet.of(SourceInclusion.SOURCE))
 ```
 
 > Example Response:
@@ -3037,6 +5025,36 @@ curl https://api.smartsheet.com/2.0/home/folders \
 -H "Content-Type: application/json"
 ```
 
+```javascript
+// List folders in "Sheets" folder. 
+smartsheet.home.listFolders()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+```
+
+```csharp
+// List folders in "Sheets" folder (omit pagination parameters).
+smartsheet.HomeResources.FolderResources.ListFolders(null);
+
+// List folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
+smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List folders (specify 'includeAll' parameter with value of "true").
+smartsheet.homeResources().folderResources().listFolders(parameters);
+
+// List folders (omit pagination parameters).
+smartsheet.homeResources().folderResources().listFolders(null);
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -3059,6 +5077,41 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 -H "Content-Type: application/json"
 ```
 
+```javascript
+// Set options.
+var options = {
+    folderId: 5107651446105988
+};
+
+// List folders in another folder.
+smartsheet.folders.listChildFolders(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List folders in another folder (omit pagination parameters).
+smartsheet.FolderResources.ListFolders(folderId, null);
+
+// List folders in another folder (specify 'includeAll' parameter with value of "true").
+smartsheet.FolderResources.ListFolders(folderId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List folders in another folder (specify 'includeAll' parameter with value of "true").
+smartsheet.folderResources().listFolders(parameters);
+
+// List folders in another folder (omit pagination parameters).
+smartsheet.folderResources().listFolders(null);
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -3079,6 +5132,41 @@ Gets a list of the top-level child Folders within the specified Folder.
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json"
+```
+
+```javascript
+// Set options.
+var options = {
+    workspaceId: 1656220827314052
+};
+
+// List folders in workspace.
+smartsheet.workspaces.listWorkspaceFolders(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List folders in workspace (omit pagination parameters).
+smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, null);
+
+// List folders in workspace (specify 'includeAll' parameter with value of "true").
+smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List folders in workspace (specify 'includeAll' parameter with value of "true").
+smartsheet.workspaceResources().folderResources().listFolders(parameters);
+
+// List folders in workspace (omit pagination parameters).
+smartsheet.workspaceResources().folderResources().listFolders(null);
 ```
 
 > Example Response:
@@ -3147,6 +5235,44 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 -d '{"name": "New name for folder"}'
 ```
 
+```javascript
+// Set folder name.
+var folder = {
+    "name": "New name for folder"
+};
+
+// Set options.
+var options = {
+    id: 1486948649985924, // ID of Folder
+    body: folder
+};
+
+// Update folder.
+smartsheet.folders.updateFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set folder name.
+Folder folder = new Folder.UpdateFolderBuilder(folderId, "New name for folder").Build();
+
+// Update folder.
+smartsheet.FolderResources.UpdateFolder(folder);
+```
+
+```java
+// Set folder name and id of the folder to be updated.
+Folder folder = new Folder.UpdateFolderBuilder().setName("New name for folder").setId(folderId).build();
+
+// Update folder.
+smartsheet.folderResources().updateFolder(folder);
+```
+
 > Example Response:
 
 ```json
@@ -3202,6 +5328,55 @@ curl https://api.smartsheet.com/2.0/groups \
 -d '{ "name": "API-created Group", "description": "Group created via API", "members": [{ "email": "john.doe@smartsheet.com" }]}'
 ```
 
+```javascript
+// Specify group.
+var group = {
+    "name": "API-created Group",
+    "description": "Group created via API",
+    "members": [
+        {
+            "email": "john.doe@smartsheet.com"
+        }
+    ]
+};
+
+// Set options.
+var options = {
+    body: group
+};
+
+// Create group.
+smartsheet.groups.createGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create group member.
+GroupMember member = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
+
+// Add member to group.
+Group group = new Group.CreateGroupBuilder("API-created Group", "Group created via API").SetMembers(new GroupMember[] { member }).Build();
+
+// Create group.
+smartsheet.GroupResources.CreateGroup(group);
+```
+
+```java
+// Create group member.
+GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("john.doe@smartsheet.com").build(); 
+
+// Add member to group.
+Group group = new Group.CreateGroupBuilder().setName("API-created Group").setDescription("Group created via API").setMembers(Arrays.asList(member)).build();
+
+// Create group.
+smartsheet.groupResources().createGroup(group);
+```
+
 > Example Response:
 
 ```json
@@ -3252,6 +5427,32 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    id: 6932724448552836 // ID of Group
+};
+
+// Delete group.
+smartsheet.groups.deleteGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete group.
+smartsheet.GroupResources.DeleteGroup(groupId);
+```
+
+```java
+// Delete group.
+smartsheet.groupResources().deleteGroup(groupId);
+```
+
 > Example Response:
 
 ```json
@@ -3282,6 +5483,32 @@ Deletes the Group specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    id: 4583173393803140 // ID of Group
+};
+
+// Get group.
+smartsheet.groups.getGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get group.
+smartsheet.GroupResources.GetGroup(groupId);
+```
+
+```java
+// Get group.
+smartsheet.groupResources().getGroup(groupId);
 ```
 
 > Example Response:
@@ -3324,6 +5551,36 @@ Gets the Group specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/groups \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List all org groups.
+smartsheet.groups.listGroups()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List all org groups (omit pagination parameters).
+smartsheet.GroupResources.ListGroups(null);
+
+// List all org groups (specify 'includeAll' parameter with value of "true").
+smartsheet.GroupResources.ListGroups(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List all org groups (specify 'includeAll' parameter with value of "true").
+smartsheet.groupResources().listGroups(parameters);
+
+// List all org groups (omit pagination parameters).
+smartsheet.groupResources().listGroups(null);
 ```
 
 > Example Response:
@@ -3371,6 +5628,45 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{ "name": "Renamed Group", "description": "Some new description" }'
+```
+
+```javascript
+// Specify the name and description of the group.
+var group = {
+    "name": "Renamed Group",
+    "description": "Some new description"
+};
+
+// Set options.
+var options = {
+    body: group,
+    id: 2331373580117892 // ID of Group
+};
+
+// Update group.
+smartsheet.groups.updateGroup(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify the name and description of the group.
+Group group = new Group.UpdateGroupBuilder(groupId).SetName("Renamed Group").SetDescription("Some new description").Build();
+
+// Update group.
+smartsheet.GroupResources.UpdateGroup(group);
+```
+
+```java
+// Specify the name and description of the group.
+Group group = new Group.UpdateGroupBuilder().setId(groupId).setName("Renamed Group").setDescription("Some new description").build();
+
+// Update group.
+smartsheet.groupResources().updateGroup(group);
 ```
 
 > Example Response:
@@ -3440,6 +5736,42 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 -d '[{ "email": "jane.doe@smartsheet.com" }]'
 ```
 
+```javascript
+// Specify group member(s).
+var members = [{ "email": "jane.doe@smartsheet.com" }];
+
+// Set options.
+var options = {
+    body: members,
+    groupId: 7917992160847748
+};
+
+// Add member(s) to group.
+smartsheet.groups.addGroupMembers(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Create group member.
+GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
+
+// Add member(s) to group.
+smartsheet.GroupResources.AddGroupMembers(groupId, new GroupMember[] { member });
+```
+
+```java
+// Create group member.
+GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
+
+// Add member(s) to group.
+smartsheet.groupResources().memberResources().addGroupMembers(groupId, Arrays.asList(member));
+```
+
 > Example Response:
 
 ```json
@@ -3488,6 +5820,33 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members/{userId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    groupId: 7917992160847748,
+    userId: 1539725208119172
+};
+
+// Remove member from group.
+smartsheet.groups.removeGroupMember(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Remove member from group.
+smartsheet.GroupResources.RemoveGroupMember(groupId, userId);
+```
+
+```java
+// Remove member from group.
+smartsheet.groupResources().memberResources().deleteGroupMember(groupId, userId)
+```
+
 > Example Response:
 
 ```json
@@ -3534,6 +5893,33 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 ```shell
 curl https://api.smartsheet.com/2.0/home?include=source \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List all contents.
+smartsheet.home.listContents()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// List all contents (omit 'include' parameter).
+smartsheet.HomeResources.GetHome(null);
+
+// List all contents (specify 'include' parameter with value of "source").
+smartsheet.HomeResources.GetHome(new HomeInclusion[] { HomeInclusion.SOURCE });
+```
+
+```java
+// List all contents (omit 'include' parameter).
+smartsheet.homeResources().getHome(null);
+
+// List all contents (specify 'include' parameter with value of "source").
+smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
 ```
 
 > Example Response:
@@ -3648,6 +6034,38 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+// Set options.
+var options = {
+    id: 4583173393803140 // ID of Report
+};
+
+// Get report.
+smartsheet.reports.getReport(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get report (omit 'include', 'pageSize', and 'page' parameters).
+smartsheet.ReportResources.GetReport(reportId, null, null, null);
+
+// Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
+smartsheet.ReportResources.GetReport(reportId, new ReportInclusion[] { ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS }, 500, 2);
+```
+
+```java
+// Get report (omit 'include', 'pageSize', and 'page' parameters).
+smartsheet.reportResources().getReport(reportId, null, null, null);
+
+// Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
+smartsheet.reportResources().getReport(reportId, EnumSet.of(ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS), 500, 2)
+```
+
 > Example Response:
 
 ```json
@@ -3729,10 +6147,48 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -o output.xls
 ```
 
+```javascript
+// Set options.
+var options = {
+    id: 3882962191181700 // ID of Report
+};
+
+// Get report as Excel.
+smartsheet.reports.getReportAsExcel(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get report as Excel.
+smartsheet.ReportResources.GetReportAsExcel(reportId, outputStream);
+```
+
+```java
+// Get report as Excel.
+smartsheet.reportResources().getReportAsExcel(reportId, outputStream);
+```
+
 > Example Response:
 
-```desc
-See local file named "output.xls"
+```shell
+# See local file named "output.xls"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Contents of Excel file will be written to "outputStream"
+```
+
+```java
+// Contents of Excel file will be written to "outputStream"
 ```
 
 > Example Request (CSV):
@@ -3744,10 +6200,48 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -o output.csv
 ```
 
+```javascript
+// Set options.
+var options = {
+    id: 3882962191181700 // ID of Report
+};
+
+// Get report as CSV.
+smartsheet.reports.getReportAsCSV(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get report as CSV.
+smartsheet.ReportResources.GetReportAsCSV(reportId, outputStream);
+```
+
+```java
+// Get report as CSV.
+smartsheet.reportResources().getReportAsCsv(reportId, outputStream);
+```
+
 > Example Response:
 
-```desc
-See local file named "output.csv"
+```shell
+# See local file named "output.csv"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Contents of CSV file will be written to "outputStream"
+```
+
+```java
+// Contents of CSV file will be written to "outputStream"
 ```
 
 `GET /reports/{reportId}`
@@ -3770,6 +6264,36 @@ Gets the Report in the format specified, based on the Report ID.
 ```shell
 curl https://api.smartsheet.com/2.0/reports 
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List reports.
+smartsheet.reports.listReports()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List reports (omit pagination parameters).
+smartsheet.ReportResources.ListReports(null);
+
+// List reports (specify 'includeAll' parameter with value of "true").
+smartsheet.ReportResources.ListReports(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List reports (specify 'includeAll' parameter with value of "true").
+smartsheet.reportResources().listReports(parameters);
+
+// List reports (omit pagination parameters).
+smartsheet.reportResources().listReports(null);
 ```
 
 > Example Response:
@@ -3915,6 +6439,89 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -d '[{"toTop":true, "cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }, {"toTop":true, "cells": [ {"columnId": 7960873114331012, "value": true}, {"columnId": 642523719853956, "value": "New status", "strict": false} ] }]'
 ```
 
+```javascript
+// Specify rows.
+var row = [
+    {
+        "toTop": true,
+        "cells": [
+            {
+                "columnId": 7960873114331012,
+                "value": true
+            },
+            {
+                "columnId": 642523719853956,
+                "value": "New status",
+                "strict": false
+            }
+        ]
+    },
+    {
+        "toTop": true,
+        "cells": [
+            {
+                "columnId": 7960873114331012,
+                "value": true
+            },
+            {
+                "columnId": 642523719853956,
+                "value": "New status",
+                "strict": false
+            }
+        ]
+    }
+];
+
+// Set options.
+var options = {
+    body: row,
+    sheetId: 2252168947361668
+};
+
+// Add rows to sheet.
+smartsheet.sheets.addRows(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify cell values for first row.
+Cell[] cellsA = new Cell[] { new Cell.AddCellBuilder(7960873114331012, true).Build(), new Cell.AddCellBuilder(642523719853956, "New status").SetStrict(false).Build() };
+
+// Specify contents of first row.
+Row rowA = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsA).Build();
+
+// Specify cell values of second row.
+Cell[] cellsB = new Cell[] { new Cell.AddCellBuilder(7960873114331012, true).Build(), new Cell.AddCellBuilder(642523719853956, "New status").SetStrict(false).Build() };
+
+// Specify contents of second row.
+Row rowB = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsB).Build();
+
+// Add rows to sheet.
+smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { rowA, rowB });
+```
+
+```java
+// Specify cell values for first row.
+List<Cell> cellsA = new Cell.AddRowCellsBuilder().addCell(7960873114331012, true).addCell(642523719853956, "New status").build();
+
+// Specify contents of first row.
+Row rowA = new Row.AddRowBuilder().setCells(cellsA).setToBottom(true).build();
+
+// Specify cell values for second row.
+List<Cell> cellsB = new Cell.AddRowCellsBuilder().addCell(7960873114331012, true).addCell(642523719853956, "New status").build();
+
+// Specify contents of second row.
+Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
+
+// Add rows to sheet.
+smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
+```
+
 > Example Response:
 
 ```json
@@ -3998,6 +6605,59 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
 -d '{ "rowIds": [145417762563972, 8026717110462340], "to": {"sheetId": 2258256056870788} }'
 ```
 
+```javascript
+// Specify the directive.
+var copyRow = {
+    "rowIds": [145417762563972, 8026717110462340],
+    "to": {
+        "sheetId": 2258256056870788
+    }
+};
+
+// Set options.
+var options = {
+    body: copyRow,
+    sheetId: 2252168947361668
+};
+
+// Copy rows.
+smartsheet.sheets.copyRowToAnotherSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify destination sheet.
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 2258256056870788 };
+
+// Specify rows to be copied (and destination sheet).
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
+
+// Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
+smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, null, null);
+
+// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, new CopyRowInclusion[] { CopyRowInclusion.CHILDREN }, true);
+```
+
+```java
+// Specify destination sheet.
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder().setSheetId(2258256056870788).build();
+
+// Specify rows to be copied (and destination sheet).
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972, 8026717110462340)).setTo(destination).build();
+
+// Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
+smartsheet.sheetResources().rowResources().copyRows(sheetId, null, null, directive);
+
+// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.sheetResources().rowResources().copyRows(sheetId, EnumSet.of(RowCopyInclusion.CHILDREN), true, directive);
+```
+
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
 `POST /sheets/{sheetId}/rows/copy`
@@ -4020,6 +6680,33 @@ Copies Row(s) from the Sheet specified in the URL to (the bottom of) another she
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}&ignoreRowsNotFound=true \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 2252168947361668,
+    rowId: 207098194749316
+};
+
+// Delete row.
+smartsheet.sheets.deleteRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete row.
+smartsheet.SheetResources.RowResources.DeleteRow(sheetId, rowId);
+```
+
+```java
+// Delete row.
+smartsheet.sheetResources().rowResources().deleteRow(sheetId, rowId);
 ```
 
 > Example Response:
@@ -4058,6 +6745,39 @@ Deletes one or more row(s) from the Sheet specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns,columnType \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 4583173393803140,
+    rowId: 2361756178769796
+};
+
+// Get row.
+smartsheet.sheets.getRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get row (omit 'include' parameter and pagination parameters).
+smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, null, null);
+
+// Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
+smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, new RowInclusion[] { RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
+```
+
+```java
+// Get row (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, null, null);
+
+// Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
+smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, EnumSet.of(RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE), EnumSet.of(ObjectExclusion.NONEXISTENT_CELLS));
 ```
 
 > Example Response:
@@ -4111,6 +6831,59 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/move \
 -d '{ "rowIds": [145417762563972, 8026717110462340], "to": {"sheetId": 2258256056870788} }'
 ```
 
+```javascript
+// Specify the directive.
+var moveRow = {
+    "rowIds": [145417762563972, 8026717110462340],
+    "to": {
+        "sheetId": 2258256056870788
+    }
+};
+
+// Set options.
+var options = {
+    body: moveRow,
+    sheetId: 2252168947361668
+};
+
+// Move rows.
+smartsheet.sheets.moveRowToAnotherSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    }
+```
+
+```csharp
+// Specify destination sheet.
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 2258256056870788 };
+
+// Specify rows to be moved (and destination sheet).
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
+
+// Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
+smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(sheetId, directive, null, null);
+
+// Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(sheetId, directive, new MoveRowInclusion[] { MoveRowInclusion.ATTACHMENTS, MoveRowInclusion.DISCUSSIONS }, true);
+```
+
+```java
+// Specify destination sheet.
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder().setSheetId(2258256056870788).build();
+
+// Specify rows to be moved (and destination sheet).
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972, 8026717110462340)).setTo(destination).build();
+
+// Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
+smartsheet.sheetResources().rowResources().moveRows(sheetId, null, null, directive);
+
+// Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.sheetResources().rowResources().moveRows(sheetId, EnumSet.of(EnumSet.of(RowMoveInclusion.ATTACHMENTS, RowMoveInclusion.DISCUSSIONS)), true, directive);
+```
+
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
 `POST /sheets/{sheetId}/rows/move`
@@ -4145,6 +6918,87 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '[{"id": "6572427401553796", "cells": [{"columnId": 7518312134403972,"value": "new value"}, {"columnId": 1888812600190852,"value": "A"}]}, {"id": "2068827774183300", "cells": [{"columnId": 7518312134403972,"value": "desc_updated"}, {"columnId": 1888812600190852,"value": "B"}]}]'
+```
+
+```javascript
+// Specify updated cell values.
+var row = [
+    {
+        "id": "6572427401553796",
+        "cells": [
+            {
+                "columnId": 7518312134403972,
+                "value": "new value"
+            },
+            {
+                "columnId": 1888812600190852,
+                "value": "A"
+            }
+        ]
+    },
+    {
+        "id": "2068827774183300",
+        "cells": [
+            {
+                "columnId": 7518312134403972,
+                "value": "desc_updated"
+            },
+            {
+                "columnId": 1888812600190852,
+                "value": "B"
+            }
+        ]
+    }
+];
+
+// Set options.
+var options = {
+    body: row,
+    sheetId: 2252168947361668
+};
+
+// Update rows in sheet.
+smartsheet.sheets.updateRow(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify updated cell values for first row.
+Cell[] cellsA = new Cell[] { new Cell.UpdateCellBuilder(7518312134403972, "new value").Build(), new Cell.UpdateCellBuilder(1888812600190852, "A").Build() };
+
+// Specify updated contents of first row.
+Row rowA = new Row.UpdateRowBuilder(6572427401553796).SetCells(cellsA).Build();
+
+// Specify updated cell values for second row.
+Cell[] cellsB = new Cell[] { new Cell.UpdateCellBuilder(7518312134403972, "desc_updated").Build(), new Cell.UpdateCellBuilder(1888812600190852, "B").Build() };
+
+// Specify updated contents of second row.
+Row rowB = new Row.UpdateRowBuilder(2068827774183300).SetCells(cellsB).Build();
+
+// Update rows in sheet.
+smartsheet.SheetResources.RowResources.UpdateRows(sheetId, new Row[] { rowA, rowB });
+```
+
+```java
+// Specify updated cell values for first row.
+List<Cell> cellsA = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972, "new value").addCell(1888812600190852, "A").build();
+
+// Specify updated contents of first row.
+Row rowA = new Row.UpdateRowBuilder().setCells(cellsA).setRowId(6572427401553796).build();
+
+// Specify updated cell values for second row.
+List<Cell> cellsB = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972, "desc_updated").addCell(1888812600190852, "B").build();
+
+// Specify updated contents of second row.
+Row rowB = new Row.UpdateRowBuilder().setCells(cellsB).setRowId(2068827774183300).build();
+
+// Update rows in sheet.
+smartsheet.sheetResources().rowResources().updateRows(sheetId, Arrays.asList(rowA, rowB));
 ```
 
 > Example Response:
@@ -4195,7 +7049,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
                     "columnId": 7518312134403972,
                     "type": "TEXT_NUMBER",
                     "value": "new value",
-                    "displayValue": "desc_updated"
+                    "displayValue": "new value"
                 },
                 {
                     "columnId": 1888812600190852,
@@ -4316,6 +7170,38 @@ Use the *Search* operations to search a specific Sheet or to search across all S
 ```shell
 curl https://api.smartsheet.com/2.0/search?query=stuff \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    query: "stuff"
+};
+
+// Search everything.
+smartsheet.search.searchAll(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set search criteria.
+string query = "stuff";
+
+// Search everything.
+smartsheet.SearchResources.Search(query);
+```
+
+```java
+// Set search criteria.
+string query = "stuff";
+
+// Search everything.
+smartsheet.searchResources().search(query);
 ```
 
 > Example Response:
@@ -4462,6 +7348,27 @@ For developer convenience, the Smartsheet API provides access to application con
 curl https://api.smartsheet.com/2.0/serverinfo
 ```
 
+```javascript
+// Get server info.
+smartsheet.server.getInfo()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get server info.
+smartsheet.ServerInfoResources.GetServerInfo();
+```
+
+```java
+// Get server info.
+smartsheet.serverInfoResources().getServerInfo();
+```
+
 > Example Response: (*too long to list in its entirety*)
 
 ```json
@@ -4514,6 +7421,33 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    reportId: 665829219035012,
+    shareId: "AAAQSF82F1eE"
+};
+
+// Delete report share.
+smartsheet.reports.deleteShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete report share.
+smartsheet.ReportResources.ShareResources.DeleteShare(reportId, shareId);
+```
+
+```java
+// Delete report share.
+smartsheet.reportResources().shareResources().deleteShare(reportId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -4533,6 +7467,33 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```javascript 
+// Set options.
+var options = {
+    reportId: 6932724448552836,
+    shareId: "AQAISF82FOeE"
+};
+
+// Get report share.
+smartsheet.reports.getShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get report share.
+smartsheet.ReportResources.ShareResources.GetShare(reportId, shareId);
+```
+
+```java
+// Get report share.
+smartsheet.reportResources().shareResources().getShare(reportId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -4550,6 +7511,41 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// Set options.
+var options = {
+    reportId: 665829219035012
+};
+
+// List report shares.
+smartsheet.reports.listShares(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List report shares (omit pagination parameters).
+smartsheet.ReportResources.ShareResources.ListShares(reportId, null);
+
+// List report shares (specify 'includeAll' parameter with value of "true").
+smartsheet.ReportResources.ShareResources.ListShares(reportId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List report shares (specify 'includeAll' parameter with value of "true").
+smartsheet.reportResources().shareResources().listShares(reportId, parameters);
+
+// List report shares (omit pagination parameters).
+smartsheet.reportResources().shareResources().listShares(reportId, null);
 ```
 
 > Example Response:
@@ -4574,6 +7570,47 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 -H "Content-Type: application/json" \
 -X POST \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```javascript
+// Specify share (to one user as Editor).
+var share = [
+	{
+		"email": "jane.doe@smartsheet.com", 
+		"accessLevel": "EDITOR"
+	}
+];
+
+// Set options.
+var options = {
+    body: share,
+    reportId: 665829219035012
+};
+
+// Share report.
+smartsheet.reports.share(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify share (to one user as Editor).
+Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
+
+// Share report.
+smartsheet.ReportResources.ShareResources.ShareTo(reportId, shares, true);
+```
+
+```java
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+
+// Share report.
+smartsheet.reportResources().shareResources().shareTo(reportId, shares, true);
 ```
 
 > Example Response:
@@ -4603,6 +7640,43 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 -d '{"accessLevel": "VIEWER"}'
 ```
 
+```javascript
+// Set the access level to Viewer.
+var share = {"accessLevel": "VIEWER"};
+
+// Set options.
+var options = {
+    body: share,
+    reportId: 665829219035012,
+    shareId: "AAAFeF82FOeE"
+};
+
+// Update report share.
+smartsheet.reports.updateShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+
+// Update report share.
+smartsheet.ReportResources.ShareResources.UpdateShare(reportId, shareId, share);
+```
+
+```java
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update report share.
+smartsheet.reportResources().shareResources().updateShare(reportId, share);
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -4625,6 +7699,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 4583614634583940,
+    shareId: "AAAASuWWFOeE"
+};
+
+// Delete sheet share.
+smartsheet.sheets.deleteShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete sheet share.
+smartsheet.SheetResources.ShareResources.DeleteShare(sheetId, shareId);
+```
+
+```java
+// Delete sheet share.
+smartsheet.sheetResources().shareResources().deleteShare(sheetId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -4644,6 +7745,33 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```javascript
+// Set options.
+var options = {
+    sheetId: 4583614634583940,
+    shareId: "AQAISF82FOeE"
+};
+
+// Get sheet share.
+smartsheet.sheets.getShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get sheet share.
+smartsheet.SheetResources.ShareResources.GetShare(sheetId, shareId);
+```
+
+```java
+// Get sheet share.
+smartsheet.sheetResources().shareResources().getShare(sheetId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -4661,6 +7789,41 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 4583614634583940
+};
+
+// List sheet shares.
+smartsheet.sheets.listShares(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List sheet shares (omit pagination parameters).
+smartsheet.SheetResources.ShareResources.ListShares(sheetId, null);
+
+// List sheet shares (specify 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.ShareResources.ListShares(sheetId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List sheet shares (specify 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().shareResources().listShares(sheetId, parameters);
+
+// List sheet shares (omit pagination parameters).
+smartsheet.sheetResources().shareResources().listShares(sheetId, null);
 ```
 
 > Example Response:
@@ -4687,6 +7850,47 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
+```javascript
+// Specify share (to one user as Editor).
+var share = [
+	{
+		"email": "jane.doe@smartsheet.com", 
+		"accessLevel": "EDITOR"
+	}
+];
+
+// Set options.
+var options = {
+    body: share,
+    sheetId: 4583614634583940
+};
+
+// Share sheet.
+smartsheet.sheets.share(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify share (to one user as Editor).
+Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
+
+// Share sheet.
+smartsheet.SheetResources.ShareResources.ShareTo(sheetId, shares, true);
+```
+
+```java
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+
+// Share sheet.
+smartsheet.sheetResources().shareResources().shareTo(sheetId, shares, true);
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -4706,11 +7910,48 @@ Shares a Sheet with the specified Users and Groups.
 > Example Request: 
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{reportId}/shares/{shareId} \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"accessLevel": "VIEWER"}'
+```
+
+```javascript
+// Set access level to Viewer.
+var share = {"accessLevel": "VIEWER"};
+
+// Set options.
+var options = {
+    body: share,
+    sheetId: 4583614634583940,
+    shareId: "AAAFeF82FOeE"
+};
+
+// Update sheet share.
+smartsheet.sheets.updateShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set access level to Viewer.
+Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+
+// Update sheet share.
+smartsheet.SheetResources.ShareResources.UpdateShare(sheetId, shareId, share);
+```
+
+```java
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update report share.
+smartsheet.sheetResources().shareResources().updateShare(sheetId, share);
 ```
 
 > Example Response:
@@ -4733,6 +7974,33 @@ Updates the access level of a User or Group for the specified Sheet.
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    workspaceId: 1656220827314052,
+    shareId: "AAAEQesWFOeE"
+};
+
+// Delete workspace share.
+smartsheet.workspaces.deleteShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete workspace share.
+smartsheet.WorkspaceResources.ShareResources.DeleteShare(workspaceId, shareId);
+```
+
+```java
+// Delete workspace share.
+smartsheet.workspaceResources().shareResources().deleteShare(workspaceId, shareId);
 ```
 
 > Example Response:
@@ -4758,6 +8026,33 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Authorization: Bearer ACCESS_TOKEN" 
 ```
 
+```javascript
+// Set options.
+var options = {
+    workspaceId: 1656220827314052,
+    shareId: "AQAISF82FOeE"
+};
+
+// Get workspace share.
+smartsheet.workspaces.getShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get workspace share.
+smartsheet.WorkspaceResources.ShareResources.GetShare(workspaceId, shareId);
+```
+
+```java
+// Get workspace share.
+smartsheet.workspaceResources().shareResources().getShare(workspaceId, shareId);
+```
+
 > Example Response:
 
 <%= partial "snippets/getShare_response.md.erb" %>
@@ -4775,6 +8070,41 @@ Gets the Share specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 -H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// Set options.
+var options = {
+    workspaceId: 1656220827314052
+};
+
+// List workspace shares.
+smartsheet.workspaces.listShares(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List workspace shares (omit pagination parameters).
+smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, null);
+
+// List workspace shares (specify 'includeAll' parameter with value of "true").
+smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List workspace shares (specify 'includeAll' parameter with value of "true").
+smartsheet.workspaceResources().shareResources().listShares(workspaceId, parameters);
+
+// List workspace shares (omit pagination parameters).
+smartsheet.workspaceResources().shareResources().listShares(workspaceId, null);
 ```
 
 > Example Response:
@@ -4799,6 +8129,47 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 -H "Content-Type: application/json" \
 -X POST \
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```javascript
+// Specify share (to one user as Editor).
+var shares = [
+	{
+		"email": "john.doe@smartsheet.com",
+		"accessLevel": "EDITOR"
+	}
+];
+
+// Set options.
+var options = {
+	workspaceId: 7960873114331012,
+	body: shares
+};
+
+// Share workspace.
+smartsheet.workspaces.share(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Specify share (to one user as Editor).
+Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build() };
+
+// Share workspace.
+smartsheet.WorkspaceResources.ShareResources.ShareTo(workspaceId, shares, true);
+```
+
+```java
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+
+// Share workspace.
+smartsheet.workspaceResources().shareResources().shareTo(workspaceId, shares, true);
 ```
 
 > Example Response:
@@ -4831,6 +8202,43 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"accessLevel": "VIEWER"}'
+```
+
+```javascript
+// Set access level to Viewer.
+var share = {"accessLevel": "VIEWER"};
+
+// Set options.
+var options = {
+    body: share,
+    workspaceId: 1656220827314052,
+    shareId: "AAAFeF82FOeE"
+};
+
+// Update workspace share.
+smartsheet.workspaces.updateShare(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Set access level to Viewer.
+Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+
+// Update workspace share.
+smartsheet.WorkspaceResources.ShareResources.UpdateShare(workspaceId, shareId, share);
+```
+
+```java
+// Set the access level to Viewer.
+Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update workspace share.
+smartsheet.workspaceResources().shareResources().updateShare(workspaceId, share);
 ```
 
 > Example Response:
@@ -4977,6 +8385,77 @@ curl https://api.smartsheet.com/2.0/sheets \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
 ```
 
+```javascript
+// Specify sheet properties.
+var sheet = {
+    "name": "newsheet",
+    "columns": [
+        {
+            "title": "Favorite",
+            "type": "CHECKBOX",
+            "symbol": "STAR"
+        },
+        {
+            "title": "Primary Column",
+            "primary": true,
+            "type": "TEXT_NUMBER"
+        },
+        {
+            "title": "Status",
+            "type": "PICKLIST",
+            "options": [
+                "Not Started",
+                "Started",
+                "Completed"
+            ]
+        }
+    ]
+};
+
+// Set options.
+var options = {
+	body: sheet
+};
+
+// Create sheet in "Sheets" folder.
+smartsheet.sheets.createSheet(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Specify properties of the first column.
+Column columnA = new Column.CreateSheetColumnBuilder("Favorite", null, ColumnType.CHECKBOX).SetSymbol(Symbol.STAR).Build(), 
+
+// Specify properties of the second column.
+Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), 
+
+// Specify properties of the third column.
+Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
+	
+// Create sheet in "Sheets" folder (specifying the 3 columns to include in the sheet).
+smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+```
+
+```java
+// Specify properties of the first column.
+Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+
+// Specify properties of the second column.
+Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+
+// Specify properties of the third column.
+Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
+
+// Create sheet in "Sheets" folder (specifying the 3 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+smartsheet.sheetResources().createSheet(sheet);
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -4999,6 +8478,79 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
 ```
 
+```javascript
+// Specify sheet properties.
+var sheet = {
+    "name": "newsheet",
+    "columns": [
+        {
+            "title": "Favorite",
+            "type": "CHECKBOX",
+            "symbol": "STAR"
+        },
+        {
+            "title": "Primary Column",
+            "primary": true,
+            "type": "TEXT_NUMBER"
+        },
+        {
+            "title": "Status",
+            "type": "PICKLIST",
+            "options": [
+                "Not Started",
+                "Started",
+                "Completed"
+            ]
+        }
+    ]
+};
+
+// Set options.
+var options = {
+    body: sheet,
+    folderId: 3734419270854532
+};
+
+// Create sheet in folder.
+smartsheet.sheets.createSheetInFolder(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify properties of the first column.
+Column columnA = new Column.CreateSheetColumnBuilder("Favorite", null, ColumnType.CHECKBOX).SetSymbol(Symbol.STAR).Build(), 
+
+// Specify properties of the second column.
+Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), 
+
+// Specify properties of the third column.
+Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
+	
+// Create sheet in folder (specifying the 3 columns to include in the sheet).
+smartsheet.FolderResources.SheetResources.CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+```
+
+```java
+// Specify properties of the first column.
+Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+
+// Specify properties of the second column.
+Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+
+// Specify properties of the third column.
+Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
+
+// Create sheet in folder (specifying the 3 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+
+smartsheet.sheetResources().createSheetInFolder(folderId, sheet);
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -5019,6 +8571,79 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+```
+
+```javascript
+// Specify sheet properties.
+var sheet = {
+    "name": "newsheet",
+    "columns": [
+        {
+            "title": "Favorite",
+            "type": "CHECKBOX",
+            "symbol": "STAR"
+        },
+        {
+            "title": "Primary Column",
+            "primary": true,
+            "type": "TEXT_NUMBER"
+        },
+        {
+            "title": "Status",
+            "type": "PICKLIST",
+            "options": [
+                "Not Started",
+                "Started",
+                "Completed"
+            ]
+        }
+    ]
+};
+
+// Set options.
+var options = {
+	body: sheet,
+	workspaceId: 1656220827314052
+};
+
+// Create sheet in workspace.
+smartsheet.sheets.createSheetInWorkspace(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Specify properties of the first column.
+Column columnA = new Column.CreateSheetColumnBuilder("Favorite", null, ColumnType.CHECKBOX).SetSymbol(Symbol.STAR).Build(), 
+
+// Specify properties of the second column.
+Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), 
+
+// Specify properties of the third column.
+Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
+	
+// Create sheet in workspace (specifying the 3 columns to include in the sheet).
+smartsheet.WorkspaceResources.SheetResources.CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+```
+
+```java
+// Specify properties of the first column.
+Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+
+// Specify properties of the second column.
+Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+
+// Specify properties of the third column.
+Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
+
+// Create sheet in workspace (specifying the 3 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+
+smartsheet.sheetResources().createSheetInWorkspace(workspaceId, sheet);
 ```
 
 > Example Response:
@@ -5050,7 +8675,51 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"name":"newsheet", "fromId": 7679398137620356}'
+-d '{"name":"newsheet", "fromId": templateId}'
+```
+
+```javascript
+// Specify the directive.
+var sheet = {
+    "name": "newsheet",
+    "fromId": 7679398137620356
+};
+
+// Set options.
+var options = {
+    body: sheet
+};
+
+// Create sheet from template.
+smartsheet.sheets.createSheetFromExisting(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
+
+// Create sheet from template (omit 'include' parameter).
+smartsheet.SheetResources.CreateSheetFromTemplate(sheet, null);
+
+// Create sheet from template (including data, attachments, and discussions).
+smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
+```java
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+
+// Create sheet from template (omit 'include' parameter).
+smartsheet.sheetResources().createSheetFromTemplate(sheet, null);
+
+// Create sheet from template (including data, attachments, and discussions).
+smartsheet.sheetResources().createSheetFromTemplate(sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));
 ```
 
 > Example Response:
@@ -5075,6 +8744,51 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
 
+``` javascript
+// Specify the directive.
+var sheet = {
+    "name": "newsheet",
+    "fromId": 7679398137620356
+};
+
+// Set options.
+var options = {
+    body: sheet,
+    folderId: 3734419270854532
+};
+
+// Create sheet from template in the specified folder.
+smartsheet.sheets.createSheetFromExisting(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
+
+// Create sheet from template in the specified folder (omit 'include' parameter).
+smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, sheet, null);
+
+// Create sheet from template in the specified folder (including data, attachments, and discussions).
+smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
+```java
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+
+// Create sheet from template in the specified folder (omit 'include' parameter).
+smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, null);
+
+// Create sheet from template (including data, attachments, and discussions).
+smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));	
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -5097,6 +8811,51 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 -d '{"name":"newsheet", "fromId": 7679398137620356}'
 ```
 
+```javascript
+// Specify the directive.
+var sheet = {
+    "name": "newsheet",
+    "fromId": 7679398137620356
+};
+
+// Set options.
+var options = {
+    body: sheet,
+    workspaceId: 1656220827314052
+};
+
+// Create sheet from template in the specified workspace.
+smartsheet.sheets.createSheetFromExisting(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
+
+// Create sheet from template in the specified workspace (omit 'include' parameter).
+smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId, sheet, null);
+
+// Create sheet from template in the specified workspace (including data, attachments, and discussions).
+smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId, sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+```
+
+```java
+// Specify name for the sheet and ID of the template.
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+
+// Create sheet from template in the specified folder (omit 'include' parameter).
+smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, null);
+
+// Create sheet from template in the specified workspace (including data, attachments, and discussions).
+smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(folderId, sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));	
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -5115,6 +8874,32 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 ...curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// Set options.
+var options = {
+    id: 1531988831168388 // ID of Sheet
+};
+
+// Delete sheet.
+smartsheet.sheets.deleteSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete sheet.
+smartsheet.SheetResources.DeleteSheet(sheetId);
+```
+
+```java
+// Delete sheet.
+smartsheet.sheetResources().deleteSheet(sheetId);
 ```
 
 > Example Response:
@@ -5143,6 +8928,32 @@ Deletes the Sheet specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    sheetId: 1531988831168388
+};
+
+// Get sheet version.
+smartsheet.sheets.getSheetVersion(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get sheet version.
+smartsheet.SheetResources.GetSheetVersion(sheetId);
+```
+
+```java
+// Get sheet version.
+smartsheet.sheetResources().getSheetVersion(sheetId);
 ```
 
 > Example Response:
@@ -5180,6 +8991,32 @@ The following actions increment Sheet version:
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+	id: 4583173393803140 // ID of Sheet
+};
+
+// Get sheet.
+smartsheet.sheets.getSheet(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Get sheet (omit all parameters).
+smartsheet.SheetResources.GetSheet(sheetId, null, null, null, null, null, null, null);
+```
+
+```java
+// Get sheet (omit all parameters).
+smartsheet.sheetResources().getSheet(sheetId, null, null, null, null, null, null, null);
 ```
 
 > Example Response:
@@ -5235,7 +9072,60 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 
 ## Get Sheet as Excel / PDF / CSV
 
-> Example Request:
+> Example Request (Excel):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: application/vnd.ms-excel" \
+-o output.xls
+```
+
+```javascript
+// Set options.
+var options = {
+  id: 4583173393803140 // ID of Sheet
+};
+
+// Get sheet as Excel.
+smartsheet.sheets.getSheetAsExcel(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Get sheet as Excel.
+smartsheet.SheetResources.GetSheetAsExcel(sheetId, outputStream);
+```
+
+```java
+// Get sheet as Excel.
+smartsheet.sheetResources().getSheetAsExcel(sheetId, outputStream);
+```
+
+> Example Response:
+
+```shell
+# See local file named "output.xls"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Contents of Excel file will be written to "outputStream"
+```
+
+```java
+// Contents of Excel file will be written to "outputStream"
+```
+
+> Example Request (PDF):
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
@@ -5244,10 +9134,101 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 -o  output.pdf
 ```
 
+```javascript
+// Set options.
+var options = {
+  id: 4583173393803140 // ID of Sheet
+};
+
+// Get sheet as PDF.
+smartsheet.sheets.getSheetAsPDF(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Get sheet as PDF.
+smartsheet.SheetResources.GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
+```
+
+```java
+// Get sheet as PDF.
+smartsheet.sheetResources().getSheetAsPDF(sheetId, outputStream, PaperSize.A1);
+```
+
 > Example Response:
 
-```desc
-See local file named "output.pdf"
+```shell
+# See local file named "output.pdf"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Contents of PDF file will be written to "outputStream"
+```
+
+```java
+// Contents of PDF file will be written to "outputStream"
+```
+
+> Example Request (CSV):
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Accept: text/csv" \
+-o output.csv
+```
+
+```javascript
+// Set options.
+var options = {
+  id: 4583173393803140 // ID of Sheet
+};
+
+// Get sheet as CSV.
+smartsheet.sheets.getSheetAsCSV(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Get sheet as CSV.
+smartsheet.SheetResources.GetSheetAsCSV(sheetId, outputStream);
+```
+
+```java
+// Get sheet as CSV.
+smartsheet.sheetResources().getSheetAsCSV(sheetId, outputStream);
+```
+
+> Example Response:
+
+```shell
+# See local file named "output.csv"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Contents of CSV file will be written to "outputStream"
+```
+
+```java
+// Contents of CSV file will be written to "outputStream"
 ```
 
 `GET /sheets/{sheetId}`
@@ -5275,6 +9256,36 @@ Gets the Sheet in the format specified, based on the Sheet ID.
 ```shell
 curl https://api.smartsheet.com/2.0/sheets \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List sheets.
+smartsheet.sheets.listSheets()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// List sheets (omit 'include' parameter and pagination parameters).
+smartsheet.SheetResources.ListSheets(null, null);
+
+// List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+smartsheet.SheetResources.ListSheets(new SheetInclusion[] { SheetInclusion.SOURCE }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters);
+
+// List sheets (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().listSheets(null, null);
 ```
 
 > Example Response:
@@ -5371,6 +9382,32 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+// Set options.
+var options = {
+  sheetId: 4583614634583940
+};
+
+// Get sheet publish status.
+smartsheet.sheets.getPublishStatus(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Get sheet publish status.
+smartsheet.SheetResources.GetPublishStatus(sheetId);
+```
+
+```java
+// Get sheet publish status.
+smartsheet.sheetResources().getPublishStatus(sheetId);
+```
+
 > Example Response:
 
 ```json
@@ -5403,6 +9440,47 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"readOnlyLiteEnabled": true,"readOnlyFullEnabled": false,"readWriteEnabled": false,"icalEnabled": false}'
+```
+
+```javascript
+// Specify publish status.
+var publishStatus = {
+  "readOnlyLiteEnabled": true,
+  "readOnlyFullEnabled": false,
+  "readWriteEnabled": false,
+  "icalEnabled": false
+};
+
+// Set options.
+var options = {
+  body: publishStatus,
+  sheetId: 4583614634583940
+};
+
+// Set publish status.
+smartsheet.sheets.setPublishStatus(options)
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Specify sheet publish status properties.
+SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(true, false, false, false).Build();
+
+// Set sheet publish status.
+smartsheet.SheetResources.UpdatePublishStatus(sheetId, sheetPublish);
+```
+
+```java
+// Specify sheet publish status properties.
+SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder().setIcalEnabled(false).setReadOnlyFullEnabled(false).setReadWriteEnabled(false).setReadOnlyLiteEnabled(true).build();
+
+// Set sheet publish status.
+smartsheet.sheetResources().updatePublishStatus(sheetId, sheetPublish);
 ```
 
 > Example Response:
@@ -5459,6 +9537,47 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name":"New Sheet Name", "userSettings": {"criticalPathEnabled": true}}'
+```
+
+```javascript
+// Specify updated sheet properties.
+var sheet = {
+    "name": "New Sheet Name",
+    "userSettings": {
+    	"criticalPathEnabled": true,
+	}
+};
+
+// Set options.
+var options = {
+    body: sheet,
+    id: 7960873114331012 // ID of Sheet
+};
+
+// Update sheet.
+smartsheet.sheets.updateSheet(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify updated sheet properties.
+Sheet sheet = new Sheet.UpdateSheetBuilder(sheetId).SetName("New Sheet Name").SetUserSettings(new SheetUserSettings { CriticalPathEnabled = true }).Build();
+
+// Update sheet.
+smartsheet.SheetResources.UpdateSheet(sheet);
+```
+
+```java
+// Specify updated sheet properties.
+Sheet sheet = new Sheet.UpdateSheetBuilder().setSheetId(sheetId).setName("New Sheet Name").setUserSettings(new SheetUserSettings.AddUserSettingsBuilder().setCriticalPathEnabled(true).build()).build();
+
+// Update sheet.
+smartsheet.sheetResources().updateSheet(sheet);
 ```
 
 > Example Response:
@@ -5550,6 +9669,36 @@ curl https://api.smartsheet.com/2.0/templates/public \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+// List public templates.
+smartsheet.templates.listPublicTemplates()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List public templates (omit pagination parameters).
+smartsheet.TemplateResources.ListPublicTemplates(null);
+
+// List public templates (specify 'includeAll' parameter with value of "true").
+smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List public templates (specify 'includeAll' parameter with value of "true").
+smartsheet.templateResources().listPublicTemplates(parameters);
+
+// List public templates (omit pagination parameters).
+smartsheet.templateResources().listPublicTemplates(null);
+```
+
 > Example Response:
 
 <%= partial "snippets/listTemplates_response.md.erb" %>
@@ -5569,6 +9718,36 @@ Gets the list of public Templates to which the user has access.
 ```shell
 curl https://api.smartsheet.com/2.0/templates \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List user-created templates.
+smartsheet.templates.listUserCreatedTemplates()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// List user-created templates (omit pagination parameters).
+smartsheet.TemplateResources.ListUserCreatedTemplates(null);
+
+// List user-created templates (specify 'includeAll' parameter with value of "true").
+smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List user-created templates (specify 'includeAll' parameter with value of "true").
+smartsheet.templateResources().listUserCreatedTemplates(parameters);
+
+// List user-created templates (omit pagination parameters).
+smartsheet.templateResources().listUserCreatedTemplates(null);
 ```
 
 > Example Response:
@@ -5595,6 +9774,18 @@ The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An *
 curl https://api.smartsheet.com/2.0/token \
 -d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
 -X POST
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
 ```
 
 > Example Response:
@@ -5632,6 +9823,18 @@ curl https://api.smartsheet.com/2.0/token \
 -X POST
 ```
 
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
 > Example Response:
 
 ```json
@@ -5663,6 +9866,18 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 curl https://api.smartsheet.com/2.0/token \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
 ```
 
 > Example Response:
@@ -5753,6 +9968,46 @@ curl https://api.smartsheet.com/2.0/users?sendEmail=true \
 -d '{"firstName": "John", "lastName": "Doe", "email": "NEW_USER_EMAIL", "admin": false, "licensedSheetCreator": true}'
 ```
 
+```javascript
+// Specify user properties.
+var user = {
+	"firstName": "John",
+	"lastName": "Doe",
+	"email": "NEW_USER_EMAIL",
+	"admin": false,
+	"licensedSheetCreator": true
+};
+
+// Set options.
+var options = {
+	body: user
+};
+
+// Add user.
+smartsheet.users.createUser(options)
+	.then(function(data) {
+		console.log(data)
+	}).catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Set user properties.
+User user = new User.AddUserBuilder("NEW_USER_EMAIL", false, true).SetFirstName("John").SetLastName("Doe").Build();
+
+// Add user.
+smartsheet.UserResources.AddUser(user, true);
+```
+
+```java
+// Set user properties.
+User user = new User.AddUserBuilder().setAdmin(false).setEmail("NEW_USER_EMAIL").setFirstName("John").setLastName("Doe").setLicensedSheetCreator(true).build();
+
+// Add user.
+smartsheet.userResources().addUser(user);
+```
+
 > Example Response:
 
 ```json
@@ -5796,6 +10051,27 @@ curl https://api.smartsheet.com/2.0/users/me \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```javascript
+// Get current user.
+smartsheet.users.getCurrentUser()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+    	console.log(error);
+  	});
+```
+
+```csharp
+// Get current user.
+smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Get current user.
+smartsheet.userResources().getCurrentUser();
+```
+
 > Example Response:
 
 ```json
@@ -5828,6 +10104,32 @@ Gets the current User.
 ```shell
 curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+	id: 48569348493401200	// ID of user
+};
+
+// Get user.
+smartsheet.users.getUser(options)
+  	.then(function(data) {
+    	console.log(data)
+  	})
+  	.catch(function(error) {
+    	console.log(error);
+  	});
+```
+
+```csharp
+// Get user.
+smartsheet.UserResources.GetUser(userId);
+```
+
+```java
+// Get user.
+smartsheet.userResources().getUser(userId);
 ```
 
 > Example Response:
@@ -5867,6 +10169,36 @@ Gets the User specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript 
+// List users.
+smartsheet.users.listAllUsers()
+	.then(function(data) {
+		console.log(data)
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// List users (omit 'email' parameter and pagination parameters).
+smartsheet.UserResources.ListUsers(null, null);
+
+// List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
+smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
+smartsheet.userResources().listUsers(new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
+
+// List users (omit 'email' parameter and pagination parameters).
+smartsheet.userResources().listUsers(null, null);
 ```
 
 > Example Response:
@@ -5916,6 +10248,33 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFrom
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+	id: 94094820842 // ID of User
+};
+
+// Remove user.
+smartsheet.users.removeUser(options)
+	.then(function(data) {
+		console.log(data)
+	})	
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Remove user (transferring ownership of groups and sheets to another user, and removing the user from sharing).
+smartsheet.UserResources.RemoveUser(userId, transferToUserId, true, true);
+```
+
+```java
+// Remove user (transferring ownership of groups and sheets to another user, and removing the user from sharing).
+DeleteUserParameters parameters = new DeleteUserParameters(transferToUserId, true, true);
+smartsheet.userResources().deleteUser(userId, parameters);
+```
+
 > Example Response:
 
 ```json
@@ -5950,6 +10309,44 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"admin": false, "licensedSheetCreator": true}'
+```
+
+```javascript
+// Specify updated user properties.
+var user = {
+	"admin": true,
+	"licensedSheetCreator": true
+};
+
+// Set options.
+var options = {
+	body: user,
+	id: 82349925918590 // ID of User
+};
+
+// Update user.
+smartsheet.users.updateUser(options)
+	.then(function(data) {
+		console.log(data)
+	}).catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Specify updated user properties.
+User user = new User.UpdateUserBuilder(false, true).Build()
+
+// Update user.
+smartsheet.UserResources.UpdateUser(userId, user);
+```
+
+```java
+// Specify updated user properties.
+User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(false).setLicensedSheetCreator(true).build();
+
+// Update user.
+smartsheet.userResources().updateUser(user);
 ```
 
 > Example Response:
@@ -6046,6 +10443,41 @@ curl https://api.smartsheet.com/2.0/workspaces \
 -d '{"name": "New workspace"}'
 ```
 
+```javascript
+// Specify workspace name.
+var workspace = {"name": "New workspace"};
+
+// Set options.
+var options = {
+    body: workspace
+};
+
+// Create workspace.
+smartsheet.workspaces.createWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify workspace name.
+Workspace workspace = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
+
+// Create workspace.
+smartsheet.WorkspaceResources.CreateWorkspace(workspace);
+```
+
+```java
+// Specify workspace name.
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
+
+// Create workspace.
+smartsheet.workspaceResources().createWorkspace(workspace);
+```
+
 > Example Response:
 
 ```json
@@ -6083,6 +10515,32 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 -X DELETE
 ```
 
+```javascript
+// Set options.
+var options = {
+    workspaceId: 6621332407379844
+};
+
+// Delete workspace.
+smartsheet.workspaces.deleteWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Delete workspace.
+smartsheet.WorkspaceResources.DeleteWorkspace(workspaceId);
+```
+
+```java
+// Delete workspace.
+smartsheet.workspaceResources().deleteWorkspace(workspaceId);
+```
+
 > Example Response:
 
 ```json
@@ -6109,6 +10567,38 @@ Deletes the specified Workspace (and its contents).
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set options.
+var options = {
+    workspaceId: 7116448184199044
+};
+
+// Get workspace.
+smartsheet.workspaces.getWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Get workspace (omit 'loadAll' and 'include' parameters).
+smartsheet.WorkspaceResources.GetWorkspace(workspaceId, null, null);
+
+// Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
+smartsheet.WorkspaceResources.GetWorkspace(workspaceId, false, new WorkspaceInclusion[] { WorkspaceInclusion.SOURCE });
+```
+
+```java
+// Get workspace (omit 'loadAll' and 'include' parameters).
+smartsheet.workspaceResources().getWorkspace(workspaceId, null, null);
+
+// Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
+smartsheet.workspaceResources().getWorkspace(workspaceId, false, EnumSet.of(SourceInclusion.SOURCE));
 ```
 
 > Example Response:
@@ -6155,6 +10645,36 @@ Gets the specified Workspace (and lists its contents).
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// List workspaces.
+smartsheet.workspaces.listWorkspaces()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// List workspaces (omit pagination parameters).
+smartsheet.WorkspaceResources.ListWorkspaces(null);
+
+// List workspaces (specify 'includeAll' parameter with value of "true").
+smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true, null, null)););
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List workspaces (specify 'includeAll' parameter with value of "true").
+smartsheet.workspaceResources().listWorkspaces(parameters);
+
+// List workspaces (omit pagination parameters).
+smartsheet.workspaceResources().listWorkspaces(null);
 ```
 
 > Example Response:
@@ -6209,6 +10729,42 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{"name": "Updated workspace"}'
+```
+
+```javascript
+// Specify updated workspace properties.
+var workspace = {"name": "Updated workspace"};
+
+// Set options.
+var options = {
+    body: workspace,
+    workspaceId: 7960873114331012
+};
+
+// Update workspace.
+smartsheet.workspaces.updateWorkspace(options)
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
+```csharp
+// Specify updated workspace name.
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder(workspaceId, "Updated workspace").Build();
+
+// Update workspace.
+smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
+```
+
+```java
+// Specify updated workspace properties.
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(workspaceId).build();
+
+// Update workspace.
+smartsheet.workspaceResources().updateWorkspace(workspace);
 ```
 
 > Example Response:

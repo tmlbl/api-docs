@@ -35,19 +35,10 @@ Follow the steps below if you'd like to run the documentation locally on your ma
  
 This API documentation is based upon [Slate](https://github.com/tripit/slate/) and uses Slate [markdown syntax](https://github.com/tripit/slate/wiki/Markdown-Syntax).
 
-## License
+## Release Notes
 
-	Copyright 2015 Smartsheet, Inc.
+**1.1.0 (Aug 13, 2015)**
+* Added sample code in C#, Java, and Node.js.
 
-	Licensed under the Apache License, Version 2.0 (the
-	"License"); you may not use this file except in compliance
-	with the License. You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-	Unless required by applicable law or agreed to in writing,
-	software distributed under the License is distributed on an
-	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-	either express or implied. See the License for the specific
-	language governing permissions and limitations under the
-	License.
+**1.0.0 (July 11, 2015)**
+* Initial Release of the Smartsheet API 2.0 Documentation ([more info](https://www.smartsheet.com/blog/july-2015-api-v2-launch))
