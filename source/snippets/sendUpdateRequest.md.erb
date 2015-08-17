@@ -20,6 +20,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 }'
 ```
 
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+    new Recipient { Email = "email789@smartsheet.com" },
+    new Recipient { Email = "email0123@smartsheet.com" }
+};
+
+// Configure email.
+MultiRowEmail multiEmail = new MultiRowEmail {
+    SendTo = recipients,
+    Subject = "some subject",
+    Message = "some message",
+    CcMe = true,
+    RowIds = new long[] { rowId1 },
+    ColumnIds = new long[] { colId1, colId2 },
+    IncludeAttachments = true,
+    IncludeDiscussions = true
+};
+
+// Send update request via email.
+smartsheet.SheetResources.SendUpdateRequest(sheetId, multiEmail);
+```
+
 > Example Response:
 
 ```json
