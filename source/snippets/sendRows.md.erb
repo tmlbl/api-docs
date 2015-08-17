@@ -25,6 +25,28 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/emails \
 }'
 ```
 
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+    new Recipient { Email = "recipient@smartsheet.com" }, 
+};
+
+// Configure email.
+MultiRowEmail multiRowEmail = new MultiRowEmail {
+    SendTo = recipients,
+    Subject = "some subject",
+    Message = "some message",
+    CcMe = false,
+    RowIds = new long[] { rowId },
+    ColumnIds = new long[] { columnId },
+    IncludeAttachments = false,
+    IncludeDiscussions = false
+};
+
+// Send rows via email.
+smartsheet.SheetResources.RowResources.SendRows(sheetId, multiRowEmail);
+```
+
 > Example Response:
 
 ```json
