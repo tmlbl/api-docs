@@ -3421,6 +3421,11 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
+```csharp
+// Get contact.
+smartsheet.ContactResources.GetContact(contactId);
+```
+
 > Example Response:
 
 ```json
@@ -3448,6 +3453,14 @@ Gets the specified Contact.
 ```shell
 curl https://api.smartsheet.com/2.0/contacts \
 -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```csharp
+// List contacts (omit pagination parameters).
+smartsheet.ContactResources.ListContacts(null);
+
+// List contacts (specify 'includeAll' parameter with value of "true").
+smartsheet.ContactResources.ListContacts(new PaginationParameters(true, null, null));
 ```
 
 > Example Response:
@@ -3594,7 +3607,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 ```
 
 ```csharp
-// [todo]
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+
+// Add discussion to row.
+smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, rowId, discussion, filePath, "application/octet-stream");
 ```
 
 ```java
@@ -4674,6 +4694,22 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 -X POST
 ```
 
+```csharp
+// Specify destination.
+ContainerDestination destination = new ContainerDestination
+{
+	DestinationId = workspace_or_folder_id,
+	DestinationType = DestinationType.FOLDER,
+	NewName = "newFolderName"
+};
+
+// Copy folder (omit 'include' and 'skipRemap' parameters).
+smartsheet.FolderResources.CopyFolder(folderId, destination, null, null);
+
+// Copy folder (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+smartsheet.FolderResources.CopyFolder(folderId, destination, new FolderCopyInclusion[] { FolderCopyInclusion.ALL }, new FolderRemapExclusion[] { FolderRemapExclusion.CELL_LINKS });
+```
+
 > Example Response:
 
 ```json
@@ -5195,6 +5231,18 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
     "destinationId": workspace_or_folder_id \
 }' \
 -X POST
+```
+
+```csharp
+// Specify destination.
+ContainerDestination destination = new ContainerDestination
+{
+	DestinationId = workspace_or_folder_id,
+	DestinationType = DestinationType.FOLDER,
+};
+
+// Move folder
+smartsheet.FolderResources.MoveFolder(folderId, destination);
 ```
 
 > Example Response:
@@ -6700,8 +6748,8 @@ smartsheet.sheets.deleteRow(options)
 ```
 
 ```csharp
-// Delete row.
-smartsheet.SheetResources.RowResources.DeleteRow(sheetId, rowId);
+// Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.SheetResources.RowResources.DeleteRows(sheetId, new long[] { rowId1, rowId2, rowId3 }, true);
 ```
 
 ```java
@@ -7663,10 +7711,10 @@ smartsheet.reports.updateShare(options)
 
 ```csharp
 // Set the access level to Viewer.
-Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
 // Update report share.
-smartsheet.ReportResources.ShareResources.UpdateShare(reportId, shareId, share);
+smartsheet.ReportResources.ShareResources.UpdateShare(reportId, share);
 ```
 
 ```java
@@ -7940,10 +7988,10 @@ smartsheet.sheets.updateShare(options)
 
 ```csharp
 // Set access level to Viewer.
-Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
 // Update sheet share.
-smartsheet.SheetResources.ShareResources.UpdateShare(sheetId, shareId, share);
+smartsheet.SheetResources.ShareResources.UpdateShare(sheetId, share);
 ```
 
 ```java
@@ -8227,10 +8275,10 @@ smartsheet.workspaces.updateShare(options)
 
 ```csharp
 // Set access level to Viewer.
-Share share = new Share.UpdateShareBuilder(AccessLevel.VIEWER).Build();
+Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
 // Update workspace share.
-smartsheet.WorkspaceResources.ShareResources.UpdateShare(workspaceId, shareId, share);
+smartsheet.WorkspaceResources.ShareResources.UpdateShare(workspaceId, share);
 ```
 
 ```java
@@ -8334,6 +8382,22 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
     "newName": "newSheetName" \
 }' \
 -X POST
+```
+
+```csharp
+// Specify destination.
+ContainerDestination destination = new ContainerDestination
+{
+	DestinationId = workspace_or_folder_id,
+	DestinationType = DestinationType.FOLDER,
+	NewName = "newSheetName"
+};
+
+// Copy sheet (omit 'include' parameter).
+smartsheet.SheetResources.CopySheet(sheetId, destination, null);
+
+// Copy sheet (specify 'include' parameter with value of "all").
+smartsheet.SheetResources.CopySheet(sheetId, destination, new SheetCopyInclusion[] { SheetCopyInclusion.ALL });
 ```
 
 > Example Response:
@@ -9343,6 +9407,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
     "destinationId": workspace_or_folder_id, \
 }' \
 -X POST
+```
+
+```csharp
+// Specify destination.
+ContainerDestination destination = new ContainerDestination
+{
+	DestinationId = workspace_or_folder_id,
+	DestinationType = DestinationType.FOLDER,
+};
+
+// Move sheet.
+smartsheet.SheetResources.MoveSheet(sheetId, destination);
 ```
 
 > Example Response:
@@ -10401,6 +10477,20 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
 -H "Content-Type: application/json" \
 -d '{"newName": "newWorkspaceName"}' \
 -X POST
+```
+
+```csharp
+// Specify destination.
+ContainerDestination destination = new ContainerDestination
+{
+	NewName = "newWorkspaceName"
+};
+
+// Copy workspace (omit 'include' and 'skipRemap' parameters).
+smartsheet.WorkspaceResources.CopyWorkspace(workspaceId, destination, null, null);
+
+// Copy workspace (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+smartsheet.WorkspaceResources.CopyWorkspace(workspaceId, destination, new WorkspaceCopyInclusion[] { WorkspaceCopyInclusion.ALL }, new WorkspaceRemapExclusion[] { WorkspaceRemapExclusion.CELL_LINKS });
 ```
 
 > Example Response:
