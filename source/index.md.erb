@@ -10545,6 +10545,18 @@ smartsheet.WorkspaceResources.CopyWorkspace(workspaceId, destination, null, null
 smartsheet.WorkspaceResources.CopyWorkspace(workspaceId, destination, new WorkspaceCopyInclusion[] { WorkspaceCopyInclusion.ALL }, new WorkspaceRemapExclusion[] { WorkspaceRemapExclusion.CELL_LINKS });
 ```
 
+
+```java
+// Specify name for the new workspace.
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setNewName("newWorkspaceName").build();
+
+// Copy workspace (omit 'include' and 'skipRemap' parameters).
+smartsheet.workspaceResources().copyWorkspace(workspaceId, destination, null, null);
+
+// Copy workspace (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+smartsheet.workspaceResources().copyWorkspace(workspaceId, destination, EnumSet.of(WorkspaceCopyInclusion.ALL), EnumSet.of(WorkspaceRemapExclusion.CELLLINKS));
+```
+
 > Example Response:
 
 ```json
