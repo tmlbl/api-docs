@@ -3426,6 +3426,11 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 smartsheet.ContactResources.GetContact(contactId);
 ```
 
+```java
+// Get contact.
+smartsheet.contactResources().getContact(contactId);
+```
+
 > Example Response:
 
 ```json
@@ -3461,6 +3466,14 @@ smartsheet.ContactResources.ListContacts(null);
 
 // List contacts (specify 'includeAll' parameter with value of "true").
 smartsheet.ContactResources.ListContacts(new PaginationParameters(true, null, null));
+```
+
+```java
+// Specify pagination parameter 'includeAll'
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// List contacts (specify 'includeAll' parameter with value of "true").
+smartsheet.contactResources().listContacts(parameters);
 ```
 
 > Example Response:
@@ -6753,8 +6766,8 @@ smartsheet.SheetResources.RowResources.DeleteRows(sheetId, new long[] { rowId1, 
 ```
 
 ```java
-// Delete row.
-smartsheet.sheetResources().rowResources().deleteRow(sheetId, rowId);
+// Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
+smartsheet.sheetResources().rowResources().deleteRows(ssheetId, new HashSet(Arrays.asList(rowId1, rowId2, rowId3), true);
 ```
 
 > Example Response:
