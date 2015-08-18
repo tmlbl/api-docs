@@ -3631,7 +3631,17 @@ smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithA
 ```
 
 ```java
-// [todo]
+// Create comment.
+Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+
+// Create discussion (including the comment).
+Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+
+// Set file path
+File file = new File(filePath);
+
+// Add discussion to row.
+smartsheet.sheetResources().rowResources().discussionResources().createDiscussionWithAttachment(sheetId, rowId, discussion, file, "application/octet-stream");
 ```
 
 > Example Response:
