@@ -8433,6 +8433,17 @@ smartsheet.SheetResources.CopySheet(sheetId, destination, null);
 smartsheet.SheetResources.CopySheet(sheetId, destination, new SheetCopyInclusion[] { SheetCopyInclusion.ALL });
 ```
 
+```java
+// Specify destination.
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setDestinationType(DestinationType.FOLDER).setDestinationId(workspace_or_folder_id).setNewName("newSheetName").build();
+
+// Copy sheet (omit 'include' parameter).
+smartsheet.sheetResources().copySheet(sheetId, destination, null);
+
+// Copy sheet (specify 'include' parameter with value of "all").
+smartsheet.sheetResources().copySheet(sheetId, destination, EnumSet.of(SheetCopyInclusion.ALL));
+```
+
 > Example Response:
 
 ```json
@@ -9452,6 +9463,14 @@ ContainerDestination destination = new ContainerDestination
 
 // Move sheet.
 smartsheet.SheetResources.MoveSheet(sheetId, destination);
+```
+
+```java
+// Specify destination.
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setDestinationType(DestinationType.FOLDER).setDestinationId(workspace_or_folder_id).build();
+
+/ Move sheet.
+smartsheet.sheetResources().moveSheet(sheetId, destination);
 ```
 
 > Example Response:
