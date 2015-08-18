@@ -42,6 +42,31 @@ MultiRowEmail multiEmail = new MultiRowEmail {
 // Send update request via email.
 smartsheet.SheetResources.SendUpdateRequest(sheetId, multiEmail);
 ```
+```java
+// Specify recipients.
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+                .setEmail("email789@smartsheet.com")
+                .setEmail("email0123@smartsheet.com")
+                .build();
+
+List<Recipient> recipients = new ArrayList<Recipient>();
+recipients.add(recipientEmail);
+
+// Configure email.
+MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
+    .setSendTo(recipients)
+    .setSubject("some subject")
+    .setMessage("some message")
+    .setCcMe(false)
+    .setRowIds(Arrays.asList(rowId1, rowId2)
+    .setColumnIds(Arrays.asList(columnId1, columnId2)
+    .setIncludeAttachments(false)
+    .setIncludeDiscussions(false)
+    .build();
+    
+// Send update request via email.
+smartsheet.sheetResources().createUpdateRequest(sheetId, multiRowEmail);
+```
 
 > Example Response:
 
