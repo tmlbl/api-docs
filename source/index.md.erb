@@ -4723,6 +4723,18 @@ smartsheet.FolderResources.CopyFolder(folderId, destination, null, null);
 smartsheet.FolderResources.CopyFolder(folderId, destination, new FolderCopyInclusion[] { FolderCopyInclusion.ALL }, new FolderRemapExclusion[] { FolderRemapExclusion.CELL_LINKS });
 ```
 
+
+```java
+// Specify destination.
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setDestinationType(DestinationType.FOLDER).setDestinationId(newFolderWorkspace.getId()).setNewName("New Copied folder").build();
+
+// Copy folder (omit 'include' and 'skipRemap' parameters).
+smartsheet.folderResources().copyFolder(folderId, destination, null, null);
+
+// Copy folder (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+smartsheet.folderResources().copyFolder(folderId, destination, EnumSet.of(FolderCopyInclusion.ALL), EnumSet.of(FolderRemapExclusion.CELLLINKS));
+```
+
 > Example Response:
 
 ```json
