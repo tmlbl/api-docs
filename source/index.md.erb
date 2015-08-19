@@ -3474,6 +3474,9 @@ PaginationParameters parameters = new PaginationParameters.PaginationParametersB
 
 // List contacts (specify 'includeAll' parameter with value of "true").
 smartsheet.contactResources().listContacts(parameters);
+
+// List contacts (omit pagination parameters).
+smartsheet.contactResources().listContacts(null);
 ```
 
 > Example Response:
@@ -4721,7 +4724,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 // Specify destination.
 ContainerDestination destination = new ContainerDestination
 {
-	DestinationId = workspace_or_folder_id,
+	DestinationId = destinationFolderId,
 	DestinationType = DestinationType.FOLDER,
 	NewName = "newFolderName"
 };
@@ -4738,7 +4741,7 @@ smartsheet.FolderResources.CopyFolder(folderId, destination, new FolderCopyInclu
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
 		.setDestinationType(DestinationType.FOLDER)
-		.setDestinationId(workspace_or_folder_id)
+		.setDestinationId(destinationFolderId)
 		.setNewName("newFolderName")
 		.build();
 
@@ -5276,7 +5279,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 // Specify destination.
 ContainerDestination destination = new ContainerDestination
 {
-	DestinationId = workspace_or_folder_id,
+	DestinationId = destinationFolderId,
 	DestinationType = DestinationType.FOLDER,
 };
 
@@ -5288,7 +5291,7 @@ smartsheet.FolderResources.MoveFolder(folderId, destination);
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
 		.setDestinationType(DestinationType.FOLDER)
-		.setDestinationId(workspace_or_folder_id)
+		.setDestinationId(destinationFolderId)
 		.build();
 
 // Move folder.
@@ -6804,7 +6807,7 @@ smartsheet.SheetResources.RowResources.DeleteRows(sheetId, new long[] { rowId1, 
 
 ```java
 // Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
-smartsheet.sheetResources().rowResources().deleteRows(ssheetId, new HashSet(Arrays.asList(rowId1, rowId2, rowId3), true);
+smartsheet.sheetResources().rowResources().deleteRows(sheetId, new HashSet(Arrays.asList(rowId1, rowId2, rowId3), true);
 ```
 
 > Example Response:
@@ -8438,7 +8441,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 // Specify destination.
 ContainerDestination destination = new ContainerDestination
 {
-	DestinationId = workspace_or_folder_id,
+	DestinationId = destinationFolderId,
 	DestinationType = DestinationType.FOLDER,
 	NewName = "newSheetName"
 };
@@ -8454,7 +8457,7 @@ smartsheet.SheetResources.CopySheet(sheetId, destination, new SheetCopyInclusion
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
 		.setDestinationType(DestinationType.FOLDER)
-		.setDestinationId(workspace_or_folder_id)
+		.setDestinationId(destinationFolderId)
 		.setNewName("newSheetName")
 		.build();
 
@@ -9478,7 +9481,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 // Specify destination.
 ContainerDestination destination = new ContainerDestination
 {
-	DestinationId = workspace_or_folder_id,
+	DestinationId = destinationFolderId,
 	DestinationType = DestinationType.FOLDER,
 };
 
@@ -9490,7 +9493,7 @@ smartsheet.SheetResources.MoveSheet(sheetId, destination);
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
 		.setDestinationType(DestinationType.FOLDER)
-		.setDestinationId(workspace_or_folder_id)
+		.setDestinationId(destinationFolderId)
 		.build();
 
 // Move sheet.
