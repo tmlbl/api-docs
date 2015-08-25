@@ -81,7 +81,14 @@ FormatDetails formatDetails = new FormatDetails();
 formatDetails.setPaperSize(PaperSize.A0); 
 
 // Configure email.
-RowEmail email = new RowEmail.AddRowEmailBuilder().setSendTo(recipients).setSubject("Check these rows out!").setMessage("Here are the rows I mentioned in our meeting").setCcMe(false).setIncludeAttachments(true).setIncludeDiscussions(true).build();
+SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
+	.setSendTo(recipients)
+	.setSubject("Check these rows out!")
+	.setMessage("Here are the rows I mentioned in our meeting")
+	.setCcMe(false)
+	.setFormat(SheetEmailFormat.PDF)
+	.setFormatDetails(formatDetails)
+	.build();
 
 // Send sheet via email.
 smartsheet.sheetResources().sendSheet(sheetId, email);

@@ -13,11 +13,59 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
     "subject": "some subject", \
     "message": "some message", \
     "ccMe": (true|false), \
-    "rowIds": [rowId1], \
+    "rowIds": [rowId1, rowId2], \
     "columnIds": [colId1, colId2], \
     "includeAttachments": (true|false), \
     "includeDiscussions": (true|false) \
 }'
+```
+
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+    new Recipient { Email = "email789@smartsheet.com" },
+    new Recipient { Email = "email0123@smartsheet.com" }
+};
+
+// Configure email.
+MultiRowEmail multiEmail = new MultiRowEmail {
+    SendTo = recipients,
+    Subject = "some subject",
+    Message = "some message",
+    CcMe = true,
+    RowIds = new long[] { rowId1, rowId2 },
+    ColumnIds = new long[] { colId1, colId2 },
+    IncludeAttachments = true,
+    IncludeDiscussions = true
+};
+
+// Send update request via email.
+smartsheet.SheetResources.SendUpdateRequest(sheetId, multiEmail);
+```
+```java
+// Specify recipients.
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+                .setEmail("email789@smartsheet.com")
+                .setEmail("email0123@smartsheet.com")
+                .build();
+
+List<Recipient> recipients = new ArrayList<Recipient>();
+recipients.add(recipientEmail);
+
+// Configure email.
+MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
+    .setSendTo(recipients)
+    .setSubject("some subject")
+    .setMessage("some message")
+    .setCcMe(false)
+    .setRowIds(Arrays.asList(rowId1, rowId2)
+    .setColumnIds(Arrays.asList(columnId1, columnId2)
+    .setIncludeAttachments(false)
+    .setIncludeDiscussions(false)
+    .build();
+    
+// Send update request via email.
+smartsheet.sheetResources().createUpdateRequest(sheetId, multiRowEmail);
 ```
 
 > Example Response:

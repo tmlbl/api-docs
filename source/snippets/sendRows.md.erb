@@ -25,6 +25,50 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/emails \
 }'
 ```
 
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+    new Recipient { Email = "recipient@smartsheet.com" }, 
+};
+
+// Configure email.
+MultiRowEmail multiRowEmail = new MultiRowEmail {
+    SendTo = recipients,
+    Subject = "some subject",
+    Message = "some message",
+    CcMe = false,
+    RowIds = new long[] { rowId1, rowId2 },
+    ColumnIds = new long[] { columnId1, columnId2 },
+    IncludeAttachments = false,
+    IncludeDiscussions = false
+};
+
+// Send rows via email.
+smartsheet.SheetResources.RowResources.SendRows(sheetId, multiRowEmail);
+```
+
+```java
+// Specify recipients.
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder().setEmail("recipient@smartsheet.com").build();
+
+List<Recipient> recipients = new ArrayList<Recipient>();
+recipients.add(recipientEmail);
+
+// Configure email.
+MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
+    .setSendTo(recipients)
+    .setSubject("some subject")
+    .setMessage("some message")
+    .setCcMe(false)
+    .setRowIds(Arrays.asList(rowId1, rowId2)
+    .setColumnIds(Arrays.asList(columnId1, columnId2)
+    .setIncludeAttachments(false)
+    .setIncludeDiscussions(false)
+    .build();
+
+// Send rows via email.
+smartsheet.sheetResources().rowResources().sendRows(sheetId, multiRowEmail);
+```
 > Example Response:
 
 ```json
