@@ -37,6 +37,9 @@ This API documentation is based upon [Slate](https://github.com/tripit/slate/) a
 
 ## Release Notes
 
+**1.2.2 (Sept 21, 2015)**
+* Add new error code (4004); miscellaneous minor doc updates (for clarity).
+
 **1.2.1 (Aug 25, 2015)**
 * Added sample code (C# and Java) for [new endpoints](https://www.smartsheet.com/blog/august-2015-api-update).
 
