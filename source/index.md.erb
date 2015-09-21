@@ -2644,16 +2644,14 @@ To update the Cells in a Sheet, use the [Update Row(s)](#update-row(s)) operatio
 
 ### Cell Links
 
-You can create and modify [cell links](#celllink-object) by using any API operation that creates or updates cell data. 
 Creating or updating cell links via the **cell.linkInFromCell** attribute is a special operation. 
 A given row or cell update operation may contain only link updates, or no link updates. 
-Attempting to mix row/cell updates with cell link updates will result in error code 1115.
+Attempting to mix row/cell updates with cell link updates will result in error code 1115. 
+Additionally, a [cell link](#celllink-object) can only be added to an *existing* cell, so the **cell.linkInFromCell** attribute is not allowed when POSTing a new row to a sheet.
  
 When creating a cell link, **cell.value** must be null (the data will be pulled from the linked cell).
  
 A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **linkInFromCell** may never both be non-null at the same time.
- 
-A cell link can only be added to an *existing* cell, so the **cell.linkInFromCell** attribute is not allowed when POSTing a new row to a sheet.
 
 ### Hyperlinks
 
@@ -7204,7 +7202,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>[hyperlink](#hyperlink-object) (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>[linkInFromCell](#celllink-object) (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>[hyperlink](#hyperlink-object) (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>[linkInFromCell](#celllink-object) (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the updated row(s) -- either a single [Row object](#row-object) or an array of Row objects, corresponding to what was specified in the request. 
 
 ## <%= RELATED %>
@@ -10469,10 +10467,12 @@ Removes a User from an organization. User is transitioned to a free collaborator
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **transferTo** (required if user owns groups): The ID of the user to transfer ownership to.  If the user being deleted owns groups, they will be transferred to this user.  If the user owns sheets, *and* **transferSheets** is true, then the deleted user's sheets will be transferred to this user.
-  | **transferSheets** (optional): If `true`, and **transferTo** is specified, the deleted user's sheets will be transferred.  Else, sheets will not be transferred.  Defaults to `false`.
+<%= PARAMETERS %> | **transferTo** (required if user owns groups): The ID of the user to transfer ownership to.  If the user being removed owns groups, they will be transferred to this user.  If the user owns sheets, *and* **transferSheets** is true, then the removed user's sheets will be transferred to this user.
+  | **transferSheets** (optional): If `true`, and **transferTo** is specified, the removed user's sheets will be transferred.  Else, sheets will not be transferred.  Defaults to `false`.
   | **removeFromSharing** (optional): Set to `true` to remove the user from sharing for all sheets/workspaces in the organization. If not specified, User will not be removed from sharing.
 <%= RETURNS %> | [Result object](#result-object)
+
+<aside class="notice">If the <b>transferTo</b> parameter is specified and the removed user owns Groups, the user specified via the <b>transferTo</b> parameter must have Group Admin rights.</aside>
 
 <aside class="notice">The <b>transferTo</b> and <b>transferSheets</b> parameters cannot be specified for a user who has not yet accepted an invitation to join the organization (i.e., if user <b>status</b> = "PENDING").</aside>
 
