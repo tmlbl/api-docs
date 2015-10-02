@@ -37,6 +37,9 @@ This API documentation is based upon [Slate](https://github.com/tripit/slate/) a
 
 ## Release Notes
 
+**1.2.3 (Oct 2, 2015)**
+* Added additional info about Rate Limiting and Errors / Error Handling.
+
 **1.2.2 (Sept 21, 2015)**
 * Add new error code (4004); miscellaneous minor doc updates (for clarity).
 
