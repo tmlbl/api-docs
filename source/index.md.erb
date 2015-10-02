@@ -193,208 +193,224 @@ OWNER | The user has complete control over the resource.
 In order to prevent abuse and undue stress on the Smartsheet servers, the API has a rate limiting feature that restricts users to **300** requests per minute per Access Token. 
 Certain resource intensive operations, such as attaching a file and getting cell history, count as 10 requests to prevent abuse of these operations. 
 We reserve the right to enforce this limit depending on the load on our systems. 
-If and when the limit is enforced, any requests that exceed this limit will be rejected with an **HTTP 503** error code, with the Smartsheet error code **4003**. 
-Please design your applications assuming that the stated limit will be enforced.
+If and when the limit is enforced, any requests that exceed this limit will be rejected with an **429** HTTP status code, along with the following JSON response body:
+
+{<br/>
+&#160;&#160;&#160;&#160;"errorCode": 4003,<br/>
+&#160;&#160;&#160;&#160;"message": "Rate limit exceeded."<br/>
+}
+
+We recommend that you design your integration to gracefully handle this rate limit error. 
+One way of doing that would be to have your integration *sleep* for 60 seconds when this error is encountered, and then subsequently retry the request. 
+Alternatively, you might choose to implement [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (an error handling strategy whereby you periodically retry a failed request with progressively longer wait times between retries, until either the request succeeds or the certain number of retry attempts is reached). 
+
+**IMPORTANT**: Additionally, we strongly recommend that you avoid executing API requests in rapid-fire succession to update a specific Smartsheet object over and over again within a very short period of time. 
+For example, if the only thing your integration does is execute an [Update Row(s)](#update-row(s)) request once every second for the same sheet, that would only amount to a total of 60 requests per minute -- well within rate limiting guidelines. 
+However, updating the same object in such rapid succession could result in save errors that negatively impact both your integration as well as user experience within the Smartsheet app. 
+To avoid this scenario, design your integration such that API requests are never executed with rapid-fire succession against the same Smartsheet object. 
+For maximum efficiency, consider batching up changes and submitting them in a single request using a [bulk-enabled operation](#bulk-insert-operations) (for example, [Update Row(s)](#update-row(s)) or [Add Column(s)](#add-column(s))).
+
+**IMPORTANT**: We also strongly advise against executing multiple API requests in parallel to update a specific Smartsheet object. 
+Doing so will certainly result in reduced performance and will most likely result in errors due to save collisions. 
+To avoid this scenario, design your integration such that API requests to update a specific Smartsheet object are always executed serially (i.e., execute one request at time, not beginning the next request until the previous request has completed).
 
 ## Errors
 
-[Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions. Generally, they will follow this pattern:
+A successful error handling strategy requires that your integration recognize the difference between errors that can potentially be resolved by retrying the request and errors that should never be retried automatically. 
+The [HTTP status code](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) that is returned with each response is your first indication as to the outcome of the request.
 
-     |     |
------|-----|
-2xx | Request was successful
-4xx | Problem with request (malformed or missing a parameter or access denied)
-5xx | Request was properly formatted, but the operation failed on Smartsheet's end
+HTTP<br/>status code | Meaning | To Retry or Not to Retry? |
+-----|-----|-----|-----|
+2xx | Request was successful.<br/><br/>Example: 200 Success | --
+4xx | A problem with request prevented it from executing successfully.<br/><br/>Examples:<ul><li>400 Bad Request</li><li>401 Not Authorized</li><li>403 Forbidden</li><li>404 Not Found</li><li>405 Method Not Supported</li><li>406 Not Acceptable</li><li>415 Unsupported Media Type</li><li>429 Too Many Requests</li></ul> | Never <i>automatically</i> retry the request.<br/><br/>If the error code indicates a problem that can be fixed, fix the problem and then retry the request.<br/><br/>See [Error Handling](#error-handling) for error handling recommendations by error code.
+5xx | The request was properly formatted, but the operation failed on Smartsheet's end.<br/><br/>Examples:<ul><li>500 Internal Server Error</li><li>503 Service Unavailable</li></ul> | In some scenarios, requests should be automatically retried using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>In other cases, requests should not be retried.<br/><br/>See [Error Handling](#error-handling) for error handling recommendations by error code.
 
-**Smartsheet HTTP codes**:
-
-     |     |
------|-----|
-200 | OK
-400 | BAD REQUEST
-401 | NOT AUTHORIZED
-403 | FORBIDDEN
-404 | NOT FOUND
-405 | METHOD NOT SUPPORTED
-406 | NOT ACCEPTABLE
-415 | UNSUPPORTED MEDIA TYPE
-500 | INTERNAL SERVER ERROR
-503 | SERVICE UNAVAILABLE
-
-All errors will also be accompanied by JSON-formatted error objects, containing a descriptive message. For example, doing a `GET` on a non-existent sheet at `https://api.smartsheet.com/2.0/sheets/123456` will result in a response code of **404**, indicating the resource was not found. The body of the response will include an Error object:
+<br/><br/>
+In addition to the HTTP status code, you should also evaluate the Smartsheet-specific error code that’s returned in the response body for any unsuccessful request. 
+All errors will also be accompanied by JSON-formatted error objects, containing a Smartsheet-specific error code and a descriptive message. 
+For example, doing a `GET` on a non-existent sheet at `https://api.smartsheet.com/2.0/sheets/123456` will result in an HTTP status code of **404**, indicating the resource was not found. 
+The body of the response will include an Error object:
 
 {<br/>
 &#160;&#160;&#160;&#160;"errorCode": 1006,<br/>
 &#160;&#160;&#160;&#160;"message": "Not Found"<br/>
 }
- 
-The full list of error codes is below:
 
-     |     |
------|-----|
-1001 | An Access Token is required.
-1002 | Your Access Token is invalid.
-1003 | Your Access Token has expired.
-1004 | You are not authorized to perform this action.
-1005 | Single Sign-On is required for this account.
-1006 | Not Found.
-1007 | Version not supported.
-1008 | Unable to parse request. The following error occurred: {0}
-1009 | A required parameter is missing from your request: {0}.
-1010 | HTTP Method not supported.
-1011 | A required header was missing or invalid: {0}
-1012 | A required object attribute is missing from your request: {0}.
-1013 | The operation you are attempting to perform is not supported by your plan.
-1014 | There are no licenses available on your account.
-1015 | The user exists in another account. The user must be removed from that account before they can be added to yours.
-1016 | The user is already a member of your account.
-1017 | The user already has a paid account. The user must cancel that account before they can be added to yours.
-1018 | The value {0} was not valid for the parameter {1}.
-1019 | Cannot transfer to the user specified. User not found.
-1020 | User not found.
-1021 | Cannot transfer to the user specified. They are not a member of your account.
-1022 | Cannot delete the user specified. They are not a member of your account.
-1023 | The sheet specified is shared at the Workspace level.
-1024 | The HTTP request body is required for this Method.
-1025 | The share already exists.
-1026 | Transferring ownership is not currently supported.
-1027 | Share not found.
-1028 | You cannot edit the share of the owner.
-1029 | The parameter in the URI does not match the object in the request body.
-1030 | You are unable to assume the user specified.
-1031 | The value {0} was not valid for the attribute {1}.
-1032 | The attribute(s) {0} are not allowed for this operation.
-1033 | The template was not found.
-1034 | Invalid Row ID.
-1035 | Attachments and discussions cannot be POSTed with a row.
-1036 | The columnId {0} is invalid.
-1037 | The columnId {0} is included more than once in a single row.
-1038 | Invalid Cell value. Must be numeric or a string.
-1039 | Cannot edit a locked column {0}
-1040 | Cannot edit your own share.
-1041 | The value for {0} must be {1} characters in length or less, but was {2}.
-1042 | The value for cell in column {0}, {1}, did not conform to the strict requirements for type {2}.
-1043 | The row number you requested is blank and cannot be retrieved.        
-1044 | Assume-User header is required for your Access Token.        
-1045 | The resource specified is read-only.
-1046 | Cells containing formulas, links to other cells, system values, or Gantt values cannot be inserted or updated through the API.
-1047 | You cannot remove yourself from the account through the API.
-1048 | The user specified has declined the invitation to join your organization. You cannot modify declined invitations.
-1049 | You cannot remove admin permissions from yourself through the API.
-1050 | You cannot edit a locked row.
-1051 | Attachments of type FILE cannot be created using JSON.
-1052 | Invalid Accept header. Media type not supported.
-1053 | Unknown Paper size: {0}.
-1054 | The new sheet requires either a fromId or columns.
-1055 | One and only one column must be primary.
-1056 | Column titles must be unique.
-1057 | Primary columns must be of type TEXT_NUMBER.
-1058 | Column type of {1} does not support symbol of type {0}.
-1059 | Column options are not allowed when a symbol is specified.
-1060 | Column options are not allowed for column type {0}.
-1061 | Max count exceeded for field {0}.
-1062 | Invalid row location.
-1063 | Invalid parentId: {0}.
-1064 | Invalid siblingId: {0}.
-1065 | The column specified cannot be deleted.
-1066 | You can only share to {0} users at a time.
-1067 | Invalid client_id
-1068 | Unsupported grant type.
-1069 | Invalid Request. The authorization_code has expired.
-1070 | Invalid Request. Required parameter is missing: {0}.
-1071 | Invalid Grant. The authorization code or refresh token provided was invalid.
-1072 | Invalid hash value. The hash provided did not match the expected value.
-1073 | The redirect_uri did not match the expected value.
-1074 | You are trying to upload a file of {0}, but the API currently only supports {1}
-1075 | The Content-Size provided did not match the file uploaded. This may be due to network issues or because the wrong Content-Size was specified.
-1076 | The user has created sheets and must be added as a licensed user.
-1077 | Duplicate system column type: {0}.
-1078 | System column type {0} not supported for {1} {2}.
-1079 | Column type {0} is not supported for system column type {1}
-1080 | End Dates on dependency-enabled sheets cannot be created/updated. Please update either the Duration or Start Date column.
-1081 | You cannot delete another user's discussions, comments, or comment attachments.
-1082 | You cannot add options to the given column {0} because it is not a PICKLIST.
-1083 | Auto number formatting cannot be added to a column {0}
-1084 | The auto number format is invalid.
-1085 | To change this column's type you must first disable Dependencies for this sheet.
-1086 | Google was not able to verify your access.
-1087 | The column specified is used in a conditional formatting rule, so the column cannot be deleted and its type cannot be changed.
-1088 | Invalid length for concatenated auto number format. Concatenated format is {0}, with a length of {1}. Must be less than or equal to 40.
-1089 | The type specified is only used with System Columns.
-1090 | Column.type is required when changing symbol, systemColumnType or options.
-1091 | Invalid Content-Type: {0}
-1092 | You cannot delete this row. Either it or one or more of its children are locked.
-1093 | An error occurred verifying this receipt, please try again later.
-1094 | You cannot set a password on a new user unless they accept the license.
-1095 | The Excel file is invalid/corrupt. This may be due to an invalid file extension, an outdated Excel format, or an invalid Content-Length.
-1096 | This Apple payment receipt has already been applied to a user's payment profile.
-1097 | A user must be a licensed sheet creator to be a resource viewer.
-1098 | To delete this column you must first disable Dependencies for this sheet.
-1099 | To delete this column you must first disable Resource Management for this sheet.
-1100 | Uploading new versions of a discussion comment attachment is not supported.
-1101 | Uploading new versions of non-FILE type attachments is not supported.
-1102 | A user must be a licensed sheet creator to be a group administrator.
-1103 | A group with the same name already exists.
-1104 | You must be a group administrator to create a group.
-1105 | The operation failed because one or more group members were not members of your account: {0}
-1106 | Group not found
-1107 | User specified in transferGroupsTo must be a group admin.
-1108 | transferGroupsTo must be provided because user being deleted owns one or more groups.
-1109 | Only one of cell.hyperlink or cell.linkInFromCell may be non-null.
-1110 | cell.value must be null if cell.linkInFromCell is non-null.
-1111 | Only one of cell.hyperlink.sheetId and cell.hyperlink.reportId may be non-null.
-1112 | cell.hyperlink.url must be null for sheet or report hyperlinks.
-1113 | cell.value must be a string when the cell is a hyperlink.
-1114 | Invalid sheetId or reportId: {0}
-1115 | Row must contain either cell link updates or row/cell value updates; mixing of both update types in one API call is not supported.
-1116 | You cannot link a cell to its own sheet.
-1117 | One of the following cell.hyperlink fields must be non-null: url, sheetId, or reportId.
-1118 | You cannot set the value of a Gantt allocation column (id {0}) in a row that has child rows.
-1119 | Failed to complete copy.<br/>**NOTE**: may include a "detail" object containing "topContainerType" and "topContainerId" which represent the top-level folder or workspace that were partially copied.
-1120 | Too many sheets to copy.<br/>**NOTE**: includes a "detail" object containing "maxSheetCount" which represents the server-side limit on the number of sheets allowed in a single folder/workspace copy operation.
-1121 | transferTo must be provided because user being deleted owns one or more groups.
-1122 | Requested URL does not support this method: {0}
-1123 | Specifying multiple row locations is not yet supported. Each row must use the same row location attribute and value (toBottom, toTop, parentId, siblingId, above)
-1124 | Invalid Content-Type header. Media type not supported.
-1125 | Each part in a multipart payload must have a name
-1126 | Multipart payload contained duplicate part names: {0}
-1127 | Required multipart part was missing: '{0}'
-1128 | Multipart upload size limit exceeded.
-1129 | The resource you tried to create already exists.
-1130 | One of cell.value or objectValue may be set, but not both.
-1131 | cell.{0} for column {1} was of the wrong object type. Allowed types: {2}
-1132 | The token provided has previously been revoked.
-1133 | Column titles are not unique among input columns.
-1134 | Duplicate system column type among input columns.
-1135 | Input column index {0} is different from the first input column index {1}.
-1136 | Cannot copy or move row(s) within the same sheet.
-1137 | Input collection contains multiple instances of the same element.
-1138 | The user is not eligible for a trial organization.
-1139 | The user is an admin in another organization. Add 'allowInviteAccountAdmin=true' to the query string to invite their entire organization.
-1140 | The user must be added as a licensed user.
-1141 | Inviting users from an enterprise organization is not supported.
-1142 | Column type {0} is reserved for project sheets and may not be manually set on a column.
-1143 | To set {0}, you must first enable dependencies on the sheet.
-1144 | The user owns one or more groups and must be added as a Group Admin.
-1145 | Multipart upload request was invalid. Please check your request headers and payload.
-1146 | Unsupported operation: {0}.
-1147 | Multipart request contained an invalid part name: '{0}'
-1148 | Numeric cell values must be between {0} and {1}.
-2000 | Invalid username and/or password.
-2001 | Your account is locked out.
-2002 | Invalid email address
-2003 | Your account is currently locked out due to a billing issue. Please contact Smartsheet Finance at finance@smartsheet.com.
-2004 | Your email address must be confirmed for you to log into Smartsheet. Please click on the link from your welcome mail, or you can confirm your email by resetting your password.
-2005 | The device id you have provided is longer than the maximum of 45 characters.
-2006 | The client id you have provided is not valid.
-2008 | Invalid login ticket.
-2009 | The given launch parameters are not currently supported by the API.
-4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance.
-4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly.
-4002 | Server timeout exceeded. Request has failed.
-4003 | Rate limit exceeded.
-4004 | An unexpected error has occurred. Please retry your request. If you encounter this error repeatedly, please contact api@smartsheet.com for assistance.
-5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.
+See [Error Handling](#error-handling) for detailed error handling recommendations.
+
+### Error Handling
+ 
+The following table specifies the recommended action for each Smartsheet-specific error code. 
+Use this information to implement error handling logic according to the following guidelines:
+
+* If the error code indicates a permanent error condition, do not retry the request.
+* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
+* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
+
+
+HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Action |
+-----|-----|-----|-----|
+401 | 1001 | An Access Token is required. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that <b>Authorization</b> header is present and set properly.
+401 | 1002 | Your Access Token is invalid. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the access token specified in the <b>Authorization</b> header is valid.
+401 | 1003 | Your Access Token has expired. | Do not retry without fixing the problem.<br/><br/>Hint: Generate a new <a href="#authentication">access token</a> or <a href="#oauth-flow">refresh</a> the token.
+403 | 1004 | You are not authorized to perform this action. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that <b>Authorization</b> header is present and set properly, and that the requester has the required permission level in Smartsheet to perform the requested action.
+401 | 1005 | Single Sign-On is required for this account. | <span class="doNotRetry">Do not retry.</span>
+404 | 1006 | Not Found. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that specified URI is correct. If the URI contains an object ID, verify that the object ID is correct and that the requester has access to the corresponding object in Smartsheet.
+404 | 1007 | Version not supported. | Do not retry without fixing the problem.
+400 | 1008 | Unable to parse request. The following error occurred: {0} | Do not retry without fixing the problem.
+400 | 1009 | A required parameter is missing from your request: {0}. | Do not retry without fixing the problem.
+405 | 1010 | HTTP Method not supported. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the proper verb is specified for the request (GET, PUT, POST, or DELETE).
+400 | 1011 | A required header was missing or invalid: {0} | Do not retry without fixing the problem.
+400 | 1012 | A required object attribute is missing from your request: {0}. | Do not retry without fixing the problem.
+403 | 1013 | The operation you are attempting to perform is not supported by your plan. | Do not retry without fixing the problem.
+403 | 1014 | There are no licenses available on your account. | Do not retry without fixing the problem.
+403 | 1015 | The user exists in another account. The user must be removed from that account before they can be added to yours. | Do not retry without fixing the problem.
+403 | 1016 | The user is already a member of your account. | <span class="doNotRetry">Do not retry.</span>
+403 | 1017 | The user already has a paid account. The user must cancel that account before they can be added to yours. | Do not retry without fixing the problem.
+400 | 1018 | The value {0} was not valid for the parameter {1}. | Do not retry without fixing the problem.
+400 | 1019 | Cannot transfer to the user specified. User not found. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the <b>transferTo</b> User ID specified is correct.
+404 | 1020 | User not found. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the User ID specified is correct.
+403 | 1021 | Cannot transfer to the user specified. They are not a member of your account. | <span class="doNotRetry">Do not retry.</span>
+403 | 1022 | Cannot delete the user specified. They are not a member of your account. | <span class="doNotRetry">Do not retry.</span>
+400 | 1023 | The sheet specified is shared at the Workspace level. | <span class="doNotRetry">Do not retry.</span>
+400 | 1024 | The HTTP request body is required for this Method. | Do not retry without fixing the problem.
+400 | 1025 | The share already exists. | <span class="doNotRetry">Do not retry.</span>
+403 | 1026 | Transferring ownership is not currently supported. | <span class="doNotRetry">Do not retry.</span>
+404 | 1027 | Share not found. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the Share ID specified is correct.
+400 | 1028 | You cannot edit the share of the owner. | <span class="doNotRetry">Do not retry.</span>
+400 | 1029 | The parameter in the URI does not match the object in the request body. | Do not retry without fixing the problem.
+401 | 1030 | You are unable to assume the user specified. | <span class="doNotRetry">Do not retry.</span>
+400 | 1031 | The value {0} was not valid for the attribute {1}. | Do not retry without fixing the problem.
+400 | 1032 | The attribute(s) {0} are not allowed for this operation. | Do not retry without fixing the problem.
+404 | 1033 | The template was not found. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the Template ID specified is correct.
+400 | 1034 | Invalid Row ID. | Do not retry without fixing the problem.
+400 | 1035 | Attachments and discussions cannot be POSTed with a row. | Do not retry without fixing the problem.
+400 | 1036 | The columnId {0} is invalid. | Do not retry without fixing the problem.
+400 | 1037 | The columnId {0} is included more than once in a single row. | Do not retry without fixing the problem.
+400 | 1038 | Invalid Cell value. Must be numeric or a string. | Do not retry without fixing the problem.
+403 | 1039 | Cannot edit a locked column {0} | <span class="doNotRetry">Do not retry.</span>
+400 | 1040 | Cannot edit your own share. | <span class="doNotRetry">Do not retry.</span>
+400 | 1041 | The value for {0} must be {1} characters in length or less, but was {2}. | Do not retry without fixing the problem.
+400 | 1042 | The value for cell in column {0}, {1}, did not conform to the strict requirements for type {2}. | Do not retry without fixing the problem.
+404 | 1043 | The row number you requested is blank and cannot be retrieved. | Do not retry without fixing the problem.
+400 | 1044 | Assume-User header is required for your Access Token. | Do not retry without fixing the problem.
+403 | 1045 | The resource specified is read-only. | <span class="doNotRetry">Do not retry.</span>
+400 | 1046 | Cells containing formulas, links to other cells, system values, or Gantt values cannot be inserted or updated through the API. | <span class="doNotRetry">Do not retry.</span>
+403 | 1047 | You cannot remove yourself from the account through the API. | <span class="doNotRetry">Do not retry.</span>
+403 | 1048 | The user specified has declined the invitation to join your organization. You cannot modify declined invitations. | <span class="doNotRetry">Do not retry.</span>
+403 | 1049 | You cannot remove admin permissions from yourself through the API. | <span class="doNotRetry">Do not retry.</span>
+403 | 1050 | You cannot edit a locked row. | <span class="doNotRetry">Do not retry.</span>
+400 | 1051 | Attachments of type FILE cannot be created using JSON. | Do not retry without fixing the problem.
+406 | 1052 | Invalid Accept header. Media type not supported. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that <b>Accept</b> header is set to the <a href="#input-/-output-format">proper value</a> (to match the output of the invoked endpoint -- typically “application/json”).
+400 | 1053 | Unknown Paper size: {0}. | Do not retry without fixing the problem.
+400 | 1054 | The new sheet requires either a fromId or columns. | Do not retry without fixing the problem.
+400 | 1055 | One and only one column must be primary. | Do not retry without fixing the problem.
+400 | 1056 | Column titles must be unique. | Do not retry without fixing the problem.
+400 | 1057 | Primary columns must be of type TEXT_NUMBER. | Do not retry without fixing the problem.
+400 | 1058 | Column type of {1} does not support symbol of type {0}. | Do not retry without fixing the problem.
+400 | 1059 | Column options are not allowed when a symbol is specified. | Do not retry without fixing the problem.
+400 | 1060 | Column options are not allowed for column type {0}. | Do not retry without fixing the problem.
+400 | 1061 | Max count exceeded for field {0}. | Do not retry without fixing the problem.
+400 | 1062 | Invalid row location. | Do not retry without fixing the problem.
+400 | 1063 | Invalid parentId: {0}. | Do not retry without fixing the problem.
+400 | 1064 | Invalid siblingId: {0}. | Do not retry without fixing the problem.
+400 | 1065 | The column specified cannot be deleted. | <span class="doNotRetry">Do not retry.</span>
+400 | 1066 | You can only share to {0} users at a time. | Do not retry without fixing the problem.<br/><br/>Hint: Reduce the number of users specified in the Share request.
+401 | 1067 | Invalid client_id | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the value of the <b>client_id</b> querystring parameter matches the value of the App <b>client Id</b> shown in the Smartsheet web UI (Developer Tools >> App Profile).
+400 | 1068 | Unsupported grant type. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the value of the <b>grant_type</b> querystring parameter is “authorization_code”.
+400 | 1069 | Invalid Request. The authorization_code has expired. | Do not retry without fixing the problem.<br/><br/>Hint: Repeat step 1 of the <a href="#oauth-flow">OAuth flow</a> (to retrieve a new authorization code).
+400 | 1070 | Invalid Request. Required parameter is missing: {0}. | Do not retry without fixing the problem.
+400 | 1071 | Invalid Grant. The authorization code or refresh token provided was invalid. | Do not retry without fixing the problem.
+400 | 1072 | Invalid hash value. The hash provided did not match the expected value. | Do not retry without fixing the problem.
+400 | 1073 | The redirect_uri did not match the expected value. | Do not retry without fixing the problem.<br/><br/>Hint: Omit the <b>redirect_uri</b> querystring parameter -- if <b>redirect_uri</b> is not specified in the querystring, the value specified in the Smartsheet web UI (Developer Tools >> App Profile) will be used by default.
+400 | 1074 | You are trying to upload a file of {0}, but the API currently only supports {1} | Do not retry without fixing the problem.
+400 | 1075 | The Content-Size provided did not match the file uploaded. This may be due to network issues or because the wrong Content-Size was specified. | Do not retry without fixing the problem.
+403 | 1076 | The user has created sheets and must be added as a licensed user. | Do not retry without fixing the problem.
+400 | 1077 | Duplicate system column type: {0}. | Do not retry without fixing the problem.
+400 | 1078 | System column type {0} not supported for {1} {2}. | Do not retry without fixing the problem.
+400 | 1079 | Column type {0} is not supported for system column type {1} | Do not retry without fixing the problem.
+400 | 1080 | End Dates on dependency-enabled sheets cannot be created/updated. Please update either the Duration or Start Date column. | <span class="doNotRetry">Do not retry.</span>
+403 | 1081 | You cannot delete another user's discussions, comments, or comment attachments. | <span class="doNotRetry">Do not retry.</span>
+400 | 1082 | You cannot add options to the given column {0} because it is not a PICKLIST. | Do not retry without fixing the problem.
+400 | 1083 | Auto number formatting cannot be added to a column {0} | Do not retry without fixing the problem.
+400 | 1084 | The auto number format is invalid. | Do not retry without fixing the problem.
+400 | 1085 | To change this column's type you must first disable Dependencies for this sheet. | Do not retry without fixing the problem.
+400 | 1086 | Google was not able to verify your access. | Do not retry without fixing the problem.
+400 | 1087 | The column specified is used in a conditional formatting rule, so the column cannot be deleted and its type cannot be changed. | Do not retry without fixing the problem.
+400 | 1088 | Invalid length for concatenated auto number format. Concatenated format is {0}, with a length of {1}. Must be less than or equal to 40. | Do not retry without fixing the problem.
+400 | 1089 | The type specified is only used with System Columns. | Do not retry without fixing the problem.
+400 | 1090 | Column.type is required when changing symbol, systemColumnType or options. | Do not retry without fixing the problem.
+400 | 1091 | Invalid Content-Type: {0} | Do not retry without fixing the problem.
+403 | 1092 | You cannot delete this row. Either it or one or more of its children are locked. | <span class="doNotRetry">Do not retry.</span>
+400 | 1095 | The Excel file is invalid/corrupt. This may be due to an invalid file extension, an outdated Excel format, or an invalid Content-Length. | Do not retry without fixing the problem.
+403 | 1096 | This Apple payment receipt has already been applied to a user's payment profile. | <span class="doNotRetry">Do not retry.</span>
+403 | 1097 | A user must be a licensed sheet creator to be a resource viewer. | Do not retry without fixing the problem.
+400 | 1098 | To delete this column you must first disable Dependencies for this sheet. | Do not retry without fixing the problem.
+400 | 1099 | To delete this column you must first disable Resource Management for this sheet. | Do not retry without fixing the problem.
+400 | 1100 | Uploading new versions of a discussion comment attachment is not supported. | <span class="doNotRetry">Do not retry.</span>
+400 | 1101 | Uploading new versions of non-FILE type attachments is not supported. | <span class="doNotRetry">Do not retry.</span>
+403 | 1102 | A user must be a licensed sheet creator to be a group administrator. | Do not retry without fixing the problem.
+400 | 1103 | A group with the same name already exists. | Do not retry without fixing the problem.
+403 | 1104 | You must be a group administrator to create a group. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the requester has “Group Admin” permissions in Smartsheet.
+400 | 1105 | The operation failed because one or more group members were not members of your account: {0} | Do not retry without fixing the problem.
+404 | 1106 | Group not found | Do not retry without fixing the problem.<br/><br/>Hint: Verify that specified Group ID is correct.
+400 | 1107 | User specified in transferGroupsTo must be a group admin. | Do not retry without fixing the problem.
+400 | 1108 | transferGroupsTo must be provided because user being deleted owns one or more groups. | Do not retry without fixing the problem.
+400 | 1109 | Only one of cell.hyperlink or cell.linkInFromCell may be non-null. | Do not retry without fixing the problem.
+400 | 1110 | cell.value must be null if cell.linkInFromCell is non-null. | Do not retry without fixing the problem.
+400 | 1111 | Only one of cell.hyperlink.sheetId and cell.hyperlink.reportId may be non-null. | Do not retry without fixing the problem.
+400 | 1112 | cell.hyperlink.url must be null for sheet or report hyperlinks. | Do not retry without fixing the problem.
+400 | 1113 | cell.value must be a string when the cell is a hyperlink. | Do not retry without fixing the problem.
+404 | 1114 | Invalid sheetId or reportId: {0} | Do not retry without fixing the problem.
+400 | 1115 | Row must contain either cell link updates or row/cell value updates; mixing of both update types in one API call is not supported. | Do not retry without fixing the problem.
+400 | 1116 | You cannot link a cell to its own sheet. | <span class="doNotRetry">Do not retry.</span>
+400 | 1117 | One of the following cell.hyperlink fields must be non-null: url, sheetId, or reportId. | Do not retry without fixing the problem.
+400 | 1118 | You cannot set the value of a Gantt allocation column (id {0}) in a row that has child rows. | <span class="doNotRetry">Do not retry.</span>
+500 | 1119 | Failed to complete copy.<br/>**NOTE**: may include a "detail" object containing "topContainerType" and "topContainerId" which represent the top-level folder or workspace that were partially copied. | <span class="doNotRetry">Do not retry.</span>
+400 | 1120 | Too many sheets to copy.<br/>**NOTE**: includes a "detail" object containing "maxSheetCount" which represents the server-side limit on the number of sheets allowed in a single folder/workspace copy operation. | Do not retry without fixing the problem.<br/><br/>Hint: Reduce number of sheets being copied  to <b>maxSheetCount</b> or fewer before reattempting the request.
+400 | 1121 | transferTo must be provided because user being deleted owns one or more groups. | Do not retry without fixing the problem.
+405 | 1122 | Requested URL does not support this method: {0} | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the verb specified for the request (GET, POST, PUT, DELETE) is valid for the specified URI.
+400 | 1123 | Specifying multiple row locations is not yet supported. Each row must use the same row location attribute and value (toBottom, toTop, parentId, siblingId, above) | Do not retry without fixing the problem.
+415 | 1124 | Invalid Content-Type header. Media type not supported. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that <b/>Content-Type</b> header is specified and set to the <a href="#input-/-output-format">proper value</a>.
+400 | 1125 | Each part in a multipart payload must have a name | Do not retry without fixing the problem.
+400 | 1126 | Multipart payload contained duplicate part names: {0} | Do not retry without fixing the problem.
+400 | 1127 | Required multipart part was missing: '{0}' | Do not retry without fixing the problem.
+400 | 1128 | Multipart upload size limit exceeded. | Do not retry without fixing the problem.
+400 | 1129 | The resource you tried to create already exists. | <span class="doNotRetry">Do not retry.</span>
+400 | 1130 | One of cell.value or objectValue may be set, but not both. | Do not retry without fixing the problem.
+400 | 1131 | cell.{0} for column {1} was of the wrong object type. Allowed types: {2} | Do not retry without fixing the problem.
+400 | 1132 | The token provided has previously been revoked. | <span class="doNotRetry">Do not retry.<br/><br/>Hint: This error occurs during the <a href="#oauth-flow">OAuth flow</a> when trying to refresh a token that’s previously been revoked.  Must instead obtain a new token.</span>
+400 | 1133 | Column titles are not unique among input columns. | Do not retry without fixing the problem.
+400 | 1134 | Duplicate system column type among input columns. | Do not retry without fixing the problem.
+400 | 1135 | Input column index {0} is different from the first input column index {1}. | Do not retry without fixing the problem.
+400 | 1136 | Cannot copy or move row(s) within the same sheet. | <span class="doNotRetry">Do not retry.</span>
+400 | 1137 | Input collection contains multiple instances of the same element. | Do not retry without fixing the problem.
+403 | 1138 | The user is not eligible for a trial organization. | <span class="doNotRetry">Do not retry.</span>
+403 | 1139 | The user is an admin in another organization. Add 'allowInviteAccountAdmin=true' to the query string to invite their entire organization. | Do not retry without fixing the problem.
+403 | 1140 | The user must be added as a licensed user. | Do not retry without fixing the problem.
+403 | 1141 | Inviting users from an enterprise organization is not supported. | <span class="doNotRetry">Do not retry.</span>
+400 | 1142 | Column type {0} is reserved for project sheets and may not be manually set on a column. | Do not retry without fixing the problem.
+400 | 1143 | To set {0}, you must first enable dependencies on the sheet. | Do not retry without fixing the problem.
+400 | 1144 | The user owns one or more groups and must be added as a Group Admin. | Do not retry without fixing the problem.
+400 | 1145 | Multipart upload request was invalid. Please check your request headers and payload. | Do not retry without fixing the problem.
+400 | 1146 | Unsupported operation: {0}. | <span class="doNotRetry">Do not retry.</span>
+400 | 1147 | Multipart request contained an invalid part name: '{0}' | Do not retry without fixing the problem.
+400 | 1148 | Numeric cell values must be between {0} and {1}. | Do not retry without fixing the problem.
+401 | 2000 | Invalid username and/or password. | Do not retry without fixing the problem.
+401 | 2001 | Your account is locked out. | Do not retry without fixing the problem.
+401 | 2002 | Invalid email address | Do not retry without fixing the problem.<br/><br/>Hint: Verify that value of <b>Assume-User</b> header is URL-encoded.
+401 | 2003 | Your account is currently locked out due to a billing issue. Please contact Smartsheet Finance at finance@smartsheet.com. | Do not retry without fixing the problem.
+401 | 2004 | Your email address must be confirmed for you to log into Smartsheet. Please click on the link from your welcome mail, or you can confirm your email by resetting your password. | Do not retry without fixing the problem.
+400 | 2005 | The device id you have provided is longer than the maximum of 45 characters. | Do not retry without fixing the problem.
+400 | 2006 | The client id you have provided is not valid. | Do not retry without fixing the problem.
+400 | 2008 | Invalid login ticket. | Do not retry without fixing the problem.
+400 | 2009 | The given launch parameters are not currently supported by the API. | Do not retry without fixing the problem.
+500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
+503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
+500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
+429 | 4003 | Rate limit exceeded. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Reduce the rate at which you are sending requests.</span>
+500 | 4004 | An unexpected error has occurred. Please retry your request. If you encounter this error repeatedly, please contact api@smartsheet.com for assistance. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
+400 | 5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur. | <span class="doNotRetry">Do not retry.<br/><br/>Hint: Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.</span>
 
 ## Column Types
 
@@ -1354,7 +1370,7 @@ Each part must start with the boundary string specified in the **Content-Type** 
 
      |     |
 -----|-----|
-**Content-Disposition** | Contains the following semicolon-delimited items:<ul><li>`form-data`</li><li>`name=`"*part name*"</li><li>`filename=`"*filename*" (only required for file parts)</li></ul>
+**Content-Disposition** | Contains the following semicolon-delimited items:<ul><li>`form-data`</li><li>`name=`"*partname*"</li><li>`filename=`"*filename*" (only required for file parts)</li></ul><b><i>Note</i></b>: Values specified in the Content-Disposition header must be URL-encoded.
 **Content-Type** | The content type of the part: `application/json` for JSON objects, or the applicable MIME type for file parts
 
 The last part in the request must be followed by the boundary string, followed by two hyphens.
@@ -1390,7 +1406,7 @@ To perform this kind of upload, you must set specific headers to tell Smartsheet
 
      |     |
 -----|-----|
-**Content-Disposition** | `attachment` to tell the API that a file is in the body of the POST request, followed by a semicolon, followed by `filename=` and the filename in quotes
+**Content-Disposition** | `attachment` to tell the API that a file is in the body of the POST request, followed by a semicolon, followed by `filename=` and the URL-encoded filename in quotes
 **Content-Type** | Can be left blank if it is not known (but must be present), and Smartsheet will make its best guess based on the extension of the file. 
 **Content-Length** | Must be set to the size of the file, in bytes. For example to determine file size using in UNIX: <p>`$ ls -l ProgressReport.docx`<br/>`5463 ProgressReport.docx`</p>
 
