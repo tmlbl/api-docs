@@ -152,6 +152,86 @@ For a list of Smartsheet API 2.0 deprecations, see [Deprecations](#deprecations)
 
 # API Fundamentals
 
+## API Best Practices
+
+We strongly recommend that you design your integration with the following guidelines in mind:
+
+* **Be efficient**: Use "bulk"-enabled operations
+* **Be practical**: Adhere to rate limiting guidelines
+* **Be smart**: Handle errors appropriately
+* **Be diligent**: Implement logging
+
+<br/>
+<span class="inSectionSubheading">Be efficient: Use "bulk"-enabled operations</span>
+
+For maximum efficiency, we recommend that you use bulk-enabled API operations whenever possible. 
+A bulk-enabled API operation allows you to add, update, or delete multiple items using a single API request. 
+For example, if you need to update 10 rows within a sheet, do so using a single [Update Row(s)](#update-row(s)) request, rather than executing 10 separate requests - one for each row.
+
+Bulk-enabled operations improve efficiency by:
+
+* Dramatically reducing the number of outbound calls you have to make
+* Reducing your chances of hitting the [rate limit](#rate-limiting) (since each bulk operation counts as only one request toward the limit)
+* Lightening the load on our systems, making your requests more likely to complete in a timely manner
+
+The following API operations currently allow you to do things in bulk:
+
+* [Add Column(s)](#add-column(s))
+* [Add Favorite(s)](#add-favorite(s))
+* [Remove Favorite(s)](#remove-favorites-(in-bulk))
+* [Add Group Member(s)](#add-group-member(s))
+* [Add Row(s)](#add-row(s))
+* [Copy Row(s) to Another Sheet](#copy-row(s)-to-another-sheet)
+* [Delete Row(s)](#delete-row(s))
+* [Move Row(s) to Another Sheet](#move-row(s)-to-another-sheet)
+* [Send Row(s) via Email](#send-row(s))
+* [Update Row(s)](#update-row(s))
+
+<br/>
+<span class="inSectionSubheading">Be practical: Adhere to rate limiting guidelines</span>
+
+<%= partial "snippets/rateLimiting.md.erb" %>
+
+<br/>
+<span class="inSectionSubheading">Be smart: Handle errors appropriately</span>
+
+<%= partial "snippets/errorHandling.md.erb" %>
+
+<br/>
+<span class="inSectionSubheading">Be diligent: Implement logging</span>
+
+We strongly recommend that you design your integration such that it is capable of logging API requests and responses. 
+Having access to the raw requests and responses (including detailed error codes and error messages) when API issues emerge will streamline troubleshooting and accelerate time to resolution.
+
+The following examples show the type of information that your application should log for API requests and responses.
+
+**Request:  verb, URI, header(s), request body**
+
+`POST https://api.smartsheet.com/2.0/sheets/4098273196697476/columns`<br/> 
+`Authorization: Bearer MY_TOKEN`<br/>
+`Content-Type: application/json`<br/>
+`[`<br/>
+&#160;&#160;`{`<br/>
+&#160;&#160;&#160;&#160;`"title": "FIRST COLUMN - My New Column",`<br/>
+&#160;&#160;&#160;&#160;`"index": 0,`<br/>
+&#160;&#160;&#160;&#160;`"type": "TEXT_NUMBER"`<br/>
+&#160;&#160;`},`<br/>
+&#160;&#160;`{`<br/>
+&#160;&#160;&#160;&#160;`"title": "FIRST COLUMN - My New Column",`<br/>
+&#160;&#160;&#160;&#160;`"index": 1,`<br/>
+&#160;&#160;&#160;&#160;`"type": "TEXT_NUMBER"`<br/>
+&#160;&#160;`}`<br/>
+`]`
+
+**Response:  HTTP status code, response body**
+
+`HTTP status: 400 Bad Request`<br/>
+`{`<br/>
+&#160;&#160;`"errorCode": 1133,`<br/>
+&#160;&#160;`"message": "Column titles are not unique among input columns.",`<br/>
+&#160;&#160;`"detail": { "columnTitle": "FIRST COLUMN - My New Column" }`<br/>
+`}`
+
 ## Authentication
 
 The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. 
@@ -190,53 +270,11 @@ OWNER | The user has complete control over the resource.
 
 ## Rate Limiting
 
-In order to prevent abuse and undue stress on the Smartsheet servers, the API has a rate limiting feature that restricts users to **300** requests per minute per Access Token. 
-Certain resource intensive operations, such as attaching a file and getting cell history, count as 10 requests to prevent abuse of these operations. 
-We reserve the right to enforce this limit depending on the load on our systems. 
-If and when the limit is enforced, any requests that exceed this limit will be rejected with an **429** HTTP status code, along with the following JSON response body:
-
-{<br/>
-&#160;&#160;&#160;&#160;"errorCode": 4003,<br/>
-&#160;&#160;&#160;&#160;"message": "Rate limit exceeded."<br/>
-}
-
-We recommend that you design your integration to gracefully handle this rate limit error. 
-One way of doing that would be to have your integration *sleep* for 60 seconds when this error is encountered, and then subsequently retry the request. 
-Alternatively, you might choose to implement [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (an error handling strategy whereby you periodically retry a failed request with progressively longer wait times between retries, until either the request succeeds or the certain number of retry attempts is reached). 
-
-**IMPORTANT**: Additionally, we strongly recommend that you avoid executing API requests in rapid-fire succession to update a specific Smartsheet object over and over again within a very short period of time. 
-For example, if the only thing your integration does is execute an [Update Row(s)](#update-row(s)) request once every second for the same sheet, that would only amount to a total of 60 requests per minute -- well within rate limiting guidelines. 
-However, updating the same object in such rapid succession could result in save errors that negatively impact both your integration as well as user experience within the Smartsheet app. 
-To avoid this scenario, design your integration such that API requests are never executed with rapid-fire succession against the same Smartsheet object. 
-For maximum efficiency, consider batching up changes and submitting them in a single request using a [bulk-enabled operation](#bulk-insert-operations) (for example, [Update Row(s)](#update-row(s)) or [Add Column(s)](#add-column(s))).
-
-**IMPORTANT**: We also strongly advise against executing multiple API requests in parallel to update a specific Smartsheet object. 
-Doing so will certainly result in reduced performance and will most likely result in errors due to save collisions. 
-To avoid this scenario, design your integration such that API requests to update a specific Smartsheet object are always executed serially (i.e., execute one request at time, not beginning the next request until the previous request has completed).
+<%= partial "snippets/rateLimiting.md.erb" %>
 
 ## Errors
 
-A successful error handling strategy requires that your integration recognize the difference between errors that can potentially be resolved by retrying the request and errors that should never be retried automatically. 
-The [HTTP status code](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) that is returned with each response is your first indication as to the outcome of the request.
-
-HTTP<br/>status code | Meaning | To Retry or Not to Retry? |
------|-----|-----|-----|
-2xx | Request was successful.<br/><br/>Example: 200 Success | --
-4xx | A problem with request prevented it from executing successfully.<br/><br/>Examples:<ul><li>400 Bad Request</li><li>401 Not Authorized</li><li>403 Forbidden</li><li>404 Not Found</li><li>405 Method Not Supported</li><li>406 Not Acceptable</li><li>415 Unsupported Media Type</li><li>429 Too Many Requests</li></ul> | Never <i>automatically</i> retry the request.<br/><br/>If the error code indicates a problem that can be fixed, fix the problem and then retry the request.<br/><br/>See [Error Handling](#error-handling) for error handling recommendations by error code.
-5xx | The request was properly formatted, but the operation failed on Smartsheet's end.<br/><br/>Examples:<ul><li>500 Internal Server Error</li><li>503 Service Unavailable</li></ul> | In some scenarios, requests should be automatically retried using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>In other cases, requests should not be retried.<br/><br/>See [Error Handling](#error-handling) for error handling recommendations by error code.
-
-<br/><br/>
-In addition to the HTTP status code, you should also evaluate the Smartsheet-specific error code that’s returned in the response body for any unsuccessful request. 
-All errors will also be accompanied by JSON-formatted error objects, containing a Smartsheet-specific error code and a descriptive message. 
-For example, doing a `GET` on a non-existent sheet at `https://api.smartsheet.com/2.0/sheets/123456` will result in an HTTP status code of **404**, indicating the resource was not found. 
-The body of the response will include an Error object:
-
-{<br/>
-&#160;&#160;&#160;&#160;"errorCode": 1006,<br/>
-&#160;&#160;&#160;&#160;"message": "Not Found"<br/>
-}
-
-See [Error Handling](#error-handling) for detailed error handling recommendations.
+<%= partial "snippets/errorHandling.md.erb" %>
 
 ### Error Handling
  

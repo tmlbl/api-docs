@@ -1,0 +1,21 @@
+A successful error handling strategy requires that your integration recognize the difference between errors that can potentially be resolved by retrying the request and errors that should never be retried automatically. 
+The [HTTP status code](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) that is returned with each response is your first indication as to the outcome of the request.
+
+HTTP<br/>status code | Meaning | To Retry or Not to Retry? |
+-----|-----|-----|-----|
+2xx | Request was successful.<br/><br/>Example: 200 Success | --
+4xx | A problem with request prevented it from executing successfully.<br/><br/>Examples:<ul><li>400 Bad Request</li><li>401 Not Authorized</li><li>403 Forbidden</li><li>404 Not Found</li><li>405 Method Not Supported</li><li>406 Not Acceptable</li><li>415 Unsupported Media Type</li><li>429 Too Many Requests</li></ul> | Never <i>automatically</i> retry the request.<br/><br/>If the error code indicates a problem that can be fixed, fix the problem and then retry the request.<br/><br/>See [Error Handling](#error-handling) for error handling recommendations by error code.
+5xx | The request was properly formatted, but the operation failed on Smartsheet's end.<br/><br/>Examples:<ul><li>500 Internal Server Error</li><li>503 Service Unavailable</li></ul> | In some scenarios, requests should be automatically retried using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>In other cases, requests should not be retried.<br/><br/>See [Error Handling](#error-handling) for error handling recommendations by error code.
+
+<br/><br/>
+In addition to the HTTP status code, you should also evaluate the Smartsheet-specific error code that’s returned in the response body for any unsuccessful request. 
+All errors will also be accompanied by JSON-formatted error objects, containing a Smartsheet-specific error code and a descriptive message. 
+For example, doing a `GET` on a non-existent sheet at `https://api.smartsheet.com/2.0/sheets/123456` will result in an HTTP status code of **404**, indicating the resource was not found. 
+The body of the response will include an Error object:
+
+{<br/>
+&#160;&#160;&#160;&#160;"errorCode": 1006,<br/>
+&#160;&#160;&#160;&#160;"message": "Not Found"<br/>
+}
+
+See [Error Handling](#error-handling) for detailed error handling recommendations.
