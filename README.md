@@ -37,6 +37,9 @@ This API documentation is based upon [Slate](https://github.com/tripit/slate/) a
 
 ## Release Notes
 
+**1.2.4 (Oct 7, 2015)**
+* Add "API Best Practices" section.
+
 **1.2.3 (Oct 2, 2015)**
 * Added additional info about Rate Limiting and Errors / Error Handling.
 
