@@ -22,6 +22,7 @@ search: false
 <% PARAMETERS = "**Parameters**" %>
 <% REQUEST = "**Request Body**" %>
 <% RETURNS = "**Returns**" %>
+<% ERRORS = "**Errors**" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
@@ -6567,7 +6568,9 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a non-default format applied.
 **conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a conditional format applied.
 **createdAt** | timestamp | Time of creation
+**createdBy** | [User](#user-object) | User object containing name and email of the creator of this row
 **modifiedAt** | timestamp | Time of last modification
+**modifiedBy** | [User](#user-object) | User object containing name and email of the last person to modify this row
 **cells** | [Cell](#cell-object)[] | Array of Cell objects belonging to the row
 **discussions** | [Discussion](#discussion-object)[] | Array of Discussion objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **attachments**.
@@ -6771,6 +6774,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
+<%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>
 
 ## Copy Row(s) to Another Sheet
 
@@ -7264,6 +7268,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>[hyperlink](#hyperlink-object) (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>[linkInFromCell](#celllink-object) (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing an array of the updated row(s). 
+<%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>
 
 ## <%= RELATED %>
 
@@ -7294,6 +7299,7 @@ Include Flag | Notes |
 **filters**		| Includes **filteredOut** attribute indicating if the row should be displayed or hidden according to the sheet's filters.
 **columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
 **rowPermalink** | Includes **permalink** attribute that represents a direct link to the [row](#row-object) in the Smartsheet application.
+**rowWriterInfo** | Includes **createdBy** and **modifiedBy** attributes on the row, indicating the row's creator, and last modifier.
 
 ### Row Location
 
