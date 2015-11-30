@@ -6205,6 +6205,13 @@ Extends the [Row object](#row-object), adding the following:
 -----|-----|-----|
 **sheetId** | number | The ID of the Sheet from which the Row originates
 
+### ReportPublish Object 
+
+     |     |     |
+-----|-----|-----|
+**readOnlyFullEnabled** | boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
+**readOnlyFullUrl** | string | URL for Read-Only Full
+
 ## Get Report
 
 > Example Request:
@@ -6512,6 +6519,96 @@ Gets the list of all Reports that the User has access to, in alphabetical order,
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Report objects](#report-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+
+## Publish Report
+
+### Get Report Publish Status
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+> Example Response:
+
+```json
+{
+	"readOnlyFullEnabled": true,
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
+}
+```
+
+`GET /reports/{reportId}/publish`
+
+Gets the status of the Publish settings of the Report, including the URLs of any enabled publishings.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [ReportPublish object](#reportpublish-object)
+
+### Set Report Publish Status
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"readOnlyFullEnabled": true}'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "readOnlyFullEnabled": true,
+        "readOnlyFullUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d"
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /reports/{reportId}/publish`
+
+Sets the publish status of the Report and returns the new status, including the URLs of any enabled publishings.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the **readOnlyFullEnabled** attribute.
+<%= RETURNS %> | [Result object](#result-object) containing a [ReportPublish object](#reportpublish-object)
 
 ## Send Report via Email
 
