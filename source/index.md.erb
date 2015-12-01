@@ -465,6 +465,7 @@ Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
 Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
 Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
 Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>This type can only be set through the Smartsheet application when configuring a project sheet.
+Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
 
 <aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
 
@@ -4975,7 +4976,7 @@ smartsheet.folderResources().createFolder(destinationFolderId, folder);
 
 <%= partial "snippets/createFolder_response.md.erb" %>
 
-`POST /folders/{folderid}/folders`
+`POST /folders/{folderId}/folders`
 
 Creates a Folder in the specified Folder. 
 
@@ -5035,7 +5036,7 @@ smartsheet.workspaceResources().folderResources().createFolder(workspaceId, fold
 
 <%= partial "snippets/createFolder_response.md.erb" %>
 
-`POST /workspaces/{workspaceid}/folders`
+`POST /workspaces/{workspaceId}/folders`
 
 Creates a Folder in the specified Workspace. 
 
@@ -9938,7 +9939,7 @@ smartsheet.sheetResources().updateSheet(sheet);
 
 Updates the Sheet specified in the URL.
 
-To modify Sheet contents, see [Add Row(s)](#add-row(s)), [Update Row(s)](#update-row(s)), and [Update Column](#update-column).
+To modify Sheet contents, see [Add Row(s)](#add-row(s)), [Update Row(s)](#update-row(s)), [Add Column(s)](#add-column(s)), and [Update Column](#update-column).
 
 This operation can be used to update an individual user's sheet settings.  If the request body contains only the **userSettings** attribute, this operation may be performed even if the user
 only has read-only access to the sheet (i.e. the user has viewer permissions, or the sheet is read-only).
@@ -9948,7 +9949,7 @@ only has read-only access to the sheet (i.e. the user has viewer permissions, or
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating this user's settings for the sheet</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the newly created Sheet
+<%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the updated Sheet
 
 ## <%= RELATED %>
 
@@ -10144,7 +10145,7 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned in the previous step
- | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- SHA-256 hash of your App secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 ## Refresh Access Token
@@ -10191,7 +10192,7 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (required) -- redirect URL registered for your app, including the protocol (e.g., "http://")
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (e.g., "http://")
  | **hash** (required) -- SHA-256 hash of your App secret concatenated with a pipe and the refresh token value
 
 ## Revoke Access Token
