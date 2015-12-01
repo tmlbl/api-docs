@@ -139,7 +139,8 @@ As with any REST API, you can also test API requests / responses using a Chrome 
 **Non-breaking changes**: We will be adding new functionality and bug fixes to the API over time. 
 You should expect to see new endpoints or new attributes for existing objects. 
 Such changes will not result in a new API version.  Please make sure that your code can handle new attributes gracefully. 
-Also, please make sure your code does not depend on the order in which records are returned, unless it is explicitly stated in this documentation.  
+Also, please make sure your code does not depend on the order in which records are returned, unless it is explicitly stated in this documentation. 
+Finally, please be aware that a request which results in an Error response today may succeed at some point in the future, if/when Smartsheet functionality changes such that the previously disallowed action becomes allowed. 
 
 **Breaking changes**: We intend to maintain the current API version for the foreseeable future. 
 If and when we decide to add functionality that breaks the contract of the current API, we will publish it with a new version number, so as to keep the existing API functionality backwards compatible.
@@ -435,15 +436,6 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1146 | Unsupported operation: {0}. | <span class="doNotRetry">Do not retry.</span>
 400 | 1147 | Multipart request contained an invalid part name: '{0}' | Do not retry without fixing the problem.
 400 | 1148 | Numeric cell values must be between {0} and {1}. | Do not retry without fixing the problem.
-401 | 2000 | Invalid username and/or password. | Do not retry without fixing the problem.
-401 | 2001 | Your account is locked out. | Do not retry without fixing the problem.
-401 | 2002 | Invalid email address | Do not retry without fixing the problem.<br/><br/>Hint: Verify that value of <b>Assume-User</b> header is URL-encoded.
-401 | 2003 | Your account is currently locked out due to a billing issue. Please contact Smartsheet Finance at finance@smartsheet.com. | Do not retry without fixing the problem.
-401 | 2004 | Your email address must be confirmed for you to log into Smartsheet. Please click on the link from your welcome mail, or you can confirm your email by resetting your password. | Do not retry without fixing the problem.
-400 | 2005 | The device id you have provided is longer than the maximum of 45 characters. | Do not retry without fixing the problem.
-400 | 2006 | The client id you have provided is not valid. | Do not retry without fixing the problem.
-400 | 2008 | Invalid login ticket. | Do not retry without fixing the problem.
-400 | 2009 | The given launch parameters are not currently supported by the API. | Do not retry without fixing the problem.
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
 500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
@@ -6608,7 +6600,7 @@ Sets the publish status of the Report and returns the new status, including the 
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the **readOnlyFullEnabled** attribute
+<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the **readOnlyFullEnabled** attribute.<br/><br/>To publish the Report, set **readOnlyFullEnabled** to `true`. To unpublish the Report, set **readOnlyFullEnabled** to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [ReportPublish object](#reportpublish-object)
 
 ## Send Report via Email
@@ -6872,7 +6864,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)) for more information.</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
-<%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>
+<%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request will fail (no rows will be added), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}
 
 ## Copy Row(s) to Another Sheet
 
@@ -7366,7 +7358,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>[hyperlink](#hyperlink-object) (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>[linkInFromCell](#celllink-object) (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated at this time.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing an array of the updated row(s). 
-<%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>
+<%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request will fail (no rows will be updated), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}
 
 ## <%= RELATED %>
 
@@ -7420,6 +7412,8 @@ Add or move the Row directly above the specified sibling Row (at the same hierar
 Add or move the Row directly below the specified sibling Row (at the same hierarchical level). | **siblingId** = (ID of sibling row)
 Add or move the Row so that it is the first child row of the specified parent Row. | **parentId** = (ID of parent row)
 Add or move the Row so that it is the last child row of the specified parent Row. | **parentId** = (ID of parent row)<br/>**toBottom** = `true`
+
+<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Row(s) in a single request, try achieving the objective by using two separate requests: 1) Move parent Row. 2) Move child Row(s).</aside>
 
 # Searching
 
@@ -9844,7 +9838,7 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>
+<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding attribute(s) to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding attribute(s) to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [SheetPublish object](#sheetpublish-object)
 
 ## Search Sheet 
