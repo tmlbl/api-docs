@@ -96,6 +96,7 @@ Resources:
 /templates
 /token
 /users
+/users/{id}/alternateemails
 /workspaces
 ```
 
@@ -472,6 +473,11 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1146 | Unsupported operation: {0}. | <span class="doNotRetry">Do not retry.</span>
 400 | 1147 | Multipart request contained an invalid part name: '{0}' | Do not retry without fixing the problem.
 400 | 1148 | Numeric cell values must be between {0} and {1}. | Do not retry without fixing the problem.
+400 | 1156 | Invalid email | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the email address is properly formatted.
+400 | 1157 | This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account. | <span class="doNotRetry">Do not retry.</span>
+400 | 1158 | This address has not been confirmed yet, so it can't be set as the primary email address. | Do not retry without fixing the problem.
+400 | 1159 | The specified email address ({0}) is an alternate email address for a user with a primary email address of {1}. | Do not retry without fixing the problem.
+400 | 1160 | Invalid bulk request. See detail for more information. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the **detail** attribute within the error response for details about the issue(s).
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
 500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
@@ -6026,7 +6032,7 @@ of [GroupMember objects](#groupmember-object) any users specified in the array t
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array of Group Member objects, limited to the following attribute:<ul><li>email</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the members added to the group -- either a single [group member](#groupmember-object) or array of group member objects, corresponding to what was specified in the request.
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary email address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -10424,7 +10430,7 @@ Adds a User to the organization.
 <%= PARAMETERS %> | **sendEmail** (optional): A boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
 <%= REQUEST %> | [User object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceViewer (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created [User object](#user-object).
-<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-address(es)) (i.e., not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary email address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-address(es)) (i.e., not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 <aside class="notice">If successful, and user auto provisioning (UAP) is on, and user matches the auto provisioning rules, user will be added to the org.  If UAP is off, or user does not match UAP rules, user will be invited to the org and must explicitly accept the invitation to join.</aside>
 
@@ -10435,6 +10441,199 @@ Adds a User to the organization.
 A [User](#user-object) in Smartsheet must have a *primary* email address associated with their account (**User.email**) and may optionally have one or more *alternate* email addresses associated with their account (**User.alternateEmails**). 
 
 <aside class="notice">The following operations must be performed using an User's <i>primary</i> email address:<ul><li><a href="#add-group-member(s)">Add Group Member(s)</a></li><li><a href="#add-user">Add User</a></li><li><a href="#create-update-request">Create Update Request</a></li><li><a href="#share-report">Share Report</a></li><li><a href="#share-sheet">Share Sheet</a></li><li><a href="#share-workspace">Share Workspace</a></li></ul>Attempting to specify a User's <i>alternate</i> email address for any of the above operations will result in an error.</aside>
+
+### Add Alternate Email(s)
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"email": "altEmail1@smartsheet.com"},{"email": "altEmail2@smartsheet.com"}]'
+```
+
+```javascript
+// [tocdo]
+```
+
+```csharp
+// [tocdo]
+```
+
+```java
+// [tocdo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": [
+		{
+			"id": 12345,
+			"email": "altEmail1@smartsheet.com",
+			"confirmed": false
+		},
+		{
+			"id": 67890,
+			"email": "altEmail2@smartsheet.com",
+			"confirmed": false
+		}
+    ],
+    "resultCode": 0
+}
+```
+
+`POST /users/{userId}/alternateemails`
+
+Adds one or more alternate email addresses for the specified User.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | Array of [AlternateEmail objects](#alternateemail-object), each limited to only the **email** attribute
+<%= RETURNS %> | [Result object](#result-object) containing an array of the newly created [AlternateEmail objects](#alternateemail-object).
+<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response will contain the typical [Error object](#errors).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#error-handling)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+
+### Delete Alternate Email
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmailId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /users/{userId}/alternateemails/{alternateEmailId}`
+
+Deletes the specified alternate email address for the specified user.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+### Get Alternate Email
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEmailId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+> Example Response:
+
+```json
+{
+	"id": 12345,
+	"email": "altEmail1@smartsheet.com",
+	"confirmed": true
+}
+```
+
+`GET /users/{userId}/alternateemails/{alternateEmailId}`
+
+Gets the specified Alternate Email. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [AlternateEmail object](#alternateemail-object)<br/><br/>
+
+### List Alternate Emails
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 1,
+	"data": [
+		{
+			"id": 12345,
+			"email": "altEmail1@smartsheet.com",
+			"confirmed": true
+		},
+		{
+			"id": 67890,
+			"email": "altEmail2@smartsheet.com",
+			"confirmed": false
+		}
+	]
+}
+```
+
+`GET /users/{userId}/alternateemails`
+
+Gets a list of the Alternate Emails for the specified User. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [AlternateEmail objects](#alternateemail-object)<br/><br/>
 
 ## Get Current User
 
