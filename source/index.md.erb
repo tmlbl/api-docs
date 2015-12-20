@@ -6,6 +6,7 @@ language_tabs:
   - csharp: C#
   - java: Java
   - javascript: Node.js
+  - python: Python
   
 toc_footers:
 
@@ -48,6 +49,11 @@ search: false
 
 ```java
 // The Java code samples included in this API documentation demonstrate how to execute operations using the Smartsheet Java SDK: https://github.com/smartsheet-platform/smartsheet-java-sdk.
+```
+
+```python
+# The Python code samples included in this API documentation demonstrate how to execute operations using the Smartsheet Python SDK:
+https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
 
 <aside class="notice">
@@ -734,6 +740,7 @@ This API documentation currently contains sample code in the following languages
 <li>C#</li>
 <li>Java</li>
 <li>Node.js</li>
+<li>Python</li>
 </ul>
 
 For each operation, you'll see sample code displayed in the dark blue panel next to the operation. 
@@ -835,6 +842,45 @@ smartsheet.users.getCurrentUser()<br/>
 
 For more information about using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), including examples of using callbacks (instead of promises), see the [SDK Readme](https://github.com/smartsheet-platform/smartsheet-javascript-sdk).
 
+### Python Sample Code
+
+The Python samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Python SDK](https://github.com/smartsheet-platform/smartsheet-python-sdk). To use the Python SDK, you'll need to include the appropriate **import** directives in your code. Each code sample uses a **Smartsheet** object called "smart" that can be created as follows:
+
+<code>
+import smartsheet<br/>
+<br/>
+smart = smartsheet.Smartsheet()<br/>
+</code>
+
+This example assumes that your Smartsheet API Access Token is set as an environment variable named **SMARTSHEET_ACCESS_TOKEN**. If you prefer (though we don't advise it), you may also pass your Smartsheet Access Token to the instantiation of the Smartsheet object like this:
+
+<code>
+import smartsheet<br/>
+<br/>
+smart = smartsheet.Smartsheet('INSERT_YOUR_TOKEN_HERE')<br/>
+</code>
+
+Once you've created the **smart** object, you can use it to execute API operations. For example, the following sample shows how to execute the [Get Current User](#get-current-user) operation.
+
+<code>
+me = smart.Users.get_current_user()<br/>
+print(me)<br/>
+</code>
+
+Within the Python code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:
+
+<code>smart.Discussions.create_discussion_on_row(<br/>
+&#160;&#160;&#160;&#160;sheetId,<br/>
+&#160;&#160;&#160;&#160;rowId,<br/>
+&#160;&#160;&#160;&#160;smart.models.Discussion({<br/>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'title': 'Knuckleheads',<br/>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'comment': smart.models.Comment({<br/>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'text': 'Hey, fellas!'<br/>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;})<br/>
+&#160;&#160;&#160;&#160;})<br/>
+)</code>
+
 ## Direct API Access
 
 Smartsheet makes it easy to directly access your data via the API. 
@@ -901,6 +947,13 @@ Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessTo
 
 // Get current user.
 smartsheet.userResources().getCurrentUser();
+```
+
+```python
+smart = smartsheet.Smartsheet('INSERT_YOUR_TOKEN_HERE')
+
+# Get current user
+smart.Users.get_current_user()
 ```
 
 > Example Response:
@@ -1056,6 +1109,10 @@ curl https://api.smartsheet.com/2.0/token \
 // [todo]
 ```
 
+```python
+# [todo]
+```
+
 > Successful Response:
 
 ```json
@@ -1119,6 +1176,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```java
 // [todo]
+```
+
+```python
+# [todo]
 ```
 
 > Successful Response:
@@ -1188,6 +1249,17 @@ Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setA
 UserProfile user= smartsheet.userResources().getCurrentUser();
 ```
 
+```python
+# Create the 'smart' object and run the assume_user method.
+smart.assume_user('john.doe@smartsheet.com')
+
+# Get the current user (call executed as "john.doe@smartsheet.com").
+user = smart.Users.get_current_user()
+
+# Reset the 'smart' object so no Assume-User header is used in further requests
+smart.assume_user()
+```
+
 > Example Response:
 
 ```json
@@ -1249,6 +1321,20 @@ Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment
 smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
 ```
 
+```python
+# Create the 'smart' object and run the assume_user method.
+smart = smartsheet.Smartsheet()
+smart.assume_user('john.doe@smartsheet.com')
+
+# Create comment.
+comment = smart.models.Comment({
+    'text': 'Hey, fellas!'
+})
+
+# Add comment to discussion (call executed as "john.doe@smartsheet.com").
+smart.Discussions.add_comment_to_discussion(sheetId, discussionId, comment)
+```
+
 > Example Response:
 
 ```json
@@ -1307,6 +1393,12 @@ smartsheet.UserResources.SheetResources.ListSheets();
 smartsheet.userResources().listOrgSheets();
 ```
 
+```python
+# List all org sheets (assuming an admin user level Access Token has been used to create 'smart').
+action = smart.Sheets.list_org_sheets()
+sheets = action.result
+```
+
 > Fetch each sheet (using Assume-User):
 
 ```shell
@@ -1327,6 +1419,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?include=discussions,attachm
 // [todo]
 ```
 
+```python
+dl_path = 'backup'
+# fetch each sheet using Assume-User
+for org_sheet in sheets:
+    smart.assume_user(org_sheet.owner)
+    sheet = smart.Sheets.get_sheet(
+        org_sheet.id,
+        include='discussions,attachments'
+    )
+```
+
 > Fetch each attachment:
 
 ```shell
@@ -1345,6 +1448,15 @@ curl -0 URL_TO_ATTACHMENT
 // [todo]
 ```
 
+```python
+    # download all attachments
+    for attachment in sheet.attachments:
+        attachment_obj = smart.Attachments.get_attachment(sheet.id, attachment.id)
+        result = smart.Attachments.download_attachment(attachment_obj, dl_path)
+        if result.message == 'SUCCESS':
+            print(result.filename + ' downloaded')
+```
+
 To backup all of the org data, follow these steps:
 <ol>
 <li>Get a list of all sheets in your organization.</li>
@@ -1353,6 +1465,61 @@ To backup all of the org data, follow these steps:
 </ol>
 
 You can use the sheet version number to enable incremental backups. [Fetch the sheet version number](#get-sheet-version) and compare it to the last backed up version number (you will need to store the sheet ID and the last backup up version number) - if they are the same, no need to include the sheet in your incremental backup run.
+
+> Backup Script
+
+```shell
+mkdir backup
+curl https://api.smartsheet.com/2.0/users/sheets \
+-H "Authorization: Bearer ACCESS_TOKEN"
+...
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+import smartsheet
+import os
+
+os.mkdir('backup')
+os.chdir('backup')
+
+smart = smartsheet.Smartsheet()
+
+action = smart.Sheets.list_org_sheets()
+sheets = action.result
+
+for org_sheet in sheets:
+    os.mkdir(str(org_sheet.id))
+    dl_path = os.path.realpath(str(org_sheet.id))
+    
+    smart.assume_user(org_sheet.owner)
+    sheet = smart.Sheets.get_sheet(
+        org_sheet.id,
+        include='discussions,attachments'
+    )
+    
+    # download all attachments
+    for attachment in sheet.attachments:
+        attachment_obj = smart.Attachments.get_attachment(sheet.id, attachment.id)
+        result = smart.Attachments.download_attachment(attachment_obj, dl_path)
+        if result.message == 'SUCCESS':
+            print(result.filename + ' downloaded')
+            
+    # download sheet itself
+    smart.Sheets.get_sheet_as_csv(org_sheet.id, dl_path)
+
+```
 
 # API Change Log
 
@@ -1534,6 +1701,16 @@ File file = new File(filePath);
 smartsheet.sheetResources().commentResources().attachmentResources().attachFile(sheetId, commentId, file, "application/msword");
 ```
 
+```python
+smart.Attachments.attach_file_to_comment(
+    sheetId,
+    commentId,
+    ('ProgressReport.docx', 
+     open('/path/to/ProgressReport.docx', 'rb'), 
+     'application/msword')
+)
+```
+
 > Example Request (simple):
 
 ```shell
@@ -1580,6 +1757,16 @@ File file = new File(filePath);
 smartsheet.sheetResources().commentResources().attachmentResources().attachFile(sheetId, commentId, file, "application/msword");
 ```
 
+```python
+smart.Attachments.attach_file_to_comment(
+    sheetId,
+    commentId,
+    ('ProgressReport.docx', 
+     open('/path/to/ProgressReport.docx', 'rb'), 
+     'application/msword')
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/attachFile_response.md.erb" %>
@@ -1622,6 +1809,16 @@ File file = new File(filePath);
 
 // Attach file to row.
 smartsheet.sheetResources().rowResources().attachmentResources().attachFile(sheetId, rowId, file, "application/msword");
+```
+
+```python
+smart.Attachments.attach_file_to_row(
+    sheetId,
+    rowId,
+    ('ProgressReport.docx', 
+     open('/path/to/ProgressReport.docx', 'rb'), 
+     'application/msword')
+)
 ```
 
 > Example Request (simple):
@@ -1670,6 +1867,17 @@ File file = new File(filePath);
 smartsheet.sheetResources().rowResources().attachmentResources().attachFile(sheetId, rowId, file, "application/msword");
 ```
 
+```python
+smart.Attachments.attach_file_to_row(
+    sheetId,
+    rowId,
+    ('ProgressReport.docx', 
+     open('/path/to/ProgressReport.docx', 'rb'), 
+     'application/msword')
+)
+```
+
+
 > Example Response:
 
 <%= partial "snippets/attachFile_response.md.erb" %>
@@ -1708,6 +1916,15 @@ File file = new File(filePath);
 
 // Attach file to sheet.
 smartsheet.sheetResources().attachmentResources().attachFile(sheetId, file, "application/msword");
+```
+
+```python
+smart.Attachments.attach_file_to_sheet(
+    sheetId,
+    ('ProgressReport.docx', 
+     open('/path/to/ProgressReport.docx', 'rb'), 
+     'application/msword')
+)
 ```
 
 > Example Request (simple):
@@ -1754,6 +1971,16 @@ File file = new File(filePath);
 // Attach file to sheet.
 smartsheet.sheetResources().attachmentResources().attachFile(sheetId, file, "application/msword");
 ```
+
+```python
+smart.Attachments.attach_file_to_sheet(
+    sheetId,
+    ('ProgressReport.docx', 
+     open('/path/to/ProgressReport.docx', 'rb'), 
+     'application/msword')
+)
+```
+
 
 > Example Response:
 
@@ -1820,6 +2047,18 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://
 smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(sheetId, commentId, attachment);
 ```
 
+```python
+# create the URL
+url = smart.models.Attachment({
+    'name': 'Search Engine',
+    'attachment_type': 'LINK',
+    'url': 'http://www.google.com'
+})
+
+# attach to the comment
+smart.Attachments.attach_url_to_comment(sheetId, commentId, url)
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1882,6 +2121,19 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://
 
 // Attach URL to row.
 smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(sheetId, rowId, attachment);
+```
+
+```python
+# create the URL
+url = smart.models.Attachment({
+    'name': 'Search Engine',
+    'description': 'A popular search engine.'
+    'attachment_type': 'LINK',
+    'url': 'http://www.google.com'
+})
+
+# attach to the row
+smart.Attachments.attach_url_to_row(sheetId, rowId, url)
 ```
 
 > Example Response:
@@ -1947,6 +2199,19 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://
 smartsheet.sheetResources().attachmentResources().attachUrl(sheetId, attachment);
 ```
 
+```python
+# create the URL
+url = smart.models.Attachment({
+    'name': 'Search Engine',
+    'description': 'A popular search engine.',
+    'attachment_type': 'LINK',
+    'url': 'http://www.google.com'
+})
+
+# attach to the sheet
+smart.Attachments.attach_url_to_sheet(sheetId, url)
+```
+
 > Example Response:
 
 <%= partial "snippets/attachURL_response.md.erb" %>
@@ -1992,6 +2257,10 @@ smartsheet.SheetResources.AttachmentResources.DeleteAttachment(sheetId, attachme
 ```java
 // Delete attachment.
 smartsheet.sheetResources().attachmentResources().deleteAttachment(sheetId, sheetAttachmentId);
+```
+
+```python
+smart.Attachments.delete_attachment(sheetId, attachmentId)
 ```
 
 > Example Response:
@@ -2049,6 +2318,10 @@ smartsheet.SheetResources.AttachmentResources.GetAttachment(sheetId, attachmentI
 ```java
 // Get attachment.
 smartsheet.sheetResources().attachmentResources().getAttachment(sheetId, attachmentId);
+```
+
+```python
+attachment = smart.Attachments.get_attachment(sheetId, attachmentId)
 ```
 
 > Example Response:
@@ -2116,6 +2389,22 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentReso
 
 // Get all attachments without pagination.
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, null);
+```
+
+```python
+# get the complete list
+action = smart.Attachments.list_all_attachments(sheetId, include_all=True)
+
+# the actual list:
+attachments = action.data
+
+# Get a paginated list of attachments
+action = smart.Attachments.list_all_attaachments(
+    sheetId, 
+    page_size=10, 
+    page=1)
+pages = action.total_pages
+attachments = action.data
 ```
 
 > Example Response:
@@ -2205,6 +2494,24 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionReso
 PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionResources().attachmentResources().getAttachments(sheetId, discussionId, null);
 ```
 
+```python
+# Get complete list
+action = smart.Attachments.list_dicsussion_attachments(
+    sheetId, 
+    discussionId, 
+    include_all=True)
+attachments = action.data
+
+# Get paginated list
+action = smart.Attachments.list_discussion_attachments(
+    sheetId, 
+    discussionId, 
+    page_size=10, 
+    page=1)
+pages = action.total_pages
+attachments = action.data
+```
+
 > Example Response:
 
 ```json
@@ -2292,6 +2599,24 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources()
 PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources().attachmentResources().getAttachments(sheetId, rowId, null);
 ```
 
+```python
+# Get complete list
+action = smart.Attachments.list_row_attachments(
+    sheetId, 
+    rowId, 
+    include_all=True)
+attachments = action.data
+
+# Get paginated list
+action = smart.Attachments.list_row_attachments(
+    sheetId, 
+    rowId, 
+    page_size=10, 
+    page=1)
+pages = action.total_pages
+attachments = action.data
+```
+
 > Example Response:
 
 ```json
@@ -2364,6 +2689,18 @@ File file = new File(filePath);
 smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(sheetId, attachmentId, file, "application/msword");
 ```
 
+```python
+action = smart.Attachments.attach_new_version(
+    sheetId,
+    attachmentId,
+    ('ProgressReport.docx',
+     open('/path/to/ProgressReport.docx', 'rb'),
+     'application/msword')
+)
+# action.message == 'SUCCESS'
+# action.result is an Attachment object
+```
+
 > Example Request (simple):
 
 ```shell
@@ -2408,6 +2745,18 @@ File file = new File(filePath);
 
 // Attach new version of the file.
 smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(sheetId, attachmentId, file, "application/msword");
+```
+
+```python
+action = smart.Attachments.attach_new_version(
+    sheetId,
+    attachmentId,
+    ('ProgressReport.docx',
+     open('/path/to/ProgressReport.docx', 'rb'),
+     'application/msword')
+)
+# action.message == 'SUCCESS'
+# action.result is an Attachment object
 ```
 
 > Example Response:
@@ -2469,6 +2818,11 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.DeleteAllVersi
 ```java
 // Delete all versions of the attachment.
 smartsheet.sheetResources().attachmentResources().versioningResources().deleteAllVersions(sheetId, attachmentId);
+```
+
+```python
+# Delete all versions of the attachment
+smart.Attachments.delete_attachment_versions(sheetId, attachmentId)
 ```
 
 > Example Response:
@@ -2533,6 +2887,24 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentReso
 
 // List all attachment versions without pagination.
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, null);
+```
+
+```python
+# Get complete list
+action = smart.Attachments.list_attachment_versions(
+    sheetId, 
+    attachmentId, 
+    include_all=True)
+versions = action.data
+
+# Get paginated list
+action = smart.Attachments.list_attachment_versions(
+    sheetId, 
+    attachmentId, 
+    page_size=5, 
+    page=1)
+pages = action.total_pages
+versions = action.data
 ```
 
 > Example Response:
@@ -2678,6 +3050,26 @@ PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources(
 
 // Get cell history without pagination.
 PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources().cellResources().getCellHistory(sheetId, rowId, columnId, null);
+```
+
+```python
+# Get complete list
+action = smart.Cells.get_cell_history(
+    sheetId,
+    rowId,
+    columnId,
+    include_all=True)
+revisions = action.data
+
+# Get paginated list
+action = smart.Cells.get_cell_history(
+    sheetId,
+    rowId,
+    columnId,
+    page_size=5,
+    page=1)
+pages = action.total_pages
+revisions = action.data
 ```
 
 > Example Response:
@@ -2896,6 +3288,36 @@ Column column3 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Col
 smartsheet.sheetResources().columnResources().addColumns(sheetId(), Arrays.asList(column1, column2, column3));
 ```
 
+```python
+# Create the columns.
+column1 = smart.models.Column({
+    'title': 'New Picklist Column 1',
+    'type': 'PICKLIST',
+    'options': [
+        'First',
+        'Second',
+        'Third'
+    ],
+    'index': 4
+})
+
+column2 = smart.models.Column({
+    'title': 'New Date Column',
+    'type': 'DATE',
+    'index': 4
+})
+
+column3 = smart.models.Column({
+    'title': 'New Picklist Column 2',
+    'type': 'PICKLIST',
+    'options': ['1', '2', '3'],
+    'index': 4
+})
+
+# Add the columns to the sheet.
+smart.Sheets.add_columns(sheetId, [column1, column2, column3])
+```
+
 > Example Response:
 
 ```json
@@ -2990,6 +3412,11 @@ smartsheet.SheetResources.ColumnResources.DeleteColumn(sheetId, columnId);
 smartsheet.sheetResources().columnResources().deleteColumn(sheetId, columnId);
 ```
 
+```python
+# Delete column
+smart.Sheets.delete_column(sheetId, columnId)
+```
+
 > Example Response:
 
 ```json
@@ -3049,6 +3476,10 @@ smartsheet.sheetResources().columnResources().getColumn(sheetId, columnId, null)
 
 // Get column (specify 'include' parameter with value of "filters").
 smartsheet.sheetResources().columnResources().getColumn(sheetId, columnId, EnumSet.of(ColumnInclusion.FILTERS));
+```
+
+```python
+column = smart.Sheets.get_column(sheetId, columnId)
 ```
 
 > Example Response:
@@ -3116,6 +3547,17 @@ smartsheet.sheetResources().columnResources().listColumns(sheetId, EnumSet.of(Co
 
 // Get all columns (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().columnResources().listColumns(sheetId, null, null);
+```
+
+```python
+# Get complete list
+action = smart.Sheets.get_columns(sheetId, include_all=True)
+columns = action.data
+
+# Get paginated list
+action = smart.Sheets.get_columns(sheetId)
+pages = action.total_pages
+columns = action.data # default: 100 per page
 ```
 
 > Example Response:
@@ -3215,6 +3657,18 @@ Column column = new Column.UpdateColumnBuilder().setColumnId(columnId).setTitle(
 
 // Update column.
 smartsheet.sheetResources().columnResources().updateColumn(sheetId, column);
+```
+
+```python
+altered_column = smart.models.Column({
+    'title': 'First Column',
+    'type': 'PICKLIST',
+    'options': ["One", "Two"],
+    'index': 0
+})
+
+action = smart.Sheets.update_column(sheetId, columnId, altered_column)
+# action.result is an instance of smartsheet.models.Column
 ```
 
 > Example Response:
@@ -3320,6 +3774,16 @@ Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment
 smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
 ```
 
+```python
+action = smart.Discussions.add_comment_to_discussion(
+    sheetId,
+    discussionId,
+    smart.models.Comment({
+        'text': 'This is a new comment.'
+    })
+)
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -3357,6 +3821,19 @@ Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment
 File file = new File(filePath);
 
 smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(sheetId, discussionId, comment, file, "application/octet-stream");
+```
+
+```python
+comment = smart.models.Comment({
+    'text': 'You might need this.'
+})
+
+action = smart.Discussions.add_comment_to_discussion_with_attachment(
+    sheetId,
+    discussionId,
+    comment,
+    ('image.png', open('/path/to/image.png', 'rb'), 'image/png')
+)
 ```
 
 > Example Response:
@@ -3436,6 +3913,10 @@ smartsheet.SheetResources.CommentResources.DeleteComment(sheetId, commentId);
 smartsheet.sheetResources().commentResources().deleteComment(sheetId, commentId);
 ```
 
+```python
+smart.Discussions.delete_discussion_comment(sheetId, commentId)
+```
+
 > Example Response:
 
 ```json
@@ -3489,6 +3970,10 @@ smartsheet.SheetResources.CommentResources.GetComment(sheetId, commentId);
 ```java
 // Get comment.
 smartsheet.sheetResources().commentResources().getComment(sheetId, commentId);
+```
+
+```python
+comment = smart.Discussions.get_discussion_comment(sheetId, commendId)
 ```
 
 > Example Response:
@@ -3555,6 +4040,10 @@ smartsheet.ContactResources.GetContact(contactId);
 smartsheet.contactResources().getContact(contactId);
 ```
 
+```python
+contact = smart.Contacts.get_contact(contactId)
+```
+
 > Example Response:
 
 ```json
@@ -3601,6 +4090,17 @@ smartsheet.contactResources().listContacts(parameters);
 
 // List contacts (omit pagination parameters).
 smartsheet.contactResources().listContacts(null);
+```
+
+```python
+# Get complete list
+action = smart.Contacts.list_contacts(include_all=True)
+contacts = action.data
+
+# Get paginated list, 100 per page
+action = smart.Contacts.list_contacts()
+pages = action.total_pages
+contacts = action.data
 ```
 
 > Example Response:
@@ -3721,6 +4221,19 @@ Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This 
 smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
 ```
 
+```python
+action = smart.Discussions.create_discussion_on_row(
+    sheetId,
+    rowId,
+    smart.models.Discussion({
+        'title': 'This is a new discussion.',
+        'comment': smart.models.Comment({
+            'text': 'This text is the body of the first comment.'
+        })
+    })
+)
+```
+
 > Example Request (with attachment):
 
 ```shell
@@ -3769,6 +4282,20 @@ File file = new File(filePath);
 
 // Add discussion to row.
 smartsheet.sheetResources().rowResources().discussionResources().createDiscussionWithAttachment(sheetId, rowId, discussion, file, "application/octet-stream");
+```
+
+```python
+action = smart.Discussions.create_discussion_on_row_with_attachment(
+    sheetId,
+    rowId,
+    smart.models.Discussion({
+        'title': 'This is a new discussion.',
+        'comment': smart.models.Comment({
+            'text': 'This text is the body of the first comment.'
+        })
+    }),
+    ('photo.jpg', open('/path/to/photo.jpg', 'rb'), 'image/jpeg')
+)
 ```
 
 > Example Response:
@@ -3847,6 +4374,19 @@ Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This 
 smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
 ```
 
+```python
+action = smart.Discussions.create_discussion_on_sheet(
+    sheetId,
+    smart.models.Discussion({
+        'title': 'This is a new discussion.',
+        'comment': smart.models.Comment({
+            'text': 'This text is the body of the first comment.'
+        })
+    })
+)
+```
+
+
 > Example Request (with attachment):
 
 ```shell
@@ -3893,6 +4433,20 @@ File file = new File(filePath);
 // Add discussion (including comment with attachment) to sheet.
 smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(sheetId, discussion, file, "application/octet-stream");
 ```
+
+```python
+action = smart.Discussions.create_discussion_on_sheet_with_attachment(
+    sheetId,
+    smart.models.Discussion({
+        'title': 'This is a new discussion.',
+        'comment': smart.models.Comment({
+            'text': 'This text is the body of the first comment.'
+        })
+    }),
+    ('photo.jpg', open('/path/to/photo.jpg', 'rb'), 'image/jpeg')
+)
+```
+
 
 > Example Response:
 
@@ -3947,6 +4501,10 @@ smartsheet.SheetResources.DiscussionResources.DeleteDiscussion(sheetId, discussi
 ```java
 // Delete discussion.
 smartsheet.sheetResources().discussionResources().deleteDiscussion(sheetId, discussionId);
+```
+
+```python
+action = smart.Discussions.delete_discussion(sheetId, discussionId)
 ```
 
 > Example Response:
@@ -4021,6 +4579,17 @@ smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, param
 smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, null, null);
 ```
 
+```python
+# Get complete list
+action = smart.Discussions.get_all_discussions(sheetId, include_all=True)
+discussions = action.data
+
+# Get paginated list
+action = smart.Discussions.get_all_discussions(sheetId, page_size=10, page=1)
+pages = action.total_pages
+discussions = action.data
+```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -4067,6 +4636,11 @@ smartsheet.SheetResources.DiscussionResources.GetDiscussion(sheetId, discussionI
 ```java
 // Get discussion.
 smartsheet.sheetResources().discussionResources().getDiscussion(sheetId, discussionId);
+```
+
+```python
+discussion = smart.Discussions.get_discussion(sheetId, discussionId)
+# discussion is an instance of smartsheet.models.Discussion
 ```
 
 > Example Response:
@@ -4141,6 +4715,17 @@ smartsheet.sheetResources().rowResources().discussionResources().listDiscussions
 
 // Get row discussions (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, null, null);
+```
+
+```python
+# Get complete list
+action = smart.Discussions.get_row_discussions(sheetId, rowId, include_all=True)
+discussions = action.data
+
+# Get paginated list
+action = smart.Discussions.get_row_discussions(sheetId, rowId, page_size=10)
+pages = action.total_pages # starts on page 1 by default
+discussions = action.data
 ```
 
 > Example Response:
@@ -4233,6 +4818,15 @@ List<Favorite> favorites = new Favorite.AddFavoriteBuilder().addFavorite(sheetId
 smartsheet.favoriteResources().addFavorites(favorites);
 ```
 
+```python
+action = smart.Favorites.add_favorites([
+    smart.models.Favorite({
+        'type': 'sheet',
+        'object_id': 8400677765441412
+    })
+])
+```
+
 > Example Response:
 
 ```json
@@ -4300,6 +4894,17 @@ smartsheet.favoriteResources().listFavorites(parameters);
 
 // List favorites (omit pagination parameters).
 smartsheet.favoriteResources().listFavorites(null);
+```
+
+```python
+# Get complete list
+action = smart.Favorites.list_favorites(include_all=True)
+favs = action.data
+
+# Get paginated list
+action = smart.Favorites.list_favorites(page_size=10, page=1)
+pages = action.total_pages
+favs = action.data
 ```
 
 > Example Response:
@@ -4374,6 +4979,13 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] { fol
 smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(folderId)));
 ```
 
+```python
+action = smart.Favorites.remove_favorites(
+    'folder', # folder, sheet, report, template, or workspace
+    folderId
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -4420,6 +5032,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] { rep
 smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(reportId)));
 ```
 
+```python
+action = smart.Favorites.remove_favorites(
+    'report', 
+    reportId
+)
+```
+
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -4464,6 +5084,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] { shee
 // Remove sheet from list of favorites.
 smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(sheetId)));
 ```
+
+```python
+action = smart.Favorites.remove_favorites(
+    'sheet', 
+    sheetId
+)
+```
+
 
 > Example Response:
 
@@ -4511,6 +5139,13 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] { t
 smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(templateId)));
 ```
 
+```python
+action = smart.Favorites.remove_favorites(
+    'template', 
+    templateId
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/removeFavorite_response.md.erb" %>
@@ -4556,6 +5191,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] { 
 // Remove workspace from list of favorites.
 smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(workspaceId)));
 ```
+
+```python
+action = smart.Favorites.remove_favorites(
+    'workspace', 
+    workspaceId
+)
+```
+
 
 > Example Response:
 
@@ -4607,6 +5250,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] { fol
 smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(folderId1, folderId2)));
 ```
 
+```python
+action = smart.Favorites.remove_favorites(
+    'folder', 
+    [folderId1, folderId2]
+)
+```
+
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -4655,6 +5306,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] { rep
 smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(reportId1, reportId2)));
 ```
 
+```python
+action = smart.Favorites.remove_favorites(
+    'report', 
+    [reportId1, reportId2]
+)
+```
+
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -4701,6 +5360,13 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] { shee
 ```java
 // Remove sheets from list of favorites.
 smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(sheetId1, sheetId2)));
+```
+
+```python
+action = smart.Favorites.remove_favorites(
+    'sheet', 
+    [sheetId1, sheetId2]
+)
 ```
 
 > Example Response:
@@ -4751,6 +5417,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] { t
 smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(templateId1, templateId2)));
 ```
 
+```python
+action = smart.Favorites.remove_favorites(
+    'template', 
+    [templateId1, templateId2]
+)
+```
+
+
 > Example Response:
 
 <%= partial "snippets/removeFavorites_response.md.erb" %>
@@ -4798,6 +5472,14 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] { 
 // Remove workspaces from list of favorites.
 smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(workspaceId1, workspaceId2)));
 ```
+
+```python
+action = smart.Favorites.remove_favorites(
+    'workspace', 
+    [workspaceId1, workspaceId2]
+)
+```
+
 
 > Example Response:
 
@@ -4874,6 +5556,17 @@ smartsheet.folderResources().copyFolder(folderId, destination, null, null);
 
 // Copy folder (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
 smartsheet.folderResources().copyFolder(folderId, destination, EnumSet.of(FolderCopyInclusion.ALL), EnumSet.of(FolderRemapExclusion.CELLLINKS));
+```
+
+```python
+action = smart.Folders.copy_folder(
+    folderId,
+    smart.models.ContainerDestination({
+        'destination_id': destinationId,
+        'destination_type': 'folder',
+        'new_name': 'newFolderName'
+    })
+)
 ```
 
 > Example Response:
@@ -4956,6 +5649,11 @@ Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 smartsheet.homeResources().folderResources().createFolder(folder);
 ```
 
+```python
+# Creates a folder in the "Sheets" folder (Home)
+smart.Home.create_folder('New Folder')
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -5014,6 +5712,22 @@ Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
 // Create folder in another folder.
 smartsheet.folderResources().createFolder(destinationFolderId, folder);
+```
+
+```python
+# one way to do it
+action = smart.Folders.create_folder_in_folder(
+    folderId,
+    'New folder' # handy shortcut!
+)
+
+# another way
+action = smart.Folders.create_folder_in_folder(
+    folderId,
+    smart.models.Folder({
+        'name': 'New folder'
+    })
+)
 ```
 
 > Example Response:
@@ -5076,6 +5790,10 @@ Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 smartsheet.workspaceResources().folderResources().createFolder(workspaceId, folder);
 ```
 
+```python
+smart.Workspaces.create_folder_in_workspace(workspaceId, 'New folder')
+```
+
 > Example Response:
 
 <%= partial "snippets/createFolder_response.md.erb" %>
@@ -5120,6 +5838,10 @@ smartsheet.FolderResources.DeleteFolder(folderId);
 ```java
 // Delete folder.
 smartsheet.folderResources().deleteFolder(folderId);
+```
+
+```python
+smart.Folders.delete_folder(folderId)
 ```
 
 > Example Response:
@@ -5180,6 +5902,11 @@ smartsheet.folderResources().getFolder(folderId, null)
 
 // Get folder (specify 'include' parameter with value of "source").
 smartsheet.folderResources().getFolder(folderId, EnumSet.of(SourceInclusion.SOURCE))
+```
+
+```python
+folder = smart.Folders.get_folder(folderId)
+# folder is an instance of smartsheet.models.Folder
 ```
 
 > Example Response:
@@ -5257,6 +5984,17 @@ smartsheet.homeResources().folderResources().listFolders(parameters);
 smartsheet.homeResources().folderResources().listFolders(null);
 ```
 
+```python
+# Get complete list
+action = smart.Home.list_folders(include_all=True)
+home_sheets_folders = action.data
+
+# Get paginated list
+action = smart.Home.list_folders(page_size=5, page=1)
+pages = action.total_pages
+folders = action.data
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -5312,6 +6050,17 @@ smartsheet.folderResources().listFolders(parameters);
 
 // List folders in another folder (omit pagination parameters).
 smartsheet.folderResources().listFolders(null);
+```
+
+```python
+# Get complete list
+action = smart.Folders.list_folders(folderId, include_all=True)
+folders = action.data
+
+# Get paginated list
+action = smart.Folders.list_folders(folderId, page_size=5, page=1)
+pages = action.total_pages
+folders = action.data
 ```
 
 > Example Response:
@@ -5371,6 +6120,17 @@ smartsheet.workspaceResources().folderResources().listFolders(parameters);
 smartsheet.workspaceResources().folderResources().listFolders(null);
 ```
 
+```python
+# Get complete list
+action = smart.Workspaces.list_folders(workspaceId, include_all=True)
+folders = action.data
+
+# Get paginated list
+action = smart.Workspaces.list_folders(workspaceId, page_size=5, page=1)
+pages = action.total_pages
+folders = action.data
+```
+
 > Example Response:
 
 <%= partial "snippets/listFolders_response.md.erb" %>
@@ -5420,6 +6180,16 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
 
 // Move folder.
 smartsheet.folderResources().moveFolder(folderId, destination);
+```
+
+```python
+smart.Folders.move_folder(
+    folderId,
+    smart.models.Destination({
+        'destination_id': folderId,
+        'destination_type': 'folder'
+    })
+)
 ```
 
 > Example Response:
@@ -5496,6 +6266,10 @@ Folder folder = new Folder.UpdateFolderBuilder().setName("New name for folder").
 
 // Update folder.
 smartsheet.folderResources().updateFolder(folder);
+```
+
+```python
+smart.Folders.update_folder(folderId, 'New name for folder')
 ```
 
 > Example Response:
@@ -5602,6 +6376,18 @@ Group group = new Group.CreateGroupBuilder().setName("API-created Group").setDes
 smartsheet.groupResources().createGroup(group);
 ```
 
+```python
+smart.Groups.create_group(
+    smart.models.Group({
+        'name': 'Python SDK create Group',
+        'description': 'Group created via Python SDK',
+        'members': smart.models.GroupMember({
+            'email': 'john.doe@smartsheet.com'
+        })
+    })
+)
+```
+
 > Example Response:
 
 ```json
@@ -5678,6 +6464,10 @@ smartsheet.GroupResources.DeleteGroup(groupId);
 smartsheet.groupResources().deleteGroup(groupId);
 ```
 
+```python
+smart.Groups.delete_group(groupId)
+```
+
 > Example Response:
 
 ```json
@@ -5734,6 +6524,11 @@ smartsheet.GroupResources.GetGroup(groupId);
 ```java
 // Get group.
 smartsheet.groupResources().getGroup(groupId);
+```
+
+```python
+group = smart.Groups.get_group(groupId)
+# group is an instance of smartsheet.models.Group
 ```
 
 > Example Response:
@@ -5806,6 +6601,17 @@ smartsheet.groupResources().listGroups(parameters);
 
 // List all org groups (omit pagination parameters).
 smartsheet.groupResources().listGroups(null);
+```
+
+```python
+# Get complete list
+action = smart.Groups.list_groups(include_all=True)
+groups = action.data
+
+# Get paginated list
+action = smart.Groups.list_groups(page_size=10, page=1)
+pages = action.total_pages
+groups = action.data
 ```
 
 > Example Response:
@@ -5892,6 +6698,16 @@ Group group = new Group.UpdateGroupBuilder().setId(groupId).setName("Renamed Gro
 
 // Update group.
 smartsheet.groupResources().updateGroup(group);
+```
+
+```python
+smart.Groups.update_group(
+    groupId,
+    smart.models.Group({
+        'name': 'Renamed Group',
+        'description': 'Some new description'
+    })
+)
 ```
 
 > Example Response:
@@ -5997,6 +6813,13 @@ GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@
 smartsheet.groupResources().memberResources().addGroupMembers(groupId, Arrays.asList(member));
 ```
 
+```python
+smart.Groups.add_members(
+    groupId,
+    [smart.models.GroupMember({'email': 'jane.doe@smartsheet.com'})]
+)
+```
+
 > Example Response:
 
 ```json
@@ -6073,6 +6896,10 @@ smartsheet.GroupResources.RemoveGroupMember(groupId, userId);
 smartsheet.groupResources().memberResources().deleteGroupMember(groupId, userId)
 ```
 
+```python
+smart.Groups.remove_member(groupId, groupMemberId)
+```
+
 > Example Response:
 
 ```json
@@ -6146,6 +6973,10 @@ smartsheet.homeResources().getHome(null);
 
 // List all contents (specify 'include' parameter with value of "source").
 smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
+```
+
+```python
+contents = smart.Home.list_all_contents(include='source')
 ```
 
 > Example Response:
@@ -6299,6 +7130,10 @@ smartsheet.reportResources().getReport(reportId, null, null, null);
 smartsheet.reportResources().getReport(reportId, EnumSet.of(ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS), 500, 2)
 ```
 
+```python
+report = smart.Reports.get_report(reportId)
+```
+
 > Example Response:
 
 ```json
@@ -6406,6 +7241,21 @@ smartsheet.ReportResources.GetReportAsExcel(reportId, outputStream);
 smartsheet.reportResources().getReportAsExcel(reportId, outputStream);
 ```
 
+```python
+# file will be downloaded with filename suggested by API
+smart.Reports.get_report_as_excel(
+    reportId,
+    download_folder_path
+)
+
+# specify a custom filename
+smart.Reports.get_report_as_excel(
+    reportId,
+    download_folder_path,
+    'CallMeAl.xslx'
+)
+```
+
 > Example Response:
 
 ```shell
@@ -6422,6 +7272,10 @@ smartsheet.reportResources().getReportAsExcel(reportId, outputStream);
 
 ```java
 // Contents of Excel file will be written to "outputStream"
+```
+
+```python
+# download_folder_path will contain the downloaded Excel file.
 ```
 
 > Example Request (CSV):
@@ -6459,6 +7313,21 @@ smartsheet.ReportResources.GetReportAsCSV(reportId, outputStream);
 smartsheet.reportResources().getReportAsCsv(reportId, outputStream);
 ```
 
+```python
+# file will be downloaded with filename suggested by API
+smart.Reports.get_report_as_csv(
+    reportId,
+    download_folder_path
+)
+
+# specify a custom filename
+smart.Reports.get_report_as_csv(
+    reportId,
+    download_folder_path,
+    'CallMeAl.csv'
+)
+```
+
 > Example Response:
 
 ```shell
@@ -6475,6 +7344,10 @@ smartsheet.reportResources().getReportAsCsv(reportId, outputStream);
 
 ```java
 // Contents of CSV file will be written to "outputStream"
+```
+
+```python
+# download_folder_path will contain the downloaded CSV file.
 ```
 
 `GET /reports/{reportId}`
@@ -6527,6 +7400,17 @@ smartsheet.reportResources().listReports(parameters);
 
 // List reports (omit pagination parameters).
 smartsheet.reportResources().listReports(null);
+```
+
+```python
+# Get complete list
+action = smart.Reports.list_reports(include_all=True)
+reports = action.data
+
+# Get paginated list
+action = smart.Reports.list_reports(page_size=5, page=1)
+pages = action.total_pages
+reports = action.data
 ```
 
 > Example Response:
@@ -6589,6 +7473,10 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 // [todo]
 ```
 
+```python
+# todo
+```
+
 > Example Response:
 
 ```json
@@ -6630,6 +7518,10 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 
 ```java
 // [todo]
+```
+
+```python
+# todo
 ```
 
 > Example Response:
@@ -6847,6 +7739,34 @@ Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
 smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
 ```
 
+```python
+row_a = smart.models.Row()
+row_a.to_top = True
+row_a.cells.append({
+    'column_id': 7960873114331012,
+    'value': True
+})
+row_a.cells.append({
+    'column_id': 642523719853956
+    'value': 'New Status',
+    'strict': False
+})
+
+row_b = smart.models.Row()
+row_b.to_top = True
+row_b.cells.append({
+    'column_id': 7960873114331012,
+    'value': True
+})
+row_b.cells.append({
+    'column_id': 642523719853956
+    'value': 'New Status',
+    'strict': False
+})
+
+action = smart.Sheets.add_rows(sheetId, [row_a, row_b])
+```
+
 > Example Response:
 
 ```json
@@ -6984,6 +7904,19 @@ smartsheet.sheetResources().rowResources().copyRows(sheetId, null, null, directi
 smartsheet.sheetResources().rowResources().copyRows(sheetId, EnumSet.of(RowCopyInclusion.CHILDREN), true, directive);
 ```
 
+```python
+smart.Sheets.copy_rows(
+    sheetId,
+    smart.models.CopyOrMoveRowDirective({
+        'row_ids': [145417762563972, 8026717110462340]
+        'to': smart.models.CopyOrMoveRowDestination({
+            'sheet_id': 2258256056870788
+        })
+    })
+)
+```
+
+
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
 `POST /sheets/{sheetId}/rows/copy`
@@ -7033,6 +7966,10 @@ smartsheet.SheetResources.RowResources.DeleteRows(sheetId, new long[] { rowId1, 
 ```java
 // Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
 smartsheet.sheetResources().rowResources().deleteRows(sheetId, new HashSet(Arrays.asList(rowId1, rowId2, rowId3), true);
+```
+
+```python
+smart.Sheets.delete_rows(sheetId, [rowId1, rowId2, rowId3])
 ```
 
 > Example Response:
@@ -7104,6 +8041,14 @@ smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, null, null);
 
 // Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
 smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, EnumSet.of(RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE), EnumSet.of(ObjectExclusion.NONEXISTENT_CELLS));
+```
+
+```python
+row = smart.Sheets.get_row(
+    sheetId, 
+    rowId, 
+    include='discussions,attachments,columns,columnType'
+)
 ```
 
 > Example Response:
@@ -7208,6 +8153,18 @@ smartsheet.sheetResources().rowResources().moveRows(sheetId, null, null, directi
 
 // Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
 smartsheet.sheetResources().rowResources().moveRows(sheetId, EnumSet.of(EnumSet.of(RowMoveInclusion.ATTACHMENTS, RowMoveInclusion.DISCUSSIONS)), true, directive);
+```
+
+```python
+smart.Sheets.move_rows(
+    sheetId,
+    smart.models.CopyOrMoveRowDirective({
+        'row_ids': [145417762563972, 8026717110462340],
+        'to': smart.models.CopyOrMoveRowDestination({
+            'sheet_id': 2258256056870788
+        })
+    })
+)
 ```
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
@@ -7325,6 +8282,31 @@ Row rowB = new Row.UpdateRowBuilder().setCells(cellsB).setRowId(2068827774183300
 
 // Update rows in sheet.
 smartsheet.sheetResources().rowResources().updateRows(sheetId, Arrays.asList(rowA, rowB));
+```
+
+```python
+row_a = smart.Sheets.get_row(sheetId, 6572427401553796)
+# use row get_column(columnId) convenience method to pluck the 
+# cell with a known columnId out of the row
+cell_a = row_a.get_column(7518312134403972)
+cell_a.value = 'new value'
+cell_b = row_a.get_column(1888812600190852)
+cell_b.value = 'A'
+# use row set_column(id, Cell) convenience method
+# to replace the cell in-place.
+row_a.set_column(cell_a.column_id, cell_a)
+row_a.set_column(cell_b.column_id, cell_b)
+
+row_b = smart.Sheets.get_row(sheetId, 2068827774183300)
+cell_c = row_b.get_column(7518312134403972)
+cell_c.value = 'desc_updated'
+cell_d = row_b.get_column(1888812600190852)
+cell_d.value = 'B'
+row_b.set_column(cell_c.column_id, cell_c)
+row_b.set_column(cell_d.column_id, cell_d)
+
+# now update the rows
+smart.Sheets.update_rows(sheetId, [row_a, row_b])
 ```
 
 > Example Response:
@@ -7534,6 +8516,12 @@ string query = "stuff";
 smartsheet.searchResources().search(query);
 ```
 
+```python
+query = 'stuff'
+result = smart.Search.search(query)
+# result is a smartsheet.models.SearchResult object
+```
+
 > Example Response:
 
 ```json
@@ -7699,6 +8687,10 @@ smartsheet.ServerInfoResources.GetServerInfo();
 smartsheet.serverInfoResources().getServerInfo();
 ```
 
+```python
+info = smart.Server.server_info()
+```
+
 > Example Response: (*too long to list in its entirety*)
 
 ```json
@@ -7778,6 +8770,11 @@ smartsheet.ReportResources.ShareResources.DeleteShare(reportId, shareId);
 smartsheet.reportResources().shareResources().deleteShare(reportId, shareId);
 ```
 
+```python
+# Delete report share.
+smart.Reports.delete_share(reportId, shareId)
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -7822,6 +8819,11 @@ smartsheet.ReportResources.ShareResources.GetShare(reportId, shareId);
 ```java
 // Get report share.
 smartsheet.reportResources().shareResources().getShare(reportId, shareId);
+```
+
+```python
+# Get report share.
+share = smart.Reports.get_share(reportId, shareId)
 ```
 
 > Example Response:
@@ -7876,6 +8878,17 @@ smartsheet.reportResources().shareResources().listShares(reportId, parameters);
 
 // List report shares (omit pagination parameters).
 smartsheet.reportResources().shareResources().listShares(reportId, null);
+```
+
+```python
+# Get complete list
+action = smart.Reports.list_shares(include_all=True)
+shares = action.result
+
+# Get paginated list
+action = smart.Reports.list_shares(page_size=10, page=1)
+pages = action.total_pages
+shares = action.result
 ```
 
 > Example Response:
@@ -7943,6 +8956,16 @@ List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAd
 smartsheet.reportResources().shareResources().shareTo(reportId, shares, true);
 ```
 
+```python
+smart.Reports.share_report(
+    reportId,
+    smart.models.Share({
+        'access_level': 'EDITOR',
+        'email': 'jane.doe@smartsheet.com'
+    })
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -8007,6 +9030,16 @@ Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(
 smartsheet.reportResources().shareResources().updateShare(reportId, share);
 ```
 
+```python
+smart.Reports.update_share(
+    reportId,
+    shareId,
+    smart.models.Share({
+        'access_level': 'VIEWER'
+    })
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -8056,6 +9089,11 @@ smartsheet.SheetResources.ShareResources.DeleteShare(sheetId, shareId);
 smartsheet.sheetResources().shareResources().deleteShare(sheetId, shareId);
 ```
 
+```python
+# Delete sheet share
+smart.Sheets.delete_share(sheetId, shareId)
+```
+
 > Example Response:
 
 <%= partial "snippets/deleteShare_response.md.erb" %>
@@ -8100,6 +9138,11 @@ smartsheet.SheetResources.ShareResources.GetShare(sheetId, shareId);
 ```java
 // Get sheet share.
 smartsheet.sheetResources().shareResources().getShare(sheetId, shareId);
+```
+
+```python
+# Get sheet share
+share = smart.Sheets.get_share(sheetId, shareId)
 ```
 
 > Example Response:
@@ -8154,6 +9197,17 @@ smartsheet.sheetResources().shareResources().listShares(sheetId, parameters);
 
 // List sheet shares (omit pagination parameters).
 smartsheet.sheetResources().shareResources().listShares(sheetId, null);
+```
+
+```python
+# Get complete list
+action = smart.Sheets.list_shares(sheetId, include_all=True)
+shares = action.data
+
+# Get paginated list
+action = smart.Sheets.list_shares(sheetId, page_size=10, page=1)
+pages = action.total_pages
+shares = action.data
 ```
 
 > Example Response:
@@ -8221,6 +9275,17 @@ List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAd
 smartsheet.sheetResources().shareResources().shareTo(sheetId, shares, true);
 ```
 
+```python
+smart.Sheets.share_sheet(
+    sheetId,
+    smart.models.Share({
+        'access_level': 'EDITOR',
+        'email': 'jane.doe@smartsheet.com'
+    }),
+    True
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/share_response.md.erb" %>
@@ -8284,6 +9349,16 @@ Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(
 smartsheet.sheetResources().shareResources().updateShare(sheetId, share);
 ```
 
+```python
+smart.Sheets.update_share(
+    sheetId,
+    shareId,
+    smart.models.Share({
+        'access_level': 'VIEWER'
+    })
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/updateShare_response.md.erb" %>
@@ -8331,6 +9406,11 @@ smartsheet.WorkspaceResources.ShareResources.DeleteShare(workspaceId, shareId);
 ```java
 // Delete workspace share.
 smartsheet.workspaceResources().shareResources().deleteShare(workspaceId, shareId);
+```
+
+```python
+# Delete workspace share
+smart.Workspaces.delete_share(workspaceId, shareId)
 ```
 
 > Example Response:
@@ -8381,6 +9461,11 @@ smartsheet.WorkspaceResources.ShareResources.GetShare(workspaceId, shareId);
 ```java
 // Get workspace share.
 smartsheet.workspaceResources().shareResources().getShare(workspaceId, shareId);
+```
+
+```python
+# Get workspace share.
+share = smart.Sheets.get_share(workspaceId, shareId)
 ```
 
 > Example Response:
@@ -8435,6 +9520,17 @@ smartsheet.workspaceResources().shareResources().listShares(workspaceId, paramet
 
 // List workspace shares (omit pagination parameters).
 smartsheet.workspaceResources().shareResources().listShares(workspaceId, null);
+```
+
+```python
+# Get complete list
+action = smart.Workspaces.list_shares(workspaceId, include_all=True)
+shares = action.data
+
+# Get paginated list
+action = smart.Workspaces.list_shares(workspaceId, page_size=10, page=1)
+pages = action.total_pages
+shares = action.data
 ```
 
 > Example Response:
@@ -8500,6 +9596,16 @@ List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAd
 
 // Share workspace.
 smartsheet.workspaceResources().shareResources().shareTo(workspaceId, shares, true);
+```
+
+```python
+smart.Workspaces.share_workspace(
+    workspaceId,
+    smart.models.Share({
+        'access_level': 'EDITOR',
+        'email': 'jane.doe@smartsheet.com'
+    })
+)
 ```
 
 > Example Response:
@@ -8569,6 +9675,16 @@ Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(
 
 // Update workspace share.
 smartsheet.workspaceResources().shareResources().updateShare(workspaceId, share);
+```
+
+```python
+smart.Workspaces.update_share(
+    workspaceId,
+    shareId,
+    smart.models.Share({
+        'access_level': 'VIEWER'
+    })
+)
 ```
 
 > Example Response:
@@ -8697,6 +9813,17 @@ smartsheet.sheetResources().copySheet(sheetId, destination, null);
 smartsheet.sheetResources().copySheet(sheetId, destination, EnumSet.of(SheetCopyInclusion.ALL));
 ```
 
+```python
+smart.Sheets.copy_sheet(
+    sheetId,
+    smart.models.ContainerDestination({
+        'destination_type': 'folder', # or workspace, or home
+        'destination_id': folderId,
+        'new_name': 'newSheetName'
+    })
+)
+```
+
 > Example Response:
 
 ```json
@@ -8817,6 +9944,33 @@ Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arra
 smartsheet.sheetResources().createSheet(sheet);
 ```
 
+```python
+# Create sheet in "Sheets" folder
+sheet = smart.models.Sheet({
+    'name': 'newsheet',
+    'columns': [{
+            'title': 'Favorite',
+            'type': 'CHECKBOX',
+            'symbol': 'STAR'
+        }, {
+            'title': 'Primary Column',
+            'primary': True,
+            'type': 'TEXT_NUMBER'
+        }, {
+            'title': 'Status',
+            'type': 'PICKLIST',
+            'options': [
+                'Not Started',
+                'Started',
+                'Completed'
+            ]
+        }
+    ]
+})
+action = smart.Home.create_sheet(sheet)
+sheet = action.result
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -8910,6 +10064,33 @@ Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(
 Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
 
 smartsheet.sheetResources().createSheetInFolder(folderId, sheet);
+```
+
+```python
+# Create sheet in folder
+sheet = smart.models.Sheet({
+    'name': 'newsheet',
+    'columns': [{
+            'title': 'Favorite',
+            'type': 'CHECKBOX',
+            'symbol': 'STAR'
+        }, {
+            'title': 'Primary Column',
+            'primary': True,
+            'type': 'TEXT_NUMBER'
+        }, {
+            'title': 'Status',
+            'type': 'PICKLIST',
+            'options': [
+                'Not Started',
+                'Started',
+                'Completed'
+            ]
+        }
+    ]
+})
+action = smart.Folders.create_sheet_in_folder(folderId, sheet)
+sheet = action.result
 ```
 
 > Example Response:
@@ -9007,6 +10188,34 @@ Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arra
 smartsheet.sheetResources().createSheetInWorkspace(workspaceId, sheet);
 ```
 
+```python
+# Create sheet in workspace
+sheet = smart.models.Sheet({
+    'name': 'newsheet',
+    'columns': [{
+            'title': 'Favorite',
+            'type': 'CHECKBOX',
+            'symbol': 'STAR'
+        }, {
+            'title': 'Primary Column',
+            'primary': True,
+            'type': 'TEXT_NUMBER'
+        }, {
+            'title': 'Status',
+            'type': 'PICKLIST',
+            'options': [
+                'Not Started',
+                'Started',
+                'Completed'
+            ]
+        }
+    ]
+})
+
+action = smart.Workspaces.create_sheet_in_workspace(workspaceId, sheet)
+sheet = action.result
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheet_response.md.erb" %>
@@ -9083,6 +10292,17 @@ smartsheet.sheetResources().createSheetFromTemplate(sheet, null);
 smartsheet.sheetResources().createSheetFromTemplate(sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));
 ```
 
+```python
+# Create sheet in "Sheets" folder from template
+action = smart.Home.create_sheet_from_template(
+    smart.models.Sheet({
+        'name': 'newsheet',
+        'from_id': templateId
+    })
+)
+sheet = action.result
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -9148,6 +10368,17 @@ smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, nul
 
 // Create sheet from template (including data, attachments, and discussions).
 smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));	
+```
+
+```python
+# Create sheet from template in specified folder
+action = smart.Folders.create_sheet_in_folder_from_template(
+    folderId,
+    smart.models.Sheet({
+        'name': 'newsheet',
+        'from_id': 7679398137620356
+    })
+)
 ```
 
 > Example Response:
@@ -9217,6 +10448,17 @@ smartsheet.sheetResources().createSheetInFolderFromTemplate(folderId, sheet, nul
 smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(folderId, sheet, EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS));	
 ```
 
+```python
+# Create sheet in workspace from specified template
+action = smart.Workspaces.create_sheet_in_workspace_from_template(
+    workspaceId,
+    smart.models.Sheet({
+        'name': 'newsheet',
+        'from_id': 7679398137620356
+    })
+)
+```
+
 > Example Response:
 
 <%= partial "snippets/createSheetFromExisting_response.md.erb" %>
@@ -9261,6 +10503,11 @@ smartsheet.SheetResources.DeleteSheet(sheetId);
 ```java
 // Delete sheet.
 smartsheet.sheetResources().deleteSheet(sheetId);
+```
+
+```python
+# Delete sheet
+smart.Sheets.delete_sheet(sheetId)
 ```
 
 > Example Response:
@@ -9315,6 +10562,11 @@ smartsheet.SheetResources.GetSheetVersion(sheetId);
 ```java
 // Get sheet version.
 smartsheet.sheetResources().getSheetVersion(sheetId);
+```
+
+```python
+# Get sheet version.
+smart.Sheets.get_sheet_version(sheetId)
 ```
 
 > Example Response:
@@ -9378,6 +10630,11 @@ smartsheet.SheetResources.GetSheet(sheetId, null, null, null, null, null, null, 
 ```java
 // Get sheet (omit all parameters).
 smartsheet.sheetResources().getSheet(sheetId, null, null, null, null, null, null, null);
+```
+
+```python
+# Get sheet
+sheet = smart.Sheets.get_sheet(sheetId)
 ```
 
 > Example Response:
@@ -9468,6 +10725,11 @@ smartsheet.SheetResources.GetSheetAsExcel(sheetId, outputStream);
 smartsheet.sheetResources().getSheetAsExcel(sheetId, outputStream);
 ```
 
+```python
+# Get sheet as Excel
+smart.Sheets.get_sheet_as_excel(sheetId, download_directory_path)
+```
+
 > Example Response:
 
 ```shell
@@ -9484,6 +10746,10 @@ smartsheet.sheetResources().getSheetAsExcel(sheetId, outputStream);
 
 ```java
 // Contents of Excel file will be written to "outputStream"
+```
+
+```python
+# an .xslx document corresponding to the sheet name in the download directory.
 ```
 
 > Example Request (PDF):
@@ -9521,6 +10787,11 @@ smartsheet.SheetResources.GetSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 smartsheet.sheetResources().getSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 ```
 
+```python
+# Get sheet as PDF
+smart.Sheets.get_sheet_as_pdf(sheetId, download_directory_path, 'A1')
+```
+
 > Example Response:
 
 ```shell
@@ -9537,6 +10808,10 @@ smartsheet.sheetResources().getSheetAsPDF(sheetId, outputStream, PaperSize.A1);
 
 ```java
 // Contents of PDF file will be written to "outputStream"
+```
+
+```python
+# a PDF document corresponding to the sheet name in the download directory.
 ```
 
 > Example Request (CSV):
@@ -9574,6 +10849,11 @@ smartsheet.SheetResources.GetSheetAsCSV(sheetId, outputStream);
 smartsheet.sheetResources().getSheetAsCSV(sheetId, outputStream);
 ```
 
+```python
+# Get sheet as CSV
+smart.Sheets.get_sheet_as_csv(sheetId, download_directory_path)
+```
+
 > Example Response:
 
 ```shell
@@ -9591,6 +10871,11 @@ smartsheet.sheetResources().getSheetAsCSV(sheetId, outputStream);
 ```java
 // Contents of CSV file will be written to "outputStream"
 ```
+
+```python
+# a CSV file corresponding to the sheet name in the download directory.
+```
+
 
 `GET /sheets/{sheetId}`
 
@@ -9647,6 +10932,12 @@ smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), param
 
 // List sheets (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().listSheets(null, null);
+```
+
+```python
+# List sheets
+action = smart.Sheets.list_sheets(include_all=True)
+sheets = action.data
 ```
 
 > Example Response:
@@ -9729,6 +11020,17 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
 smartsheet.sheetResources().moveSheet(sheetId, destination);
 ```
 
+```python
+# Move sheet
+smart.Sheets.move_sheet(
+    sheetId,
+    smart.models.ContainerDestination({
+        'destination_type': 'folder', # folder, workspace, home
+        'destination_id': folderId
+    })
+)
+```
+
 > Example Response:
 
 ```json
@@ -9790,6 +11092,12 @@ smartsheet.SheetResources.GetPublishStatus(sheetId);
 ```java
 // Get sheet publish status.
 smartsheet.sheetResources().getPublishStatus(sheetId);
+```
+
+```python
+action = smart.Sheets.get_publish_status(sheetId)
+status = action.result
+# status is a smartsheet.models.SheetPublish object
 ```
 
 > Example Response:
@@ -9865,6 +11173,19 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder().setIcalEnabl
 
 // Set sheet publish status.
 smartsheet.sheetResources().updatePublishStatus(sheetId, sheetPublish);
+```
+
+```python
+# Set sheet publish status.
+# With the Python SDK, if fewer than all four flags are set, current status will be retrieved
+# and merged with the flags that _are_ set with this method call.
+
+smart.Sheets.set_publish_status(
+    sheetId,
+    smart.models.SheetPublish({
+        'read_only_lite_enabled': True
+    })
+)
 ```
 
 > Example Response:
@@ -9962,6 +11283,19 @@ Sheet sheet = new Sheet.UpdateSheetBuilder().setSheetId(sheetId).setName("New Sh
 
 // Update sheet.
 smartsheet.sheetResources().updateSheet(sheet);
+```
+
+```python
+# Update sheet
+smart.Sheets.update_sheet(
+    sheetId,
+    smart.models.Sheet({
+        'name': 'New Sheet Name',
+        'user_settings': smart.models.SheetUserSettings({
+            'critical_path_enabled': True
+        })
+    })
+)
 ```
 
 > Example Response:
@@ -10083,6 +11417,13 @@ smartsheet.templateResources().listPublicTemplates(parameters);
 smartsheet.templateResources().listPublicTemplates(null);
 ```
 
+```python
+# List public templates
+action = smart.Templates.list_public_templates()
+pages = action.total_pages
+templates = action.data
+```
+
 > Example Response:
 
 <%= partial "snippets/listTemplates_response.md.erb" %>
@@ -10134,6 +11475,13 @@ smartsheet.templateResources().listUserCreatedTemplates(parameters);
 smartsheet.templateResources().listUserCreatedTemplates(null);
 ```
 
+```python
+# List user-created templates
+action = smart.Templates.list_user_created_templates()
+pages = action.total_pages
+templates = action.data
+```
+
 > Example Response:
 
 <%= partial "snippets/listTemplates_response.md.erb" %>
@@ -10170,6 +11518,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```java
 // [todo]
+```
+
+```python
+# todo
 ```
 
 > Example Response:
@@ -10219,6 +11571,10 @@ curl https://api.smartsheet.com/2.0/token \
 // [todo]
 ```
 
+```python
+# todo
+```
+
 > Example Response:
 
 ```json
@@ -10262,6 +11618,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```java
 // [todo]
+```
+
+```python
+# todo
 ```
 
 > Example Response:
@@ -10401,6 +11761,18 @@ User user = new User.AddUserBuilder().setAdmin(false).setEmail("NEW_USER_EMAIL")
 smartsheet.userResources().addUser(user);
 ```
 
+```python
+smart.Users.add_user(
+    smart.models.User({
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'email': 'john.doe@smartsheet.com',
+        'admin': False,
+        'licensed_sheet_creator': True
+    })
+)
+```
+
 > Example Response:
 
 ```json
@@ -10466,6 +11838,20 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 // [tocdo]
 ```
 
+```python
+smart.Users.add_alternate_email(
+    userId,
+    [
+        smart.models.AlternateEmail({
+            'email': 'altEmail1@smartsheet.com'
+        }),
+        smart.models.AlternateEmail({
+            'email': 'altEmail2@smartsheet.com'
+        })
+    ]
+)
+```
+
 > Example Response:
 
 ```json
@@ -10521,6 +11907,11 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 // [todo]
 ```
 
+```python
+# Delete alternate email
+smart.Users.delete_alternate_email(userId, alternateEmailId)
+```
+
 > Example Response:
 
 ```json
@@ -10559,6 +11950,11 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEma
 
 ```java
 // [todo]
+```
+
+```python
+# Get alternate email
+alt_email = smart.Users.get_alternate_email(userId, alternateEmailId)
 ```
 
 > Example Response:
@@ -10600,6 +11996,12 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 
 ```java
 // [todo]
+```
+
+```python
+# Get list of alternate emails
+action = smart.Users.list_alternate_emails(userId)
+emails = action.data
 ```
 
 > Example Response:
@@ -10663,6 +12065,11 @@ smartsheet.UserResources.GetCurrentUser();
 ```java
 // Get current user.
 smartsheet.userResources().getCurrentUser();
+```
+
+```python
+# Get current user.
+me = smart.Users.get_current_user()
 ```
 
 > Example Response:
@@ -10730,6 +12137,11 @@ smartsheet.UserResources.GetUser(userId);
 ```java
 // Get user.
 smartsheet.userResources().getUser(userId);
+```
+
+```python
+# Get user.
+user = smart.Users.get_user(userId)
 ```
 
 > Example Response:
@@ -10808,6 +12220,17 @@ smartsheet.userResources().listUsers(new HashSet(Arrays.asList("john.doe@smartsh
 smartsheet.userResources().listUsers(null, null);
 ```
 
+```python
+# Complete list of users
+action = smart.Users.list_users(include_all=True)
+users = action.data
+
+# Paginated list of users
+action = smart.Users.list_users()
+pages = action.total_pages
+users = action.data
+```
+
 > Example Response:
 
 ```json
@@ -10880,6 +12303,11 @@ smartsheet.UserResources.RemoveUser(userId, transferToUserId, true, true);
 // Remove user (transferring ownership of groups and sheets to another user, and removing the user from sharing).
 DeleteUserParameters parameters = new DeleteUserParameters(transferToUserId, true, true);
 smartsheet.userResources().deleteUser(userId, parameters);
+```
+
+```python
+# Remove user
+smart.Users.remove_user(userId, transfer_to=userId, remove_from_sharing=True)
 ```
 
 > Example Response:
@@ -10958,6 +12386,16 @@ User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(false).setLi
 
 // Update user.
 smartsheet.userResources().updateUser(user);
+```
+
+```python
+smart.Users.update_user(
+    userId,
+    smart.models.User({
+        'licensed_sheet_creator': True,
+        'admin': False
+    })
+)
 ```
 
 > Example Response:
@@ -11040,6 +12478,16 @@ smartsheet.workspaceResources().copyWorkspace(workspaceId, destination, null, nu
 smartsheet.workspaceResources().copyWorkspace(workspaceId, destination, EnumSet.of(WorkspaceCopyInclusion.ALL), EnumSet.of(WorkspaceRemapExclusion.CELLLINKS));
 ```
 
+```python
+# Copy workspace
+smart.Workspaces.copy_workspace(
+    workspaceId,
+    smart.models.ContainerDestination({
+        'new_name': 'newWorkspaceName'
+    })
+)
+```
+
 > Example Response:
 
 ```json
@@ -11115,6 +12563,15 @@ Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("New worksp
 smartsheet.workspaceResources().createWorkspace(workspace);
 ```
 
+```python
+# Create workspace
+smart.Workspaces.create_workspace(
+    smart.models.Workspace({
+        'name': 'New workspace'
+    })
+)
+```
+
 > Example Response:
 
 ```json
@@ -11178,6 +12635,11 @@ smartsheet.WorkspaceResources.DeleteWorkspace(workspaceId);
 smartsheet.workspaceResources().deleteWorkspace(workspaceId);
 ```
 
+```python
+# Delete workspace.
+smart.Workspaces.delete_workspace(workspaceId)
+```
+
 > Example Response:
 
 ```json
@@ -11236,6 +12698,11 @@ smartsheet.workspaceResources().getWorkspace(workspaceId, null, null);
 
 // Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
 smartsheet.workspaceResources().getWorkspace(workspaceId, false, EnumSet.of(SourceInclusion.SOURCE));
+```
+
+```python
+# Get workspace
+workspace = smart.Workspaces.get_workspace(workspaceId)
 ```
 
 > Example Response:
@@ -11312,6 +12779,17 @@ smartsheet.workspaceResources().listWorkspaces(parameters);
 
 // List workspaces (omit pagination parameters).
 smartsheet.workspaceResources().listWorkspaces(null);
+```
+
+```python
+# Complete list of workspaces
+action = smart.Workspaces.list_workspaces(include_all=True)
+workspaces = action.data
+
+# Paginated list of workspaces
+action = smart.Workspaces.list_workspaces(page_size=20, page=1)
+pages = action.total_pages
+workspaces = action.data
 ```
 
 > Example Response:
@@ -11402,6 +12880,16 @@ Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated wo
 
 // Update workspace.
 smartsheet.workspaceResources().updateWorkspace(workspace);
+```
+
+```python
+# Update workspace.
+smart.Workspaces.update_workspace(
+    workspaceId,
+    smart.models.Workspace({
+        'name': 'Updated workspace'
+    })
+)
 ```
 
 > Example Response:

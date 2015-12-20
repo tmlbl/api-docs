@@ -94,6 +94,25 @@ SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
 smartsheet.sheetResources().sendSheet(sheetId, email);
 ```
 
+```python
+action = smart.Sheets.sendSheet(
+    sheetId,
+    smart.models.SheetEmail({
+        'send_to': [
+            smart.models.Recipient({'email': 'john.doe@smartsheet.com'}),
+            smart.models.Recipient({'group_id': 2258118617917316})
+        ],
+        'subject': 'Check these rows out!',
+        'message': 'Here is the Sheet I mentioned in our meeting.',
+        'cc_me': False,
+        'format': 'PDF',
+        'format_details': smart.models.FormatDetails({
+            'paper_size': 'A4'
+        })
+    })
+)
+```
+
 > Example Response:
 
 ```json
