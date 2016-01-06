@@ -25,9 +25,10 @@ search: false
 <% ERRORS = "**Errors**" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
+<% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
 <% SUPPORTS_PAGING = "This operation supports pagination of results." %>
-<% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
+<% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
@@ -177,18 +178,7 @@ Bulk-enabled operations improve efficiency by:
 * Reducing your chances of hitting the [rate limit](#rate-limiting) (since each bulk operation counts as only one request toward the limit)
 * Lightening the load on our systems, making your requests more likely to complete in a timely manner
 
-The following API operations currently allow you to do things in bulk:
-
-* [Add Column(s)](#add-column(s))
-* [Add Favorite(s)](#add-favorite(s))
-* [Remove Favorite(s)](#remove-favorites-(in-bulk))
-* [Add Group Member(s)](#add-group-member(s))
-* [Add Row(s)](#add-row(s))
-* [Copy Row(s) to Another Sheet](#copy-row(s)-to-another-sheet)
-* [Delete Row(s)](#delete-row(s))
-* [Move Row(s) to Another Sheet](#move-row(s)-to-another-sheet)
-* [Send Row(s) via Email](#send-row(s))
-* [Update Row(s)](#update-row(s))
+See the section on [Bulk Operations](#bulk-operations) for more details, including a list of bulk-enabled operations.
 
 <br/>
 <span class="inSectionSubheading">Be practical: Adhere to rate limiting guidelines</span>
@@ -482,7 +472,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
 500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
 429 | 4003 | Rate limit exceeded. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Reduce the rate at which you are sending requests.</span>
-500 | 4004 | An unexpected error has occurred. Please retry your request. If you encounter this error repeatedly, please contact api@smartsheet.com for assistance. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
+500 | 4004 | An unexpected error has occurred. Please retry your request. If you encounter this error repeatedly, please contact api@smartsheet.com for assistance.<br/><br/>**Or**<br/><br/>Request failed because sheetId {0} is currently being updated by another request that uses the same access token. Please retry your request once the previous request has completed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
 400 | 5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur. | <span class="doNotRetry">Do not retry.<br/></span>
 
 ## Column Types
@@ -689,9 +679,27 @@ Index endpoints all return paged responses via an **IndexResult** object which p
 
 <%= partial "snippets/indexResult_object.md.erb" %>
 
-## Bulk-insert Operations
+## Bulk Operations
 
-Several endpoints support optional bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
+The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
+mulitple objects in a single request, which we recommend as a [best practice](#api-best-practices) for optimal performance.
+
+The following API operations currently allow you to do things in bulk:
+
+* [Add Column(s)](#add-column(s))
+* [Add Favorite(s)](#add-favorite(s))
+* [Remove Favorite(s)](#remove-favorites-(in-bulk))
+* [Add Group Member(s)](#add-group-member(s))
+* [Add Row(s)](#add-row(s))
+* [Copy Row(s) to Another Sheet](#copy-row(s)-to-another-sheet)
+* [Delete Row(s)](#delete-row(s))
+* [Move Row(s) to Another Sheet](#move-row(s)-to-another-sheet)
+* [Send Row(s) via Email](#send-row(s))
+* [Update Row(s)](#update-row(s))
+
+### Optional Bulk Operations
+
+Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
 Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorite(s)): you can
 pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
 noted as such in their API reference documentation.
@@ -701,6 +709,21 @@ return an error if one or more items in the array already exist.  Existing items
 
 <aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change,
 and existing code will continue to function.</aside>
+
+### Partial Success
+
+In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
+if not, none of them will be.
+
+Some operations support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
+*not* the default mode, and must be explicitly enabled using a query string parameter.  This will be noted in the documentation for operations supporting partial success.
+
+When partial success is enabled, in the event of one or more of the objects in the request failing, a standard [Result object](#result-object) is returned, but with a **message** of "PARTIAL_SUCCESS" (instead of "SUCCESS"),
+and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute which is an array of [BulkItemFailure objects](#bulkitemfailure-object), one for each failed request object, containing information
+on which objects failed and why they failed.
+
+
+
 
 ## Dates and Times
 
@@ -2942,7 +2965,7 @@ smartsheet.sheetResources().columnResources().addColumns(sheetId(), Arrays.asLis
 
 Inserts one or more columns into the Sheet specified in the URL.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 <aside class="notice">If multiple columns are specified in the request, the <b>index</b> attribute must be set to the same value for all columns. Columns will be inserted into the sheet starting at the specified position (<b>index</b>), in the sequence that the columns appear in the request.</aside>
 
@@ -4252,7 +4275,7 @@ smartsheet.favoriteResources().addFavorites(favorites);
 
 Adds one or more items to the user's list of Favorite items.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code](#errors) **1129** will be returned.  If called with an array of [Favorite objects](#favorite-object), any objects specified in the array that are already marked as favorites will be ignored and omitted from the response.
 
@@ -6019,7 +6042,7 @@ smartsheet.groupResources().memberResources().addGroupMembers(groupId, Arrays.as
 
 Adds one or more members to a Group.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code](#errors) **1129** will be returned. If called with an array
 of [GroupMember objects](#groupmember-object) any users specified in the array that are already group members will be ignored and omitted from the response.
@@ -6905,7 +6928,7 @@ smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, 
 
 Inserts one or more rows into the Sheet specified in the URL.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 <aside class="notice">If multiple rows are specified in the request, all rows must be inserted at the same location (i.e. the <b>toTop</b>, <b>toBottom</b>, <b>parentId</b>, <b>siblingId</b>, and <b>above</b> attributes must be the same for all rows in the request).</aside>
 
@@ -6915,6 +6938,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li></ul>Please note the following:<ul><li>Column Ids must be valid for the sheet specified, and must only be used once for each row in the operation.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be populated via API.</li><li>Cells of a project sheet in the  "Start Date" column cannot be populated via API for rows that also specify a value in the "Predecessor" column.</li></ul></ul>More information:<ul><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)).</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
 <%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request will fail (no rows will be added), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}
@@ -7409,6 +7433,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>[hyperlink](#hyperlink-object) (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>[linkInFromCell](#celllink-object) (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated via API.</li><li>Cells of a project sheet in the  "Start Date" column cannot be updated via API for rows that contain a value in the "Predecessor" column.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing an array of the updated row(s). 
 <%= ERRORS %>  | If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request will fail (no rows will be updated), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}
@@ -7951,7 +7976,7 @@ smartsheet.reportResources().shareResources().shareTo(reportId, shares, true);
 
 Shares a Report with the specified Users and Groups.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 <% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <%= SHARING_ERRORS %>
@@ -8229,7 +8254,7 @@ smartsheet.sheetResources().shareResources().shareTo(sheetId, shares, true);
 
 Shares a Sheet with the specified Users and Groups.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 <%= SHARING_ERRORS %>
 
@@ -8510,7 +8535,7 @@ smartsheet.workspaceResources().shareResources().shareTo(workspaceId, shares, tr
 
 Shares a Workspace with the specified Users and Groups.
 
-<aside class="notice"><%= SUPPORTS_BULK_INSERT %> For more information, see <a href="#bulk-insert-operations">Bulk-insert Operations</a>.</aside>
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
 <%= SHARING_ERRORS %>
 
@@ -8641,7 +8666,7 @@ Represents individual user settings for a specific sheet.  User settings may be 
      |     |     |
 -----|-----|-----|
 **criticalPathEnabled** | boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
-
+**displaySummaryTasks** | boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets using Calendar View.
 
 ### Source Object
 
@@ -11477,10 +11502,21 @@ Object returned for all `PUT` operations and `POST` operations (and for some oth
 
      |     |     |
 -----|-----|-----|
-**resultCode** | number | 0 (zero) if successful
-**message** | string | Message that indicates the outcome of the request
+**resultCode** | number | 0 (zero) if successful, 3 for partial success of a bulk operation.
+**message** | string | Message that indicates the outcome of the request. (One of SUCCESS or PARTIAL_SUCCESS)
 **result** | Object | Object that was created or updated (if applicable)
-**version** | number | New version of the Sheet (only available on select operations)
+**version** | number | New version of the Sheet.<br/>*Applicable only for operations which update sheet data* 
+**failedItems** | array of [BulkItemFailure objects](#bulkitemfailure-object) | Contains a [BulkItemFailure object](#bulkitemfailure-object) for each item that failed.  See [Partial Success](#partial-success) for more information.<br/>*Applicable only for bulk operations supporting partial success*
+
+## BulkItemFailure Object
+
+Object containing information about failed items from a bulk operation where [partial success](#partial-success) is supported.
+
+     |     |     |
+-----|-----|-----|
+**index** | number | The index of the failed item in the bulk request array
+**error** | [Error object](#errors) | The error caused by the failed item.
+**rowId** | number | The id of the [Row](#row-object) that failed.<br/>*Applicable only to bulk row operations.* 
 
 # Formatting
 
