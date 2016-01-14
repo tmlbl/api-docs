@@ -762,9 +762,34 @@ See the corresponding section below for more information about using the sample 
 
 ### cURL Sample Code
 
+```shell
+# For cURL code samples, see each operation in the API REFERENCE section.
+```
+
 The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool [cURL](http://en.wikipedia.org/wiki/CURL). 
 
 ### C# Sample Code
+
+```csharp
+using Smartsheet.Api;
+using Smartsheet.Api.Models;
+using Smartsheet.Api.OAuth;
+
+// Set the Access Token.
+Token token = new Token();
+token.AccessToken = "INSERT_YOUR_TOKEN_HERE";
+
+// Use the Smartsheet Builder to create an instance of SmartsheetClient.
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+
+// Get current user.
+smartsheet.UserResources.GetCurrentUser();
+
+// Get server info.
+smartsheet.ServerInfoResources.GetServerInfo();
+
+// For additional C# code samples, see each operation in the API REFERENCE section.
+```
 
 The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
 To use the C# SDK, you'll need to include the appropriate **using** directives in your code. For example:
@@ -784,7 +809,7 @@ token.AccessToken = "INSERT_YOUR_TOKEN_HERE";<br/>
 </code>
 
 <code>
-// Use the Smartsheet Builder to create a Smartsheet<br/>
+// Use the Smartsheet Builder to create an instance of SmartsheetClient<br/>
 SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
 </code>
 
@@ -797,6 +822,28 @@ For example, in the following code example, **sheetId** should be replaced with 
 <code>smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);</code>
 
 ### Java Sample Code
+
+```java
+import com.smartsheet.api.*;
+import com.smartsheet.api.models.*;
+import com.smartsheet.api.models.enums.*;
+import com.smartsheet.api.oauth.*;
+
+// Set the Access Token.
+Token token = new Token();
+token.setAccessToken("INSERT_YOUR_TOKEN_HERE");
+
+// Use the Smartsheet Builder to create an instance of Smartsheet.
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
+
+// Get current user.
+smartsheet.userResources().getCurrentUser();
+
+// Get server info.
+smartsheet.serverInfoResources().getServerInfo();
+
+// For additional Java code samples, see each operation in the API REFERENCE section.
+```
 
 The Java code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Java SDK](https://github.com/smartsheet-platform/smartsheet-java-sdk). 
 To use the Java SDK, you'll need to include the appropriate **import** directives in your code. For example:
@@ -817,7 +864,7 @@ token.setAccessToken("INSERT_YOUR_TOKEN_HERE");<br/>
 </code>
 
 <code>
-// Use the Smartsheet Builder to create a Smartsheet<br/>
+// Use the Smartsheet Builder to create an instance of Smartsheet<br/>
 Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();<br/>
 </code>
 
@@ -830,6 +877,31 @@ For example, in the following code example, **sheetId** should be replaced with 
 <code>smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);</code>
 
 ### Node.js Sample Code
+
+```javascript
+var client = require('smartsheet');
+var smartsheet = client.createClient({accessToken:'INSERT_YOUR_TOKEN_HERE'});
+
+// Get current user.
+smartsheet.users.getCurrentUser()
+    .then(function(data) {
+        console.log(data);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+
+// Get server info.
+smartsheet.server.getInfo()
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+// For additional Node.js code samples, see each operation in the API REFERENCE section.
+```
 
 The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises. 
 Each code sample uses a root module called "smartsheet" that can be created as follows:
@@ -10948,7 +11020,7 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"admin": false, "licensedSheetCreator": true}'
+-d '{"admin": true, "licensedSheetCreator": true}'
 ```
 
 ```javascript
@@ -10975,7 +11047,7 @@ smartsheet.users.updateUser(options)
 
 ```csharp
 // Specify updated user properties.
-User user = new User.UpdateUserBuilder(false, true).Build()
+User user = new User.UpdateUserBuilder(true, true).Build()
 
 // Update user.
 smartsheet.UserResources.UpdateUser(userId, user);
@@ -10983,7 +11055,7 @@ smartsheet.UserResources.UpdateUser(userId, user);
 
 ```java
 // Specify updated user properties.
-User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(false).setLicensedSheetCreator(true).build();
+User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(true).setLicensedSheetCreator(true).build();
 
 // Update user.
 smartsheet.userResources().updateUser(user);
