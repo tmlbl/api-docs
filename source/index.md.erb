@@ -715,15 +715,11 @@ and existing code will continue to function.</aside>
 In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
 if not, none of them will be.
 
-Some operations support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
-*not* the default mode, and must be explicitly enabled using a query string parameter.  This will be noted in the documentation for operations supporting partial success.
+However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
+*not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This will be noted in the documentation for operations that support partial success.
 
-When partial success is enabled, in the event of one or more of the objects in the request failing, a standard [Result object](#result-object) is returned, but with a **message** of "PARTIAL_SUCCESS" (instead of "SUCCESS"),
-and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute which is an array of [BulkItemFailure objects](#bulkitemfailure-object), one for each failed request object, containing information
-on which objects failed and why they failed.
-
-
-
+When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result object](#result-object) is returned, but with a **message** of "PARTIAL_SUCCESS" (instead of "SUCCESS"),
+and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute -- an array of [BulkItemFailure objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted.
 
 ## Dates and Times
 
@@ -8666,7 +8662,7 @@ Represents individual user settings for a specific sheet.  User settings may be 
      |     |     |
 -----|-----|-----|
 **criticalPathEnabled** | boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
-**displaySummaryTasks** | boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets using Calendar View.
+**displaySummaryTasks** | boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
 
 ### Source Object
 
@@ -10068,14 +10064,14 @@ A Template can be used to create a Sheet, as described in [Create Sheet from Tem
 **name** | string | Template name
 **description** | string | Template description
 **accessLevel** | string | User's permissions on the Template
-**image** | string | URL to the small preview image for this template.<br/>*Only applicable to non-blank public templates*
-**largeImage** | string | URL to the large preview image for this template.<br/>*Only applicable to non-blank public templates*
-**locale** | string | The locale of the template.<br/>*Only applicable to public templates*
-**type** | string | The type of the template. One of "sheet" or "report".<br/>*Only applicable to public templates*
-**tags** | array of strings | List of search tags for this template.<br/>*Only applicable to non-blank public templates*
-**categories** | array of strings | List of categories this template belongs to.<br/>*Only applicable to public templates*
-**blank** | boolean | Is this template blank, i.e. false for templates that contain example data.<br/>*Only applicable to public templates*
-**globalTemplate** | string | The type of global template. One of "BLANK_SHEET", "TASK_LIST", or "PROJECT_SHEET"<br/>*Only applicable to blank public templates*
+**image** | string | URL to the small preview image for this template<br/>*Only applicable to non-blank public templates*
+**largeImage** | string | URL to the large preview image for this template<br/>*Only applicable to non-blank public templates*
+**locale** | string | Locale of the template<br/>*Only applicable to public templates*
+**type** | string | Type of the template. One of "sheet" or "report"<br/>*Only applicable to public templates*
+**tags** | string[] | List of search tags for this template<br/>*Only applicable to non-blank public templates*
+**categories** | string[] | List of categories this template belongs to<br/>*Only applicable to public templates*
+**blank** | boolean | Flag indicating whether the template is blank<br/>*Only applicable to public templates*
+**globalTemplate** | string | Type of global template. One of: "BLANK_SHEET", "TASK_LIST", or "PROJECT_SHEET"<br/>*Only applicable to blank public templates*
 
 ## List Public Templates
 
@@ -11514,17 +11510,17 @@ Object returned for all `PUT` operations and `POST` operations (and for some oth
 **message** | string | Message that indicates the outcome of the request. (One of SUCCESS or PARTIAL_SUCCESS)
 **result** | Object | Object that was created or updated (if applicable)
 **version** | number | New version of the Sheet.<br/>*Applicable only for operations which update sheet data* 
-**failedItems** | array of [BulkItemFailure objects](#bulkitemfailure-object) | Contains a [BulkItemFailure object](#bulkitemfailure-object) for each item that failed.  See [Partial Success](#partial-success) for more information.<br/>*Applicable only for bulk operations supporting partial success*
+**failedItems** | [BulkItemFailure](#bulkitemfailure-object)[] | Array of BulkItemFailure objects which represents the items that failed to be added or updated. See [Partial Success](#partial-success) for more information.<br/>*Applicable only for bulk operations that support partial success*
 
 ## BulkItemFailure Object
 
-Object containing information about failed items from a bulk operation where [partial success](#partial-success) is supported.
+Object that contains information about an item that failed to be added or updated as specified by a bulk request.
 
      |     |     |
 -----|-----|-----|
 **index** | number | The index of the failed item in the bulk request array
-**error** | [Error object](#errors) | The error caused by the failed item.
-**rowId** | number | The id of the [Row](#row-object) that failed.<br/>*Applicable only to bulk row operations.* 
+**error** | [Error object](#errors) | The error caused by the failed item
+**rowId** | number | The id of the [Row](#row-object) that failed.<br/>*Applicable only to bulk row operations* 
 
 # Formatting
 
