@@ -37,6 +37,9 @@ This API documentation is based upon [Slate](https://github.com/tripit/slate/) a
 
 ## Release Notes
 
+**1.4.0 (Jan 15, 2016)**
+* Updated documentation for Smartsheet API 2.0 ([more info](https://www.smartsheet.com/blog/january-2016-api-update))
+
 **1.3.1 (Jan 11, 2016)**
 * Added sample code in Python.
 
