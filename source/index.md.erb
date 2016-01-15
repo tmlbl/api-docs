@@ -1635,7 +1635,7 @@ To stay informed about changes to the API, we recommend that you periodically re
 
 Backward-compatible updates to Smartsheet API 2.0. 
 
-* New endpoints for [adding an image to a cell](#add-image-to-cell) within a sheet and [getting images](#get-cell-images) that are stored in sheet cells.
+* New endpoints for [adding an image to a cell](#add-image-to-cell) within a sheet and [getting URLs](#get-image-urls) for images that are stored in sheet cells.
 
 * API enhancements that add support for enabling [partial success](#partial-success) of a (bulk) [Add Row(s)](#add-row(s)) or [Update Row(s)](#update-row(s)) operation, provide additional information for each object in [List Public Templates](#list-public-templates) response, and return a new [user setting](#sheetusersettings-object) for sheets where Calendar View has been configured.
 
@@ -3292,7 +3292,7 @@ If null, the cell's value will be derived from the hyperlink:
 
 # Cell Images
 
-A Cell Image is an image that has been uploaded to a Cell within a Sheet.
+A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 
 ## <%= OBJECTS %>
 
@@ -3310,10 +3310,10 @@ A Cell Image is an image that has been uploaded to a Cell within a Sheet.
      |     |     |
 -----|-----|-----|
 **imageId** | string | Image ID
-**width** | number | Image width (in pixels).<br/>In the [Get Cell Images](#get-cell-images) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get Cell Images](#get-cell-images).) 
-**height** | number | Image height (in pixels).<br/>In the [Get Cell Images](#get-cell-images) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get Cell Images](#get-cell-images).) 
+**width** | number | Image width (in pixels).<br/>In the [Get Cell Images](#get-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get Cell Images](#get-image-urls).) 
+**height** | number | Image height (in pixels).<br/>In the [Get Cell Images](#get-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get Cell Images](#get-image-urls).) 
 **url** | string | Temporary URL that can be used to retrieve the image. This attribute can be present in a response but will never be specified in a request.
-**error** | [Error](#errors) | Error object. Present in the [Get Cell Images](#get-cell-images) response only if an error occurred retrieving the image.
+**error** | [Error](#errors) | Error object. Present in the [Get Cell Images](#get-image-urls) response only if an error occurred retrieving the image.
 
 ### ImageUrlMap Object
 
@@ -3375,7 +3375,7 @@ Uploads an image to the specified Cell within a Sheet.
 <%= REQUEST %> | Binary content for the file
 <%= RETURNS %> | [Result object](#result-object)
 
-## Get Cell Images
+## Get Image URLs
 
 > Example Request:
 
