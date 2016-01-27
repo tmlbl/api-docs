@@ -1631,6 +1631,14 @@ for org_sheet in sheets:
 This section documents the evolution of Smartsheet API 2.0 over time. 
 To stay informed about changes to the API, we recommend that you periodically review this list for new information, subscribe to our Developer Newsletter (using the *Get Developer Updates* form on the [Smartsheet Developer Portal](http://www.smartsheet.com/developers)) or follow us via [Twitter](https://twitter.com/smartsheetapi).
 
+## February 13, 2016
+
+Backward-compatible updates to Smartsheet API 2.0. 
+
+* API enhancements that provide additional information about published sheets and reports and allow you to more tightly control who can access a published sheet or report.
+
+For more detailed information about this release, see the [release notes](https://www.smartsheet.com/developers/blog).
+
 ## January 15, 2016
 
 Backward-compatible updates to Smartsheet API 2.0. 
@@ -7400,7 +7408,8 @@ Extends the [Row object](#row-object), adding the following:
      |     |     |
 -----|-----|-----|
 **readOnlyFullEnabled** | boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
-**readOnlyFullUrl** | string | URL for Read-Only Full
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 
 ## Get Report
 
@@ -7796,13 +7805,14 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 ```json
 {
 	"readOnlyFullEnabled": true,
-	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065",
+	"readOnlyFullAccessibleBy": "ALL"
 }
 ```
 
 `GET /reports/{reportId}/publish`
 
-Gets the status of the Publish settings of the Report, including the URLs of any enabled publishings.
+Gets the Report's 'Publish' settings.
 
      |     |
 -----|-----|
@@ -7819,7 +7829,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"readOnlyFullEnabled": true}'
+-d '{"readOnlyFullEnabled": true, "readOnlyFullAccessibleBy": "ORG"}'
 ```
 
 ```javascript
@@ -7845,6 +7855,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
     "message": "SUCCESS",
     "result": {
         "readOnlyFullEnabled": true,
+		"readOnlyFullAccessibleBy": "ORG",
         "readOnlyFullUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d"
     },
     "resultCode": 0
@@ -7853,14 +7864,16 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 
 `PUT /reports/{reportId}/publish`
 
-Sets the publish status of the Report and returns the new status, including the URLs of any enabled publishings.
+Sets the publish status of the Report and returns the new status, including the URL of any enabled publishing.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the **readOnlyFullEnabled** attribute.<br/><br/>To publish the Report, set **readOnlyFullEnabled** to `true`. To unpublish the Report, set **readOnlyFullEnabled** to `false`.
+<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the following attributes:<ul><li>**readOnlyFullEnabled** (required)</li><li>**readOnlyFullAccessibleBy** (optional) - set to either "ALL" or "ORG", when **readOnlyFullEnabled**=true.</li></ul>To publish the Report, set **readOnlyFullEnabled** to `true`. To unpublish the Report, set **readOnlyFullEnabled** to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [ReportPublish object](#reportpublish-object)
+
+<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, then the value of <b>readOnlyFullAccessibleBy</b> will be defaulted to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
 
 ## Send Report via Email
 
@@ -10088,10 +10101,12 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **readOnlyFullEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
 **readWriteEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
 **icalEnabled** | boolean | If `true`, a webcal will be available for the calendar in the sheet.
-**readOnlyLiteUrl** | string | URL for Read-Only HTML
-**readOnlyFullUrl** | string | URL for Read-Only Full
-**readWriteUrl** | string | URL for Edit by Anyone
-**icalUrl** | string | URL for iCal
+**readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
+**icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
 
 ### SheetUserSettings Object
 
@@ -11448,17 +11463,18 @@ status = action.result
 
 ```json
 {
-	"readOnlyLiteEnabled": true,
-	"readOnlyFullEnabled": false,
+	"readOnlyLiteEnabled": false,
+	"readOnlyFullEnabled": true,
 	"readWriteEnabled": false,
 	"icalEnabled": false,
-	"readOnlyLiteUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
+	"readOnlyFullAccessibleBy": "ALL",
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
 }
 ```
 
 `GET /sheets/{sheetId}/publish`
 
-Gets the status of the Publish settings of the Sheet, including the URLs of any enabled publishings.
+Gets the Sheet's 'Publish' settings.
 
      |     |
 -----|-----|
@@ -11555,8 +11571,12 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding attribute(s) to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding attribute(s) to `false`.
+<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled (required)</li><li>readOnlyFullEnabled (required)</li><li>readOnlyFullAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readOnlyFullEnabled</b>=true</li><li>readWriteEnabled (required)</li><li>readWriteAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readWriteEnabled</b>=true</li><li>icalEnabled (required)</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding "Enabled" attribute(s) to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding "Enabled" attribute(s) to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [SheetPublish object](#sheetpublish-object)
+
+<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, then the value of <b>readOnlyFullAccessibleBy</b> will be defaulted to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
+
+<aside class="notice">If <b>readWriteEnabled</b> is set to <code>true</code> in the request but <b>readWriteAccessibleBy</b> is not specified, then the value of <b>readWriteAccessibleBy</b> will be defaulted to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
 
 ## Search Sheet 
 
