@@ -32,6 +32,8 @@ search: false
 <% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute -- an array of [BulkItemFailure objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
+<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
+<% LIST_SHARES_RESPONSE_DESC = "By default, this operation returns only <i>item-level</i> shares (<b><a href='#share-object'>scope</b></a>='ITEM'). Use the <b>include</b> parameter to request that <i>workspace-level</i> shares (<b><a href='#share-object'>scope</b></a>=='WORKSPACE') also be returned." %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
@@ -1631,11 +1633,13 @@ for org_sheet in sheets:
 This section documents the evolution of Smartsheet API 2.0 over time. 
 To stay informed about changes to the API, we recommend that you periodically review this list for new information, subscribe to our Developer Newsletter (using the *Get Developer Updates* form on the [Smartsheet Developer Portal](http://www.smartsheet.com/developers)) or follow us via [Twitter](https://twitter.com/smartsheetapi).
 
-## February 13, 2016
+## March 11, 2016
 
 Backward-compatible updates to Smartsheet API 2.0. 
 
 * API enhancements that enable you to attach a link to a file in OneDrive.
+
+* API enhancements that enable you to differentially share individual items within a workspace and to identify the scope of each [Share](#share-object) for any shared item.
 
 For more detailed information about this release, see the [release notes](https://www.smartsheet.com/developers/blog).
 
@@ -9066,12 +9070,13 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspac
      |     |     |
 -----|-----|-----|
 **id**          | number | Share ID.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
-**type**        | string | The type of this share. One of `USER` or `GROUP`.
+**type**        | string | The type of this share. One of the following values: `USER` or `GROUP`.
 **userId**      | number | User ID if the share is a user share, else null.
 **groupId**     | number | Group ID if the share is a group share, else null.
 **email**       | string | User's primary email address for user shares; null for group shares.
 **name**        | string | If a user share and user is also a contact, the user's full name.  If a group share, the group's name.
 **accessLevel** | string | User or group's [access level](#access-levels) on shared object.
+**scope**       | string | The scope of this share. One of the following values: <ul><li>`ITEM`: an item-level share (i.e., the specific object to which the Share applies is shared with the user or group)</li><li>`WORKSPACE`: a workspace-level share (i.e., the workspace that contains the object to which the Share applies is shared with the user or group)</li></ul>
 **createdAt**	| timestamp | Time that the share was created.
 **modifiedAt**	| timestamp | Time that the share was modified.
 **subject**		| string | The subject of the email that will optionally be sent to notify the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
@@ -9246,6 +9251,8 @@ shares = action.result
 
 Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
+<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
+
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
@@ -9324,7 +9331,6 @@ Shares a Report with the specified Users and Groups.
 
 <aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
-<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <%= SHARING_ERRORS %>
 
 <%= partial "snippets/share_table.md.erb" %>
@@ -9566,6 +9572,8 @@ shares = action.data
 `GET /sheets/{sheetId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
+
+<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
@@ -9894,7 +9902,12 @@ Gets a list of all Users and Groups to whom the specified Workspace is shared, a
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
-<%= partial "snippets/listShares_table.md.erb" %>
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)
 
 ### Share Workspace
 
@@ -11401,7 +11414,9 @@ smartsheet.Sheets.move_sheet(
 
 `POST /sheets/{sheetId}/move`
 
-Moves the specified sheet to a new location.
+Moves the specified Sheet to a new location.
+
+<aside class="notice">When a Sheet that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>sheet-level</i> shares will be preserved.</aside>
 
      |     |
 -----|-----|
