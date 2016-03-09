@@ -482,7 +482,6 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1163 | If cell.image is non-null then value, objectValue, hyperlink, and linkInFromCell must all be null. | Do not retry without fixing the problem.
 400 | 1164 | Cannot add image to cell because this feature has been disabled by the org administrator. | <span class="doNotRetry">Do not retry.</span>
 400 | 1165 | Cannot add image to cell with alt text larger than 100 characters. | <span class="doNotRetry">Do not retry.</span>
-400 | 1166 | You cannot share Dashboards as an Editor. | <span class="doNotRetry">Do not retry.</span>
 400 | 1167 | The resource you are attempting to access has expired. | <span class="doNotRetry">Do not retry.</span>
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
@@ -1643,8 +1642,6 @@ Backward-compatible updates to Smartsheet API 2.0.
 * API enhancements that enable you to differentially share individual items within a workspace and to identify the scope of each [Share](#share-object) for any shared item.
 
 * API enhancements that provide additional information about published sheets and reports and allow you to more tightly control who can access a published sheet or report.
-
-* API support for [Dashboards](#dashboards).
 
 * Added createdAt and modifiedAt to the [Share object](#share-object).
 
@@ -3143,16 +3140,15 @@ Represents a link to a Cell in a different Sheet.
 
 ### Hyperlink Object
 
-Represents a hyperlink to a URL, a Sheet, a Report, or a Dashboard.
+Represents a hyperlink to a URL, a Sheet, or a Report.
  
-<aside class="notice">If the Sheet, Report, or Dashboard that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
+<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
 
      |     |     |
 -----|-----|-----|
-**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report/Dashboard link (i.e. **sheetId** or **reportId** or **dashboardId** is non-null), this property will contain the permalink to the Sheet or Report or Dashboard.
+**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
 **sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
 **reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
-**dashboardId** | number | If non-null, this hyperlink is a link to the Dashboard with this ID.
 
 ## Get Cell History
 
@@ -3308,7 +3304,7 @@ A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **
 You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
 When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
 If null, the cell's value will be derived from the hyperlink: 
-<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report or dashboard link, the cell's value will be set to the sheet or report or dashboard name.</li></ul>
+<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report link, the cell's value will be set to the sheet or report's name.</li></ul>
 
 # Cell Images
 
@@ -4469,309 +4465,6 @@ Gets a list of the user's Smartsheet Contacts.
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Contact objects](#contact-object)
 
-# Dashboards
-
-A Dashboard is a collection of widgets that can contain data from a variety of different data sources (i.e., Sheets, Reports, custom data).
-
-## <%= OBJECTS %>
-
-### Dashboard Object
-
-     |     |     |
------|-----|-----|
-**id** | number | Dashboard ID
-**name** | string | Dashboard name
-**accessLevel** | string | User's permissions on the Dashboard
-**permalink** | string | URL that represents a direct link to the Dashboard in Smartsheet
-**createdAt** | timestamp | Time of creation
-**modifiedAt** | timestamp | Time of last modification
-
-## Copy Dashboard
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId}/copy \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json"
--d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id, \
-    "newName": "newDashboardName" \
-}' \
--X POST
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{
-    "resultCode": 0,
-    "result": {
-        "id": 4583173393803140,
-        "name": "newDashboardName",
-        "accessLevel": "OWNER",
-        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
-}
-```
-
-`POST /dashboards/{dashboardId}/copy`
-
-Creates a copy of the specified Dashboard.
-
-     |     |
------|-----|
-<%= SCOPE %> | CREATE_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [ContainerDestination object](#containerdestination-object)
-<%= RETURNS %> | [Result object](#result-object) containing a [Dashboard object](#dashboard-object) for the newly created Dashboard, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
-
-## Delete Dashboard
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{
-    "resultCode": 0,
-    "message": "SUCCESS"
-}
-```
-
-`DELETE /dashboards/{dashboardId}`
-
-Deletes the Dashboard specified in the URL.
-
-     |     |
------|-----|
-<%= SCOPE %> | DELETE_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result object](#result-object)
-
-## List Dashboards
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards \
--H "Authorization: Bearer ACCESS_TOKEN"
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{
-    "pageNumber": 1,
-    "pageSize": 100,
-    "totalPages": 1,
-    "totalCount": 2,
-	"data": [
-        {
-            "id": 2331373580117892,
-            "name": "Sales Dashboard",
-            "accessLevel": "OWNER",
-			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
-            "createdAt": "2016-01-28T00:24:41Z",
-            "modifiedAt": "2016-01-28T20:32:33Z"
-        },
-        {
-            "id": 7397923160909700,
-            "name": "Dashboard #2",
-            "accessLevel": "OWNER",
-			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
-            "createdAt": "2016-01-28T01:17:51Z",
-            "modifiedAt": "2016-01-28T20:32:27Z"
-        }
-	]
-}
-```
-
-`GET /dashboards`
-
-Gets the list of all Dashboards that the User has access to.
-
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
-
-     |     |
------|-----|
-<%= SCOPE %> | READ_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Dashboard objects](#dashboard-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
-
-## Move Dashboard
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId}/move \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json"
--d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id, \
-}' \
--X POST
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{
-    "resultCode": 0,
-    "result": {
-        "id": 4583173393803140,
-        "name": "moved_dashboard_name",
-        "accessLevel": "OWNER",
-        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
-}
-```
-
-`POST /dashboards/{dashboardId}/move`
-
-Moves the specified Dashboard to a new location.
-
-<aside class="notice">When a Dashboard that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>dashboard-level</i> shares will be preserved.</aside>
-
-     |     |
------|-----|
-<%= SCOPE %> | CREATE_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attributes:<ul><li>destinationType</li><li>destinationId</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing a [Dashboard object](#dashboard-object) for the moved Dashboard, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
-
-## Share Dashboard
-
-For details about Dashboard sharing, see [Dashboard Sharing](#dashboard-sharing).
-
-## Update Dashboard
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/7960873114331012 \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X PUT \
--d '{"name": "New dashboard name"}'
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{
-    "message": "SUCCESS",
-    "result": {
-        "accessLevel": "OWNER",
-        "id": 7960873114331012,
-        "name": "New dashboard name",
-        "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
-    },
-    "resultCode": 0
-}
-```
-
-`PUT /dashboards/{dashboardId}`
-
-Updates (renames) the specified Dashboard. 
-
-     |     |
------|-----|
-<%= SCOPE %> | ADMIN_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Dashboard object](#dashboard-object) limited to the following attribute:<ul><li>name (string)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the updated [Dashboard object](#dashboard-object)
-
 # Discussions
 
 A Discussion is a collection of one or more [Comments](#comments). A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
@@ -5382,7 +5075,7 @@ For details about working with a Discussion's comments, see [Comments](#comments
 
 # Favorites
 
-Smartsheet allows users to "star" sheets, reports, folders, workspaces, dashboards, and other objects on their Home tab to mark them as favorites. 
+Smartsheet allows users to "star" sheets, reports, folders, workspaces, and other objects on their Home tab to mark them as favorites. 
 These API operations allow you to access the user's favorite API-supported objects, as well as create and delete favorites.
 
 ## <%= OBJECTS %>
@@ -5391,7 +5084,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>dashboard</li></ul>
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li></ul>
 **objectId** | number | ID of the favorited item.  If **type** is "template", only private sheet-type template ID is allowed.
 
 ## Add Favorite(s)
@@ -5571,51 +5264,6 @@ Gets a list of all of the user's Favorite items.
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Favorite objects](#favorite-object)
 
 ## Remove Favorite
-
-### Remove Favorite Dashboard
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/favorites/dashboard/{dashboardId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{
-    "message": "SUCCESS",
-    "resultCode": 0
-}
-```
-
-`DELETE /favorites/dashboard/{dashboardId}`
-
-Removes a single Dashboard from the user's list of Favorite items.
-
-     |     |
------|-----|
-<%= SCOPE %> | ADMIN_WORKSPACES
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result object](#result-object)
 
 ### Remove Favorite Folder
 
@@ -5889,42 +5537,6 @@ Removes a single Workspace from the user's list of Favorite items.
 
 ## Remove Favorites (in bulk)
 
-### Remove Favorite Dashboards
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/favorites/dashboard?objectIds={folderId1},{folderId2} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/removeFavorites_response.md.erb" %>
-
-`DELETE /favorites/dashboard`
-
-Removes multiple Dashboards from the user's list of Favorite items.
-
-<%= partial "snippets/removeFavorites_table.md.erb" %>
-
 ### Remove Favorite Folders
 
 > Example Request:
@@ -5970,6 +5582,7 @@ action = smartsheet.Favorites.remove_favorites(
     [folderId1, folderId2]
 )
 ```
+
 
 > Example Response:
 
@@ -6307,7 +5920,7 @@ Creates a copy of the specified Folder.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified.
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>dashboards</li></ul>By default, all cell links, reports, sheet hyperlinks, and dashboards that reference objects in the source folder will be re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder will continue to point to the original source sheets.</li><li>If "dashboards" is specified in the <b>skipRemap</b> parameter value, the widgets within dashboards in the newly created folder will continue to point to the original source sheets / reports.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li></ul>By default, all cell links, reports, and sheet hyperlinks that reference sheets in the source folder will be re-mapped to reference corresponding sheets in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder will continue to point to the original source sheets.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the newly created Folder
 
@@ -6645,7 +6258,7 @@ Gets the specified Folder (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
-<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or dashboards are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
+<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
 
 ## List Child Folders
 
@@ -7730,14 +7343,13 @@ contents = smartsheet.Home.list_all_contents(include='source')
     ],
     "reports": [],
     "templates": [],
-    "workspaces": [],
-	"dashboards": []
+    "workspaces": []
 }
 ```
 
 `GET /home`
 
-Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, Reports, Templates, and Dashboards, as shown on the Home tab.
+Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, Reports, and Templates, as shown on the Home tab.
 
      |     |
 -----|-----|
@@ -9458,7 +9070,7 @@ Gets application constants.
 
 # Sharing
 
-Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, and Dashboards.
+Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspaces.
 
 ## <%= OBJECTS %>
 
@@ -9479,223 +9091,6 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 **subject**		| string | The subject of the email that will optionally be sent to notify the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **ccMe**		| boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
-
-## Dashboard Sharing
-
-### Delete Dashboard Share
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId}/shares/{shareId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/deleteShare_response.md.erb" %>
-
-`DELETE /dashboards/{dashboardId}/shares/{shareId}`
-
-Deletes the Share specified in the URL. 
-
-     |     |
------|-----|
-<%= SCOPE %> | SHARE_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result object](#result-object)
-
-### Get Dashboard Share
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId}/shares/{shareId} \
--H "Authorization: Bearer ACCESS_TOKEN" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/getShare_response.md.erb" %>
-
-`GET /dashboards/{dashboardId}/shares/{shareId}`
-
-Gets the Share specified in the URL. 
-
-     |     |
------|-----|
-<%= SCOPE %> | READ_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Share object](#share-object)
-
-### List Dashboard Shares
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboard/{dashboardId}/shares \
--H "Authorization: Bearer ACCESS_TOKEN" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/listShares_response.md.erb" %>
-
-`GET /dashboards/{dashboardId}/shares`
-
-Gets a list of all Users and Groups to whom the specified Dashboard is shared, and their access level. 
-
-<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
-
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
-
-     |     |
------|-----|
-<%= SCOPE %> | READ_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of `workspaceShares`, response will contain both <i>item-level</i> shares ([<b>scope</b>](#share-object)='ITEM') and <i>workspace-level</i> shares ([<b>scope</b>](#share-object)='WORKSPACE').<br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)<br/><br/>**NOTE:** If the response contains an *item-level* share (**scope**='ITEM') and a *workspace-level* share (**scope**='WORKSPACE') for the same user or group, the **id** of those two [Share](#share-object) objects will be identical, but the **scope** attribute value can be used to disambiguate the two.
-
-### Share Dashboard
-
-> Example Request: 
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId}/shares?sendEmail=true \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X POST \
--d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/share_response.md.erb" %>
-
-`POST /dashboards/{dashboardId}/shares`
-
-Shares a Dashboard with the specified Users and Groups.
-
-<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
-
-<%= SHARING_ERRORS %>
-
-     |     |
------|-----|
-<%= SCOPE %> | SHARE_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
-<%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
-<%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
-
-### Update Dashboard Share
-
-> Example Request: 
-
-```shell
-curl https://api.smartsheet.com/2.0/dashboards/{dashboardId}/shares/{shareId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X PUT \
--d '{"accessLevel": "VIEWER"}'
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/updateShare_response.md.erb" %>
-
-`PUT /dashboards/{dashboardId}/shares/{shareId}`
-
-Updates the access level of a User or Group for the specified Dashboard.
-
-     |     |
------|-----|
-<%= SCOPE %> | SHARE_DASHBOARDS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Share object](#share-object) limited to the following attribute:<ul><li>accessLevel (string)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object)
 
 ## Report Sharing
 
@@ -10606,7 +10001,6 @@ Shares a Workspace with the specified Users and Groups.
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
 <%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request.
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Update Workspace Share
 
@@ -13514,7 +12908,7 @@ Creates a copy of the specified Workspace.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified. 
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>dashboards</li></ul>By default, all cell links, reports, sheet hyperlinks, and dashboards that reference objects in the source workspace will be re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li><li>If "dashboards" is specified in the <b>skipRemap</b> parameter value, the widgets within dashboards in the newly created workspace will continue to point to the original source sheets / reports.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li></ul>By default, all cell links, reports, and sheet hyperlinks that reference sheets in the source workspace will be re-mapped to reference corresponding sheets in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
@@ -13734,7 +13128,7 @@ Gets the specified Workspace (and lists its contents).
 
 <aside class="notice">By default, this operation only returns the top-level items in the Workspace. To load all of the contents, including nested Folders, include the <b>loadAll</b> query string parameter with a value of <b>true</b>.</aside>
 
-<aside class="notice">If no Folders, Sheets, Reports, Templates, or Dashboards are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.</aside>
+<aside class="notice">If no Folders, Sheets, Reports, or Templates are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response object.</aside>
 
      |     |
 -----|-----|
@@ -13953,7 +13347,7 @@ Object that describes the destination container when a Sheet or Folder is moved,
 -----|-----|-----|
 **destinationType** | string | Type of the destination container (when copying or moving a Sheet or a Folder). One of the following values:<ul><li>home</li><li>workspace</li><li>folder</li></ul>
 **destinationId** | number | ID of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
-**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, Dashboard, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder, Dashboard, or Workspace retains its original name).
+**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder or Workspace retains its original name).
  
 ## IndexResult Object
 
