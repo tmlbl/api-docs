@@ -3144,16 +3144,16 @@ Represents a link to a Cell in a different Sheet.
 
 ### Hyperlink Object
 
-Represents a hyperlink to a URL, a Sheet, a Report, or a Sights.
+Represents a hyperlink to a URL, a Sheet, a Report, or a Sight.
  
-<aside class="notice">If the Sheet, Report, or Sights that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
+<aside class="notice">If the Sheet, Report, or Sight that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
 
      |     |     |
 -----|-----|-----|
-**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report/Sights link (i.e. **sheetId** or **reportId** or **sightsId** is non-null), this property will contain the permalink to the Sheet or Report or Sights.
+**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report/Sight link (i.e. **sheetId** or **reportId** or **sightsId** is non-null), this property will contain the permalink to the Sheet or Report or Sight.
 **sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
 **reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
-**sightsId** | number | If non-null, this hyperlink is a link to the Sights with this ID.
+**sightsId** | number | If non-null, this hyperlink is a link to the Sight with this ID.
 
 ## Get Cell History
 
@@ -3309,7 +3309,7 @@ A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **
 You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
 When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
 If null, the cell's value will be derived from the hyperlink: 
-<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report or Sights link, the cell's value will be set to the sheet or report or Sights name.</li></ul>
+<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report or Sight link, the cell's value will be set to the sheet or report or Sight name.</li></ul>
 
 # Cell Images
 
@@ -5081,7 +5081,7 @@ For details about working with a Discussion's comments, see [Comments](#comments
 
 # Favorites
 
-Smartsheet allows users to "star" sheets, reports, folders, workspaces, sights, and other objects on their Home tab to mark them as favorites. 
+Smartsheet allows users to "star" sheets, reports, folders, workspaces, Sight, and other objects on their Home tab to mark them as favorites. 
 These API operations allow you to access the user's favorite API-supported objects, as well as create and delete favorites.
 
 ## <%= OBJECTS %>
@@ -5090,7 +5090,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>sights</li></ul>
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
 **objectId** | number | ID of the favorited item.  If **type** is "template", only private sheet-type template ID is allowed.
 
 ## Add Favorite(s)
@@ -5271,7 +5271,7 @@ Gets a list of all of the user's Favorite items.
 
 ## Remove Favorite
 
-### Remove Favorite Sights
+### Remove Favorite Sight
 
 > Example Request:
 
@@ -5306,9 +5306,9 @@ curl https://api.smartsheet.com/2.0/favorites/sights/{sightsId} \
 }
 ```
 
-`DELETE /favorites/sights/{sightsId}`
+`DELETE /favorites/sights/{sightId}`
 
-Removes a single Sights from the user's list of Favorite items.
+Removes a single Sight from the user's list of Favorite items.
 
      |     |
 -----|-----|
@@ -5588,7 +5588,7 @@ Removes a single Workspace from the user's list of Favorite items.
 
 ## Remove Favorites (in bulk)
 
-### Remove Favorite Sights
+### Remove Favorite Sight
 
 > Example Request:
 
@@ -9181,7 +9181,7 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 
 ## Sights Sharing
 
-### Delete Sights Share
+### Delete Sight Share
 
 > Example Request:
 
@@ -9221,7 +9221,7 @@ Deletes the Share specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Result object](#result-object)
 
-### Get Sights Share
+### Get Sight Share
 
 > Example Request:
 
@@ -9260,7 +9260,7 @@ Gets the Share specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Share object](#share-object)
 
-### List Sights Shares
+### List Sight Shares
 
 > Example Request:
 
@@ -9291,7 +9291,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/shares \
 
 `GET /sights/{sightsId}/shares`
 
-Gets a list of all Users and Groups to whom the specified Sights is shared, and their access level. 
+Gets a list of all Users and Groups to whom the specified Sight is shared, and their access level. 
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
@@ -9304,7 +9304,7 @@ Gets a list of all Users and Groups to whom the specified Sights is shared, and 
 <%= PARAMETERS %> | **include** (optional): when specified with a value of `workspaceShares`, response will contain both <i>item-level</i> shares ([<b>scope</b>](#share-object)='ITEM') and <i>workspace-level</i> shares ([<b>scope</b>](#share-object)='WORKSPACE').<br/><br/><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)<br/><br/>**NOTE:** If the response contains an *item-level* share (**scope**='ITEM') and a *workspace-level* share (**scope**='WORKSPACE') for the same user or group, the **id** of those two [Share](#share-object) objects will be identical, but the **scope** attribute value can be used to disambiguate the two.
 
-### Share Sights
+### Share Sight
 
 > Example Request: 
 
@@ -9338,7 +9338,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/shares?sendEmail=true \
 
 `POST /sights/{sightsId}/shares`
 
-Shares a Sights with the specified Users and Groups.
+Shares a Sight with the specified Users and Groups.
 
 <aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
@@ -9353,7 +9353,7 @@ Shares a Sights with the specified Users and Groups.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
 <%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
-### Update Sights Share
+### Update Sight Share
 
 > Example Request: 
 
@@ -9387,7 +9387,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/shares/{shareId} \
 
 `PUT /sights/{sightsId}/shares/{shareId}`
 
-Updates the access level of a User or Group for the specified Sights.
+Updates the access level of a User or Group for the specified Sight.
 
      |     |
 -----|-----|
@@ -12061,44 +12061,43 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 
 ## <%= OBJECTS %>
 
-### Sights Object
+### Sight Object
 
      |     |     |
 -----|-----|-----|
-**id** | number | Sights ID
-**name** | string | Sights Name 
-**columnCount** | number | Number of Columns that the sights contains
+**id** | number | Sight ID
+**name** | string | Sight Name 
+**columnCount** | number | Number of Columns that the Sight contains
 **widgets** | [widget](#widget-object)[] | Array of Widget objects
-**favorite** | boolean | Indicates whether the User has marked the Sights as a favorite
-**accessLevel** | string | User's permissions on the Sights. Valid values: <ul><li>OWNER</li> <li>ADMIN</li> <li>VIEWER</li></ul>
-**permalink** | string | URL that represents a direct link to the Sights in Smartsheet
+**favorite** | boolean | Indicates whether the User has marked the Sight as a favorite
+**accessLevel** | string | User's permissions on the Sight. Valid values: <ul><li>OWNER</li> <li>ADMIN</li> <li>VIEWER</li></ul>
+**permalink** | string | URL that represents a direct link to the Sight in Smartsheet
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
-**workspace** | [Workspace](#workspace-object)[] | A Workspace object, limited to only 2 attributes: <ul><li>id</li> <li>name</li></ul> _Note: this attribute is only present if the Sights resides within a Workspace._
+**workspace** | [Workspace](#workspace-object) | A Workspace object, limited to only 2 attributes: <ul><li>id</li> <li>name</li></ul> _Note: this attribute is only present if the Sight resides within a Workspace._
 
 ### Widget Object
 
      |     |     |
 -----|-----|-----|
-**id** | number | ID of the widget
+**id** | number | Widget ID
 **type** | string | Type of widget
 **title** | string | _(Optional)_ Title of the widget
-**showTitleIcon** | boolean | _True_ indicates that the client should display the Sheet icon in the widget title
-**titleFormat** | string | A full-resolved [FormatDescriptor](#formatting)
-**xPosition** | number | X-coordinate of widget's position on the Sights
-**yPosition** | number | Y-coordinate of widget's position on the Sights
-**height** | number | Number of Rows that the widget occupies on the Sights
-**width** | number | Number of Columns that the widget occupies on the Sights
-**error** | [Error](#errors)[] | Object containing an **errorCode** and non-localized **message**
+**showTitleIcon** | boolean | **True** indicates that the client should display the Sheet icon in the widget title
+**titleFormat** | string | [FormatDescriptor](#formatting)
+**xPosition** | number | X-coordinate of widget's position on the Sight
+**yPosition** | number | Y-coordinate of widget's position on the Sight
+**height** | number | Number of Rows that the widget occupies on the Sight
+**width** | number | Number of Columns that the widget occupies on the Sight
 **version** | int | Widget version number
-**contents** | [WidgetContent](#widgetcontent-object)[] | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*:
+**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*:
 
 ### WidgetContent Object
 
 Value | Type of object | Object Structure |
 -----|-----|-----|
-**CELLLINK** | CellLinkWidgetContent object | <ul><li><b>[hyperlink](#hyperlink-object)</b>[] - The widget has **when clicked** attribute set to that hyperlink (_if present and non-null)_</li> <li><b>[cellData](#celldataitem-object)[]</b> - array of CellDataItem objects</li> <li><b>[column](#column-object)</b>[] - array of Column objects</li>
-**SHEETSUMMARY** | CellLinkWidgetContent object | <ul><li><b>[hyperlink](#hyperlink-object)</b>[] - The widget has **when clicked** attribute set to that hyperlink (_if present and non-null)_</li> <li><b>[cellData](#celldataitem-object)</b> - Array of CellDataItem objects</li> <li><b>[column](#column-object)</b>[] - Array of Column objects</li> </ul>
+**CELLLINK** | CellLinkWidgetContent object | <ul><li><b>[hyperlink](#hyperlink-object)</b> - The widget has **when clicked** attribute set to that hyperlink (_if present and non-null)_</li> <li><b>[cellData](#celldataitem-object)</b>[] - array of CellDataItem objects</li> <li><b>[column](#column-object)</b>[] - array of Column objects</li>
+**SHEETSUMMARY** | CellLinkWidgetContent object | <ul><li><b>[hyperlink](#hyperlink-object)</b> - The widget has **when clicked** attribute set to that hyperlink (_if present and non-null)_</li> <li><b>[cellData](#celldataitem-object)</b>[] - Array of CellDataItem objects</li> <li><b>[column](#column-object)</b>[] - Array of Column objects</li> </ul>
 **RICHTEXT** | RichTextWidgetContent object | <ul><li><b>html</b> - the widget content as HTML. </li></ul> The Rich Text widget supports the following subset of HTML tags and CSS Styles: </br></br> <b>HTML</b><ul><li>a</li> <li>br</li> <li>li</li> <li>ol</li> <li>p</li> <li>ul</li> <li>span</li></ul> <b>CSS</b><ul><li>color</li> <li>font-family</li> <li>font-size</li> <li>font-style</li> <li>font-weight</li> <li>text-align</li> <li>text-decoration</li></ul>
 **SHORTCUTICON** | ShortcutWidgetContent object | <ul><li><b>[shortcutData](#shortcutdataitem-object)</b>[] - An array of ShortcutDataItem objects</li></ul>
 **SHORTCUTLIST** | ShortcutWidgetContent object | <ul><li><b>[shortcutData](#shortcutdataitem-object)</b>[] - An array of ShortcutDataItem objects</li></ul>
@@ -12109,26 +12108,25 @@ Value | Type of object | Object Structure |
      |     |     |
 -----|-----|-----|
 **label** | string | Label for the data point. This will be either the column name or a user-provided string
-**labelFormat** | string | A fully-resolved [formatDescriptor](#formatting)
+**labelFormat** | string | [formatDescriptor](#formatting)
 **objectValue** | A **string**, **number**, or a **boolean** value | The type of data returned will depend on the cell type and the data in the cell
-**cell** | [cell](#cell-object)[] | Cell Object
-**valueFormat** | string | A fully-resolved [formatDescriptor](#formatting)
+**cell** | [cell](#cell-object) | Cell Object
+**valueFormat** | string | [formatDescriptor](#formatting)
 **order** | integer | The display order for the CellDataItem
 **columnId** | number | Column ID for the cell
-**error** | [error](#errors)[] | Error object
 
 ### ShortcutDataItem object
 
      |     |     |
 -----|-----|-----|
 **label** | string | Label for the data point
-**labelFormat** | string | A fully-resolved [formatDescriptor](#formatting)
+**labelFormat** | string | [formatDescriptor](#formatting)
 **mimeType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)
-**hyperlink** | [hyperlink](#hyperlink-object)[] | Hyperlink object
+**hyperlink** | [hyperlink](#hyperlink-object) | Hyperlink object
 **order** | integer | The display order for the ShortcutWidgetItem
 
 
-## Copy Sights
+## Copy Sight
 
 > Example Request:
 
@@ -12139,7 +12137,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/copy \
 -d '{ \
     "destinationType": "workspace|folder|home", \
     "destinationId": workspace_or_folder_id, \
-    "newName": "newSightsName" \
+    "newName": "newSightName" \
 }' \
 -X POST
 ```
@@ -12167,7 +12165,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/copy \
     "resultCode": 0,
     "result": {
         "id": 4583173393803140,
-        "name": "newSightsName",
+        "name": "newSightName",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
     },
@@ -12175,18 +12173,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/copy \
 }
 ```
 
-`POST /Sights/{sightsId}/copy`
+`POST /sights/{sightsId}/copy`
 
-Creates a copy of the specified Sights.
+Creates a copy of the specified Sight.
 
      |     |
 -----|-----|
 <%= SCOPE %> | CREATE_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)
-<%= RETURNS %> | [Result object](#result-object) containing a [Sights object](#sights-object) for the newly created Sights, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Sight](#sight-object) for the newly created Sight, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
-## Get Sights
+## Get Sight
 
 > Example Request:
 
@@ -12218,7 +12216,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 	"resultCode": 0,
 	"result": {
 		"id": 2331373580117892,
-		"name": "Sales Sights",
+		"name": "Sales Sight",
 		"accessLevel": "OWNER",
 		"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
 		"createdAt": "2016-01-28T00:24:41Z",
@@ -12230,16 +12228,16 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 
 `GET /sights/{sightsId}`
 
-Gets the specified Sights.
+Gets the specified Sight.
 
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Sights objects](#sights-object)
+<%= RETURNS %> | [Sight objects](#sight-object)
 
-## Delete Sights
+## Delete Sight
 
 > Example Request:
 
@@ -12288,7 +12286,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 
 `DELETE /sights/{sightsId}`
 
-Deletes the Sights specified in the URL.
+Deletes the Sight specified in the URL.
 
      |     |
 -----|-----|
@@ -12332,7 +12330,7 @@ curl https://api.smartsheet.com/2.0/sights \
 	"data": [
         {
             "id": 2331373580117892,
-            "name": "Sales Sights",
+            "name": "Sales Sight",
             "accessLevel": "OWNER",
 			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
             "createdAt": "2016-01-28T00:24:41Z",
@@ -12340,7 +12338,7 @@ curl https://api.smartsheet.com/2.0/sights \
         },
         {
             "id": 7397923160909700,
-            "name": "Sights #2",
+            "name": "Sight #2",
             "accessLevel": "OWNER",
 			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
             "createdAt": "2016-01-28T01:17:51Z",
@@ -12361,9 +12359,9 @@ Gets the list of all Sights that the User has access to.
 <%= SCOPE %> | READ_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sights objects](#sights-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sight object](#sight-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
 
-## Move Sights
+## Move Sight
 
 > Example Request:
 
@@ -12401,7 +12399,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/move \
     "resultCode": 0,
     "result": {
         "id": 4583173393803140,
-        "name": "moved_sights_name",
+        "name": "moved_Sight_name",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
     },
@@ -12411,31 +12409,31 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/move \
 
 `POST /sights/{sightsId}/move`
 
-Moves the specified Sights to a new location.
+Moves the specified Sight to a new location.
 
-<aside class="notice">When a Sights that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>sights-level</i> shares will be preserved.</aside>
+<aside class="notice">When a Sight that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>Sight-level</i> shares will be preserved.</aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | CREATE_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attributes:<ul><li>destinationType</li><li>destinationId</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing a [Sights object](#sights-object) for the moved Sights, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Sight object](#sight-object) for the moved Sight, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
-## Share Sights
+## Share Sight
 
-For details about Sights sharing, see [Sights Sharing](#sights-sharing).
+For details about Sight sharing, see [Sights Sharing](#sights-sharing).
 
-## Update Sights
+## Update Sight
 
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/7960873114331012 \
+curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"name": "New sights name"}'
+-d '{"name": "New Sight name"}'
 ```
 
 ```javascript
@@ -12462,7 +12460,7 @@ curl https://api.smartsheet.com/2.0/sights/7960873114331012 \
     "result": {
         "accessLevel": "OWNER",
         "id": 7960873114331012,
-        "name": "New sights name",
+        "name": "New Sight name",
         "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
     },
     "resultCode": 0
@@ -12471,14 +12469,14 @@ curl https://api.smartsheet.com/2.0/sights/7960873114331012 \
 
 `PUT /sights/{sightsId}`
 
-Updates (renames) the specified Sights. 
+Updates (renames) the specified Sight. 
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sights object](#sights-object) limited to the following attribute:<ul><li>name (string)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the updated [Sights object](#sights-object)
+<%= REQUEST %> | [Sight object](#sight-object) limited to the following attribute:<ul><li>name (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the updated [Sight object](#sight-object)
 
 
 
@@ -13641,7 +13639,7 @@ Creates a copy of the specified Workspace.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified. 
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and sights that reference objects in the source workspace will be re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within sights in the newly created workspace will continue to point to the original source sheets / reports.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and sights that reference objects in the source workspace will be re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within sights in the newly created workspace will continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
@@ -14080,7 +14078,7 @@ Object that describes the destination container when a Sheet or Folder is moved,
 -----|-----|-----|
 **destinationType** | string | Type of the destination container (when copying or moving a Sheet or a Folder). One of the following values:<ul><li>home</li><li>workspace</li><li>folder</li></ul>
 **destinationId** | number | ID of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
-**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, Sights, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder, Sights, or Workspace retains its original name).
+**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, Sight, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder, Sight, or Workspace retains its original name).
  
 ## IndexResult Object
 
