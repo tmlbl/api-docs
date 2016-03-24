@@ -12066,11 +12066,67 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
      |     |     |
 -----|-----|-----|
 **id** | number | Sights ID
-**name** | string | Sights name
-**accessLevel** | string | User's permissions on the Sights
+**name** | string | Sights Name 
+**columnCount** | number | Number of Columns that the sights contains
+**widgets** | [widget](#widget-object)[] | Array of Widget objects
+**favorite** | boolean | Indicates whether the User has marked the Sights as a favorite
+**accessLevel** | string | User's permissions on the Sights. Valid values: <ul><li>OWNER</li> <li>ADMIN</li> <li>VIEWER</li></ul>
 **permalink** | string | URL that represents a direct link to the Sights in Smartsheet
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
+**workspace** | [Workspace](#workspace-object)[] | A Workspace object, limited to only 2 attributes: <ul><li>id</li> <li>name</li></ul> _Note: this attribute is only present if the Sights resides within a Workspace._
+
+### Widget Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | ID of the widget
+**type** | string | Type of widget
+**title** | string | _(Optional)_ Title of the widget
+**showTitleIcon** | boolean | _True_ indicates that the client should display the Sheet icon in the widget title
+**titleFormat** | string | A full-resolved [FormatDescriptor](#formatting)
+**xPosition** | number | X-coordinate of widget's position on the Sights
+**yPosition** | number | Y-coordinate of widget's position on the Sights
+**height** | number | Number of Rows that the widget occupies on the Sights
+**width** | number | Number of Columns that the widget occupies on the Sights
+**error** | [Error](#errors)[] | Object containing an **errorCode** and non-localized **message**
+**version** | int | Widget version number
+**contents** | [WidgetContent](#widgetcontent-object)[] | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*:
+
+### WidgetContent Object
+
+Value | Type of object | Object Structure |
+-----|-----|-----|
+**CELLLINK** | CellLinkWidgetContent object | <ul><li><b>[hyperlink](#hyperlink-object)</b>[] - The widget has **when clicked** attribute set to that hyperlink (_if present and non-null)_</li> <li><b>[cellData](#celldataitem-object)[]</b> - array of CellDataItem objects</li> <li><b>[column](#column-object)</b>[] - array of Column objects</li>
+**SHEETSUMMARY** | CellLinkWidgetContent object | <ul><li><b>[hyperlink](#hyperlink-object)</b>[] - The widget has **when clicked** attribute set to that hyperlink (_if present and non-null)_</li> <li><b>[cellData](#celldataitem-object)</b> - Array of CellDataItem objects</li> <li><b>[column](#column-object)</b>[] - Array of Column objects</li> </ul>
+**RICHTEXT** | RichTextWidgetContent object | <ul><li><b>html</b> - the widget content as HTML. </li></ul> The Rich Text widget supports the following subset of HTML tags and CSS Styles: </br></br> <b>HTML</b><ul><li>a</li> <li>br</li> <li>li</li> <li>ol</li> <li>p</li> <li>ul</li> <li>span</li></ul> <b>CSS</b><ul><li>color</li> <li>font-family</li> <li>font-size</li> <li>font-style</li> <li>font-weight</li> <li>text-align</li> <li>text-decoration</li></ul>
+**SHORTCUTICON** | ShortcutWidgetContent object | <ul><li><b>[shortcutData](#shortcutdataitem-object)</b>[] - An array of ShortcutDataItem objects</li></ul>
+**SHORTCUTLIST** | ShortcutWidgetContent object | <ul><li><b>[shortcutData](#shortcutdataitem-object)</b>[] - An array of ShortcutDataItem objects</li></ul>
+**GRIDGANTT** | ReportWidgetContent object | <ul><li><b>htmlContent</b> - HTML snippet to render Report</li></ul>
+
+### CellDataItem object
+
+     |     |     |
+-----|-----|-----|
+**label** | string | Label for the data point. This will be either the column name or a user-provided string
+**labelFormat** | string | A fully-resolved [formatDescriptor](#formatting)
+**objectValue** | A **string**, **number**, or a **boolean** value | The type of data returned will depend on the cell type and the data in the cell
+**cell** | [cell](#cell-object)[] | Cell Object
+**valueFormat** | string | A fully-resolved [formatDescriptor](#formatting)
+**order** | integer | The display order for the CellDataItem
+**columnId** | number | Column ID for the cell
+**error** | [error](#errors)[] | Error object
+
+### ShortcutDataItem object
+
+     |     |     |
+-----|-----|-----|
+**label** | string | Label for the data point
+**labelFormat** | string | A fully-resolved [formatDescriptor](#formatting)
+**mimeType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)
+**hyperlink** | [hyperlink](#hyperlink-object)[] | Hyperlink object
+**order** | integer | The display order for the ShortcutWidgetItem
+
 
 ## Copy Sights
 
@@ -12174,7 +12230,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 
 `GET /sights/{sightsId}`
 
-Gets the Sights specified in the URL.
+Gets the specified Sights.
 
 
      |     |
@@ -12190,7 +12246,6 @@ Gets the Sights specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
 ```
 ```javascript
 // [todo]
@@ -12211,9 +12266,23 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 > Example Response:
 
 ```json
-{
-    "resultCode": 0,
-    "message": "SUCCESS"
+{	
+            "id": 4509918431602564,
+            "name": "My Sight",
+            "columnCount": 5,
+            "widgets": [
+	{
+	    ...
+	},
+	{
+	    ...
+	}
+            ],,
+            "favorite": true,
+            "accessLevel": "OWNER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=uWicCItTmkbxJwpCfQ5wiwW",
+            "createdAt": "2015-06-05T20:05:29Z",
+            "modifiedAt": "2015-06-05T20:05:43Z"
 }
 ```
 
