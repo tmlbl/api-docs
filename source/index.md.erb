@@ -1136,12 +1136,20 @@ READ_SHEETS | Read all sheet data, including comments, attachments and cell data
 WRITE_SHEETS | Insert and modify sheet data, including comments, attachments and cell data
 SHARE_SHEETS | Share sheets, including sending sheets as attachments
 DELETE_SHEETS | Delete sheets
-CREATE_SHEETS | Create new sheets  
+CREATE_SHEETS | Create new sheets
+CREATE_SIGHTS | Create new sights
+READ_SIGHTS | Read all sight data
+DELETE_SIGHTS | Delete sight
+SHARE_SIGHTS | Share sight
 READ_USERS | Retrieve users and groups for your Smartsheet organization
 READ_CONTACTS | Retrieve contacts
 ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
+ADMIN_SIGHTS | Modify sight structure
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
+
+
+
  
 <aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
@@ -12135,8 +12143,8 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/copy \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json"
 -d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id, \
+    "destinationType": "workspace", \
+    "destinationId": 7960873114331012, \
     "newName": "newSightName" \
 }' \
 -X POST
@@ -12167,7 +12175,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/copy \
         "id": 4583173393803140,
         "name": "newSightName",
         "accessLevel": "OWNER",
-        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
+        "permalink": "https://app.smartsheet.com/b/home?lx=lB0JaOh6AX1wGwqxsQIMaA"
     },
     "message": "SUCCESS"
 }
@@ -12183,6 +12191,50 @@ Creates a copy of the specified Sight.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)
 <%= RETURNS %> | [Result object](#result-object) containing a [Sight](#sight-object) for the newly created Sight, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+
+
+## Delete Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightsId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+```
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "message": "SUCCESS"
+}
+```
+
+`DELETE /sights/{sightsId}`
+
+Deletes the Sight specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | DELETE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
 
 ## Get Sight
 
@@ -12213,16 +12265,51 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId} \
 
 ```json
 {
-	"resultCode": 0,
-	"result": {
-		"id": 2331373580117892,
-		"name": "Sales Sight",
-		"accessLevel": "OWNER",
-		"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
-		"createdAt": "2016-01-28T00:24:41Z",
-		"modifiedAt": "2016-01-28T20:32:33Z"
-	},
-    "message": "SUCCESS"
+  "id": 2591554075418573,
+  "name": "Test",
+  "accessLevel": "OWNER",
+  "columnCount": 6,
+  "widgets": [
+    {
+      "id": 3056651398234562,
+      "type": "RICHTEXT",
+      "contents": {
+        "htmlContent": "<p>This is a test</p>"
+      },
+      "xPosition": 2,
+      "yPosition": 0,
+      "width": 2,
+      "height": 4,
+      "showTitleIcon": false,
+      "titleFormat": ",,1,,,,,,,3,,,,,,",
+      "version": 1
+    },
+    {
+      "id": 48092647672583496,
+      "type": "SHORTCUTLIST",
+      "contents": {
+        "shortcutData": [
+          {
+            "label": "Test Sheet",
+            "labelFormat": ",2,,,,,1,,1,,,,,,,",
+            "hyperlink": {
+              "url": "https://app.smartsheet.com/b/home?lx=m1O5qo7tpM1h23KFxYavIw",
+              "sheetId": 692061146243972
+            },
+            "attachmentType": "SMARTSHEET",
+            "order": 0
+          }
+        ]
+      },
+      "xPosition": 1,
+      "yPosition": 0,
+      "width": 1,
+      "height": 1,
+      "showTitleIcon": false,
+      "titleFormat": ",,1,,,,,,,3,,,,,,",
+      "version": 1
+    }
+  ]
 }
 ```
 
@@ -12236,63 +12323,6 @@ Gets the specified Sight.
 <%= SCOPE %> | READ_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Sight object](#sight-object)
-
-## Delete Sight
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sights/{sightsId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
-```
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-```json
-{	
-            "id": 4509918431602564,
-            "name": "My Sight",
-            "columnCount": 5,
-            "widgets": [
-	{
-	    ...
-	},
-	{
-	    ...
-	}
-            ],,
-            "favorite": true,
-            "accessLevel": "OWNER",
-            "permalink": "https://app.smartsheet.com/b/home?lx=uWicCItTmkbxJwpCfQ5wiwW",
-            "createdAt": "2015-06-05T20:05:29Z",
-            "modifiedAt": "2015-06-05T20:05:43Z"
-}
-```
-
-`DELETE /sights/{sightsId}`
-
-Deletes the Sight specified in the URL.
-
-     |     |
------|-----|
-<%= SCOPE %> | DELETE_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result object](#result-object)
 
 ## List Sights
 
@@ -12370,7 +12400,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/move \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json"
 -d '{ \
-    "destinationType": "workspace|folder|home", \
+    "destinationType": "folder", \
     "destinationId": workspace_or_folder_id, \
 }' \
 -X POST
@@ -12401,7 +12431,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightsId}/move \
         "id": 4583173393803140,
         "name": "moved_Sight_name",
         "accessLevel": "OWNER",
-        "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
+        "permalink": "https://app.smartsheet.com/b/home?lx=lB0JaOh6AX1wGwqxsQIMaA"
     },
     "message": "SUCCESS"
 }
@@ -14252,7 +14282,7 @@ Object | Deprecated Attribute | Replaced by
 At a high-level, it works like this:
 
 <ol>
-	<li><span class="customInstructionsHeading">Your application subscribes to <a href="#event-callbacks">callbacks</a>.</span><br/>Your application creates webhooks by using the Smartsheet API. Each webhook specifies:
+	<li><span class="customInstructionsHeading">Your application subscribes to <a href="#event-callbacks">callbacks</a>.</span><br/>First, you need to subscribe to event notifications (callbacks) by creating one or more webhooks.  You can create a webhook manually via the API or have your application create a webhook dynamically.  Each webhook must specify:
 		<ul>
 			<li>Which Smartsheet object to monitor for events</li>
 			<li>Which events in that object should trigger a callback</li>
@@ -14268,14 +14298,14 @@ At a high-level, it works like this:
 		</ul>
 		<br/>
 	</li>
-	<li><span class="customInstructionsHeading">Smartsheet sends callbacks to your application.</span><br/>When any of the specified events occur within an object that is being monitored by a webhook, Smartsheet sends an <code>HTTP POST</code> (i.e., "callback") to the <b>callback URL</b> that is associated with the Webhook.
+	<li><span class="customInstructionsHeading">When any of the specified events occur within an object that is being monitored by a webhook, Smartsheet sends an <code>HTTP POST</code> (i.e., "callback") to the <b>callback URL</b> that is associated with the Webhook.</span><br/>
 		<ul>
 			<li><i>Note:</i> The callback payload is a "skinny" payload -- it indicates which objects changed and the type of events that occurred, but does not contain any data from the objects themselves.</li>
 		</ul> 
 		<br/>
 	</li>
 	<li><span class="customInstructionsHeading">Your application receives, acknowledges, and processes callbacks.</span><br/>Your application receives the <code>HTTP POST</code>, acknowledges the callback by responding with HTTP status 200, and processes the callback. 
-	Oftentimes, this will involve submitting one or more Smartsheet API requests to acquire additional data associated with the change.
+	Because the callbacks are "skinny", you may need to make one or more requests to the Smartsheet API to retrieve the actual data associated with the change.
 	</li>
 </ol>
 
@@ -14326,8 +14356,8 @@ This webhook monitors the specified Sheet (id: 12345678901234) for all types of 
 
 # Creating a Webhook
 
-An API client can create a webhook by using the [Create Webhook](#create-webhook) operation. 
-After successfully creating a webhook, the API client must subsequently initiate the [verification process](#webhook-verification) before the webhook will become enabled. 
+An API client can create a webhook by using the [Create Webhook](#create-webhook) operation. A newly created webhook is disabled by default.
+After successfully creating a webhook, the API client must subsequently initiate and complete the [verification process](#webhook-verification) before the webhook will become enabled. 
 The following diagram illustrates the process of creating and enabling a Webhook. 
 
 <img src="images/v4-CreateAndEnableWebhook.png" />
@@ -14379,7 +14409,7 @@ When a webhook is initially [created through the API](#create-webhook), the resp
 you can check the verification request's `webhookId` attribute against your list of created webhook IDs.  If the ID is not in the list, return a response with a non-200 status code (for example, 403 Forbidden),
 and the webhook that initiated the verification request will be disabled as described above.
 
-<aside class="notice">Once a webhook has been enabled, Smartsheet will send a verification request to the webhook's <b>callbackUrl</b> once every 100 callbacks. The Subscriber should respond to the verification request as described above -- failure to do so will result in the webhook being disabled (<code>enabled: false</code> and <code>status: "DISABLED_VERIFICATION_FAILED"</code>).</aside>
+<aside class="notice"><b>IMPORTANT</b>: ONGOING VERIFICATION. Once a webhook has been enabled, Smartsheet will send Smartsheet will send a verification request to the webhook's <b>callbackUrl</b> once every 100 callbacks. The Subscriber should respond to the verification request as described above -- failure to do so will result in the webhook being disabled (<code>enabled: false</code> and <code>status: "DISABLED_VERIFICATION_FAILED"</code>).</aside>
 
 # Webhook Status
 
@@ -14411,7 +14441,7 @@ A "callback" is the notification that Smartsheet sends to a webhook's **callback
 A Subscriber has the ability to verify the integrity of a callback payload (i.e. ensure that the message was not tampered with en route) and authenticate the identity of its sender (i.e. ensure that the callback did indeed originate from Smartsheet). 
 For more information, see [Authenticating Callbacks](#authenticating-callbacks-(optional)).
 
-## Event callbacks
+## Event Callbacks
 
 > Example - Event callback (row created):
 
@@ -14462,7 +14492,7 @@ Request timeout | Yes
 If the response is not retriable or retry attempts have been exhausted, the webhook will be disabled (`enabled: false` and `status: "DISABLED_CALLBACK_FAILED"`).
 A webhook in this state can be re-enabled if the subscriber completes the verification process. (See [Webhook Status](#webhook-status) for details.)
 
-## Status Change callbacks
+## Status Change Callbacks
 
 > Status Change callback (access lost):
 
