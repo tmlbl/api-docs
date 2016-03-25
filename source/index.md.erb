@@ -29,9 +29,13 @@ search: false
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
 <% SUPPORTS_PAGING = "This operation supports pagination of results." %>
+<% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
 <% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute -- an array of [BulkItemFailure objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
+<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
+<% LIST_SHARES_RESPONSE_DESC = "By default, this operation returns only <i>item-level</i> shares (<b><a href='#share-object'>scope</b></a>='ITEM'). Use the <b>include</b> parameter to request that <i>workspace-level</i> shares (<b><a href='#share-object'>scope</b></a>=='WORKSPACE') also be returned." %>
+<% WEBHOOKS_INTRO = "Webhooks provide a way for Smartsheet to automatically notify your external application or service when certain events occur in Smartsheet. Webhooks offer a more efficient alternative to using the API to periodically <i>poll</i> for changes." %>
 
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
@@ -480,6 +484,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1163 | If cell.image is non-null then value, objectValue, hyperlink, and linkInFromCell must all be null. | Do not retry without fixing the problem.
 400 | 1164 | Cannot add image to cell because this feature has been disabled by the org administrator. | <span class="doNotRetry">Do not retry.</span>
 400 | 1165 | Cannot add image to cell with alt text larger than 100 characters. | <span class="doNotRetry">Do not retry.</span>
+400 | 1166 | You cannot share Sights as an Editor. | <span class="doNotRetry">Do not retry.</span>
 400 | 1167 | The resource you are attempting to access has expired. | <span class="doNotRetry">Do not retry.</span>
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
@@ -720,8 +725,7 @@ noted as such in their API reference documentation.
 **NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
 return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result object](#result-object) returned will omit them.
 
-<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change,
-and existing code will continue to function.</aside>
+<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
 
 ### Partial Success
 
@@ -1132,12 +1136,20 @@ READ_SHEETS | Read all sheet data, including comments, attachments and cell data
 WRITE_SHEETS | Insert and modify sheet data, including comments, attachments and cell data
 SHARE_SHEETS | Share sheets, including sending sheets as attachments
 DELETE_SHEETS | Delete sheets
-CREATE_SHEETS | Create new sheets  
+CREATE_SHEETS | Create new sheets
+CREATE_SIGHTS | Create new sights
+READ_SIGHTS | Read all sight data
+DELETE_SIGHTS | Delete sight
+SHARE_SIGHTS | Share sight
 READ_USERS | Retrieve users and groups for your Smartsheet organization
 READ_CONTACTS | Retrieve contacts
 ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
+ADMIN_SIGHTS | Modify sight structure
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
+
+
+
  
 <aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
@@ -1631,6 +1643,22 @@ for org_sheet in sheets:
 This section documents the evolution of Smartsheet API 2.0 over time. 
 To stay informed about changes to the API, we recommend that you periodically review this list for new information, subscribe to our Developer Newsletter (using the *Get Developer Updates* form on the [Smartsheet Developer Portal](http://www.smartsheet.com/developers)) or follow us via [Twitter](https://twitter.com/smartsheetapi).
 
+## March 11, 2016
+
+Backward-compatible updates to Smartsheet API 2.0. 
+
+* API enhancements that enable you to attach a link to a file in OneDrive.
+
+* API enhancements that enable you to differentially share individual items within a workspace and to identify the scope of each [Share](#share-object) for any shared item.
+
+* API enhancements that provide additional information about published sheets and reports and allow you to more tightly control who can access a published sheet or report.
+
+* API support for [Sights](#sights).
+
+* Added createdAt and modifiedAt to the [Share object](#share-object).
+
+For more detailed information about this release, see the [release notes](https://www.smartsheet.com/developers/blog).
+
 ## January 15, 2016
 
 Backward-compatible updates to Smartsheet API 2.0. 
@@ -1698,7 +1726,7 @@ Attachments can exist on a [Comment](#comments) (i.e., within a Discussion), on 
 **name** | string | Attachment name
 **url** | string | Attachment temporary URL (files only)
 **urlExpiresInMillis** | number | Attachment temporary URL time to live (files only) 
-**attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)
+**attachmentType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, EGNYTE, ONEDRIVE)
 **attachmentSubType** | string | Attachment sub type, valid only for either GOOGLE_DRIVE attachments or EGNYTE attachments:<ul><li>possible values for GOOGLE_DRIVE attachments: DOCUMENT, SPREADSHEET, PRESENTATION, PDF, DRAWING</li><li>possible values for EGNYTE attachments: FOLDER</li></ul>
 **createdAt** | timestamp | A timestamp of when the attachment was originally added
 **createdBy** | [User](#user-object) | User object containing name and email of the creator of this attachment
@@ -3124,15 +3152,16 @@ Represents a link to a Cell in a different Sheet.
 
 ### Hyperlink Object
 
-Represents a hyperlink to a URL, a Sheet, or a Report.
+Represents a hyperlink to a URL, a Sheet, a Report, or a Sight.
  
-<aside class="notice">If the Sheet or Report that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
+<aside class="notice">If the Sheet, Report, or Sight that is linked to was deleted, this object may be empty (i.e. all values null).</aside>
 
      |     |     |
 -----|-----|-----|
-**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report link (i.e. **sheetId** or **reportId** is non-null), this property will contain the permalink to the Sheet or Report.
+**url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report/Sight link (i.e. **sheetId** or **reportId** or **sightId** is non-null), this property will contain the permalink to the Sheet or Report or Sight.
 **sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
 **reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
+**sightId** | number | If non-null, this hyperlink is a link to the Sight with this ID.
 
 ## Get Cell History
 
@@ -3288,7 +3317,7 @@ A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **
 You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
 When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
 If null, the cell's value will be derived from the hyperlink: 
-<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report link, the cell's value will be set to the sheet or report's name.</li></ul>
+<ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report or Sight link, the cell's value will be set to the sheet or report or Sight name.</li></ul>
 
 # Cell Images
 
@@ -4449,6 +4478,7 @@ Gets a list of the user's Smartsheet Contacts.
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Contact objects](#contact-object)
 
+
 # Discussions
 
 A Discussion is a collection of one or more [Comments](#comments). A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
@@ -5059,7 +5089,7 @@ For details about working with a Discussion's comments, see [Comments](#comments
 
 # Favorites
 
-Smartsheet allows users to "star" sheets, reports, folders, workspaces, and other objects on their Home tab to mark them as favorites. 
+Smartsheet allows users to "star" sheets, reports, folders, workspaces, Sight, and other objects on their Home tab to mark them as favorites. 
 These API operations allow you to access the user's favorite API-supported objects, as well as create and delete favorites.
 
 ## <%= OBJECTS %>
@@ -5068,7 +5098,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li></ul>
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
 **objectId** | number | ID of the favorited item.  If **type** is "template", only private sheet-type template ID is allowed.
 
 ## Add Favorite(s)
@@ -5248,6 +5278,51 @@ Gets a list of all of the user's Favorite items.
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Favorite objects](#favorite-object)
 
 ## Remove Favorite
+
+### Remove Favorite Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0
+}
+```
+
+`DELETE /favorites/sights/{sightId}`
+
+Removes a single Sight from the user's list of Favorite items.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
 
 ### Remove Favorite Folder
 
@@ -5521,6 +5596,42 @@ Removes a single Workspace from the user's list of Favorite items.
 
 ## Remove Favorites (in bulk)
 
+### Remove Favorite Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{folderId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/sights`
+
+Removes multiple Sights from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
 ### Remove Favorite Folders
 
 > Example Request:
@@ -5566,7 +5677,6 @@ action = smartsheet.Favorites.remove_favorites(
     [folderId1, folderId2]
 )
 ```
-
 
 > Example Response:
 
@@ -5904,7 +6014,7 @@ Creates a copy of the specified Folder.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified.
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li></ul>By default, all cell links, reports, and sheet hyperlinks that reference sheets in the source folder will be re-mapped to reference corresponding sheets in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder will continue to point to the original source sheets.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and sights that reference objects in the source folder will be re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder will continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within sights in the newly created folder will continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the newly created Folder
 
@@ -6242,7 +6352,7 @@ Gets the specified Folder (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
-<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders and/or sheets are present in the Folder, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response.
+<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or sights are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
 
 ## List Child Folders
 
@@ -7327,13 +7437,14 @@ contents = smartsheet.Home.list_all_contents(include='source')
     ],
     "reports": [],
     "templates": [],
-    "workspaces": []
+    "workspaces": [],
+	"sights": []
 }
 ```
 
 `GET /home`
 
-Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, Reports, and Templates, as shown on the Home tab.
+Gets a nested list of all Home objects, including Sheets, Workspaces, Folders, Reports, Templates, and Sights, as shown on the Home tab.
 
      |     |
 -----|-----|
@@ -7400,7 +7511,8 @@ Extends the [Row object](#row-object), adding the following:
      |     |     |
 -----|-----|-----|
 **readOnlyFullEnabled** | boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
-**readOnlyFullUrl** | string | URL for Read-Only Full
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 
 ## Get Report
 
@@ -7796,13 +7908,14 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 ```json
 {
 	"readOnlyFullEnabled": true,
-	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065",
+	"readOnlyFullAccessibleBy": "ALL"
 }
 ```
 
 `GET /reports/{reportId}/publish`
 
-Gets the status of the Publish settings of the Report, including the URLs of any enabled publishings.
+Gets the Report's 'Publish' settings.
 
      |     |
 -----|-----|
@@ -7819,7 +7932,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"readOnlyFullEnabled": true}'
+-d '{"readOnlyFullEnabled": true, "readOnlyFullAccessibleBy": "ORG"}'
 ```
 
 ```javascript
@@ -7845,6 +7958,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
     "message": "SUCCESS",
     "result": {
         "readOnlyFullEnabled": true,
+		"readOnlyFullAccessibleBy": "ORG",
         "readOnlyFullUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d"
     },
     "resultCode": 0
@@ -7853,14 +7967,16 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 
 `PUT /reports/{reportId}/publish`
 
-Sets the publish status of the Report and returns the new status, including the URLs of any enabled publishings.
+Sets the publish status of the Report and returns the new status, including the URL of any enabled publishing.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the **readOnlyFullEnabled** attribute.<br/><br/>To publish the Report, set **readOnlyFullEnabled** to `true`. To unpublish the Report, set **readOnlyFullEnabled** to `false`.
+<%= REQUEST %> | [ReportPublish object](#reportpublish-object) limited to the following attributes:<ul><li>**readOnlyFullEnabled** (required)</li><li>**readOnlyFullAccessibleBy** (optional) - set to either "ALL" or "ORG", when **readOnlyFullEnabled**=true.</li></ul>To publish the Report, set **readOnlyFullEnabled** to `true`. To unpublish the Report, set **readOnlyFullEnabled** to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [ReportPublish object](#reportpublish-object)
+
+<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, then the value of <b>readOnlyFullAccessibleBy</b> will be defaulted to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
 
 ## Send Report via Email
 
@@ -9049,7 +9165,7 @@ Gets application constants.
 
 # Sharing
 
-Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspaces.
+Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, and Sights.
 
 ## <%= OBJECTS %>
 
@@ -9058,15 +9174,235 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, and Workspac
      |     |     |
 -----|-----|-----|
 **id**          | number | Share ID.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
-**type**        | string | The type of this share. One of `USER` or `GROUP`.
+**type**        | string | The type of this share. One of the following values: `USER` or `GROUP`.
 **userId**      | number | User ID if the share is a user share, else null.
 **groupId**     | number | Group ID if the share is a group share, else null.
 **email**       | string | User's primary email address for user shares; null for group shares.
 **name**        | string | If a user share and user is also a contact, the user's full name.  If a group share, the group's name.
 **accessLevel** | string | User or group's [access level](#access-levels) on shared object.
+**scope**       | string | The scope of this share. One of the following values: <ul><li>`ITEM`: an item-level share (i.e., the specific object to which the Share applies is shared with the user or group)</li><li>`WORKSPACE`: a workspace-level share (i.e., the workspace that contains the object to which the Share applies is shared with the user or group)</li></ul>
+**createdAt**	| timestamp | Time that the share was created.
+**modifiedAt**	| timestamp | Time that the share was modified.
 **subject**		| string | The subject of the email that will optionally be sent to notify the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **ccMe**		| boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
+
+## Sights Sharing
+
+### Delete Sight Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/deleteShare_response.md.erb" %>
+
+`DELETE /sights/{sightId}/shares/{shareId}`
+
+Deletes the Share specified in the URL. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | SHARE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+### Get Sight Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/getShare_response.md.erb" %>
+
+`GET /sights/{sightId}/shares/{shareId}`
+
+Gets the Share specified in the URL. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Share object](#share-object)
+
+### List Sight Shares
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/listShares_response.md.erb" %>
+
+`GET /sights/{sightId}/shares`
+
+Gets a list of all Users and Groups to whom the specified Sight is shared, and their access level. 
+
+<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional): when specified with a value of `workspaceShares`, response will contain both <i>item-level</i> shares ([<b>scope</b>](#share-object)='ITEM') and <i>workspace-level</i> shares ([<b>scope</b>](#share-object)='WORKSPACE').<br/><br/><%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)<br/><br/>**NOTE:** If the response contains an *item-level* share (**scope**='ITEM') and a *workspace-level* share (**scope**='WORKSPACE') for the same user or group, the **id** of those two [Share](#share-object) objects will be identical, but the **scope** attribute value can be used to disambiguate the two.
+
+### Share Sight
+
+> Example Request: 
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/share_response.md.erb" %>
+
+`POST /sights/{sightId}/shares`
+
+Shares a Sight with the specified Users and Groups.
+
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
+
+<%= SHARING_ERRORS %>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | SHARE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
+<%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
+<%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+
+### Update Sight Share
+
+> Example Request: 
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"accessLevel": "VIEWER"}'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/updateShare_response.md.erb" %>
+
+`PUT /sights/{sightId}/shares/{shareId}`
+
+Updates the access level of a User or Group for the specified Sight.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | SHARE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Share object](#share-object) limited to the following attribute:<ul><li>accessLevel (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object)
 
 ## Report Sharing
 
@@ -9236,6 +9572,8 @@ shares = action.result
 
 Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
+<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
+
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
@@ -9314,7 +9652,6 @@ Shares a Report with the specified Users and Groups.
 
 <aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
-<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <%= SHARING_ERRORS %>
 
 <%= partial "snippets/share_table.md.erb" %>
@@ -9556,6 +9893,8 @@ shares = action.data
 `GET /sheets/{sheetId}/shares`
 
 Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
+
+<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
@@ -9884,7 +10223,12 @@ Gets a list of all Users and Groups to whom the specified Workspace is shared, a
 
 <aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
 
-<%= partial "snippets/listShares_table.md.erb" %>
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)
 
 ### Share Workspace
 
@@ -9969,6 +10313,7 @@ Shares a Workspace with the specified Users and Groups.
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
 <%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request.
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Update Workspace Share
 
@@ -10088,10 +10433,12 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **readOnlyFullEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
 **readWriteEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
 **icalEnabled** | boolean | If `true`, a webcal will be available for the calendar in the sheet.
-**readOnlyLiteUrl** | string | URL for Read-Only HTML
-**readOnlyFullUrl** | string | URL for Read-Only Full
-**readWriteUrl** | string | URL for Edit by Anyone
-**icalUrl** | string | URL for iCal
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
+**readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
+**icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
 
 ### SheetUserSettings Object
 
@@ -11391,7 +11738,9 @@ smartsheet.Sheets.move_sheet(
 
 `POST /sheets/{sheetId}/move`
 
-Moves the specified sheet to a new location.
+Moves the specified Sheet to a new location.
+
+<aside class="notice">When a Sheet that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>sheet-level</i> shares will be preserved.</aside>
 
      |     |
 -----|-----|
@@ -11448,17 +11797,18 @@ status = action.result
 
 ```json
 {
-	"readOnlyLiteEnabled": true,
-	"readOnlyFullEnabled": false,
+	"readOnlyLiteEnabled": false,
+	"readOnlyFullEnabled": true,
 	"readWriteEnabled": false,
 	"icalEnabled": false,
-	"readOnlyLiteUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
+	"readOnlyFullAccessibleBy": "ALL",
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
 }
 ```
 
 `GET /sheets/{sheetId}/publish`
 
-Gets the status of the Publish settings of the Sheet, including the URLs of any enabled publishings.
+Gets the Sheet's 'Publish' settings.
 
      |     |
 -----|-----|
@@ -11555,8 +11905,12 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled</li><li>readOnlyFullEnabled</li><li>readWriteEnabled</li><li>icalEnabled</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding attribute(s) to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding attribute(s) to `false`.
+<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled (required)</li><li>readOnlyFullEnabled (required)</li><li>readOnlyFullAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readOnlyFullEnabled</b>=true</li><li>readWriteEnabled (required)</li><li>readWriteAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readWriteEnabled</b>=true</li><li>icalEnabled (required)</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding "Enabled" attribute(s) to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding "Enabled" attribute(s) to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [SheetPublish object](#sheetpublish-object)
+
+<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, then the value of <b>readOnlyFullAccessibleBy</b> will be defaulted to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
+
+<aside class="notice">If <b>readWriteEnabled</b> is set to <code>true</code> in the request but <b>readWriteAccessibleBy</b> is not specified, then the value of <b>readWriteAccessibleBy</b> will be defaulted to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
 
 ## Search Sheet 
 
@@ -11707,6 +12061,470 @@ For more information about working with a Sheet's discussions, see [Discussions]
 ### Sheet Rows 
 
 For details about working with a Sheet's rows, see [Rows](#rows).
+
+
+# Sights
+
+A Sight is a collection of widgets that can contain data from a variety of different data sources (i.e., Sheets, Reports, custom data).
+
+## <%= OBJECTS %>
+
+### Sight Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Sight ID
+**name** | string | Sight Name 
+**columnCount** | number | Number of Columns that the Sight contains
+**widgets** | [widget](#widget-object)[] | Array of Widget objects
+**favorite** | boolean | Indicates whether the User has marked the Sight as a favorite
+**accessLevel** | string | User's permissions on the Sight. Valid values: <ul><li>OWNER</li> <li>ADMIN</li> <li>VIEWER</li></ul>
+**permalink** | string | URL that represents a direct link to the Sight in Smartsheet
+**createdAt** | timestamp | Time of creation
+**modifiedAt** | timestamp | Time of last modification
+**workspace** | [Workspace](#workspace-object) | A Workspace object, limited to only 2 attributes: <ul><li>id</li> <li>name</li></ul> _Note: this attribute is only present if the Sight resides within a Workspace._
+
+### Widget Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Widget ID
+**type** | string | Type of widget
+**title** | string | _(Optional)_ Title of the widget
+**showTitleIcon** | boolean | **True** indicates that the client should display the Sheet icon in the widget title
+**titleFormat** | string | [FormatDescriptor](#formatting)
+**xPosition** | number | X-coordinate of widget's position on the Sight
+**yPosition** | number | Y-coordinate of widget's position on the Sight
+**height** | number | Number of Rows that the widget occupies on the Sight
+**width** | number | Number of Columns that the widget occupies on the Sight
+**version** | int | Widget version number
+**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li>
+
+### CellLinkWidgetContent object
+
+     |     |     |
+-----|-----|-----|
+hyperlink | [hyperlink](#hyperlink-object) | The widget has **when clicked** attribute set to that hyperlink (if present and non-null)
+cellData | [cellData](#celldataitem-object)[] | Array of cellDataItem objects
+column | [column](#column-object)[] | Array of Column objects
+
+### RichTextWidgetContent object
+
+     |     |     |
+-----|-----|-----|
+html | string | The widget content as HTML </br> </br> The Rich Text widget supports the following subset of HTML tags and CSS Styles: </br></br> <b>HTML</b><ul><li>a</li> <li>br</li> <li>li</li> <li>ol</li> <li>p</li> <li>ul</li> <li>span</li></ul> <b>CSS</b><ul><li>color</li> <li>font-family</li> <li>font-size</li> <li>font-style</li> <li>font-weight</li> <li>text-align</li> <li>text-decoration</li></ul>
+
+### ShortcutWidgetContent object
+
+     |     |     |
+-----|-----|-----|
+shortcutData | [shortcutData](#shortcutdataitem-object)[] | An array of ShortcutDataItem objects
+
+
+### ReportWidgetContent object
+
+     |     |     |
+-----|-----|-----|
+htmlContent | string | HTML snippet to render Report
+
+### CellDataItem object
+
+     |     |     |
+-----|-----|-----|
+**label** | string | Label for the data point. This will be either the column name or a user-provided string
+**labelFormat** | string | [formatDescriptor](#formatting)
+**objectValue** | A **string**, **number**, or a **boolean** value | The type of data returned will depend on the cell type and the data in the cell
+**cell** | [cell](#cell-object) | Cell Object
+**valueFormat** | string | [formatDescriptor](#formatting)
+**order** | integer | The display order for the CellDataItem
+**columnId** | number | Column ID for the cell
+
+### ShortcutDataItem object
+
+     |     |     |
+-----|-----|-----|
+**label** | string | Label for the data point
+**labelFormat** | string | [formatDescriptor](#formatting)
+**mimeType** | string | Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)
+**hyperlink** | [hyperlink](#hyperlink-object) | Hyperlink object
+**order** | integer | The display order for the ShortcutWidgetItem
+
+
+## Copy Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json"
+-d '{ \
+    "destinationType": "workspace", \
+    "destinationId": 7960873114331012, \
+    "newName": "newSightName" \
+}' \
+-X POST
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": 4583173393803140,
+        "name": "newSightName",
+        "accessLevel": "OWNER",
+        "permalink": "https://app.smartsheet.com/b/home?lx=lB0JaOh6AX1wGwqxsQIMaA"
+    },
+    "message": "SUCCESS"
+}
+```
+
+`POST /sights/{sightId}/copy`
+
+Creates a copy of the specified Sight.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | CREATE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object)
+<%= RETURNS %> | [Result object](#result-object) containing a [Sight](#sight-object) for the newly created Sight, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+
+
+## Delete Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+```
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "message": "SUCCESS"
+}
+```
+
+`DELETE /sights/{sightId}`
+
+Deletes the Sight specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | DELETE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+## Get Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+  "id": 2591554075418573,
+  "name": "Test",
+  "accessLevel": "OWNER",
+  "columnCount": 6,
+  "widgets": [
+    {
+      "id": 3056651398234562,
+      "type": "RICHTEXT",
+      "contents": {
+        "htmlContent": "<p>This is a test</p>"
+      },
+      "xPosition": 2,
+      "yPosition": 0,
+      "width": 2,
+      "height": 4,
+      "showTitleIcon": false,
+      "titleFormat": ",,1,,,,,,,3,,,,,,",
+      "version": 1
+    },
+    {
+      "id": 48092647672583496,
+      "type": "SHORTCUTLIST",
+      "contents": {
+        "shortcutData": [
+          {
+            "label": "Sight Data",
+            "labelFormat": ",2,,,,,1,,1,,,,,,,",
+            "hyperlink": {
+              "url": "https://app.smartsheet.com/b/home?lx=m1O5qo7tpM1h23KFxYavIw",
+              "sheetId": 692061146243972
+            },
+            "attachmentType": "SMARTSHEET",
+            "order": 0
+          }
+        ]
+      },
+      "xPosition": 1,
+      "yPosition": 0,
+      "width": 1,
+      "height": 1,
+      "showTitleIcon": false,
+      "titleFormat": ",,1,,,,,,,3,,,,,,",
+      "version": 1
+    }
+  ]
+}
+```
+
+`GET /sights/{sightId}`
+
+Gets the specified Sight.
+
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Sight object](#sight-object)
+
+## List Sights
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+        {
+            "id": 2331373580117892,
+            "name": "Sales Sight",
+            "accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
+            "createdAt": "2016-01-28T00:24:41Z",
+            "modifiedAt": "2016-01-28T20:32:33Z"
+        },
+        {
+            "id": 7397923160909700,
+            "name": "Sight #2",
+            "accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
+            "createdAt": "2016-01-28T01:17:51Z",
+            "modifiedAt": "2016-01-28T20:32:27Z"
+        }
+	]
+}
+```
+
+`GET /sights`
+
+Gets the list of all Sights that the User has access to.
+
+<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sight object](#sight-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
+
+## Move Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json"
+-d '{ \
+    "destinationType": "folder", \
+    "destinationId": workspace_or_folder_id \
+}' \
+-X POST
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "resultCode": 0,
+    "result": {
+        "id": 4583173393803140,
+        "name": "moved_Sight_name",
+        "accessLevel": "OWNER",
+        "permalink": "https://app.smartsheet.com/b/home?lx=lB0JaOh6AX1wGwqxsQIMaA"
+    },
+    "message": "SUCCESS"
+}
+```
+
+`POST /sights/{sightId}/move`
+
+Moves the specified Sight to a new location.
+
+<aside class="notice">When a Sight that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>Sight-level</i> shares will be preserved.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | CREATE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following required attributes:<ul><li>destinationType</li><li>destinationId</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [Sight object](#sight-object) for the moved Sight, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
+
+## Share Sight
+
+For details about Sight sharing, see [Sights Sharing](#sights-sharing).
+
+## Update Sight
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"name": "New Sight name"}'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "accessLevel": "OWNER",
+        "id": 7960873114331012,
+        "name": "New Sight name",
+        "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
+    },
+    "resultCode": 0
+}
+```
+
+`PUT /sights/{sightId}`
+
+Updates (renames) the specified Sight. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Sight object](#sight-object) limited to the following attribute:<ul><li>name (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the updated [Sight object](#sight-object)
+
+
 
 # Templates
 
@@ -12867,7 +13685,7 @@ Creates a copy of the specified Workspace.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified. 
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li></ul>By default, all cell links, reports, and sheet hyperlinks that reference sheets in the source workspace will be re-mapped to reference corresponding sheets in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and sights that reference objects in the source workspace will be re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within sights in the newly created workspace will continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
@@ -13087,7 +13905,7 @@ Gets the specified Workspace (and lists its contents).
 
 <aside class="notice">By default, this operation only returns the top-level items in the Workspace. To load all of the contents, including nested Folders, include the <b>loadAll</b> query string parameter with a value of <b>true</b>.</aside>
 
-<aside class="notice">If no Folders, Sheets, Reports, or Templates are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets") will not be present in the response object.</aside>
+<aside class="notice">If no Folders, Sheets, Reports, Templates, or Sights are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.</aside>
 
      |     |
 -----|-----|
@@ -13281,7 +14099,7 @@ For details about working with folders in a Workspace, see [Folders](#folders).
 
 ### Workspace Sheets
 
-For details about working with sheets in a Workspace, see [Sheets](#sheets).
+For details about working with sheets in a Workspace, see [Sheets](#sheets).</br>
 
 # <span class="customTOCSectionHeading">Additional Reference</span>
 
@@ -13306,7 +14124,7 @@ Object that describes the destination container when a Sheet or Folder is moved,
 -----|-----|-----|
 **destinationType** | string | Type of the destination container (when copying or moving a Sheet or a Folder). One of the following values:<ul><li>home</li><li>workspace</li><li>folder</li></ul>
 **destinationId** | number | ID of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
-**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder or Workspace retains its original name).
+**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, Sight, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder, Sight, or Workspace retains its original name).
  
 ## IndexResult Object
 
@@ -13390,8 +14208,8 @@ The FormatTables object is retrieved via the `GET /serverinfo` operation and con
 **italic** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
 **underline** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
 **strikethrough** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
-**horizontalAlign** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
-**verticalAlign** | array of strings | Vertical alignment, possible values:<ul><li>top</li><li>middle</li><li>bottom</li></ul>Note: "default" is the default value, which is equivalent to "top".
+**horizontalAlign** | array of strings | Horizontal alignment, possible values:<ul><li>default</li><li>left</li><li>center</li><li>right</li></ul>Note: "default" is the default value, which is equivalent to "left".
+**verticalAlign** | array of strings | Vertical alignment, possible values:<ul><li>default</li><li>top</li><li>middle</li><li>bottom</li></ul>Note: "default" is the default value, which is equivalent to "top".
 **color** | array of strings | Color hex values. <br/><br/>Note: "none" is the default value for all colors.  Applications will need to handle this value and use app-defined colors (typically this is Black for text color and White for background color)
 **currency** | array of [Currency objects](#currency-object) | Currency codes and symbols
 **decimalCount** | array of strings | All allowed decimal count values
@@ -13457,3 +14275,698 @@ Object | Deprecated Attribute | Replaced by
 [Folder object](#folder-object) | fromId | new endpoint for [Copy Folder](#copy-folder)
 [Sheet object](#sheet-object) | fromId | new endpoint for [Copy Sheet](#copy-sheet)
 [Workspace object](#workspace-object) | fromId | new endpoint for [Copy Workspace](#copy-workspace)
+
+
+# <span class="customTOCSectionHeading">Webhooks</span>
+
+<aside class="warning">Webhooks are currently in beta. Before we ​officially ​release Webhooks, we want to make sure the feature is stable and performs well. Once we feel that these criteria have been met, the beta will be phased out and we will ​officially release the feature.</br></br>
+
+​While Webhooks are in Beta, the following limitations apply:​
+<ul>
+<li>
+<b>Stability</b>: Smartsheet Webhooks are a work in progress, and we make no guarantees regarding service stability / reliability.
+</li>
+<li>
+<b>Changes</b>: As with any beta, we reserve the right to make changes to Webhooks which may break your integrations.  If we make such changes, we promise to do so thoughtfully and to update our documentation accordingly.
+</li>
+</aside>
+
+# Intro to Webhooks
+
+<%= WEBHOOKS_INTRO %> 
+
+At a high-level, it works like this:
+
+<ol>
+	<li><span class="customInstructionsHeading">Your application subscribes to <a href="#event-callbacks">callbacks</a>.</span><br/>First, you need to subscribe to event notifications (callbacks) by creating one or more webhooks.  You can create a webhook manually via the API or have your application create a webhook dynamically.  Each webhook must specify:
+		<ul>
+			<li>Which Smartsheet object to monitor for events</li>
+			<li>Which events in that object should trigger a callback</li>
+			<li>The HTTPS URL (i.e., "<b>callback URL</b>") where Smartsheet should send callbacks when any of the specified events occur within the scope of the specified Smartsheet object</li>
+		</ul> 
+		<br/>
+		
+		<b>Webhook examples in plain English:</b> 
+		<ul>
+			<li><i>"When any changes occur in Sheet_A, send a callback to https://www.myapp.com/abc"</i></li>
+			<li><i>"When a new row is added to Sheet_B, send a callback to https://www.myapp.com/def"</i></li>
+			<li><i>"When a cell value is changed in Sheet_C, send a callback to https://www.myapp.com/ghi"</i></li>
+		</ul>
+		<br/>
+	</li>
+	<li><span class="customInstructionsHeading">When any of the specified events occur within an object that is being monitored by a webhook, Smartsheet sends an <code>HTTP POST</code> (i.e., "callback") to the <b>callback URL</b> that is associated with the Webhook.</span><br/>
+		<ul>
+			<li><i>Note:</i> The callback payload is a "skinny" payload -- it indicates which objects changed and the type of events that occurred, but does not contain any data from the objects themselves.</li>
+		</ul> 
+		<br/>
+	</li>
+	<li><span class="customInstructionsHeading">Your application receives, acknowledges, and processes callbacks.</span><br/>Your application receives the <code>HTTP POST</code>, acknowledges the callback by responding with HTTP status 200, and processes the callback. 
+	Because the callbacks are "skinny", you may need to make one or more requests to the Smartsheet API to retrieve the actual data associated with the change.
+	</li>
+</ol>
+
+## Webhook Management
+
+Webhooks are created and managed by using the Smartsheet API. See [Webhooks API Reference](#webhooks) for details about the related API operations. 
+
+## Webhook Ownership & Access
+
+Webhooks can be created and managed via [Direct API Access](http://smartsheet-platform.github.io/api-docs/#direct-api-access) or by a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development). 
+
+A webhook that is created via Direct API Access:
+
+* is owned by the User who created it
+* can be managed only by the User who created it
+* will not be affected if the access token that was used to create it is revoked, as long as the User remains active
+
+A webhook that is created by a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development):
+
+* is owned by the User who authorized the third-party app (and is associated with the third-party app)
+* can be managed by the third-party-app (as long as it maintains authorization) OR by the User who owns it
+* will be permanently disabled if the third-party app's permissions are revoked
+
+## Webhook Scope & Events
+
+A webhook monitors the specified **scope** for the specified **events**. 
+
+A [Webhook's](#webhook-object) **scope** attribute indicates the scope of the subscription. It is specified when [creating a webhook](#create-webhook), and cannot subsequently be changed. 
+
+* Currently, "sheet" is the only supported value for the **scope** atribute. 
+* Future releases of webhooks will support additional scopes such as "org", "folder", "workspace", etc.
+
+A [Webhook's](#webhook-object) **event** attribute indicates the set of events that a webhook is subscribed to (i.e. which events will trigger a callback).
+
+* Events are represented as a dot-separated string in the format "*object*.*event*", where an asterisk (&#42;) can be used to represent "all objects" or "all events".
+* Currently, "&#42;.&#42;" is the only supported value for the **events** attribute. This indicates a subscription to all objects in the scope, and all events for those objects.
+* Future releases of webhooks will support more specific events such as "sheet.updated", "row.deleted", "column.created", etc.
+
+<span class="customSubHeading">Example</span>
+
+Consider a [Webhook](#webhook-object) with the following attribute values:
+
+* **scopeObjectId** = 12345678901234
+* **scope** = "sheet" 
+* **events** = "&#42;.&#42;" 
+
+This webhook monitors the specified Sheet (id: 12345678901234) for all types of events. For example, if a row is added to the sheet, cell values are updated in the sheet, a column is deleted from the sheet, etc., a callback would be sent to the webhook's **callbackUrl**.
+
+# Creating a Webhook
+
+An API client can create a webhook by using the [Create Webhook](#create-webhook) operation. A newly created webhook is disabled by default.
+After successfully creating a webhook, the API client must subsequently initiate and complete the [verification process](#webhook-verification) before the webhook will become enabled. 
+The following diagram illustrates the process of creating and enabling a Webhook. 
+
+<img src="images/v4-CreateAndEnableWebhook.png" />
+
+<span class="customSubHeading">Step-by-Step:</span>
+
+The process occurs synchronously:
+
+1. API Client submits a [Create Webhook](#create-webhook) request.
+
+2. Smartsheet creates the webhook, but does not initially enable the webhook (`enabled: false` and `status: "NEW_NOT_VERIFIED"`).
+
+3. To initiate the verification process, the API Client submits an [Update Webhook](#update-webhook) request to specify `enabled: true`. (*Note*: The API Client will not receive a response to this request until the Verification process (steps 4 and 5) has completed.)
+
+4. When Smartsheet receives the request to enable the webhook, it sends a [Verification Request](#webhook-verification) to the Subscriber (i.e., to the `callbackUrl` that the API Client specified in the **Create Webhook** request). 
+The request specifies a unique random value in the **Smartsheet-Hook-Challenge** header and contains only `webhookId` in the request body.
+
+5. The Subscriber responds to the Verification Request by echoing back the same unique random value in the **Smartsheet-Hook-Response** header of the response.
+
+6. Once the Subscriber has successfully acknowledged the Verification Request, Smartsheet enables the webhook and responds to the API Client's **Update Webhook** request to confirm that the webhook has been enabled (`enabled: true` and `status: "ENABLED"`). 
+
+## Webhook Verification
+
+> Verification Request (from Smartsheet):
+
+```test
+POST [callbackUrl]
+Smartsheet-Hook-Challenge: d78dd1d3-01ce-4481-81de-92b4f3aa5ab1 
+{ 
+    "webhookId": 2674017481058180
+}
+```
+
+> Verification Response (by Subscriber):
+
+```test
+HTTP status: 200 OK
+Smartsheet-Hook-Response: d78dd1d3-01ce-4481-81de-92b4f3aa5ab1 
+```
+
+When an API Client attempts to enable a webhook, Smartsheet will send a verification request to the webhook's **callbackUrl** to verify that the Subscriber expects and is able to successfully receive callbacks. 
+The request specifies a unique random value in the **Smartsheet-Hook-Challenge** header and contains a JSON object in the request body with only a `webhookId` attribute.
+
+* To verify the webhook, the Subscriber's response to the Verification Request must return a 200 HTTP status code and must echo back the same unique random value in the **Smartsheet-Hook-Response** header of the response. Once Smartsheet receives this verification response, the webhook will be enabled (`enabled: true` and `status: "ENABLED"`).
+
+* If the Subscriber does not successfully respond to the verification request, the webhook will remain disabled (`enabled: false` and `status: "DISABLED_VERIFICATION_FAILED"`).
+
+When a webhook is initially [created through the API](#create-webhook), the response will contain the webhook's ID.  If you wish to guarantee that your server only receives callbacks for webhooks that you created,
+you can check the verification request's `webhookId` attribute against your list of created webhook IDs.  If the ID is not in the list, return a response with a non-200 status code (for example, 403 Forbidden),
+and the webhook that initiated the verification request will be disabled as described above.
+
+<aside class="notice"><b>IMPORTANT</b>: ONGOING VERIFICATION. Once a webhook has been enabled, Smartsheet will send Smartsheet will send a verification request to the webhook's <b>callbackUrl</b> once every 100 callbacks. The Subscriber should respond to the verification request as described above -- failure to do so will result in the webhook being disabled (<code>enabled: false</code> and <code>status: "DISABLED_VERIFICATION_FAILED"</code>).</aside>
+
+# Webhook Status
+
+A [Webhook](#webhook-object) object's **enabled** attribute indicates whether a webhook is enabled or disabled, while the **status** attribute describes the *reason* that the webhook is enabled or disabled.
+
+<aside class="notice"><b>Note:</b><ul><li>When a Webhook's <b>enabled</b> attribute is set to <code>true</code>, Smartsheet is monitoring for the specified events and will send a <a href="#event-callbacks">callback</a> to the <b>callbackUrl</b> when the events occur.</li><li>When a Webhook's <b>enabled</b> attribute is set to <code>false</code>, Smartsheet is NOT monitoring for the specified events and will NOT send a callback to the <b>callbackUrl</b> when the events occur. Depending on the value of the <b>status</b> attribute, it may be possible to (re-)enable the Webhook. (See below for details).</li></ul></aside>
+
+The following table lists all possible combinations of **enabled** and **status** attribute values.
+
+Webhook.enabled | Webhook.status | Meaning | Notes
+----- | ----- | ------ | -----
+true  | ENABLED | Webhook is active. | 
+false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because it has not yet been verified. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
+false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. No verification is necessary for enabling webhooks that were disabled by the owner.
+false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
+false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
+false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (i.e., webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third party app's access is subsequently restored, it will need to create new webhooks.
+false  | DISABLED_SCOPE_INACCESSIBLE | Webhook has been disabled because its owner lost access to the corresponding data in Smartsheet (either because the object was deleted or sharing permissions were revoked). | Webhook will automatically be re-enabled if access to data is restored (i.e., if deleted object is restored or sharing permissions are restored).
+false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet support. | A webhook in this state can only be re-enabled by Smartsheet (contact <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>).  Attempting to re-enable a webhook in this state will result in error code 1154.
+
+# Webhook Callbacks
+
+A "callback" is the notification that Smartsheet sends to a webhook's **callbackUrl**. There are two types of callbacks:
+
+* [**Event** callback](#event-callbacks): Alerts the subscriber when the specified event(s) have occurred in Smartsheet. This is the most common type of callback.
+
+* [**Status Change** callback](#status-change-callbacks): Alerts the subscriber that a webhook has been automatically disabled due to loss of access or automatically re-enabled due to restoration of access.
+
+A Subscriber has the ability to verify the integrity of a callback payload (i.e. ensure that the message was not tampered with en route) and authenticate the identity of its sender (i.e. ensure that the callback did indeed originate from Smartsheet). 
+For more information, see [Authenticating Callbacks](#authenticating-callbacks-(optional)).
+
+## Event Callbacks
+
+> Example - Event callback (row created):
+
+```json
+{
+    "nonce": "4b2ed20d-6f00-4b0c-8fac-082182aa9aac",
+    "timestamp": "2015-10-27T17:04:23.795+0000",
+    "webhookId": 4503604829677444,
+    "scope": "sheet",
+    "scopeObjectId": 4509506114742148,
+    "events": [
+        {
+            "objectType": "sheet",
+            "eventType": "updated",
+            "id": 4509506114742148
+        },
+        {
+            "objectType": "row",
+            "eventType": "created",
+            "id": 7129509179746180
+        }
+    ]
+}
+```
+
+Smartsheet sends an Event callback to notify the Subscriber when the specified event(s) occur in Smartsheet.
+
+<aside class="warning">Any events that occur while a webhook is disabled will NOT be communicated via callback if/when webhook is enabled.</aside>
+
+<span class="customSubHeading">Callback Acknowledgement</span>
+
+The Subscriber must respond to an event callback with a 200 [HTTP status code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success) to acknowledge that the callback was received. 
+
+<span class="customSubHeading">Retry Logic</span>
+
+If the Subscriber fails to respond with a 200 status, depending on the response, Smartsheet may retry delivery up to 14 times. (The first 7 retry attempts occur with a frequency that's determined using exponential backoff; thereafter, retry attempts will occur once every three hours until all retries have been exhausted.)
+
+Subscriber response | Will be retried?
+----- | -----
+HTTP 201 through 299 | No
+HTTP 309 through 399 | No
+HTTP 400 through 499 (except 410) | Yes
+HTTP 410 | No
+HTTP 500 through 599 | Yes
+Any other HTTP status | No
+Request timeout | Yes
+
+If the response is not retriable or retry attempts have been exhausted, the webhook will be disabled (`enabled: false` and `status: "DISABLED_CALLBACK_FAILED"`).
+A webhook in this state can be re-enabled if the subscriber completes the verification process. (See [Webhook Status](#webhook-status) for details.)
+
+## Status Change Callbacks
+
+> Status Change callback (access lost):
+
+```json
+{
+    "nonce" : "20d4d741-6224-446f-b9c4-bf7802326192",
+    "timestamp" : "2015-10-27T14:48:40.214+0000",
+    "webhookId": 2674017481058180,
+    "scope" : "sheet",
+    "scopeObjectId" : 3407658024757124,
+    "newWebhookStatus" : "DISABLED_SCOPE_INACCESSIBLE"
+}
+```
+
+> Status Change callback (access restored):
+
+```json
+{
+    "nonce" : "20d4d741-6224-446f-b9c4-bf7802326192",
+    "timestamp" : "2015-10-27T14:48:40.214+0000",
+    "webhookId": 2674017481058180,
+    "scope" : "sheet",
+    "scopeObjectId" : 3407658024757124,
+    "newWebhookStatus" : "ENABLED"
+}
+```
+
+If a webhook's owner loses access to the object that a webhook is monitoring (either because the object was deleted or the webhook owner's access to the object was revoked in Smartsheet), 
+Smartsheet will automatically disable the webhook and send a Status Change callback to alert the Subscriber of this change in status. 
+The **newWebhookStatus** attribute will indicate that the webhook is now disabled (because the scope is inaccessible).
+
+If the webhook owner's access to the object is subsequently restored, 
+Smartsheet will automatically re-enable the webhook and send a Status Change callback to alert the Subscriber of this change in status. 
+The **newWebhookStatus** attribute will indicate that the webhook is now enabled.
+
+## Authenticating Callbacks (optional)
+
+> Calculating an HMAC
+
+```shell
+# See programming language tabs for language-specific examples.
+```
+
+```java
+private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
+private static final int HMAC_RADIX = 16;
+
+private String calculateHmac(String sharedSecret, String callbackBody) throws GeneralSecurityException {
+	Mac mac = Mac.getInstance(HMAC_SHA256_ALGORITHM));
+	mac.init(new SecretKeySpec(sharedSecret.getBytes(), HMAC_SHA256_ALGORITHM));
+
+	byte[] rawHmac = mac.doFinal(callbackBody.getBytes());
+	return new BigInteger(1, rawHmac).toString(HMAC_RADIX);
+}
+```
+
+A Subscriber has the ability to verify the integrity of a callback payload (i.e. ensure that the message was not tampered with en route) and authenticate the identity of its sender (i.e. ensure that the callback did indeed originate from Smartsheet).
+
+When you create a new [webhook](#webhook-object), it is assigned a randomly generated **sharedSecret** value.  The shared secret is used by Smartsheet to sign callback payloads, and should not be shared with any third parties.
+
+To authenticate a callback request:
+
+1. Calculate the [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) of the webhook's **sharedSecret** and the request body.  This must be done using the SHA-256 cryptographic hash algorithm.
+
+2. Format the calculated value as a string in base 16.
+
+3. Compare your result with the value of the **Smartsheet-Hmac-SHA256** header of the request.
+
+If the values match, you can be sure the request originated from Smartsheet and that the data has not been tampered with.
+
+<aside class="notice">For maximum security, you may also choose to <a href="#reset-shared-secret">reset your webhook's shared secret</a> at periodic intervals.</aside>
+
+# Preventing Infinite Loops
+
+It's possible that an application which subscribes to callbacks (using webhooks) might react to those callbacks by using the API to make additional changes in Smartsheet. 
+But, consider the following scenario:
+
+1. **App1** creates a Webhook to monitor **Sheet-A** for changes, specifying an **App-1** URL as the **callbackUrl** for the Webhook.
+
+2. **App-1** updates **Sheet-A** using the API.
+
+3. Smartsheet detects that **Sheet-A** has changed and sends a callback to **App-1** (as the webhook specified).
+
+4. **App-1** processes the callback, and in the course of doing so, updates **Sheet-A** again using the API.
+
+5. Return to Step 3.
+
+To protect against infinite loops like the one outlined above, we've introduced support for a new header that an API client can include with any API request that adds, updates, or deletes data in Smartsheet. 
+Here's how it works:
+
+<ul>
+<li>An API client includes the <b>Smartsheet-Change-Agent</b> header in any API request that adds, updates, or deletes data in Smartsheet.<br/><br/>
+	<ul>
+		<li>The header value should be set to a string that the API client will be able to recognize as identifying itself.<br/><br/></li>
+	</ul>
+</li>
+<li>If any <a href="#event-callbacks">Event callbacks</a> fire as a result of an API request that contains the <b>Smartsheet-Change-Agent</b> header, the value of the <b>Smartsheet-Change-Agent</b> header will be included in the <a href="#callbackevent-object">callback</a> in the value of the <b>changeAgent</b> attribute.<br/><br/></li>
+<li>If a webhook Subscriber receives a <a href="#callbackevent-object">callback</a> that contains the <b>changeAgent</b> attribute, it should evaluate the attribute value:<br/><br/> 
+	<ul>
+		<li>If the attribute value's comma-delimited list contains the Subscriber API client's change agent value, this indicates that the change which triggered the callback <b>WAS</b> caused by the Subscriber itself, and the Subscriber can choose to ignore the callback, thus preventing an infinite loop.<br/><br/></li>
+		<li>Else, the change which triggered the callback was <b>NOT</b> caused by the Subscriber itself, and if the Subscriber is going to subsequently react to the callback by making a change in Smartsheet (via API request), the API client should append a comma and its own identifier to the original attribute value, and pass that value through using the <b>Smartsheet-Change-Agent</b> header of the API request. Doing so will protect against cross-system infinite loops.<br/><br/></li>
+	</ul>
+</li>
+</ul>
+
+<aside class="notice">The <b>Smartsheet-Change-Agent</b> header value has a maximum length of 512 characters. If its length exceeds 512 characters, the excess will be trimmed from the front of the string, so that the most recent agent information will remain.</aside>
+
+# Webhook Errors
+ 
+The following table specifies the recommended action for each Smartsheet-specific error code. 
+Use this information to implement error handling logic according to the following guidelines:
+
+* If the error code indicates a permanent error condition, do not retry the request.
+* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
+* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
+
+HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Action |
+-----|-----|-----|-----|
+400 | 1151 | Scope '{0}', object id {1} was not found. | Do not retry without fixing the problem.
+400 | 1152 | Only URLs with a protocol of 'https' are supported for attribute '{0}'. | Do not retry without fixing the problem.
+403 | 1153 | This webhook cannot be enabled because access was revoked for the application that created it. | <span class="doNotRetry">Do not retry.</span>
+403 | 1154 | Please contact api@smartsheet.com in order to enable this Webhook. | <span class="doNotRetry">Do not retry.</span>
+
+# <span class="customTOCSectionHeading">Webhooks Reference</span>
+
+<%= WEBHOOKS_INTRO %>
+
+For more information, see [Webhooks Overview](#webhooks-overview).
+
+# <%= OBJECTS %>
+
+## Callback Object
+
+     |     |     |
+-----|-----|-----|
+**nonce** | string | Random value that will be distinct for each Callback
+**timestamp** | timestamp | Time that the callback was generated
+**webhookId** | number | ID of the corresponding Webhook
+**scope** | string | Scope of the Webhook. Currently, the only supported value is "sheet".
+**scopeObjectId** | number | ID of the object that corresponds to **scope**
+**events** | [CallbackEvent](#callbackevent-object)[] | Array of CallbackEvent objects
+**newWebhookStatus** | string | New status of the corresponding Webhook <br/>Only returned for "Webhook Status Change" [callbacks](#webhook-callbacks) (null for "Event" Callbacks).
+
+## CallbackEvent Object
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | Type of object for which event occurred. One of the following values:<ul><li>sheet</li><li>column</li><li>row</li><li>cell</li><li>attachment</li><li>discussion</li><li>comment</li></ul>
+**eventType** | string | Type of event that occurred. One of the following values:<ul><li>created</li><li>updated</li><li>deleted</li></ul>
+**id** | number | ID of the object that corresponds to **objectType**. Omitted if **objectType** is "cell". 
+**rowId** | number | Only present if **objectType** is "cell". The ID of the row where the cell is located.
+**columnId** | number | Only present if **objectType** is "cell". The ID of the column where the cell is located.
+**changeAgent** | string | A comma-delimited list of values that uniquely identify the agent(s) responsible for making the change(s) that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
+
+## SharedSecret Object
+
+     |     |     |
+-----|-----|-----|
+**sharedSecret** | string | New value for the shared secret
+
+## Webhook Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Webhook ID
+**name** | string | Webhook name
+**apiClientId** | string | API Client Id corresponding to third-party app that created the Webhook. Read-only. Only present if webhook was created by third-party app.
+**apiClientName** | string | API Client Name corresponding to third-party app that created the Webhook. Read-only. Only present if webhook was created by third-party app.
+**scope** | string | Scope of the subscription. Currently, the only supported value is "sheet". Specified when a webhook is created and cannot be changed.
+**scopeObjectId** | number | ID of the object that is subscribed to. Specified when a webhook is created and cannot be changed.
+**events** | string[] | Array of the events that are subscribed to. Currently, must be an array of size 1 that contains the string value "&#42;.&#42;", which means "all objects" and "all events".
+**callbackUrl** | string | HTTPS URL where callbacks will be sent
+**sharedSecret** | string | Shared secret for this webhook, randomly generated by Smartsheet. Read-only. See [Authenticating Callbacks](#authenticating-callbacks-(optional)) for details about how this value can be used.
+**enabled** | boolean | Flag indicating whether the Webhook is on (`true`) or off (`false`)
+**status** | string | Webhook status. Read-only. See [Webhook Status](#webhook-status) for list of possible values.
+**disabledDetails** | string | Details about the reason the Webhook was disabled. Read-only. Only present when **enabled**=`false`.
+**version** | number | Webhook version. Currently, the only supported value is 1. This attribute is intended to ensure backward compatibility as new webhook functionality is released. For example, a webhook with a version of 1 is guaranteed to always be sent callback objects that are compatible with the version 1 release of webhooks.
+**createdAt** | timestamp | Time of creation. Read-only.
+**modifiedAt** | timestamp | Time of last modification. Read-only.
+
+# Create Webhook
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/webhooks \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ "name": "Webhook #4", "callbackUrl": "http://www.myApp.com/webhooks", "scope": "sheet", "scopeObjectId": 2258256056870788, "version": 1, "events": [ "*.*" ]}'
+```
+
+```java
+
+```
+
+> Example Response:
+
+```json
+{
+	"resultCode": 0,
+	"result": {
+		"id": 8444254503626628,
+		"name": "Webhook #4",
+		"scope": "sheet",
+		"scopeObjectId": 2258256056870788,
+		"events": [
+			"*.*"
+		],
+		"callbackUrl": "http://www.myApp.com/webhooks",
+		"sharedSecret": "3qo29mvjou6xt5fujukjtwzhj0",
+		"enabled": false,
+		"status": "NEW_NOT_VERIFIED",
+		"version": 1,
+		"createdAt": "2015-11-03T22:25:51Z",
+		"modifiedAt": "2015-11-03T22:25:51Z"
+	},
+	"message": "SUCCESS"
+}
+```
+
+`POST /webhooks`
+
+Creates a new Webhook. 
+
+<aside class="notice">A Webhook is not enabled by default when it is created. Once you've created a Webhook, you can enable it by using the <a href="#update-webhook">Update Webhook</a> operation to set <b>enabled</b> to <code>true</code>.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WEBHOOKS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Webhook object](#webhook-object), limited to the following attributes:<ul><li>name (required)</li><li>callbackUrl (required)</li><li>scope (required)</li><li>scopeObjectId (required)</li><li>events (required)</li><li>version (required)</li></ul>
+<%= RETURNS %> | [Result object](http://smartsheet-platform.github.io/api-docs/#result-object), containing a [Webhook object](#webhook-object) for the newly created Webhook
+
+# Delete Webhook
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```java
+
+```
+
+> Example Response:
+
+```json
+{
+	"resultCode": 0,
+	"message": "SUCCESS"
+}
+```
+
+`DELETE /webhooks/{webhookId}`
+
+Deletes the Webhook specified in the URL.
+
+<aside class="notice">Using this operation will permanently delete the specified Webhook. To temporarily disable a webhook, use the <a href="#update-webhook">Update Webhook</a> operation to set <b>enabled</b> to <code>false</code>.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WEBHOOKS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](http://smartsheet-platform.github.io/api-docs/#result-object)
+
+# Get Webhook
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```java
+
+```
+
+> Example Response:
+
+```json
+{
+	"id": 4503604829677444,
+	"name": "Webhook #5",
+	"scope": "sheet",
+	"scopeObjectId": 6761855684241284,
+	"events": [
+		"*.*"
+	],
+	"callbackUrl": "http://www.myApp.com/webhooks",
+	"sharedSecret": "216ejjzdnq17mq1q8xs7d4hu8b",
+	"enabled": false,
+	"status": "DISABLED_CALLBACK_FAILED",
+	"disabledDetails": "Request returned HTTP status code 500",
+	"version": 1,
+	"createdAt": "2015-11-03T22:25:51Z",
+	"modifiedAt": "2015-11-04T20:12:42Z" 
+}
+```
+
+`GET /webhooks/{webhookId}`
+
+Gets the Webhook specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WEBHOOKS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Webhook object](#webhook-object)
+
+# List Webhooks
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/webhooks \
+-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```java
+
+```
+
+> Example Response:
+
+```json
+{
+	"pageNumber": 1,
+	"pageSize": 100,
+	"totalPages": 1,
+	"totalCount": 1,
+	"data": [
+		{
+			"id": 4503604829677444,
+			"name": "Webhook #5",
+			"scope": "sheet",
+			"scopeObjectId": 6761855684241284,
+			"events": [
+				"*.*"
+			],
+			"callbackUrl": "http://www.myApp.com/webhooks",
+			"sharedSecret": "216ejjzdnq17mq1q8xs7d4hu8b",
+			"enabled": true,
+			"status": "ENABLED",
+			"version": 1,
+			"createdAt": "2015-11-03T14:52:21Z",
+			"modifiedAt": "2015-11-04T19:05:40Z"
+		}
+	]
+}
+```
+
+`GET /webhooks`
+
+Gets the list of all Webhooks that the user owns (if a [user generated token](http://smartsheet-platform.github.io/api-docs/#generating-access-token) was used to make the request) 
+or the list of all Webhooks associated with the third-party app (if a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development) made the request). 
+Items in the response are ordered by API Client name, then Webhook name, then creation date.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WEBHOOKS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [IndexResult object](http://smartsheet-platform.github.io/api-docs/#indexresult-object) containing an array of [Webhook objects](#webhook-object)
+
+# Reset Shared Secret
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST
+```
+
+```java
+
+```
+
+> Example Response:
+
+```json
+{
+	"resultCode": 0,
+	"result": { "sharedSecret": "5nua69a56es57qdr97g9bcg8f3" },
+	"message": "SUCCESS"
+}
+```
+
+`POST /webhooks/{webhookId}/resetsharedsecret`
+
+Resets the shared secret for the specified Webhook. For more information about how a shared secret is used, see [Authenticating Callbacks](#authenticating-callbacks-(optional)).
+
+This operation can be used to rotate an API client's webhooks' shared secrets at periodic intervals to provide additional security.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WEBHOOKS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>  
+<%= REQUEST %> | The request body should be empty.
+<%= RETURNS %> | [Result object](http://smartsheet-platform.github.io/api-docs/#result-object) containing the [SharedSecret object](#sharedsecret-object)
+
+# Update Webhook
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{ "enabled": true }'
+```
+
+```java
+
+```
+
+> Example Response:
+
+```json
+{
+	"resultCode": 0,
+	"result": {
+		"id": 8444254503626628,
+		"name": "Webhook #4",
+		"scope": "sheet",
+		"scopeObjectId": 2258256056870788,
+		"events": [
+			"*.*"
+		],
+		"callbackUrl": "http://www.myApp.com/webhooks",
+		"sharedSecret": "3qo29mvjou6xt5fujukjtwzhj0",
+		"enabled": true,
+		"status": "ENABLED",
+		"version": 1,
+		"createdAt": "2015-11-03T14:52:21Z",
+		"modifiedAt": "2015-11-04T19:05:40Z"
+	},
+	"message": "SUCCESS"
+}
+```
+
+`PUT /webhooks/{webhookId}`
+
+Updates the Webhook specified in the URL.
+
+<aside class="notice"><b>Enabling a Webhook</b><br/><br/>When setting a webhook's <b>enabled</b> to <code>true</code> using this operation, the behavior and result depend on the webhook's <b>status</b> and may result in a webhook <a href="#webhook-verification">verification</a> being triggered, or in some cases, an error being returned.  See <a href="#webhook-status">Webhook Status</a> for more details.</aside>
+
+<!--aside class="notice"><b>Enabling a Webhook</b><ul><li>If <b>Webhook.enabled</b>=<code>false</code> and <a href="#webhook-status"><b>Webhook.status</b></a> is any value other than "DISABLED_APP_REVOKED", "DISABLED_SCOPE_INACCESSIBLE", or "DISABLED_ADMINISTRATIVE", using this operation to set <b>Webhook.enabled</b>=<code>true</code> will trigger the <a href="#webhook-verification">verification</a> process.</li><li>Verification must be successfully completed in order for the Webhook to become enabled.</li></ul></aside-->
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WEBHOOKS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Webhook object](#webhook-object), limited to the following attributes:<ul><li>name (optional)</li><li>events (optional)</li><li>callbackUrl (optional)</li><li>enabled (optional)</li><li>version (optional)</li></ul>
+<%= RETURNS %> | [Result object](http://smartsheet-platform.github.io/api-docs/#result-object) containing the [Webhook object](#webhook-object) for the updated webhook
