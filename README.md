@@ -37,7 +37,7 @@ This API documentation is based upon [Slate](https://github.com/tripit/slate/) a
 
 ## Release Notes
 
-**1.5.0(Mar 28, 2016)**
+**1.5.0 (Mar 28, 2016)**
 * Updated documentation for Smartsheet API 2.0 ([more info](https://www.smartsheet.com/blog/march-2016-smartsheet-api-20-update))
 * Added "Sights" section.
 * Merged Webhook Documentation with API Documentation.
