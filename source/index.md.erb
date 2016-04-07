@@ -14439,7 +14439,7 @@ Webhook.enabled | Webhook.status | Meaning | Notes
 ----- | ----- | ------ | -----
 true  | ENABLED | Webhook is active. | 
 false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because it has not yet been verified. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
-false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. No verification is necessary for enabling webhooks that were disabled by the owner.
+false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (i.e., webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third party app's access is subsequently restored, it will need to create new webhooks.
@@ -14661,6 +14661,7 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **id** | number | ID of the object that corresponds to **objectType**. Omitted if **objectType** is "cell". 
 **rowId** | number | Only present if **objectType** is "cell". The ID of the row where the cell is located.
 **columnId** | number | Only present if **objectType** is "cell". The ID of the column where the cell is located.
+**userId** | number | The user ID of the person who caused this event.
 **changeAgent** | string | A comma-delimited list of values that uniquely identify the agent(s) responsible for making the change(s) that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
 
 ## SharedSecret Object
@@ -14686,8 +14687,17 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **status** | string | Webhook status. Read-only. See [Webhook Status](#webhook-status) for list of possible values.
 **disabledDetails** | string | Details about the reason the Webhook was disabled. Read-only. Only present when **enabled**=`false`.
 **version** | number | Webhook version. Currently, the only supported value is 1. This attribute is intended to ensure backward compatibility as new webhook functionality is released. For example, a webhook with a version of 1 is guaranteed to always be sent callback objects that are compatible with the version 1 release of webhooks.
+**stats** | [WebhookStats](#webhookstats-object) | Useful statistics for this webhook.  Will only be returned once this webhook has performed a callback attempt.  Read-only.
 **createdAt** | timestamp | Time of creation. Read-only.
 **modifiedAt** | timestamp | Time of last modification. Read-only.
+
+## WebhookStats Object
+
+     |     |     |
+-----|-----|-----|
+**lastCallbackAttemptRetryCount** | number | The number of retries the webhook had performed as of the last callback attempt.
+**lastCallbackAttempt** | timestamp | When this webhook last made a callback attempt.
+**lastSuccessfulCallback** | timestamp | When this webhook last made a successful callback.
 
 # Create Webhook
 
