@@ -483,9 +483,17 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1161 | Cannot set altText for a cell that does not contain an image: row {0}, column {1}. | <span class="doNotRetry">Do not retry.</span>
 400 | 1163 | If cell.image is non-null then value, objectValue, hyperlink, and linkInFromCell must all be null. | Do not retry without fixing the problem.
 400 | 1164 | Cannot add image to cell because this feature has been disabled by the org administrator. | <span class="doNotRetry">Do not retry.</span>
-400 | 1165 | Cannot add image to cell with alt text larger than 100 characters. | <span class="doNotRetry">Do not retry.</span>
+400 | 1165 | Cannot add image to cell with alt text larger than 100 characters. | Do not retry without fixing the problem.
 400 | 1166 | You cannot share Sights as an Editor. | <span class="doNotRetry">Do not retry.</span>
 400 | 1167 | The resource you are attempting to access has expired. | <span class="doNotRetry">Do not retry.</span>
+500 | 1170 | The sheet referenced by this widget is unavailable or deleted. | <span class="doNotRetry">Do not retry.</span>
+500 | 1171 | The report referenced by this widget is unavailable or deleted. | <span class="doNotRetry">Do not retry.</span>
+500 | 1172 | The referenced cell is unavailable or deleted. | <span class="doNotRetry">Do not retry.</span>
+403 | 1173 | You must be in a Team/Enterprise account to specify a {0} value of '{1}'. | <span class="doNotRetry">Do not retry.</span>
+403 | 1174 | The value for {0} is invalid because this publish option is configured to be restricted to users in this account. | <span class="doNotRetry">Do not retry.</span>
+403 | 1175 | One or more publish options which you attempted to enable are disabled for this account. | <span class="doNotRetry">Do not retry.</span>
+400 | 1176 | Array attribute(s) may not contain null elements: {0}. | Do not retry without fixing the problem.
+400 | 1177 | Arrays may not contain null elements. | Do not retry without fixing the problem.
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
 500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
@@ -5940,8 +5948,8 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id, \
+    "destinationType": "folder", \
+    "destinationId": 7960873114331012, \
     "newName": "newFolderName" \
 }' \
 -X POST
@@ -6567,8 +6575,8 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id \
+    "destinationType": "folder", \
+    "destinationId": 7960873114331012, \
 }' \
 -X POST
 ```
@@ -7638,7 +7646,7 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 curl https://api.smartsheet.com/2.0/reports/{reportId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: application/vnd.ms-excel" \
--o output.xls
+-o output.xlsx
 ```
 
 ```javascript
@@ -7685,7 +7693,7 @@ smartsheet.Reports.get_report_as_excel(
 > Example Response:
 
 ```shell
-# See local file named "output.xls"
+# See local file named "output.xlsx"
 ```
 
 ```javascript
@@ -7780,7 +7788,7 @@ smartsheet.Reports.get_report_as_csv(
 
 Gets the Report in the format specified, based on the Report ID.  
 
-<aside class="notice">Note: For Excel format, only .xls output format is supported at this time.</aside>
+<aside class="notice">Note: For Excel format, only .xlsx output format is supported at this time.</aside>
 
      |     |
 -----|-----|
@@ -9063,6 +9071,7 @@ Extends the [Email object](#email-object), adding the following:
 **columnIds** | number[] | IDs of the columns to be included.
 **includeAttachments** | boolean | A flag to indicate whether or not to include Attachments in the email.
 **includeDiscussions** | boolean | A flag to indicate whether or not to include Discussions in the email.
+**layout**   | string | One of the following values: HORIZONTAL, VERTICAL.  Optional, defaults to HORIZONTAL when multiple rows are being sent, and to VERTICAL when a single row is being sent.  HORIZONTAL formats the rows being sent as a grid, whereas VERTICAL formats the rows being sent as separate cards.
 
 ### MultiRowEmail Object
 
@@ -10465,8 +10474,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id, \
+    "destinationType": "folder", \
+    "destinationId": 7960873114331012, \
     "newName": "newSheetName" \
 }' \
 -X POST
@@ -11387,7 +11396,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Accept: application/vnd.ms-excel" \
--o output.xls
+-o output.xlsx
 ```
 
 ```javascript
@@ -11424,7 +11433,7 @@ smartsheet.Sheets.get_sheet_as_excel(sheetId, download_directory_path)
 > Example Response:
 
 ```shell
-# See local file named "output.xls"
+# See local file named "output.xlsx"
 ```
 
 ```javascript
@@ -11571,7 +11580,7 @@ smartsheet.Sheets.get_sheet_as_csv(sheetId, download_directory_path)
 
 Gets the Sheet in the format specified, based on the Sheet ID.  
 
-<aside class="notice">Note:<ul><li>For Excel format, only .xls output format is supported at this time.</li><li>Gantt chart is not generated at this time.</li></ul></aside>
+<aside class="notice">Note:<ul><li>For Excel format, only .xlsx output format is supported at this time.</li><li>Gantt chart is not generated at this time.</li></ul></aside>
 
      |     |
 -----|-----|
@@ -11681,8 +11690,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{ \
-    "destinationType": "workspace|folder|home", \
-    "destinationId": workspace_or_folder_id, \
+    "destinationType": "folder", \
+    "destinationId": 7960873114331012, \
 }' \
 -X POST
 ```
@@ -12091,6 +12100,7 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 **id** | number | Widget ID
 **type** | string | Type of widget
 **title** | string | _(Optional)_ Title of the widget
+**showTitle** | boolean | **True** indicates that the client should display the widget title.  Note that this is independent of the "title" string which may be null or empty.
 **showTitleIcon** | boolean | **True** indicates that the client should display the Sheet icon in the widget title
 **titleFormat** | string | [FormatDescriptor](#formatting)
 **xPosition** | number | X-coordinate of widget's position on the Sight
@@ -12098,7 +12108,7 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 **height** | number | Number of Rows that the widget occupies on the Sight
 **width** | number | Number of Columns that the widget occupies on the Sight
 **version** | int | Widget version number
-**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li>
+**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li> <li>IMAGE - [ImageWidgetContent](#imagewidgetcontent-object)</li>
 
 ### CellLinkWidgetContent object
 
@@ -12126,6 +12136,18 @@ shortcutData | [shortcutData](#shortcutdataitem-object)[] | An array of Shortcut
      |     |     |
 -----|-----|-----|
 htmlContent | string | HTML snippet to render Report
+
+
+### ImageWidgetContent object
+
+     |     |     |
+-----|-----|-----|
+privateId | string | the image private ID
+height | integer | original height of the image in pixels
+width | integer | original width of the image in pixels
+fileName | string | name of the image file
+format | string | [FormatDescriptor]
+
 
 ### CellDataItem object
 
@@ -14439,7 +14461,7 @@ Webhook.enabled | Webhook.status | Meaning | Notes
 ----- | ----- | ------ | -----
 true  | ENABLED | Webhook is active. | 
 false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because it has not yet been verified. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
-false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. No verification is necessary for enabling webhooks that were disabled by the owner.
+false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (i.e., webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third party app's access is subsequently restored, it will need to create new webhooks.
@@ -14661,6 +14683,7 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **id** | number | ID of the object that corresponds to **objectType**. Omitted if **objectType** is "cell". 
 **rowId** | number | Only present if **objectType** is "cell". The ID of the row where the cell is located.
 **columnId** | number | Only present if **objectType** is "cell". The ID of the column where the cell is located.
+**userId** | number | The user ID of the person who caused this event.
 **changeAgent** | string | A comma-delimited list of values that uniquely identify the agent(s) responsible for making the change(s) that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
 
 ## SharedSecret Object
@@ -14686,8 +14709,17 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **status** | string | Webhook status. Read-only. See [Webhook Status](#webhook-status) for list of possible values.
 **disabledDetails** | string | Details about the reason the Webhook was disabled. Read-only. Only present when **enabled**=`false`.
 **version** | number | Webhook version. Currently, the only supported value is 1. This attribute is intended to ensure backward compatibility as new webhook functionality is released. For example, a webhook with a version of 1 is guaranteed to always be sent callback objects that are compatible with the version 1 release of webhooks.
+**stats** | [WebhookStats](#webhookstats-object) | Useful statistics for this webhook.  Will only be returned once this webhook has performed a callback attempt.  Read-only.
 **createdAt** | timestamp | Time of creation. Read-only.
 **modifiedAt** | timestamp | Time of last modification. Read-only.
+
+## WebhookStats Object
+
+     |     |     |
+-----|-----|-----|
+**lastCallbackAttemptRetryCount** | number | The number of retries the webhook had performed as of the last callback attempt.
+**lastCallbackAttempt** | timestamp | When this webhook last made a callback attempt.
+**lastSuccessfulCallback** | timestamp | When this webhook last made a successful callback.
 
 # Create Webhook
 
