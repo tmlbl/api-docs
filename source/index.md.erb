@@ -9071,6 +9071,7 @@ Extends the [Email object](#email-object), adding the following:
 **columnIds** | number[] | IDs of the columns to be included.
 **includeAttachments** | boolean | A flag to indicate whether or not to include Attachments in the email.
 **includeDiscussions** | boolean | A flag to indicate whether or not to include Discussions in the email.
+**layout**   | string | One of the following values: HORIZONTAL, VERTICAL.  Optional, defaults to HORIZONTAL when multiple rows are being sent, and to VERTICAL when a single row is being sent.  HORIZONTAL formats the rows being sent as a grid, whereas VERTICAL formats the rows being sent as separate cards.
 
 ### MultiRowEmail Object
 
@@ -12099,6 +12100,7 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 **id** | number | Widget ID
 **type** | string | Type of widget
 **title** | string | _(Optional)_ Title of the widget
+**showTitle** | boolean | **True** indicates that the client should display the widget title.  Note that this is independent of the "title" string which may be null or empty.
 **showTitleIcon** | boolean | **True** indicates that the client should display the Sheet icon in the widget title
 **titleFormat** | string | [FormatDescriptor](#formatting)
 **xPosition** | number | X-coordinate of widget's position on the Sight
@@ -12106,7 +12108,7 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 **height** | number | Number of Rows that the widget occupies on the Sight
 **width** | number | Number of Columns that the widget occupies on the Sight
 **version** | int | Widget version number
-**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li>
+**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* object (and attributes within) will depend on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li> <li>IMAGE - [ImageWidgetContent](#imagewidgetcontent-object)</li>
 
 ### CellLinkWidgetContent object
 
@@ -12134,6 +12136,18 @@ shortcutData | [shortcutData](#shortcutdataitem-object)[] | An array of Shortcut
      |     |     |
 -----|-----|-----|
 htmlContent | string | HTML snippet to render Report
+
+
+### ImageWidgetContent object
+
+     |     |     |
+-----|-----|-----|
+privateId | string | the image private ID
+height | integer | original height of the image in pixels
+width | integer | original width of the image in pixels
+fileName | string | name of the image file
+format | string | [FormatDescriptor]
+
 
 ### CellDataItem object
 
