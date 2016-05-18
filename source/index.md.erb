@@ -27,10 +27,12 @@ search: false
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
+<% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response will only include the objects that are modified on or after the date and time specified." %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
-<% SUPPORTS_PAGING = "This operation supports pagination of results." %>
+<% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
 <% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
+<% SUPPORTS_NUMERICDATES = "You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href='#dates-and-times'>Dates and Times</a> for more information." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute -- an array of [BulkItemFailure objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
 <% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
@@ -2603,7 +2605,7 @@ attachments = action.data
 
 Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion level Attachments.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -2708,7 +2710,7 @@ attachments = action.data
 
 Gets a list of all Attachments that are in the Discussion.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -2813,7 +2815,7 @@ attachments = action.data
 
 Gets a list of all Attachments that are on the Row, including Row and Discussion level Attachments.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -3103,7 +3105,7 @@ versions = action.data
 
 Gets a list of all versions of the given Attachment ID, in order from newest to oldest.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -3289,7 +3291,7 @@ revisions = action.data
 
 Gets the cell modification history. 
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <aside class="notice">This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
 
@@ -3938,7 +3940,7 @@ columns = action.data
 
 Gets a list of all Columns belonging to the Sheet specified in the URL.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -4479,7 +4481,7 @@ contacts = action.data
 
 Gets a list of the user's Smartsheet Contacts.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -4942,7 +4944,7 @@ discussions = action.data
 
 Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -5081,7 +5083,7 @@ discussions = action.data
 
 Gets a list of all Discussions associated with the specified Row.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -5278,7 +5280,7 @@ favs = action.data
 
 Gets a list of all of the user's Favorite items.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -6427,7 +6429,7 @@ folders = action.data
 
 Gets a list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -6495,7 +6497,7 @@ folders = action.data
 
 Gets a list of the top-level child Folders within the specified Folder.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -6563,7 +6565,7 @@ folders = action.data
 
 Gets a list of the top-level child Folders within the specified Workspace.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -7069,7 +7071,7 @@ groups = action.data
 
 Gets the list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -7877,13 +7879,16 @@ reports = action.data
 
 Gets the list of all Reports that the User has access to, in alphabetical order, by name.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | <%= PARAMETER_MODIFIEDSINCE %>
+ | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Report objects](#report-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Publish Report
@@ -9318,7 +9323,7 @@ Gets a list of all Users and Groups to whom the specified Sight is shared, and t
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -9589,7 +9594,7 @@ Gets a list of all Users and Groups to whom the specified Report is shared, and 
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -9911,7 +9916,7 @@ Gets a list of all Users and Groups to whom the specified Sheet is shared, and t
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -10236,7 +10241,7 @@ shares = action.data
 
 Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -11678,13 +11683,17 @@ sheets = action.data
 
 Gets the list of all Sheets that the User has access to, in alphabetical order, by name.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul><%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+ | <%= PARAMETER_MODIFIEDSINCE %>
+ | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sheet
@@ -12426,13 +12435,16 @@ curl https://api.smartsheet.com/2.0/sights \
 
 Gets the list of all Sights that the User has access to.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | <%= PARAMETER_MODIFIEDSINCE %>
+ | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sight objects](#sight-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sight
@@ -12631,7 +12643,7 @@ templates = action.data
 
 Gets the list of public Templates to which the user has access.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -12689,7 +12701,7 @@ templates = action.data
 
 Gets the list of user-created Templates to which the user has access.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -13488,7 +13500,7 @@ users = action.data
 
 Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. 
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -14050,7 +14062,7 @@ workspaces = action.data
 
 Gets the list of Workspaces to which the user has access.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
