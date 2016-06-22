@@ -566,8 +566,9 @@ flexible UI and is one of the key benefits to using Smartsheet.
 
 ### Cell Value Representation
 
-[Cell objects](#cell-object) retrieved through the Smartsheet API's have two attributes representing cell values: **Cell.value**, and
-**Cell.displayValue**.  An empty cell is always represented by **null** for both.
+[Cell objects](#cell-object) retrieved through the Smartsheet API's have two main attributes representing cell values: **Cell.value**, and
+**Cell.displayValue**.  A third attribute, **Cell.objectValue** is currently used only for adding and updating predecessors.
+An empty cell is always represented by **null** for all of these attributes.
 
 **Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
 be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
@@ -588,6 +589,10 @@ depending on the column type.  Complex types are represented as strings, formatt
 | DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
 | PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
 | ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+
+**Cell.objectValue** is an object representation of a cell's value and is currently used for adding or updating predecessor cell values.
+It provides a more "programmer friendly" format for assembling predecessors. To update a cell's predecessors, set objectValue to a
+[PredecessorList object](#predecessorlist-object) containing [Predecessor objects](#predecessor-object).
 
 ### Cell Value Parsing
 
@@ -658,12 +663,8 @@ The parsing rules for the various column types are as follows:
 
 **PREDECESSOR**:
 
-     |     |
------|-----|
-*Strict* | Only valid predecessor strings in the user's locale are valid. Information on predecessor strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
-*Lenient* | String values which are valid predecessor strings in the user's locale are treated as predecessors, and any other values are treated as free-form text values.
-
-<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
+The Smartsheet API doesn't support parsing of predecessor strings, so strict and lenient parsing don't apply to predecessors.  Instead, you can set the **objectValue** attribute to a [PredecessorList object](#predecessorlist-object) containing
+[Predecessor objects](#predecessor-object). To set a cell in a predecessor column to a non-predecessor string value, simply set **objectValue** to a string.
 
 **ABSTRACT_DATETIME**:
 
@@ -3130,6 +3131,7 @@ A collection of Cells comprises each Row in a Sheet.
 **columnType** | string | See type definition on the [Column object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
 **value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
+**objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
@@ -3174,6 +3176,54 @@ Represents a hyperlink to a URL, a Sheet, a Report, or a Sight.
 **sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
 **reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
 **sightId** | number | If non-null, this hyperlink is a link to the Sight with this ID.
+
+### ObjectValue object
+
+The base object for values found in the **Cell.objectValue** attribute. Its **objectType** attribute indicates the type of the object.
+This object itself is not used directly.
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | One of DATE, DATETIME, ABSTRACT_DATETIME, CONTACT, DURATION, or PREDECESSOR_LIST
+
+## Duration object
+
+Extends the [ObjectValue object](#objectvalue-object).
+
+In a project sheet, represents a value in a duration cell, or a lag value of a predecessor.
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | DURATION
+**negative** | boolean | When used as a predecessor's lag value, indicates whether the lag is negative (if true), or positive (false). The individual duration values themselves (e.g. **days**, **hours**, **minutes**, etc.) will always be positive.
+**elapsed** | boolean | If true, indicates this duration represents elapsed time, which ignores non-working time.
+**weeks** | number | The number of weeks for this duration.
+**days** | number | The number of days for this duration.
+**hours** | number | The number of hours for this duration.
+**minutes** | number | The number of minutes for this duration.
+**seconds** | number | The number of seconds for this duration.
+**milliseconds** | number | The number of milliseconds for this duration.
+
+## Predecessor object
+
+     |     |     |
+-----|-----|-----|
+**rowId** | number| The ID of the predecessor row
+**rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
+**type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
+**lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
+**invalid** | boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Omitted if false.
+**inCriticalPath** | boolean | True if this predecessor is in the critical path.
+
+## PredecessorList object
+
+Extends the [ObjectValue object](#objectvalue-object).
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | PREDECESSOR_LIST
+predecessors | [Predecessor](#predecessor-object)[] | Array of [Predecessor objects](#predecessor-object).
+
 
 ## Get Cell History
 
@@ -8890,6 +8940,7 @@ Include Flag | Notes |
 **columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
 **rowPermalink** | Includes **permalink** attribute that represents a direct link to the [row](#row-object) in the Smartsheet application.
 **rowWriterInfo** | Includes **createdBy** and **modifiedBy** attributes on the row, indicating the row's creator, and last modifier.
+**objectValue** | Includes **objectValue** attribute on cells containing values. For more information see [Cell Values](#cell-values).
 
 ### Row Location
 
