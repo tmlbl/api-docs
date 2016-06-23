@@ -27,10 +27,12 @@ search: false
 <% HEADER_AUTH = "**Authorization**: Bearer ACCESS_TOKEN" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
+<% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response will only include the objects that are modified on or after the date and time specified." %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
-<% SUPPORTS_PAGING = "This operation supports pagination of results." %>
+<% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
 <% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
+<% SUPPORTS_NUMERICDATES = "You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href='#dates-and-times'>Dates and Times</a> for more information." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute -- an array of [BulkItemFailure objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
 <% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
@@ -494,6 +496,8 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 403 | 1175 | One or more publish options which you attempted to enable are disabled for this account. | <span class="doNotRetry">Do not retry.</span>
 400 | 1176 | Array attribute(s) may not contain null elements: {0}. | Do not retry without fixing the problem.
 400 | 1177 | Arrays may not contain null elements. | Do not retry without fixing the problem.
+400 | 1178 | The following combination of attributes is not allowed for this operation: {0}. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the detail attribute(s) within the error response for detail about the issue(s).
+400 | 1179 | The schedule specified is invalid because endAt is earlier than the next send date. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that startAt, endAt, repeatEvery and other attributes will result in one or more future delivery.
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
 500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
@@ -562,8 +566,9 @@ flexible UI and is one of the key benefits to using Smartsheet.
 
 ### Cell Value Representation
 
-[Cell objects](#cell-object) retrieved through the Smartsheet API's have two attributes representing cell values: **Cell.value**, and
-**Cell.displayValue**.  An empty cell is always represented by **null** for both.
+[Cell objects](#cell-object) retrieved through the Smartsheet API's have two main attributes representing cell values: **Cell.value**, and
+**Cell.displayValue**.  A third attribute, **Cell.objectValue** is currently used only for adding and updating predecessors.
+An empty cell is always represented by **null** for all of these attributes.
 
 **Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
 be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
@@ -584,6 +589,10 @@ depending on the column type.  Complex types are represented as strings, formatt
 | DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
 | PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
 | ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+
+**Cell.objectValue** is an object representation of a cell's value and is currently used for adding or updating predecessor cell values.
+It provides a more "programmer friendly" format for assembling predecessors. To update a cell's predecessors, set objectValue to a
+[PredecessorList object](#predecessorlist-object) containing [Predecessor objects](#predecessor-object).
 
 ### Cell Value Parsing
 
@@ -654,12 +663,8 @@ The parsing rules for the various column types are as follows:
 
 **PREDECESSOR**:
 
-     |     |
------|-----|
-*Strict* | Only valid predecessor strings in the user's locale are valid. Information on predecessor strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
-*Lenient* | String values which are valid predecessor strings in the user's locale are treated as predecessors, and any other values are treated as free-form text values.
-
-<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
+The Smartsheet API doesn't support parsing of predecessor strings, so strict and lenient parsing don't apply to predecessors.  Instead, you can set the **objectValue** attribute to a [PredecessorList object](#predecessorlist-object) containing
+[Predecessor objects](#predecessor-object). To set a cell in a predecessor column to a non-predecessor string value, simply set **objectValue** to a string.
 
 **ABSTRACT_DATETIME**:
 
@@ -2601,7 +2606,7 @@ attachments = action.data
 
 Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion level Attachments.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -2706,7 +2711,7 @@ attachments = action.data
 
 Gets a list of all Attachments that are in the Discussion.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -2811,7 +2816,7 @@ attachments = action.data
 
 Gets a list of all Attachments that are on the Row, including Row and Discussion level Attachments.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -3101,7 +3106,7 @@ versions = action.data
 
 Gets a list of all versions of the given Attachment ID, in order from newest to oldest.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -3126,6 +3131,7 @@ A collection of Cells comprises each Row in a Sheet.
 **columnType** | string | See type definition on the [Column object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
 **value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
+**objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
@@ -3170,6 +3176,54 @@ Represents a hyperlink to a URL, a Sheet, a Report, or a Sight.
 **sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
 **reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
 **sightId** | number | If non-null, this hyperlink is a link to the Sight with this ID.
+
+### ObjectValue object
+
+The base object for values found in the **Cell.objectValue** attribute. Its **objectType** attribute indicates the type of the object.
+This object itself is not used directly.
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | One of DATE, DATETIME, ABSTRACT_DATETIME, CONTACT, DURATION, or PREDECESSOR_LIST
+
+## Duration object
+
+Extends the [ObjectValue object](#objectvalue-object).
+
+In a project sheet, represents a value in a duration cell, or a lag value of a predecessor.
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | DURATION
+**negative** | boolean | When used as a predecessor's lag value, indicates whether the lag is negative (if true), or positive (false). The individual duration values themselves (e.g. **days**, **hours**, **minutes**, etc.) will always be positive.
+**elapsed** | boolean | If true, indicates this duration represents elapsed time, which ignores non-working time.
+**weeks** | number | The number of weeks for this duration.
+**days** | number | The number of days for this duration.
+**hours** | number | The number of hours for this duration.
+**minutes** | number | The number of minutes for this duration.
+**seconds** | number | The number of seconds for this duration.
+**milliseconds** | number | The number of milliseconds for this duration.
+
+## Predecessor object
+
+     |     |     |
+-----|-----|-----|
+**rowId** | number| The ID of the predecessor row
+**rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
+**type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
+**lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
+**invalid** | boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Omitted if false.
+**inCriticalPath** | boolean | True if this predecessor is in the critical path.
+
+## PredecessorList object
+
+Extends the [ObjectValue object](#objectvalue-object).
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | PREDECESSOR_LIST
+predecessors | [Predecessor](#predecessor-object)[] | Array of [Predecessor objects](#predecessor-object).
+
 
 ## Get Cell History
 
@@ -3287,7 +3341,7 @@ revisions = action.data
 
 Gets the cell modification history. 
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <aside class="notice">This is a resource-intensive operation and incurs 10 additional requests against the rate limit.</aside>
 
@@ -3936,7 +3990,7 @@ columns = action.data
 
 Gets a list of all Columns belonging to the Sheet specified in the URL.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -4477,7 +4531,7 @@ contacts = action.data
 
 Gets a list of the user's Smartsheet Contacts.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -4940,7 +4994,7 @@ discussions = action.data
 
 Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -5079,7 +5133,7 @@ discussions = action.data
 
 Gets a list of all Discussions associated with the specified Row.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/getDiscussions_table.md.erb" %>
 
@@ -5276,7 +5330,7 @@ favs = action.data
 
 Gets a list of all of the user's Favorite items.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -6425,7 +6479,7 @@ folders = action.data
 
 Gets a list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -6493,7 +6547,7 @@ folders = action.data
 
 Gets a list of the top-level child Folders within the specified Folder.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -6561,7 +6615,7 @@ folders = action.data
 
 Gets a list of the top-level child Folders within the specified Workspace.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
@@ -7067,7 +7121,7 @@ groups = action.data
 
 Gets the list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -7368,6 +7422,7 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 **reports** | [Report](#report-object)[] | Array of Report objects
 **templates** | [Template](#template-object)[] | Array of Template objects
 **workspaces** | [Workspace](#workspace-object)[] | Array of Workspace objects
+**sights** | [Sight](#sight-object)[] | Array of Sight objects
 
 ## List All Contents
 
@@ -7875,13 +7930,16 @@ reports = action.data
 
 Gets the list of all Reports that the User has access to, in alphabetical order, by name.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | <%= PARAMETER_MODIFIEDSINCE %>
+ | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Report objects](#report-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Publish Report
@@ -8639,7 +8697,7 @@ Moves Row(s) from the Sheet specified in the URL to (the bottom of) another shee
 
 ## Send Update Request
 
-<%= partial "snippets/sendUpdateRequest.md.erb" %>
+<%= partial "snippets/createUpdateRequest.md.erb" %>
 
 ## Update Row(s)
 
@@ -8882,6 +8940,7 @@ Include Flag | Notes |
 **columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
 **rowPermalink** | Includes **permalink** attribute that represents a direct link to the [row](#row-object) in the Smartsheet application.
 **rowWriterInfo** | Includes **createdBy** and **modifiedBy** attributes on the row, indicating the row's creator, and last modifier.
+**objectValue** | Includes **objectValue** attribute on cells containing values. For more information see [Cell Values](#cell-values).
 
 ### Row Location
 
@@ -8893,6 +8952,8 @@ the following "location-specifier" [Row](#row-object) attributes can be used to 
 * above
 * siblingId
 * parentId
+* indent (applicable when updating a row only)
+* outdent (applicable when updating a row only)
 
 The following table describes which *location-specifier* Row attribute(s) should be set to implement various actions.
 
@@ -8904,6 +8965,8 @@ Add or move the Row directly above the specified sibling Row (at the same hierar
 Add or move the Row directly below the specified sibling Row (at the same hierarchical level). | **siblingId** = (ID of sibling row)
 Add or move the Row so that it is the first child row of the specified parent Row. | **parentId** = (ID of parent row)
 Add or move the Row so that it is the last child row of the specified parent Row. | **parentId** = (ID of parent row)<br/>**toBottom** = `true`
+Indent an existing Row. | **indent** = (number of level to indent, minimum of 1)
+Outdent an existing Row. | **outdent** = (number of level to outdent, minimum of 1)
 
 <aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Row(s) in a single request, try achieving the objective by using two separate requests: 1) Move parent Row. 2) Move child Row(s).</aside>
 
@@ -9104,7 +9167,7 @@ Extends the [Email object](#email-object), adding the following:
 
 ## Send Update Request
 
-<%= partial "snippets/sendUpdateRequest.md.erb" %>
+<%= partial "snippets/createUpdateRequest.md.erb" %>
 
 # Server Information
 
@@ -9312,7 +9375,7 @@ Gets a list of all Users and Groups to whom the specified Sight is shared, and t
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -9583,7 +9646,7 @@ Gets a list of all Users and Groups to whom the specified Report is shared, and 
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -9905,7 +9968,7 @@ Gets a list of all Users and Groups to whom the specified Sheet is shared, and t
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listShares_table.md.erb" %>
 
@@ -10230,7 +10293,7 @@ shares = action.data
 
 Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -11672,13 +11735,17 @@ sheets = action.data
 
 Gets the list of all Sheets that the User has access to, in alphabetical order, by name.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul><%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+ | <%= PARAMETER_MODIFIEDSINCE %>
+ | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sheet objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sheet
@@ -11931,7 +11998,7 @@ Sets the publish status of the Sheet and returns the new status, including the U
 
 ## Send Update Request
 
-<%= partial "snippets/sendUpdateRequest.md.erb" %>
+<%= partial "snippets/createUpdateRequest.md.erb" %>
 
 ## Share Sheet
 
@@ -12420,14 +12487,17 @@ curl https://api.smartsheet.com/2.0/sights \
 
 Gets the list of all Sights that the User has access to.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sight object](#sight-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
+<%= PARAMETERS %> | <%= PARAMETER_MODIFIEDSINCE %>
+ | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Sight objects](#sight-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>createdAt</li><li>modifiedAt</li></ul>
 
 ## Move Sight
 
@@ -12625,7 +12695,7 @@ templates = action.data
 
 Gets the list of public Templates to which the user has access.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -12683,7 +12753,7 @@ templates = action.data
 
 Gets the list of user-created Templates to which the user has access.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
@@ -12839,15 +12909,43 @@ Revokes the access token used to make this request.  The access token will no lo
 
 ## <%= OBJECTS %>
 
-### UpdateRequest Object
+<%= partial "snippets/updateRequest_object.md.erb" %>
 
-     |     |     |
------|-----|-----|
-**id** | number | ID of the update request. 
+<%= partial "snippets/sentUpdateRequest_object.md.erb" %>
+
+<%= partial "snippets/schedule_object.md.erb" %>
 
 ## Create Update Request
 
-<%= partial "snippets/sendUpdateRequest.md.erb" %>
+<%= partial "snippets/createUpdateRequest.md.erb" %>
+
+## Delete Update Request
+
+<%= partial "snippets/deleteUpdateRequest.md.erb" %>
+
+## Get Update Request
+
+<%= partial "snippets/getUpdateRequest.md.erb" %>
+
+## List Update Requests
+
+<%= partial "snippets/listUpdateRequests.md.erb" %>
+
+## Change Update Request
+
+<%= partial "snippets/changeUpdateRequest.md.erb" %>
+
+## Delete Sent Update Request
+
+<%= partial "snippets/deleteSentUpdateRequest.md.erb" %>
+
+## Get Sent Update Request
+
+<%= partial "snippets/getSentUpdateRequest.md.erb" %>
+
+## List Sent Update Requests
+
+<%= partial "snippets/listSentUpdateRequests.md.erb" %>
 
 # Users
 
@@ -13454,7 +13552,7 @@ users = action.data
 
 Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. 
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -14016,7 +14114,7 @@ workspaces = action.data
 
 Gets the list of Workspaces to which the user has access.
 
-<aside class="notice"><%= SUPPORTS_PAGING %> For more information, see <a href="#paging">Paging</a>.</aside>
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
@@ -14301,18 +14399,6 @@ Object | Deprecated Attribute | Replaced by
 
 # <span class="customTOCSectionHeading">Webhooks</span>
 
-<aside class="warning">Webhooks are currently in beta. Before we ​officially ​release Webhooks, we want to make sure the feature is stable and performs well. Once we feel that these criteria have been met, the beta will be phased out and we will ​officially release the feature.</br></br>
-
-​While Webhooks are in Beta, the following limitations apply:​
-<ul>
-<li>
-<b>Stability</b>: Smartsheet Webhooks are a work in progress, and we make no guarantees regarding service stability / reliability.
-</li>
-<li>
-<b>Changes</b>: As with any beta, we reserve the right to make changes to Webhooks which may break your integrations.  If we make such changes, we promise to do so thoughtfully and to update our documentation accordingly.
-</li>
-</aside>
-
 # Intro to Webhooks
 
 <%= WEBHOOKS_INTRO %> 
@@ -14494,12 +14580,16 @@ For more information, see [Authenticating Callbacks](#authenticating-callbacks-(
         {
             "objectType": "sheet",
             "eventType": "updated",
-            "id": 4509506114742148
+            "id": 4509506114742148,
+			"userId": 9007194052434043,
+			"timestamp": "2015-10-27T17:03:15.000+0000"
         },
         {
             "objectType": "row",
             "eventType": "created",
-            "id": 7129509179746180
+            "id": 7129509179746180,
+			"userId": 9007194052434043,
+			"timestamp": "2015-10-27T17:03:15.000+0000"
         }
     ]
 }
@@ -14684,6 +14774,7 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **rowId** | number | Only present if **objectType** is "cell". The ID of the row where the cell is located.
 **columnId** | number | Only present if **objectType** is "cell". The ID of the column where the cell is located.
 **userId** | number | The user ID of the person who caused this event.
+**timestamp** | timestamp | Time that this event occurred. A callback may contain events with different timestamps, as multiple separate events may be aggregated into a single callback request.
 **changeAgent** | string | A comma-delimited list of values that uniquely identify the agent(s) responsible for making the change(s) that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
 
 ## SharedSecret Object

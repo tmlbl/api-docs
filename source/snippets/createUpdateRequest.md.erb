@@ -1,0 +1,146 @@
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ \
+    "sendTo": [ \
+        {"email": "recipient1@smartsheet.com"}, \
+        {"email": "recipient2@smartsheet.com"} \
+    ], \
+    "subject": "some subject", \
+    "message": "some message", \
+    "ccMe": false, \
+    "rowIds": [4508292249610116, 2256492435924868], \
+    "columnIds": [4508284196546436, 2256484382861188], \
+    "includeAttachments": false, \
+    "includeDiscussions": false \
+}'
+```
+
+<!--Pending SDK Update 
+```csharp
+// Specify recipients.
+Recipient[] recipients = new Recipient[] { 
+    new Recipient { Email = "recipient1@smartsheet.com" },
+    new Recipient { Email = "recipient2@smartsheet.com" }
+};
+
+// Configure email.
+MultiRowEmail multiEmail = new MultiRowEmail {
+    SendTo = recipients,
+    Subject = "some subject",
+    Message = "some message",
+    CcMe = true,
+    RowIds = new long[] { rowId1, rowId2 },
+    ColumnIds = new long[] { colId1, colId2 },
+    IncludeAttachments = true,
+    IncludeDiscussions = true
+};
+
+// Send update request via email.
+smartsheet.SheetResources.SendUpdateRequest(sheetId, multiEmail);
+```-->
+```csharp
+// [todo]
+```
+
+```javascript
+// [todo]
+```
+
+<!--Pending SDK Update 
+```java
+// Specify recipients.
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+                .setEmail("recipient1@smartsheet.com")
+                .setEmail("recipient2@smartsheet.com")
+                .build();
+
+List<Recipient> recipients = new ArrayList<Recipient>();
+recipients.add(recipientEmail);
+
+// Configure email.
+MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
+    .setSendTo(recipients)
+    .setSubject("some subject")
+    .setMessage("some message")
+    .setCcMe(false)
+    .setRowIds(Arrays.asList(rowId1, rowId2)
+    .setColumnIds(Arrays.asList(columnId1, columnId2)
+    .setIncludeAttachments(false)
+    .setIncludeDiscussions(false)
+    .build();
+    
+// Send update request via email.
+smartsheet.sheetResources().createUpdateRequest(sheetId, multiRowEmail);
+```-->
+```java
+// [todo]
+```
+
+<!--Pending SDK Update 
+```python
+# Configure email.
+email = smartsheet.models.MultiRowEmail()
+email.send_to = [
+    smartsheet.models.Recipient({'email': 'recipient1@smartsheet.com'}),
+    smartsheet.models.Recipient({'email': 'recipient2@smartsheet.com'})] 
+email.subject = 'some subject'
+email.message = 'some message'
+email.cc_me = False
+email.row_ids = [rowId1, rowId2]
+email.column_ids = [columnId1, columnId2]
+
+# Send update request.
+smartsheet.Sheets.send_update_request(sheetId, email)
+```-->
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/createImmediateUpdateRequest_response.md.erb" %>
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{ \
+    "sendTo": [ \
+        {"email": "recipient1@smartsheet.com"} \
+    ], \
+    "subject": "Sample Monthly Update Request", \
+    "message": "Please update my online sheet.", \
+    "ccMe": false, \
+    "rowIds": [7886095586224004], \
+    "columnIds": [6962516556310404, 3584816835782532], \
+    "includeAttachments": true, \
+    "includeDiscussions": true, \
+    "schedule": { \
+		"type": "MONTHLY", \
+		"startAt": "2016-04-01T19:00:00Z", \
+		"endAt": "2016-12-31T07:00:00Z", \
+		"dayOfMonth": 1, \
+		"repeatEvery": 1 \
+	} \
+}'
+```
+
+> Example Response:
+
+<%= partial "snippets/createScheduledUpdateRequest_response.md.erb" %> 
+
+`POST /sheets/{sheetId}/updaterequests`
+
+Creates an Update Request for the specified Row(s) within the Sheet. An email notification (containing a link to the update request) will be sent to the specified recipient(s) according to the specified scheduled.
+
+<aside class="notice" >The recipient(s) of an update request must be specified using email address(es) only. Sending an update request to a <a href="#groups">Group</a> is not supported.</aside>
+
+<%= partial "snippets/createUpdateRequest_table.md.erb" %>
