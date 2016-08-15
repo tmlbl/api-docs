@@ -3186,78 +3186,7 @@ This object itself is not used directly.
 -----|-----|-----|
 **objectType** | string | One of DATE, DATETIME, ABSTRACT_DATETIME, CONTACT, DURATION, or PREDECESSOR_LIST
 
-### PredecessorList object
-
-> Example Update Row Request for a Predecessor Cell:
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?include=objectValue \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X PUT \
--d '[{"id": "6572427401553796", "cells": [{"columnId": 7518312134403972,"objectValue": {"objectType": "PREDECESSOR_LIST","predecessors": [{"rowId": 567735454328708,"type": "FS","lag": {"objectType": "DURATION","days": 2,"hours": 4}}]}}]}]'
-```
-
-> Example Response:
-
-```json
-{
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 6572427401553796,
-            "rowNumber": 2,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [	
-				{
-					"columnId": 7518312134403972,
-					"value": "1FS +2d 4h",
-					"objectValue": {
-						"objectType": "PREDECESSOR_LIST",
-						"predecessors": [
-							{
-								"rowId": 567735454328708,
-								"rowNumber": 1,
-								"type": "FS",
-								"lag": {
-									"objectType": "DURATION",
-									"days": 2,
-									"hours": 4
-								}
-							}
-						]
-					},
-					"displayValue": "1FS +2d 4h"
-				}
-			]
-		}
-	]
-}
-```
-
-Extends the [ObjectValue object](#objectvalue-object).
-
-In a project sheet with dependencies enabled, the **objectValue** attribute for predecessor cells will be an object of this type, which represents the predecessors for the row.
-
-     |     |     |
------|-----|-----|
-**objectType** | string | PREDECESSOR_LIST
-**predecessors** | [Predecessor](#predecessor-object)[] | Array of [Predecessor objects](#predecessor-object).
-
-### Predecessor object
-
-     |     |     |
------|-----|-----|
-**rowId** | number| The ID of the predecessor row
-**rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
-**type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
-**lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
-**invalid** | boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Read-only. Omitted if false.
-**inCriticalPath** | boolean | True if this predecessor is in the critical path. Read-only.
-
-### Duration object
+## Duration object
 
 Extends the [ObjectValue object](#objectvalue-object).
 
@@ -3274,6 +3203,27 @@ In a project sheet, represents a value in a duration cell, or a lag value of a p
 **minutes** | number | The number of minutes for this duration.
 **seconds** | number | The number of seconds for this duration.
 **milliseconds** | number | The number of milliseconds for this duration.
+
+## Predecessor object
+
+     |     |     |
+-----|-----|-----|
+**rowId** | number| The ID of the predecessor row
+**rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
+**type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
+**lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
+**invalid** | boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Omitted if false.
+**inCriticalPath** | boolean | True if this predecessor is in the critical path.
+
+## PredecessorList object
+
+Extends the [ObjectValue object](#objectvalue-object).
+
+     |     |     |
+-----|-----|-----|
+**objectType** | string | PREDECESSOR_LIST
+predecessors | [Predecessor](#predecessor-object)[] | Array of [Predecessor objects](#predecessor-object).
+
 
 ## Get Cell History
 
