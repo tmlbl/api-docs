@@ -13016,6 +13016,9 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
+**sheetCount** | number | Count of user's owned sheets within an organization
+**lastLogin** | timestamp | User's timestamp of last login
+**customWelcomeScreenViewed** | timestamp | User's timestamp of viewing an Enterprise Custom Welcome Screen
 
 ### UserProfile Object
 
@@ -13582,25 +13585,28 @@ users = action.data
     "pageSize": 100,
     "totalPages": 1,
     "totalCount": 1,
-	"data": [
-		{
-			"id": 94094820842,
-			"admin": true,
-			"email": "john.doe@smartsheet.com",
-			"name": "John Doe",
+    "data": [
+        {
+            "id": 94094820842,
+            "admin": true,
+            "email": "john.doe@smartsheet.com",
+            "name": "John Doe",
             "status": "ACTIVE",
             "admin": true,
             "licensedSheetCreator": true,
             "groupAdmin": true,
-            "resourceViewer": true
-		}
-	]
+            "resourceViewer": true,
+            "sheetCount": 3,
+            "lastLogin": "2016-08-15T18:32:47Z",
+            "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+        }
+    ]
 }
 ```
 
 `GET /users`
 
-Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. 
+Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -13609,7 +13615,7 @@ Gets the list of Users in the organization. To filter by email, use the optional
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results<br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li></ul>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin</li><li>sheetCount</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, the following User attributes will be included in the response (else, they will be omitted from the response): <br/><ul><li>customWelcomeScreenViewed</li></ul>
 
 ## Remove User
 
