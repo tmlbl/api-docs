@@ -699,7 +699,7 @@ Index endpoints all support pagination via the following optional query string p
      |     |     |
 -----|-----|-----|
 **pageSize** 	| number  | The maximum number of items to return per page.  Unless otherwise stated for a specific endpoint, defaults to **100** if not specified.
-**page**		| number  | Which page to return.  Defaults to **1** if not specified.
+**page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results will be returned.
 **includeAll**  | boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
 
 <aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
@@ -10527,6 +10527,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
 **accessLevel** | string | User's permissions on the Sheet
+**projectSettings** | [ProjectSettings](#projectsettings-object) | Sheet's project settings containing the working days, non-working days, and length of day for a project sheet
 **effectiveAttachmentOptions** | array | Array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
 **readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
 **ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
@@ -10570,6 +10571,16 @@ Represents individual user settings for a specific sheet.  User settings may be 
 -----|-----|-----|
 **criticalPathEnabled** | boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
 **displaySummaryTasks** | boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
+
+### ProjectSettings Object
+
+Represents the project settings dependencies for a specific sheet.  Project settings may be updated on only sheets that the user has editor access.
+
+     |     |     |
+-----|-----|-----|
+**workingDays** | String[] | Working days of a week for a project sheet. Valid values must be an array of strings of days of the week.
+**nonWorkingDays** | timestamp[] | Non-working days for a project sheet. The format for the timestamp array must be an array of strings that are valid [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) dates ('YYYY-MM-DD').
+**lengthOfDay** | number | Length of a workday for the project sheet. Valid values must be above or equal to 1 hour, and less than or equal to 24 hours.
 
 ### Source Object
 
@@ -11455,6 +11466,17 @@ sheet = smartsheet.Sheets.get_sheet(sheetId)
 ```json
 {
     "accessLevel": "OWNER",
+    "projectSettings": {
+        "workingDays": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY"
+        ],
+        "nonWorkingDays": [
+            "2018-01-01"
+        ],
+        "lengthOfDay": 6
+    },
     "columns": [
         {
             "id": 4583173393803140,
@@ -12064,7 +12086,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"name":"New Sheet Name", "userSettings": {"criticalPathEnabled": true}}'
+-d '{"name":"New Sheet Name", \
+     "userSettings": {"criticalPathEnabled": true}, \
+     "projectSettings":{ \
+        "workingDays": ["MONDAY", "TUESDAY", "WEDNESDAY"], \
+        "nonWorkingDays": ["2018-01-01"], \
+        "lengthOfDay": 6 \
+    }'
 ```
 
 ```javascript
@@ -12130,9 +12158,14 @@ smartsheet.Sheets.update_sheet(
         "id": 7960873114331012,
         "name": "New Sheet Name",
         "accessLevel": "OWNER",
-		"userSettings": {
-			"criticalPathEnabled": true
-		},
+		    "userSettings": {
+			     "criticalPathEnabled": true
+		    },
+        "projectSettings": {
+            "workingDays": ["MONDAY", "TUESDAY", "WEDNESDAY"]
+            "nonWorkingDays": ["2018-01-01"]
+            "lengthOfDay": 6
+        },
         "permalink": "https://app.smartsheet.com/b/home?lx=RE8LkzA48kPRWTzcgEYOga"
     },
     "resultCode": 0
@@ -12152,7 +12185,7 @@ only has read-only access to the sheet (i.e. the user has viewer permissions, or
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating this user's settings for the sheet</li></ul>
+<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating this user's settings for the sheet</li><li>projectSettings (optional): [ProjectSettings object](#projectsettings-object) for updating this sheet's project settings and dependencies</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the updated Sheet
 
 ## <%= RELATED %>
@@ -13016,9 +13049,6 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
-**sheetCount** | number | Count of user's owned sheets within an organization
-**lastLogin** | timestamp | User's timestamp of last login
-**customWelcomeScreenViewed** | timestamp | User's timestamp of viewing an Enterprise Custom Welcome Screen
 
 ### UserProfile Object
 
@@ -13585,28 +13615,25 @@ users = action.data
     "pageSize": 100,
     "totalPages": 1,
     "totalCount": 1,
-    "data": [
-        {
-            "id": 94094820842,
-            "admin": true,
-            "email": "john.doe@smartsheet.com",
-            "name": "John Doe",
+	"data": [
+		{
+			"id": 94094820842,
+			"admin": true,
+			"email": "john.doe@smartsheet.com",
+			"name": "John Doe",
             "status": "ACTIVE",
             "admin": true,
             "licensedSheetCreator": true,
             "groupAdmin": true,
-            "resourceViewer": true,
-            "sheetCount": 3,
-            "lastLogin": "2016-08-15T18:32:47Z",
-            "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
-        }
-    ]
+            "resourceViewer": true
+		}
+	]
 }
 ```
 
 `GET /users`
 
-Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
+Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. 
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -13615,7 +13642,7 @@ Gets the list of Users in the organization. To filter by email, use the optional
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results<br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin</li><li>sheetCount</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, the following User attributes will be included in the response (else, they will be omitted from the response): <br/><ul><li>customWelcomeScreenViewed</li></ul>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li></ul>
 
 ## Remove User
 
