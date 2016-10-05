@@ -699,7 +699,7 @@ Index endpoints all support pagination via the following optional query string p
      |     |     |
 -----|-----|-----|
 **pageSize** 	| number  | The maximum number of items to return per page.  Unless otherwise stated for a specific endpoint, defaults to **100** if not specified.
-**page**		| number  | Which page to return.  Defaults to **1** if not specified.
+**page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results will be returned.
 **includeAll**  | boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
 
 <aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
@@ -7741,7 +7741,7 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
   | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
-<%= RETURNS %> | [Report object](#report-object), populated according to the "include" parameter
+<%= RETURNS %> | [Report object](#report-object), populated according to the **include** parameter
 
 ## Get Report as Excel / CSV
 
@@ -13016,6 +13016,9 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
+**sheetCount** | number | Count of user's owned sheets within an organization
+**lastLogin** | timestamp | User's timestamp of last login
+**customWelcomeScreenViewed** | timestamp | User's timestamp of viewing an Enterprise Custom Welcome Screen
 
 ### UserProfile Object
 
@@ -13528,7 +13531,7 @@ Gets the User specified in the URL.
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com \
+curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com&include=lastLogin \
 -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 
@@ -13581,25 +13584,28 @@ users = action.data
     "pageSize": 100,
     "totalPages": 1,
     "totalCount": 1,
-	"data": [
-		{
-			"id": 94094820842,
-			"admin": true,
-			"email": "john.doe@smartsheet.com",
-			"name": "John Doe",
+    "data": [
+        {
+            "id": 94094820842,
+            "admin": true,
+            "email": "john.doe@smartsheet.com",
+            "name": "John Doe",
             "status": "ACTIVE",
             "admin": true,
             "licensedSheetCreator": true,
             "groupAdmin": true,
-            "resourceViewer": true
-		}
-	]
+            "resourceViewer": true,
+            "sheetCount": 3,
+            "lastLogin": "2016-08-15T18:32:47Z",
+            "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+        }
+    ]
 }
 ```
 
 `GET /users`
 
-Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses. 
+Gets the list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -13607,8 +13613,10 @@ Gets the list of Users in the organization. To filter by email, use the optional
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results<br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li></ul>
+<%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results.
+ | **include** (optional): When specified with a value of "lastLogin", response will include the **lastLogin** attribute for each [user](#user-object) if:<br/><ul><li>the request is submitted by a system administrator, and</li><li>the returned [IndexResult object](#indexresult-object) that contains a maximum of 100 [User objects](#user-object).</li></ul>
+ | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin</li><li>sheetCount</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, the following User attributes will be included in the response (else, they will be omitted from the response): <br/><ul><li>customWelcomeScreenViewed</li></ul>
 
 ## Remove User
 
