@@ -1,8 +1,6 @@
 ﻿@charset "utf-8";
 @import 'normalize';
-@import 'compass';
 @import 'variables';
-@import 'syntax';
 @import 'icon-font';
 
 /*
@@ -49,25 +47,17 @@ html, body {
 }
 
 @mixin embossed-bg {
-  @include background(
-    linear-gradient(top,
-                    rgba(#000, 0.2),
-                    rgba(#000, 0) 8px),
-    linear-gradient(bottom,
-                    rgba(#000, 0.2),
-                    rgba(#000, 0) 8px),
-    linear-gradient(top,
-                    rgba($nav-embossed-border-top, 1),
-                    rgba($nav-embossed-border-top, 0) 1.5px),
-    linear-gradient(bottom,
-                    rgba($nav-embossed-border-bottom, 1),
-                    rgba($nav-embossed-border-bottom, 0) 1.5px),
-    $nav-subitem-bg
-  );
+  background:
+    linear-gradient(to bottom, rgba(#000, 0.2), rgba(#000, 0) 8px),
+    linear-gradient(to top, rgba(#000, 0.2), rgba(#000, 0) 8px),
+    linear-gradient(to bottom, rgba($nav-embossed-border-top, 1), rgba($nav-embossed-border-top, 0) 1.5px),
+    linear-gradient(to top, rgba($nav-embossed-border-bottom, 1), rgba($nav-embossed-border-bottom, 0) 1.5px),
+    $nav-subitem-bg;
 }
 
 .tocify-wrapper {
-  @include transition(left ease-in-out 0.3s);
+  transition: left 0.3s ease-in-out;
+
   overflow-y: auto;
   overflow-x: hidden;
   position: fixed;
@@ -94,6 +84,7 @@ html, body {
   // This is the logo at the top of the ToC
   &>img {
     display: block;
+    max-width: 100%;
   }
 
   &>.search {
@@ -104,7 +95,7 @@ html, body {
       border-width: 0 0 1px 0;
       border-color: $search-box-border-color;
       padding: 6px 0 6px 20px;
-      @include box-sizing(border-box);
+      box-sizing: border-box;
       margin: $nav-v-padding $nav-padding;
       width: $nav-width - 30;
       outline: none;
@@ -121,19 +112,24 @@ html, body {
     }
   }
 
-  img+.tocify {
+  img+.tocify, .lang-selector+.tocify {
     margin-top: $logo-margin;
   }
 
   .search-results {
+<<<<<<< HEAD
     margin-top: 10px; 
     @include box-sizing(border-box);
+=======
+    margin-top: 0;
+    box-sizing: border-box;
+>>>>>>> lord/master
     height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    @include transition-property(height margin);
-    @include transition-duration(180ms);
-    @include transition-timing-function(ease-in-out);
+    transition-property: height, margin;
+    transition-duration: 180ms;
+    transition-timing-function: ease-in-out;
     &.visible {
       height: 30%;
       margin-bottom: 1em;
@@ -187,14 +183,18 @@ html, body {
 
   li {
     color: $nav-text;
-    @include transition-property('background');
-    @include transition-timing-function('linear');
-    @include transition-duration(230ms);
+    transition-property: background;
+    transition-timing-function: linear;
+    transition-duration: 230ms;
   }
 
   // This is the currently selected ToC entry
   .tocify-focus {
+<<<<<<< HEAD
     @include box-shadow(0px 0px 0px $nav-active-shadow); 
+=======
+    box-shadow: 0px 1px 0px $nav-active-shadow;
+>>>>>>> lord/master
     background-color: $nav-active-bg;
     color: $nav-active-text;
   }
@@ -243,6 +243,7 @@ html, body {
     }
   }
 
+<<<<<<< HEAD
   // Section headers
   .tocify-item[data-unique="api-reference"], .tocify-item[data-unique|="smartsheet-api"], .tocify-item[data-unique="webhooks-reference"], .tocify-item[data-unique="webhooks"], {
 	text-transform: uppercase;
@@ -255,6 +256,38 @@ html, body {
   .tocify-item[data-unique="api-reference"]:hover, .tocify-item[data-unique|="smartsheet-api"]:hover, .tocify-item[data-unique="additional-reference"]:hover, .tocify-item[data-unique="deprecations"]:hover, .tocify-item[data-unique="webhooks-reference"]:hover, .tocify-item[data-unique="webhooks"]:hover, {
 	color: $nav-text;
   }
+=======
+}
+
+// button to show navigation on mobile devices
+#nav-button {
+  span {
+    display: block;
+    $side-pad: $main-padding / 2 - 8px;
+    padding: $side-pad $side-pad $side-pad;
+    background-color: rgba($main-bg, 0.7);
+    transform-origin: 0 0;
+    transform: rotate(-90deg) translate(-100%, 0);
+    border-radius: 0 0 0 5px;
+  }
+  padding: 0 1.5em 5em 0; // increase touch size area
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  opacity: 0.7;
+  line-height: 16px;
+  img {
+    height: 16px;
+    vertical-align: bottom;
+  }
+
+  transition: left 0.3s ease-in-out;
+>>>>>>> lord/master
 
  .tocify-item[data-unique="additional-reference"], .tocify-item[data-unique="deprecations"], .tocify-item[data-unique="webhooks-reference"], {
 	margin-top: 0.5em;
@@ -388,9 +421,14 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
   &>h1, &>h2, &>h3, &>h4, &>h5, &>h6, &>p, &>table, &>ul, &>ol, &>aside, &>dl {
     margin-right: $examples-width;
     padding: 0 $main-padding;
-    @include box-sizing(border-box);
+    box-sizing: border-box;
     display: block;
+<<<<<<< HEAD
     @include text-shadow($main-embossed-text-shadow);
+=======
+    text-shadow: $main-embossed-text-shadow;
+
+>>>>>>> lord/master
     @extend %left-col;
   }
 
@@ -411,6 +449,11 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
     border-bottom: 1px solid #ccc;
     margin-bottom: $h1-margin-bottom;
     margin-top: 2em;
+<<<<<<< HEAD
+=======
+    border-top: 1px solid #ddd;
+    background-image: linear-gradient(to bottom, #fff, #f9f9f9);
+>>>>>>> lord/master
   }
 
   h1:first-child, div:first-child + h1 {
@@ -426,6 +469,10 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
     //border-top: 1px solid #ccc;
     padding-top: 1.2em;
     padding-bottom: 1.2em;
+<<<<<<< HEAD
+=======
+    background-image: linear-gradient(to bottom, rgba(#fff, 0.4), rgba(#fff, 0));
+>>>>>>> lord/master
   }
 
   // h2s right after h1s should bump right up
@@ -437,8 +484,14 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
 
   h3, h4, h5, h6 {
     @extend %header-font;
+<<<<<<< HEAD
     font-size: 16px;
 	padding-top: 1.2em;
+=======
+    font-size: 15px;
+    margin-top: 2.5em;
+    margin-bottom: 0.8em;
+>>>>>>> lord/master
   }
 
   h4, h5, h6 {
@@ -516,7 +569,11 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
   aside {
     padding-top: 1em;
     padding-bottom: 1em;
+<<<<<<< HEAD
     @include text-shadow(0 0px 0 lighten($aside-notice-bg, 15%));  
+=======
+    text-shadow: 0 1px 0 lighten($aside-notice-bg, 15%);
+>>>>>>> lord/master
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     background: $aside-notice-bg;
@@ -527,14 +584,22 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
 
     &.warning {
       background-color: $aside-warning-bg;
+<<<<<<< HEAD
       border-color: $aside-warning-border;
       @include text-shadow(0 0px 0 lighten($aside-warning-bg, 15%)); 
+=======
+      text-shadow: 0 1px 0 lighten($aside-warning-bg, 15%);
+>>>>>>> lord/master
     }
 
     &.success {
       background-color: $aside-success-bg;
+<<<<<<< HEAD
       border-color: $aside-success-border;
       @include text-shadow(0 0px 0 lighten($aside-success-bg, 15%));   
+=======
+      text-shadow: 0 1px 0 lighten($aside-success-bg, 15%);
+>>>>>>> lord/master
     }
   }
 
@@ -561,8 +626,8 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
     margin: -2px;
     border-radius: 4px;
     border: 1px solid #F7E633;
-    @include text-shadow(1px 1px 0 #666);
-    @include background(linear-gradient(bottom right, #F7E633 0%, #F1D32F 100%));
+    text-shadow: 1px 1px 0 #666;
+    background: linear-gradient(to top left, #F7E633 0%, #F1D32F 100%);
   }
 
 }
@@ -584,8 +649,13 @@ h1.section-header, h2.section-header, h3.section-header, h4.section-header {
     float:right;
     clear:right;
 
+<<<<<<< HEAD
     @include box-sizing(border-box);
     @include text-shadow(0px 0px 0px rgba(0,0,0,0.4));  
+=======
+    box-sizing: border-box;
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.4);
+>>>>>>> lord/master
 
     @extend %right-col;
 
@@ -822,3 +892,13 @@ nav li > a:only-child:after {
   }
 }
 
+<<<<<<< HEAD
+=======
+.highlight .c, .highlight .cm, .highlight .c1, .highlight .cs {
+  color: #909090;
+}
+
+.highlight, .highlight .w {
+  background-color: $code-bg;
+}
+>>>>>>> lord/master
