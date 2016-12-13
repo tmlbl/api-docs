@@ -5,11 +5,18 @@ Vagrant.configure(2) do |config|
   config.vm.provision "bootstrap",
     type: "shell",
     inline: <<-SHELL
+<<<<<<< HEAD
       # Obtain Ruby repository from brightbox ( https://www.brightbox.com/blog/2016/01/06/ruby-2-3-ubuntu-packages/ )
       sudo apt-add-repository --yes ppa:brightbox/ruby-ng
       sudo apt-get update
       sudo apt-get install -yq ruby2.3 ruby2.3-dev build-essential git
       sudo gem install --no-ri --no-rdoc bundler
+=======
+      sudo apt-get update
+      sudo apt-get install -yq ruby2.0 ruby2.0-dev pkg-config build-essential nodejs git libxml2-dev libxslt-dev
+      sudo apt-get autoremove -yq
+      gem2.0 install --no-ri --no-rdoc bundler
+>>>>>>> lord/master
     SHELL
 
   # add the local user git config to the vm
@@ -22,10 +29,14 @@ Vagrant.configure(2) do |config|
       echo "=============================================="
       echo "Installing app dependencies"
       cd /vagrant
+<<<<<<< HEAD
       #mkdir ~/app
       #cp /vagrant/Gemfile ~/app/.
       #cp /vagrant/Gemfile.lock ~/app/.
       #cd ~/app
+=======
+      bundle config build.nokogiri --use-system-libraries
+>>>>>>> lord/master
       bundle install
     SHELL
 
@@ -38,6 +49,10 @@ Vagrant.configure(2) do |config|
       echo "Starting up middleman at http://localhost:4567"
       echo "If it does not come up, check the ~/middleman.log file for any error messages"
       cd /vagrant
+<<<<<<< HEAD
       bundle exec middleman server --force-polling -l 1 &> ~/middleman.log &
+=======
+      bundle exec middleman server --watcher-force-polling --watcher_latency=1 &> ~/middleman.log &
+>>>>>>> lord/master
     SHELL
 end
