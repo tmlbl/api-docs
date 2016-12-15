@@ -11,3 +11,4 @@ gem 'middleman-gh-pages', '~> 0.0.3'
 
 gem 'rake', '~> 10.4.2'
 gem 'therubyracer', '~> 0.12.1', platforms: :ruby
+gem 'compass', '~> 1.0.3'
