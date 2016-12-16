@@ -33,6 +33,13 @@ under the License.
     <% else %>
       <%= javascript_include_tag  "all_nosearch" %>
     <% end %>
+		   <% if language_tabs %>
+      <script>
+        $(function() {
+          setupLanguages(<%= language_tabs.map{ |lang| lang.is_a?(Hash) ? lang.keys.first : lang }.to_json %>);
+        });
+      </script>
+    <% end %>
   </head>
   <body class="<%= page_classes %>">
 	<div class="navbar-container">

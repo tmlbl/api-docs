@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var content, searchResults;
+  var content, darkBox, searchResults;
   var highlightOpts = { element: 'span', className: 'search-highlight' };
 
   var index = new lunr.Index();
@@ -31,6 +31,7 @@
 
   function bind() {
     content = $('.content');
+    darkBox = $('.dark-box');
     searchResults = $('.search-results');
 
     $('#input-search').on('keyup', search);
