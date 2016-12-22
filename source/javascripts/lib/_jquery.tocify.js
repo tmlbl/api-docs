@@ -1,4 +1,3 @@
-//= require ./jquery_ui
 /* jquery Tocify - v1.8.0 - 2013-09-16
 * http://www.gregfranko.com/jquery.tocify.js/
 * Copyright (c) 2013 Greg Franko; Licensed MIT
@@ -187,7 +186,7 @@
             self._setEventHandlers();
 
             // Binding to the Window load event to make sure the correct scrollTop is calculated
-            $(window).load(function() {
+            $(window).on('load', function() {
 
                 // Sets the active TOC item
                 self._setActiveElement(true);

@@ -1,7 +1,8 @@
-(function (global) {
+//= require ../lib/_lunr
+//= require ../lib/_jquery.highlight
+(function () {
   'use strict';
 
-  var $global = $(global);
   var content, darkBox, searchResults;
   var highlightOpts = { element: 'span', className: 'search-highlight' };
 
@@ -56,7 +57,7 @@
         highlight.call(this);
       } else {
         searchResults.html('<li></li>');
-	$('.search-results li').text('No Results Found for "' + this.value + '"');
+        $('.search-results li').text('No Results Found for "' + this.value + '"');
       }
     } else {
       unhighlight();
@@ -71,5 +72,4 @@
   function unhighlight() {
     content.unhighlight(highlightOpts);
   }
-
-})(window);
+})();
