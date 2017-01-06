@@ -4,17 +4,17 @@ set -x
 
 BUILD_DIR="build"
 SAVE_DIR="save"
-OUTPUT_DIR="static"
+STATIC_DIR="static"
 SAVE_FILENAME="SmartsheetAPI"
 FILES_NAME="${SAVE_FILENAME}_Files"
-FILES_DIR="$OUTPUT_DIR/$FILES_NAME"
+FILES_DIR="$STATIC_DIR/$FILES_NAME"
 
 echo Build in $BUILD_DIR
-echo "Expects middleman build output in '"$BUILD_DIR"', save as HTML from FireFox in '"$SAVE_DIR"' with filename '"$SAVE_FILENAME"', and will create (overwrite) '"$OUTPUT_DIR"'"
+echo "Expects middleman build output in '"$BUILD_DIR"', save as Web Page, Complete from FireFox in '"$SAVE_DIR"' with filename '"$SAVE_FILENAME"', and will create (overwrite) '"$STATIC_DIR"'"
 read -p "press enter to continue"
-if [ -d "$OUTPUT_DIR" ]; then rm -Rf "$OUTPUT_DIR"; fi
+if [ -d "$STATIC_DIR" ]; then rm -Rf "$STATIC_DIR"; fi
 
-cp -R "$SAVE_DIR" "$OUTPUT_DIR"
+cp -R "$SAVE_DIR" "$STATIC_DIR"
 
 cp "$BUILD_DIR/fonts/"* "$FILES_DIR"
 cp "$BUILD_DIR/images/logo"*".png" "$FILES_DIR"
@@ -28,4 +28,7 @@ do
     sed -e "$IMAGES_PATTERN" $f > $f.tmp && mv $f.tmp $f
 done
 
-sed -e "s-_generateTOC();--" "$OUTPUT_DIR/${SAVE_FILENAME}.html" > "$OUTPUT_DIR/index.html" && rm "$OUTPUT_DIR/${SAVE_FILENAME}.html" 
+JS_FILE="$FILES_DIR/all_nosearch.js"
+sed -e "s-n._generateToc(),--" "$JS_FILE" > "$JS_FILE.tmp" && mv "$JS_FILE.tmp" "$JS_FILE" 
+
+mv "$STATIC_DIR/${SAVE_FILENAME}.html" "$STATIC_DIR/index.html"
