@@ -38,9 +38,13 @@ search: false
 <% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <% LIST_SHARES_RESPONSE_DESC = "By default, this operation returns only <i>item-level</i> shares (<b><a href='#share-object'>scope</b></a>='ITEM'). Use the <b>include</b> parameter to request that <i>workspace-level</i> shares (<b><a href='#share-object'>scope</b></a>=='WORKSPACE') also be returned." %>
 <% WEBHOOKS_INTRO = "Webhooks provide a way for Smartsheet to automatically notify your external application or service when certain events occur in Smartsheet. Webhooks offer a more efficient alternative to using the API to periodically <i>poll</i> for changes." %>
-
+<% CUSTOM_WELCOME_SCREEN_URL = "https://help.smartsheet.com/articles/1392225-customizing-a-welcome-message-upgrade-screen-enterprise-only-#welcomescreen" %>
+<% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
+<% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-
+Updated 2016-01-03
+# Overview
+## Introduction
 > Sample Code (more information [here](#sdks-and-sample-code))
 
 ```shell
@@ -64,31 +68,12 @@ search: false
 https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
 
-<aside class="notice">
-	<b>Smartsheet API 1.1 Deprecation</b><br/><br/>
-	<p>
-		Version 1.1 of the Smartsheet API has been officially deprecated as of July 11, 2015 (coinciding with the release of Smartsheet API 2.0). 
-		Any new development from that date forward should use Smartsheet API 2.0.
-	</p>
-	<p>
-		Smartsheet API 1.1 will continue to be supported until <b>July 31, 2016</b>, at which time it will be permanently disabled. 
-		Documentation for API 1.1 can be found <a href="http://smartsheet-platform.github.io/api-docs-v1" target="_blank">here</a>.
-		For information about migrating from version 1.1 to version 2.0 of the Smartsheet API, see the <a href="https://www.smartsheet.com/blog/july-2015-api-v2-launch" target="_blank">Smartsheet API 2.0 Release Notes</a>.
-	</p>
-</aside>
-
-# Overview
-
-## Introduction
-
-> **Base URL**:  https://api.smartsheet.com/2.0
-
 The Smartsheet API provides programmatic access to Smartsheet features and data. 
 In designing the API, our goal was to make it simple, intuitive, and predictable. 
 We do our best to adhere to common open and widely accepted standards, including REST for access, JSON format for the data, and OAuth for Authentication and Authorization. 
 This API assumes a good working knowledge of the Smartsheet application UI, concepts and terminology.
-
 ## RESTful Architecture
+> **Base URL**:  https://api.smartsheet.com/2.0
 
 ```apires
 Resources:
@@ -498,6 +483,17 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1177 | Arrays may not contain null elements. | Do not retry without fixing the problem.
 400 | 1178 | The following combination of attributes is not allowed for this operation: {0}. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the detail attribute(s) within the error response for detail about the issue(s).
 400 | 1179 | The schedule specified is invalid because endAt is earlier than the next send date. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that startAt, endAt, repeatEvery and other attributes will result in one or more future delivery.
+403 | 1180 | We are unable to process this request because the email has been associated with a different Smartsheet account. | Do not retry without fixing the problem.
+403 | 1181 | Only admins can edit shared filters. | Do not retry without fixing the problem.
+400 | 1182 | The specified sheet filter {0} does not exist for sheet {1}. | Do not retry without fixing the problem.
+400 | 1183 | Sheet filters must define at least one detail entry. | Do not retry without fixing the problem.
+400 | 1184 | Sheet {0} already has a filter named '{1}' of type {2}. | Do not retry without fixing the problem.
+400 | 1185 | Cannot create a child of a parent row that has no data in it. | Do not retry without fixing the problem.
+403 | 1186 | User's primary email address must be a validated domain. | To validate the domain, more information can be found [here](<%= USER_AUTO_PROVISIONING_URL %>). Otherwise, do not retry.
+403 | 1187 | User's alternate address selected to be made primary must be a validated domain. | To validate the domain, more information can be found [here](<%= USER_AUTO_PROVISIONING_URL %>). Otherwise, do not retry.
+403 | 1188 | The account status of the user specified is not active. | Do not retry without fixing the problem.
+400 | 1189 | Only Enterprise or Team accounts with security controls are able to change primary emails. | To validate the domain, more information can be found [here](<%= USER_AUTO_PROVISIONING_URL %>). Otherwise, do not retry.
+400 | 1190 | Only Enterprise or Team accounts with special permission granted are able to change primary emails. | Contact Smartsheet (<a href="mailto:api@smartsheet.com">api@smartsheet.com</a>) for assistance to enable this feature.
 500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance. | <span class="doNotRetry">Do not retry.</span>
 503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.<br/><br/>Hint: Wait time between retries should measure in minutes (not seconds).</span>
 500 | 4002 | Server timeout exceeded. Request has failed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
@@ -1650,79 +1646,6 @@ for org_sheet in sheets:
     smartsheet.Sheets.get_sheet_as_csv(org_sheet.id, dl_path)
 
 ```
-
-# API Change Log
-
-This section documents the evolution of Smartsheet API 2.0 over time. 
-To stay informed about changes to the API, we recommend that you periodically review this list for new information, subscribe to our Developer Newsletter (using the *Get Developer Updates* form on the [Smartsheet Developer Portal](http://www.smartsheet.com/developers)) or follow us via [Twitter](https://twitter.com/smartsheetapi).
-
-## March 11, 2016
-
-Backward-compatible updates to Smartsheet API 2.0. 
-
-* API enhancements that enable you to attach a link to a file in OneDrive.
-
-* API enhancements that enable you to differentially share individual items within a workspace and to identify the scope of each [Share](#share-object) for any shared item.
-
-* API enhancements that provide additional information about published sheets and reports and allow you to more tightly control who can access a published sheet or report.
-
-* API support for [Sights](#sights).
-
-* Added createdAt and modifiedAt to the [Share object](#share-object).
-
-For more detailed information about this release, see the [release notes](https://www.smartsheet.com/developers/blog).
-
-## January 15, 2016
-
-Backward-compatible updates to Smartsheet API 2.0. 
-
-* New endpoints for [adding an image to a cell](#add-image-to-cell) within a sheet and [getting URLs](#get-image-urls) for images that are stored in sheet cells.
-
-* API enhancements that add support for enabling [partial success](#partial-success) of a (bulk) [Add Row(s)](#add-row(s)) or [Update Row(s)](#update-row(s)) operation, provide additional information for each object in [List Public Templates](#list-public-templates) response, and return a new [user setting](#sheetusersettings-object) for sheets where Calendar View has been configured.
-
-* Errors: Several new [error codes](#error-handling) and a new (alternate) message for error code 4004.
-
-* Bug fix: Operations that contain [Column](#column-object) objects in the response will now include **tags** CALENDAR_START_DATE and CALENDAR_END_DATE if the Sheet's Calendar View has been configured, even if Gantt is disabled for the sheet.
-
-For more detailed information about this release, see the [release notes](https://www.smartsheet.com/blog/january-2016-api-update).
-
-## December 11, 2015
-
-Backward-compatible updates to Smartsheet API 2.0. 
-
-* New endpoints for [Report publishing](#publish-report) and for managing a User's [alternate email address(es)](#alternate-email-address(es)).
-
-* API enhancements that enable you to skip remapping of Sheet hyperlinks when copying a [Folder](#copy-folder) or a [Workspace](#copy-workspace), include **Row.createdBy** and **Row.modifiedBy** in the [Get Sheet](#get-sheet) or [Get Row](#get-row) API response, and get more detailed error information when either [Add Row(s)](#add-row(s)) or [Update Row(s)](#update-row(s)) fails.
-
-For more detailed information about this release, see the [release notes](https://www.smartsheet.com/blog/december-2015-api-update).
-
-## September 18, 2015
-
-Backward-compatible updates to Smartsheet API 2.0.
-
- * New [error code](#errors) to indicate that the request should be retried: Smartsheet error code 4004 (HTTP Response code 500).
-
-## August 14, 2015
-
-Backward-compatible updates to Smartsheet API 2.0. 
-
-* New endpoints for accessing Contacts, copy/move Folder/Sheet, copy Workspace, bulk Row delete, bulk Send Rows, Send Update Request.
-
-* API enhancements that enable you to attach a link to a file in Egnyte, lock and unlock Rows/Columns, get more information about Sheets/Reports/Users, choose Columns to include when sending Rows via email, send a Gantt view of a Sheet via email (in PDF format), create Discussion on Row using a multipart upload, include everything when copying a Row from one sheet to another, and retrieve a permalink for a Row.
-
-* New access scope for retrieving Contacts.
-
-* Deprecations: **Delete (single) Row** endpoint, **Send (single) Row** endpoint, **fromId** attribute and **include** parameter on the **Create Sheet/Folder/Workspace** endpoints. 
-
-* Bug fixes: **Add Column(s)** operation now returns correct Ids for new columns; **Revoke Token** operation no longer returns error code 1004 "not authorized".
-
-For more detailed information about this release, see the [release notes](https://www.smartsheet.com/blog/august-2015-api-update).
-
-## July 11, 2015
-
-Initial release of Smartsheet API 2.0. 
-For detailed information about API 2.0 features and guidance for migrating from API 1.1 to API 2.0, see the [release notes](https://www.smartsheet.com/blog/july-2015-api-v2-launch).
-
 # <span class="customTOCSectionHeading">API Reference</span>
 
 # Attachments
@@ -3523,7 +3446,7 @@ Uploads an image to the specified Cell within a Sheet.
 ```shell
 curl https://api.smartsheet.com/2.0/imageurls \
 -H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application\json" \
+-H "Content-Type: application/json" \
 -X POST \
 -d '[{"imageId": "e1znCxhuZo_soEJtUmmX_A","height":40,"width": 20},{"imageId": "g2jdKdfhQa_abKJmPnhC_B","height":100,"width": 50}]'
 ```
@@ -4604,6 +4527,7 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 **id** | number | Discussion ID
 **title** | string | Discussion title
 **comments** | [Comment](#comment-object)[] | Array of Comment objects
+**commentCount** | number | The number of comments in the discussion
 **commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment objects
 **parentId** | number | ID of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **parentType** | string | "SHEET" or "ROW": present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
@@ -5105,7 +5029,8 @@ discussion = smartsheet.Discussions.get_discussion(sheetId, discussionId)
             },
             "modifiedAt": "2012-07-25T00:02:42-07:00"
         }
-    ]
+    ],
+    "commentCount" : 1
 }
 ```
 
@@ -7739,9 +7664,10 @@ Gets the Report, including one page of Rows, and optionally populated with Discu
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>discussions</li><li>attachments</li><li>[format](#formatting)</li><li>sourceSheets</li></ul> 
+  | **exclude** (optional) --  a comma-separated list of optional elements to <i>not include</i> in the response.<br/><ul><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
   | **pageSize** (optional): Number of rows per page.  If not specified, the default value is 100.  This operation can return a maximum of 500 rows per page.
   | **page** (optional): Which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
-<%= RETURNS %> | [Report object](#report-object), populated according to the **include** parameter
+<%= RETURNS %> | [Report object](#report-object), populated according to the specified parameters
 
 ## Get Report as Excel / CSV
 
@@ -8639,9 +8565,9 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which will add a columns array that specifies all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column [filters](#filter-object) with the columns.
-  | **exclude** (optional): when specified with a value of "nonexistentCells", response will <i>not include</i> cells that have never contained any data
-<%= RETURNS %> | [Row object](#row-object)
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which will add a columns array that specifies all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column [filters](#filter-object) with the columns.
+  | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
+<%= RETURNS %> | [Row object](#row-object), populated according to the specified parameters
 
 ## List Rows
 
@@ -10527,6 +10453,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
 **accessLevel** | string | User's permissions on the Sheet
+**projectSettings** | [ProjectSettings](#projectsettings-object) | Sheet's project settings containing the working days, non-working days, and length of day for a project sheet
 **effectiveAttachmentOptions** | array | Array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
 **readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
 **ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
@@ -10570,6 +10497,16 @@ Represents individual user settings for a specific sheet.  User settings may be 
 -----|-----|-----|
 **criticalPathEnabled** | boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
 **displaySummaryTasks** | boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
+
+### ProjectSettings Object
+
+Represents the project settings dependencies for a specific sheet.  Project settings may be updated on sheets that the user has editor access.
+
+     |     |     |
+-----|-----|-----|
+**workingDays** | String[] | Working days of a week for a project sheet. Valid values must be an array of strings of days of the week: <ul><li>MONDAY</li><li>TUESDAY</li><li>WEDNESDAY</li><li>THURSDAY</li><li>FRIDAY</li><li>SATURDAY</li><li>SUNDAY</li></ul>
+**nonWorkingDays** | timestamp[] | Non-working days for a project sheet. The format for the timestamp array must be an array of strings that are valid [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601) dates ('YYYY-MM-DD').
+**lengthOfDay** | number | Length of a workday for a project sheet. Valid value must be above or equal to 1 hour, and less than or equal to 24 hours.
 
 ### Source Object
 
@@ -11455,6 +11392,17 @@ sheet = smartsheet.Sheets.get_sheet(sheetId)
 ```json
 {
     "accessLevel": "OWNER",
+    "projectSettings": {
+        "workingDays": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY"
+        ],
+        "nonWorkingDays": [
+            "2018-01-01"
+        ],
+        "lengthOfDay": 6
+    },
     "columns": [
         {
             "id": 4583173393803140,
@@ -11492,14 +11440,14 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**ownerInfo**: includes owner's email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
-  | **exclude** (optional): when specified with a value of "nonexistentCells", response will <i>not include</i> cells that have never contained any data
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**ownerInfo**: includes owner's email address and user ID</li></ul>Also supports the **source** include flag, which adds the [source object](#source-object) indicating which sheet or template the sheet was created from, if any.
+  | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
   | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
   | **columnIds** (optional): a comma-separated list of Column IDs. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
   | **pageSize** (optional): number of rows per page to include with the sheet.  If neither **pageSize** or **page** are specified, returns all rows in the sheet.  If only page is specified, defaults to a page size of 100.
   | **page** (optional): which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
-<%= RETURNS %> | [Sheet object](#sheet-object), populated according to the **include** parameter
+<%= RETURNS %> | [Sheet object](#sheet-object), populated according to the specified parameters
 
 ## Get Sheet as Excel / PDF / CSV
 
@@ -12064,7 +12012,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"name":"New Sheet Name", "userSettings": {"criticalPathEnabled": true}}'
+-d '{"name":"New Sheet Name", \
+     "userSettings": {"criticalPathEnabled": true}, \
+     "projectSettings":{ \
+        "workingDays": ["MONDAY", "TUESDAY", "WEDNESDAY"], \
+        "nonWorkingDays": ["2018-01-01"], \
+        "lengthOfDay": 6 \
+    }'
 ```
 
 ```javascript
@@ -12130,9 +12084,14 @@ smartsheet.Sheets.update_sheet(
         "id": 7960873114331012,
         "name": "New Sheet Name",
         "accessLevel": "OWNER",
-		"userSettings": {
-			"criticalPathEnabled": true
-		},
+		    "userSettings": {
+			     "criticalPathEnabled": true
+		    },
+        "projectSettings": {
+            "workingDays": ["MONDAY", "TUESDAY", "WEDNESDAY"]
+            "nonWorkingDays": ["2018-01-01"]
+            "lengthOfDay": 6
+        },
         "permalink": "https://app.smartsheet.com/b/home?lx=RE8LkzA48kPRWTzcgEYOga"
     },
     "resultCode": 0
@@ -12152,7 +12111,7 @@ only has read-only access to the sheet (i.e. the user has viewer permissions, or
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating this user's settings for the sheet</li></ul>
+<%= REQUEST %> | [Sheet object](#sheet-object) limited to the following attributes:<ul><li>name (optional)</li><li>userSettings (optional): [SheetUserSettings object](#sheetusersettings-object) for updating these user's settings for the sheet</li><li>projectSettings (optional): [ProjectSettings object](#projectsettings-object), containing at least one of the projectSettings attributes, for updating this sheet's project settings and dependencies.</li></ul>Please note the following:<ul><li>Attributes not specified in projectSettings will not be updated.</li><li>If projectSettings.nonWorkingDays is specified as an empty array, all non-working days will be removed from the project sheet.</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Sheet object](#sheet-object) for the updated Sheet
 
 ## <%= RELATED %>
@@ -13016,9 +12975,9 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
-**sheetCount** | number | Count of user's owned sheets within an organization
-**lastLogin** | timestamp | User's timestamp of last login
-**customWelcomeScreenViewed** | timestamp | User's timestamp of viewing an Enterprise Custom Welcome Screen
+**sheetCount** | number | The number of sheets owned by the current user within the organization
+**lastLogin** | timestamp | Last login time of the current user
+**customWelcomeScreenViewed** | timestamp | Timestamp of viewing an Enterprise [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) by the current user
 
 ### UserProfile Object
 
@@ -13037,6 +12996,9 @@ Revokes the access token used to make this request.  The access token will no lo
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string | User status, set to one of the following values: <ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
+**sheetCount** | number | The number of sheets owned by the current user within the organization
+**lastLogin** | timestamp | Last login time of the current user
+**customWelcomeScreenViewed** | timestamp | Timestamp of viewing an Enterprise [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) by the current user
 
 ### Account Object
 
@@ -13222,6 +13184,10 @@ smartsheet.Users.add_alternate_email(
 
 Adds one or more alternate email addresses for the specified User.
 
+<aside class="notice">This operation is only available to system administrators.</aside>
+
+<aside class="notice">If the API request is submitted by a system administrator of an Enterprise account and the alternate email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a>, the added email address will be automatically confirmed.</aside>
+
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
@@ -13229,6 +13195,63 @@ Adds one or more alternate email addresses for the specified User.
 <%= REQUEST %> | Array of [AlternateEmail objects](#alternateemail-object), each limited to only the **email** attribute
 <%= RETURNS %> | [Result object](#result-object) containing an array of the newly created [AlternateEmail objects](#alternateemail-object).
 <%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response will contain the typical [Error object](#errors).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#error-handling)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+
+### Make Alternate Email Primary
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmailId}/makeprimary \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "resultCode": 0,
+    "result":
+    {
+        "id": 12345,
+        "email": "altEmail1@smartsheet.com",
+        "confirmed": false
+    }
+}
+```
+
+`POST /users/{userId}/alternateemails/{alternateEmailId}/makeprimary`
+
+Makes the specified alternate email address to become the primary email address for the specified user.
+
+<aside class="notice">This operation is only available to system administrators of an Enterprise account. <a href="http://www.smartsheet.com/enterprise/">Learn more</a> about the Enterprise platform.</aside>
+
+<aside class="notice">The alternate email address can only be made primary if both conditions are met:<ul><li>The primary email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a></li><li>The alternate email address is confirmed <b>OR</b> the alternate email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a></li></ul></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= RETURNS %> | [Result object](#result-object) containing the [AlternateEmail object](#alternateemail-object) that is now the primary email address
+<%= ERRORS %> | If an error occurs because the special permission is not granted to change primary email address, contact Smartsheet (<a href="mailto:api@smartsheet.com">api@smartsheet.com</a>) for assistance to enable this feature.<br/><br/>If an error occurs because the specified user has a personal email address as the primary email address (i.e. the email address domain cannot be [validated](<%= USER_AUTO_PROVISIONING_URL %>), the specified user needs to manually change the primary email address in the [Personal Settings](<%= PERSONAL_SETTINGS_MANAGE_EMAIL_URL %>).
 
 ### Delete Alternate Email
 
@@ -13502,13 +13525,16 @@ user = smartsheet.Users.get_user(userId)
     "licensedSheetCreator": true,
     "groupAdmin": true,
     "resourceViewer": true,	
-	"alternateEmails": [
-		{
-			"id": 12345,
-			"email": "altEmail1@smartsheet.com",
-			"confirmed": true                
-		}
-	]
+    "alternateEmails": [
+        {
+            "id": 12345,
+            "email": "altEmail1@smartsheet.com",
+            "confirmed": true                
+        }
+    ],
+    "sheetCount": 3,
+    "lastLogin": "2016-08-15T18:32:47Z",
+    "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
 }
 ```
 
@@ -13520,7 +13546,7 @@ Gets the User specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [UserProfile object](#userprofile-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following UserProfile attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li></ul>
+<%= RETURNS %> | [UserProfile object](#userprofile-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following UserProfile attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (omitted if the user has never logged in before)</li><li>sheetCount (omitted if the status attribute is not ACTIVE)</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, and [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) is enabled, the following UserProfile attributes will be included in the response (else, they will be omitted from the response):<ul><li>customWelcomeScreenViewed (omitted if the user has never viewed the Custom Welcome Screen)</li></ul>
 
 ## List All Org Sheets
 
@@ -13616,7 +13642,8 @@ Gets the list of Users in the organization. To filter by email, use the optional
 <%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results.
  | **include** (optional): When specified with a value of "lastLogin", response will include the **lastLogin** attribute for each [user](#user-object) if:<br/><ul><li>the request is submitted by a system administrator, and</li><li>the returned [IndexResult object](#indexresult-object) that contains a maximum of 100 [User objects](#user-object).</li></ul>
  | <%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin</li><li>sheetCount</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, the following User attributes will be included in the response (else, they will be omitted from the response): <br/><ul><li>customWelcomeScreenViewed</li></ul>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [User objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (omitted if the user has never logged in before)</li><li>sheetCount (omitted if the status attribute is not ACTIVE)</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, and [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) is enabled, the following User attributes will be included in the response (else, they will be omitted from the response):<ul><li>customWelcomeScreenViewed (omitted if the user has never viewed the Custom Welcome Screen)</li></ul>
+
 
 ## Remove User
 
@@ -14590,7 +14617,7 @@ When a webhook is initially [created through the API](#create-webhook), the resp
 you can check the verification request's `webhookId` attribute against your list of created webhook IDs.  If the ID is not in the list, return a response with a non-200 status code (for example, 403 Forbidden),
 and the webhook that initiated the verification request will be disabled as described above.
 
-<aside class="notice"><b>IMPORTANT</b>: ONGOING VERIFICATION. Once a webhook has been enabled, Smartsheet will send Smartsheet will send a verification request to the webhook's <b>callbackUrl</b> once every 100 callbacks. The Subscriber should respond to the verification request as described above -- failure to do so will result in the webhook being disabled (<code>enabled: false</code> and <code>status: "DISABLED_VERIFICATION_FAILED"</code>).</aside>
+<aside class="notice"><b>IMPORTANT</b>: ONGOING VERIFICATION. Once a webhook has been enabled, Smartsheet will send a verification request to the webhook's <b>callbackUrl</b> once every 100 callbacks. The Subscriber should respond to the verification request as described above -- failure to do so will result in the webhook being disabled (<code>enabled: false</code> and <code>status: "DISABLED_VERIFICATION_FAILED"</code>).</aside>
 
 # Webhook Status
 
