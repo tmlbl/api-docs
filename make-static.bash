@@ -4,7 +4,7 @@ set -x
 
 BUILD_DIR="build"
 SAVE_DIR="save"
-STATIC_DIR="static"
+STATIC_DIR="docs"
 SAVE_FILENAME="SmartsheetAPI"
 FILES_NAME="${SAVE_FILENAME}_Files"
 FILES_DIR="$STATIC_DIR/$FILES_NAME"
