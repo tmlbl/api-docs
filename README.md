@@ -37,38 +37,4 @@ This API documentation is based upon [Slate](https://github.com/tripit/slate/) a
 
 ## Release Notes
 
-**1.5.0 (Mar 28, 2016)**
-* Updated documentation for Smartsheet API 2.0 ([more info](https://www.smartsheet.com/blog/march-2016-smartsheet-api-20-update))
-* Added "Sights" section.
-* Merged Webhook Documentation with API Documentation.
-
-**1.4.0 (Jan 15, 2016)**
-* Updated documentation for Smartsheet API 2.0 ([more info](https://www.smartsheet.com/blog/january-2016-api-update))
-
-**1.3.1 (Jan 11, 2016)**
-* Added sample code in Python.
-
-**1.3.0 (Dec 11, 2015)**
-* Updated documentation for Smartsheet API 2.0 ([more info](https://www.smartsheet.com/blog/december-2015-api-update))
-* Added "API Troubleshooting" section.
-
-**1.2.4 (Oct 7, 2015)**
-* Add "API Best Practices" section.
-
-**1.2.3 (Oct 2, 2015)**
-* Added additional info about Rate Limiting and Errors / Error Handling.
-
-**1.2.2 (Sept 21, 2015)**
-* Add new error code (4004); miscellaneous minor doc updates (for clarity).
-
-**1.2.1 (Aug 25, 2015)**
-* Added sample code (C# and Java) for [new endpoints](https://www.smartsheet.com/blog/august-2015-api-update).
-
-**1.2.0 (Aug 14, 2015)**
-* Updated documentation for Smartsheet API 2.0 ([more info](https://www.smartsheet.com/blog/august-2015-api-update))
-
-**1.1.0 (Aug 13, 2015)**
-* Added sample code in C#, Java, and Node.js.
-
-**1.0.0 (July 11, 2015)**
-* Initial Release of the Smartsheet API 2.0 Documentation ([more info](https://www.smartsheet.com/blog/july-2015-api-v2-launch))
+See https://github.com/smartsheet-platform/api-docs/releases
