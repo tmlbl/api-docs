@@ -42,7 +42,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2016-01-03
+Updated 2016-01-12
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sdks-and-sample-code))
@@ -395,7 +395,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1078 | System column type {0} not supported for {1} {2}. | Do not retry without fixing the problem.
 400 | 1079 | Column type {0} is not supported for system column type {1} | Do not retry without fixing the problem.
 400 | 1080 | End Dates on dependency-enabled sheets cannot be created/updated. Please update either the Duration or Start Date column. | <span class="doNotRetry">Do not retry.</span>
-403 | 1081 | You cannot delete another user's discussions, comments, or comment attachments. | <span class="doNotRetry">Do not retry.</span>
+403 | 1081 | You cannot delete or update another user's discussions, comments, or comment attachments. | <span class="doNotRetry">Do not retry.</span>
 400 | 1082 | You cannot add options to the given column {0} because it is not a PICKLIST. | Do not retry without fixing the problem.
 400 | 1083 | Auto number formatting cannot be added to a column {0} | Do not retry without fixing the problem.
 400 | 1084 | The auto number format is invalid. | Do not retry without fixing the problem.
@@ -4077,7 +4077,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 
 A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
 
-<aside class="notice">The operations in this section describe how to add, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row, use one of the following operations:<ul><li><a href="#get-all-discussions">Get All Discussions</a></li><li><a href="#get-row-discussions">Get Row Discussions</a></li></ul></aside>
+<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row, use one of the following operations:<ul><li><a href="#get-all-discussions">Get All Discussions</a></li><li><a href="#get-row-discussions">Get Row Discussions</a></li></ul></aside>
 
 ## <%= OBJECTS %>
 
@@ -4246,6 +4246,52 @@ Adds a Comment to a Discussion.
 **Creating a Comment with an Attachment:**
 
 <%= partial "snippets/createCommentMultipart_table.md.erb" %>
+
+## Edit Comment
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X PUT \
+-d '{"text":"This is the updated comment text."}'
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "id": 4503677744506756,
+        "discussionId": 4503677744506756,
+        "text": "This is the updated comment text.",
+        "createdBy": {
+            "name": "John Doe",
+            "email": "john.doe@smartsheet.com"
+        },
+      "createdAt": "2013-01-10T13:43:26Z",
+      "modifiedAt": "2013-01-12T19:00:26Z"
+    },
+    "version": 18,
+    "resultCode": 0
+}
+```
+
+`PUT /sheets/{sheetId}/comments/{commentId}`
+
+Updates the text of a Comment. Note that only the user that created the comment is permitted to update it.
+
+**Updating a Comment:**
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Comment object](#comment-object) with the following attribute:<ul><li>text</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing [Comment object](#comment-object) that was updated
+
 
 ## Delete Comment
 
