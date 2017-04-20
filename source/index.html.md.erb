@@ -12215,6 +12215,14 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 **modifiedAt** | timestamp | Time of last modification
 **workspace** | [Workspace](#workspace-object) | A Workspace object, limited to only 2 attributes: <ul><li>id</li> <li>name</li></ul> _Note: this attribute is only present if the Sight resides within a Workspace._
 
+### SightPublish Object
+
+     |     |     |
+-----|-----|-----|
+**readOnlyFullEnabled** | boolean | If `true`, a rich version of the Sights is published with the ability to use shortcuts and widget interactions.
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published Sights.<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published Sights:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the Sights owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+
 ### Widget Object
 
      |     |     |
@@ -12671,7 +12679,107 @@ Updates (renames) the specified Sight.
 <%= REQUEST %> | [Sight object](#sight-object) limited to the following attribute:<ul><li>name (string)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the updated [Sight object](#sight-object)
 
+## Get Sight Publish Status
 
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
+-H "Authorization: Bearer ACCESS_TOKEN"
+-X GET
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+	"readOnlyFullEnabled": true,
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065",
+	"readOnlyFullAccessibleBy": "ALL"
+}
+```
+
+`GET /sights/{sightId}/publish`
+
+Gets the Sights 'Publish' settings.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [SightPublish object](#sightpublish-object)
+
+## Set Sight Publish Status
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
+-H "Authorization: Bearer ACCESS_TOKEN"
+-H "Content-Type: application/json"
+-d '{ \
+    "readOnlyFullEnabled": true, \
+    "readOnlyFullAccessibleBy": "ALL" \
+}' \
+-X PUT
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+    "message": "SUCCESS",
+    "result": {
+        "readOnlyFullEnabled": true,
+        "readOnlyFullAccessibleBy": "ORG",
+        "readOnlyFullUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d"
+    },
+    "resultCode": 0
+}
+
+```
+
+`PUT /sights/{sightId}/publish`
+
+Publishes or unpublishes a Sight. To publish the Sight, set **readOnlyFullEnabled** to true. To unpublish the Sight, set **setReadOnlyFullEnabled** to false.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object) containing a [SightPublish object](#sightpublish-object)
 
 # Templates
 
