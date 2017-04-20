@@ -12686,7 +12686,6 @@ Updates (renames) the specified Sight.
 ```shell
 curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN"
--X GET
 ```
 
 ```javascript
@@ -12733,11 +12732,11 @@ Gets the Sights 'Publish' settings.
 curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 -H "Authorization: Bearer ACCESS_TOKEN"
 -H "Content-Type: application/json"
+-X PUT
 -d '{ \
     "readOnlyFullEnabled": true, \
     "readOnlyFullAccessibleBy": "ALL" \
 }' \
--X PUT
 ```
 
 ```javascript
@@ -12773,12 +12772,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 
 `PUT /sights/{sightId}/publish`
 
-Publishes or unpublishes a Sight. To publish the Sight, set **readOnlyFullEnabled** to true. To unpublish the Sight, set **setReadOnlyFullEnabled** to false.
+Publishes or unpublishes a Sight.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [SightPublish object](#sightpublish-object) limited to the following attributes:<ul><li>**readOnlyFullEnabled** (required)</li><li>**readOnlyFullAccessibleBy** (optional) - set to either "ALL" or "ORG", when **readOnlyFullEnabled**=true.</li></ul>To publish the Sight, set **readOnlyFullEnabled** to `true`. To unpublish the Sight, set **readOnlyFullEnabled** to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [SightPublish object](#sightpublish-object)
 
 # Templates
