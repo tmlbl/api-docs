@@ -132,7 +132,7 @@ You'll see the examples displayed in the dark blue panel next to each operation.
 To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
 For more information about using the sample code in this API documentation, see [SDKs and Sample Code](#sdks-and-sample-code). 
 
-As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm). 
+As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en). 
 
 ## Versioning and Changes
 
@@ -168,7 +168,7 @@ We strongly recommend that you design your integration with the following guidel
 
 For maximum efficiency, we recommend that you use bulk-enabled API operations whenever possible. 
 A bulk-enabled API operation allows you to add, update, or delete multiple items using a single API request. 
-For example, if you need to update 10 rows within a sheet, do so using a single [Update Row(s)](#update-row(s)) request, rather than executing 10 separate requests - one for each row.
+For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
 
 Bulk-enabled operations improve efficiency by:
 
@@ -196,7 +196,7 @@ Having access to the raw requests and responses (including detailed error codes 
 
 The following examples show the type of information that your application should log for API requests and responses.
 
-**Request:  verb, URI, header(s), request body**
+**Request:  verb, URI, headers, request body**
 
 `POST https://api.smartsheet.com/2.0/sheets/4098273196697476/columns`<br/> 
 `Authorization: Bearer MY_TOKEN`<br/>
@@ -346,7 +346,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1029 | The parameter in the URI does not match the object in the request body. | Do not retry without fixing the problem.
 401 | 1030 | You are unable to assume the user specified. | <span class="doNotRetry">Do not retry.</span>
 400 | 1031 | The value {0} was not valid for the attribute {1}. | Do not retry without fixing the problem.
-400 | 1032 | The attribute(s) {0} are not allowed for this operation. | Do not retry without fixing the problem.
+400 | 1032 | The attributes {0} are not allowed for this operation. | Do not retry without fixing the problem.
 404 | 1033 | The template was not found. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that the Template ID specified is correct.
 400 | 1034 | Invalid Row ID. | Do not retry without fixing the problem.
 400 | 1035 | Attachments and discussions cannot be POSTed with a row. | Do not retry without fixing the problem.
@@ -448,7 +448,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1133 | Column titles are not unique among input columns. | Do not retry without fixing the problem.
 400 | 1134 | Duplicate system column type among input columns. | Do not retry without fixing the problem.
 400 | 1135 | Input column index {0} is different from the first input column index {1}. | Do not retry without fixing the problem.
-400 | 1136 | Cannot copy or move row(s) within the same sheet. | <span class="doNotRetry">Do not retry.</span>
+400 | 1136 | Cannot copy or move rows within the same sheet. | <span class="doNotRetry">Do not retry.</span>
 400 | 1137 | Input collection contains multiple instances of the same element. | Do not retry without fixing the problem.
 403 | 1138 | The user is not eligible for a trial organization. | <span class="doNotRetry">Do not retry.</span>
 403 | 1139 | The user is an admin in another organization. Add 'allowInviteAccountAdmin=true' to the query string to invite their entire organization. | Do not retry without fixing the problem.
@@ -466,7 +466,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 400 | 1157 | This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account. | <span class="doNotRetry">Do not retry.</span>
 400 | 1158 | This address has not been confirmed yet, so it can't be set as the primary email address. | Do not retry without fixing the problem.
 400 | 1159 | The specified email address ({0}) is an alternate email address for a user with a primary email address of {1}. | Do not retry without fixing the problem.
-400 | 1160 | Invalid bulk request. See detail for more information. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the **detail** attribute within the error response for details about the issue(s).
+400 | 1160 | Invalid bulk request. See detail for more information. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the **detail** attribute within the error response for details about the issue.
 400 | 1161 | Cannot set altText for a cell that does not contain an image: row {0}, column {1}. | <span class="doNotRetry">Do not retry.</span>
 400 | 1163 | If cell.image is non-null then value, objectValue, hyperlink, and linkInFromCell must all be null. | Do not retry without fixing the problem.
 400 | 1164 | Cannot add image to cell because this feature has been disabled by the org administrator. | <span class="doNotRetry">Do not retry.</span>
@@ -479,9 +479,9 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 403 | 1173 | You must be in a Team/Enterprise account to specify a {0} value of '{1}'. | <span class="doNotRetry">Do not retry.</span>
 403 | 1174 | The value for {0} is invalid because this publish option is configured to be restricted to users in this account. | <span class="doNotRetry">Do not retry.</span>
 403 | 1175 | One or more publish options which you attempted to enable are disabled for this account. | <span class="doNotRetry">Do not retry.</span>
-400 | 1176 | Array attribute(s) may not contain null elements: {0}. | Do not retry without fixing the problem.
+400 | 1176 | Array attributes may not contain null elements: {0}. | Do not retry without fixing the problem.
 400 | 1177 | Arrays may not contain null elements. | Do not retry without fixing the problem.
-400 | 1178 | The following combination of attributes is not allowed for this operation: {0}. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the detail attribute(s) within the error response for detail about the issue(s).
+400 | 1178 | The following combination of attributes is not allowed for this operation: {0}. | Do not retry without fixing the problem.<br/><br/>Hint: Examine the detail attributes within the error response for detail about the issues.
 400 | 1179 | The schedule specified is invalid because endAt is earlier than the next send date. | Do not retry without fixing the problem.<br/><br/>Hint: Verify that startAt, endAt, repeatEvery and other attributes will result in one or more future delivery.
 403 | 1180 | We are unable to process this request because the email has been associated with a different Smartsheet account. | Do not retry without fixing the problem.
 403 | 1181 | Only admins can edit shared filters. | Do not retry without fixing the problem.
@@ -713,21 +713,21 @@ mulitple objects in a single request, which we recommend as a [best practice](#a
 
 The following API operations currently allow you to do things in bulk:
 
-* [Add Column(s)](#add-column(s))
-* [Add Favorite(s)](#add-favorite(s))
-* [Remove Favorite(s)](#remove-favorites-(in-bulk))
-* [Add Group Member(s)](#add-group-member(s))
-* [Add Row(s)](#add-row(s))
-* [Copy Row(s) to Another Sheet](#copy-row(s)-to-another-sheet)
-* [Delete Row(s)](#delete-row(s))
-* [Move Row(s) to Another Sheet](#move-row(s)-to-another-sheet)
-* [Send Row(s) via Email](#send-row(s))
-* [Update Row(s)](#update-row(s))
+* [Add Columns](#add-columns)
+* [Add Favorites](#add-favorites)
+* [Remove Favorites](#remove-favorites-(in-bulk))
+* [Add Group Members](#add-group-members)
+* [Add Rows](#add-rows)
+* [Copy Rows to Another Sheet](#copy-rows-to-another-sheet)
+* [Delete Rows](#delete-rows)
+* [Move Rows to Another Sheet](#move-rows-to-another-sheet)
+* [Send Rows via Email](#send-rows)
+* [Update Rows](#update-rows)
 
 ### Optional Bulk Operations
 
 Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
-Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorite(s)): you can
+Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
 pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
 noted as such in their API reference documentation.
 
@@ -3326,9 +3326,9 @@ Gets the cell modification history.
  | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Cell History objects](#cell-history-object)
 
-## Update Cell(s)
+## Update Cells
 
-To update the Cells in a Sheet, use the [Update Row(s)](#update-row(s)) operation.
+To update the Cells in a Sheet, use the [Update Rows](#update-rows) operation.
 
 ## <%= RELATED %>
 
@@ -3507,13 +3507,13 @@ Gets URLs that can be used to retrieve the specified cell images.
 
 ## Remove Image from Cell
 
-To remove an image from a cell (and set cell contents to either empty or to another value), use the [Update Row(s)](#update-row(s)) operation to set **cell.value** to the new value.
+To remove an image from a cell (and set cell contents to either empty or to another value), use the [Update Rows](#update-rows) operation to set **cell.value** to the new value.
 
 ## Update Cell Image
 
 A cell image can be updated as follows:
 
-* To change the alternate text of an image, use the [Update Row(s)](#update-row(s)) operation.
+* To change the alternate text of an image, use the [Update Rows](#update-rows) operation.
 * To replace an existing image with a new image, use the [Add Image to Cell](#add-image-to-cell) operation.
 * To add an image to a cell that previously contained another type of data, use the [Add Image to Cell](#add-image-to-cell) operation.
 
@@ -3569,7 +3569,7 @@ Smartsheet users can define and save personal column filters on sheets they can 
 **values** | object[] containing strings, numbers, and booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
 **criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
 
-## Add Column(s)
+## Add Columns
 
 > Example Request:
 
@@ -3738,7 +3738,7 @@ Inserts one or more columns into the Sheet specified in the URL.
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>locked (optional)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the the newly created column(s) -- either a single [Column object](#column-object) or an array of Column objects, corresponding to what was specified in the request.
+<%= RETURNS %> | [Result object](#result-object) containing the the newly created columns -- either a single [Column object](#column-object) or an array of Column objects, corresponding to what was specified in the request.
 
 ## Delete Column
 
@@ -5184,7 +5184,7 @@ These API operations allow you to access the user's favorite API-supported objec
 **type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
 **objectId** | number | ID of the favorited item.  If **type** is "template", only private sheet-type template ID is allowed.
 
-## Add Favorite(s)
+## Add Favorites
 
 > Example Request:
 
@@ -5197,7 +5197,7 @@ curl https://api.smartsheet.com/2.0/favorites \
 ```
 
 ```javascript 
-// Specify favorite(s).
+// Specify favorites.
 var favorites = [
 	{
     	"type": "sheet",
@@ -5210,7 +5210,7 @@ var options = {
     body: favorites
 };
 
-// Add item(s) to favorites.
+// Add items to favorites.
 smartsheet.favorites.addItemsToFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5221,18 +5221,18 @@ smartsheet.favorites.addItemsToFavorites(options)
 ```
 
 ```csharp
-// Specify favorite(s).
+// Specify favorites.
 Favorite[] favorites = new Favorite[] { new Favorite.AddFavoriteBuilder(ObjectType.SHEET, objectId).Build() };
 
-// Add item(s) to favorites.
+// Add items to favorites.
 smartsheet.FavoriteResources.AddFavorites(favorites);
 ```
 
 ```java
-// Specify favorite(s).
+// Specify favorites.
 List<Favorite> favorites = new Favorite.AddFavoriteBuilder().addFavorite(sheetId, FavoriteType.SHEET).build();
 
-// Add item(s) to favorites.
+// Add items to favorites.
 smartsheet.favoriteResources().addFavorites(favorites);
 ```
 
@@ -5274,7 +5274,7 @@ If called with a single [Favorite object](#favorite-object), and that favorite a
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Favorite object](#favorite-object) or an array of Favorite objects, with the following attributes:<ul><li>type</li><li>objectId</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing object(s) that were marked as favorites -- either a single [Favorite object](#favorite-object) or an array of Favorite objects, corresponding to what was specified in the request.
+<%= RETURNS %> | [Result object](#result-object) containing objects that were marked as favorites -- either a single [Favorite object](#favorite-object) or an array of Favorite objects, corresponding to what was specified in the request.
 
 ## List Favorites
 
@@ -7268,7 +7268,7 @@ A Group Member is a User that belongs to a [Group](#groups).
 **lastName** | string | Group Member's last name
 **name** | string | Group Member's full name
 
-## Add Group Member(s)
+## Add Group Members
 
 > Example Request:
 
@@ -7281,7 +7281,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 ```
 
 ```javascript
-// Specify group member(s).
+// Specify group members.
 var members = [{ "email": "jane.doe@smartsheet.com" }];
 
 // Set options.
@@ -7290,7 +7290,7 @@ var options = {
     groupId: 7917992160847748
 };
 
-// Add member(s) to group.
+// Add members to group.
 smartsheet.groups.addGroupMembers(options)
     .then(function (data) {
         console.log(data);
@@ -7304,7 +7304,7 @@ smartsheet.groups.addGroupMembers(options)
 // Create group member.
 GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
 
-// Add member(s) to group.
+// Add members to group.
 smartsheet.GroupResources.AddGroupMembers(groupId, new GroupMember[] { member });
 ```
 
@@ -7312,12 +7312,12 @@ smartsheet.GroupResources.AddGroupMembers(groupId, new GroupMember[] { member })
 // Create group member.
 GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
 
-// Add member(s) to group.
+// Add members to group.
 smartsheet.groupResources().memberResources().addGroupMembers(groupId, Arrays.asList(member));
 ```
 
 ```python
-# Add member(s) to group.
+# Add members to group.
 smartsheet.Groups.add_members(
     groupId,
     [smartsheet.models.GroupMember({'email': 'jane.doe@smartsheet.com'})]
@@ -7359,7 +7359,7 @@ of [GroupMember objects](#groupmember-object) any users specified in the array t
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array of Group Member objects, limited to the following attribute:<ul><li>email</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the members added to the group -- either a single [group member](#groupmember-object) or array of group member objects, corresponding to what was specified in the request.
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -7579,7 +7579,7 @@ Extends the [Column object](#column-object), adding the following:
 **virtualId** | number | The virtual ID of this report column
 **sheetNameColumn** | boolean | Returned only for the special "Sheet Name" report column (value = "true")
 
-A report column is a "virtual" column, in that it appears identical to source sheet column(s), but is in fact a different column belonging to the report. 
+A report column is a "virtual" column, in that it appears identical to source sheet columns, but is in fact a different column belonging to the report. 
 [Cells](#reportcell-object) in the report refer to this column via their **virtualColumnId** attribute, and to their actual column from their source sheet via their **columnId** attribute.
 
 ### ReportRow Object
@@ -8162,7 +8162,7 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **from** | number | Row ID in the source sheet
 **to** | number | Row ID in the destination sheet
 
-## Add Row(s)
+## Add Rows
 
 > Example Request:
 
@@ -8357,11 +8357,11 @@ Inserts one or more rows into the Sheet specified in the URL.
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
-<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li></ul>Please note the following:<ul><li>Column Ids must be valid for the sheet specified, and must only be used once for each row in the operation.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be populated via API.</li><li>Cells of a project sheet in the  "Start Date" column cannot be populated via API for rows that also specify a value in the "Predecessor" column.</li></ul></ul>More information:<ul><li>See [Column Types](#column-types) and [Update Cell(s)](#update-cell(s)).</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the newly created row(s) -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**format** (optional)</li><li>**expanded** (optional)</li><li>**locked** (optional)</li><li>A **cells** attribute set to an array of [Cell objects](#cell-object). To insert an empty row, set the **cells** attribute to empty or null. Each Cell object may contain the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>hyperlink (optional)</li></ul></li></ul>Please note the following:<ul><li>Column Ids must be valid for the sheet specified, and must only be used once for each row in the operation.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be populated via API.</li><li>Cells of a project sheet in the  "Start Date" column cannot be populated via API for rows that also specify a value in the "Predecessor" column.</li></ul></ul>More information:<ul><li>See [Column Types](#column-types) and [Update Cells](#update-cells).</li><li>See [Contact List Columns](#contact-list-columns) for information on inserting cells for columns of type CONTACT_LIST.</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the newly created rows -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
 <%= ERRORS %> | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request will fail (no rows will be added), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
 
-## Copy Row(s) to Another Sheet
+## Copy Rows to Another Sheet
 
 > Example Request:
 
@@ -8444,7 +8444,7 @@ smartsheet.Sheets.copy_rows(
 
 `POST /sheets/{sheetId}/rows/copy`
 
-Copies Row(s) from the Sheet specified in the URL to (the bottom of) another sheet.
+Copies Rows from the Sheet specified in the URL to (the bottom of) another sheet.
 
 <aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the copy exceeds the Smartsheet row limit, an error response will be returned.</aside>
      |     |
@@ -8455,7 +8455,7 @@ Copies Row(s) from the Sheet specified in the URL to (the bottom of) another she
 <%= REQUEST %> | [CopyOrMoveRowDirective object](#copyormoverowdirective-object)
 <%= RETURNS %> | [CopyOrMoveRowResult object](#copyormoverowresult-object)
 
-## Delete Row(s)
+## Delete Rows
 
 > Example Request:
 
@@ -8513,9 +8513,9 @@ smartsheet.Sheets.delete_rows(sheetId, [rowId1, rowId2, rowId3])
 
 `DELETE /sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}...`
 
-Deletes one or more row(s) from the Sheet specified in the URL.
+Deletes one or more rows from the Sheet specified in the URL.
 
-<aside class="warning">This operation will delete ALL child Rows of the specified Row(s).</aside>
+<aside class="warning">This operation will delete ALL child Rows of the specified Rows.</aside>
 
      |     |
 -----|-----|
@@ -8619,7 +8619,7 @@ Gets the Row specified in the URL.
 
 To get the list of all Rows in a Sheet, use the [Get Sheet](#get-sheet) operation.
 
-## Move Row(s) to Another Sheet
+## Move Rows to Another Sheet
 
 > Example Request:
 
@@ -8701,7 +8701,7 @@ smartsheet.Sheets.move_rows(
 
 `POST /sheets/{sheetId}/rows/move`
 
-Moves Row(s) from the Sheet specified in the URL to (the bottom of) another sheet.
+Moves Rows from the Sheet specified in the URL to (the bottom of) another sheet.
 <aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the move exceeds the Smartsheet row limit, an error response will be returned.</aside>
 <aside class="notice">Any child rows of the rows specified in the request will also be moved. Parent-child relationships amongst rows will be preserved within the destination sheet.</aside>
 
@@ -8713,7 +8713,7 @@ Moves Row(s) from the Sheet specified in the URL to (the bottom of) another shee
 <%= REQUEST %> | [CopyOrMoveRowDirective object](#copyormoverowdirective-object)
 <%= RETURNS %> | [CopyOrMoveRowResult object](#copyormoverowresult-object)
 
-## Send Row(s) via Email
+## Send Rows via Email
 
 <%= partial "snippets/sendRows.md.erb" %>
 
@@ -8721,7 +8721,7 @@ Moves Row(s) from the Sheet specified in the URL to (the bottom of) another shee
 
 <%= partial "snippets/createUpdateRequest.md.erb" %>
 
-## Update Row(s)
+## Update Rows
 
 > Example Request:
 
@@ -8915,7 +8915,7 @@ smartsheet.Sheets.update_rows(sheetId, [row_a, row_b])
 
 `PUT /sheets/{sheetId}/rows`
 
-Updates cell values in the specified row(s), expands/collapses the specified row(s), and/or modifies the position of specified rows (including indenting/outdenting). 
+Updates cell values in the specified rows, expands/collapses the specified rows, and/or modifies the position of specified rows (including indenting/outdenting). 
 
 <aside class="notice">If a row's position is updated, all child rows are moved with the row.</aside>
 
@@ -8927,7 +8927,7 @@ Updates cell values in the specified row(s), expands/collapses the specified row
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><li>One or more [*location-specifier* attributes](#row-location) (optional)</li><li>**expanded** (optional)</li><li>**format** (optional)</li><li>**cells** (optional) -- if specified, must be an array of [Cell objects](#cell-object), where each object is limited to the following attributes:<ul><li>columnId (required)</li><li>value (required)</li><li>strict (optional)</li><li>format (optional)</li><li>[hyperlink](#hyperlink-object) (optional) with exactly one of the following attributes set:<ul><li>url</li><li>sheetId</li><li>reportId</li></ul></li><li>[linkInFromCell](#celllink-object) (optional) with all of the following attributes set:<ul><li>sheetId</li><li>rowId</li><li>columnId</li></ul></li></ul></li><li>**locked** (optional) - **true** to lock the row or **false** to unlock the row.</li></ul>See [Column Types](#column-types) for more information.<br/><br/>Please note the following:<ul><li>Column Ids must be valid for the sheet to which the row belongs, and must only be used once for each row in the operation.</li><li>Cells containing formulas cannot be updated.</li><li>Cells of a project sheet in the  "Predecessor" or "Finish Date" columns cannot be updated via API.</li><li>Cells of a project sheet in the  "Start Date" column cannot be updated via API for rows that contain a value in the "Predecessor" column.</li><li>Max length for a cell value is 4000 characters after which truncation will occur without warning. Empty string values are converted to null.</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing an array of the updated row(s). 
+<%= RETURNS %> | [Result object](#result-object) containing an array of the updated rows. 
 <%= ERRORS %>  | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request will fail (no rows will be updated), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
 
 ## <%= RELATED %>
@@ -8966,7 +8966,7 @@ Include Flag | Notes |
 
 ### Row Location
 
-When using the [Add Row(s)](#add-row(s)) operation to insert new rows into a sheet or the [Update Row(s)](#update-row(s)) to move rows in a sheet, 
+When using the [Add Rows](#add-rows) operation to insert new rows into a sheet or the [Update Rows](#update-rows) to move rows in a sheet, 
 the following "location-specifier" [Row](#row-object) attributes can be used to specify where the rows get added or moved to in the sheet:
 
 * toTop
@@ -8977,9 +8977,9 @@ the following "location-specifier" [Row](#row-object) attributes can be used to 
 * indent (applicable when updating a row only)
 * outdent (applicable when updating a row only)
 
-The following table describes which *location-specifier* Row attribute(s) should be set to implement various actions.
+The following table describes which *location-specifier* Row attributes should be set to implement various actions.
 
-Action | Row attribute(s)
+Action | Row attributes
 -------|--------
 Add or move the Row to the top of the Sheet. | **toTop** = `true`
 Add or move the Row to the bottom of the Sheet. | **toBottom** = `true`
@@ -8990,7 +8990,7 @@ Add or move the Row so that it is the last child row of the specified parent Row
 Indent an existing Row. | **indent** = (number of level to indent, minimum of 1)
 Outdent an existing Row. | **outdent** = (number of level to outdent, minimum of 1)
 
-<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Row(s) in a single request, try achieving the objective by using two separate requests: 1) Move parent Row. 2) Move child Row(s).</aside>
+<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Rows in a single request, try achieving the objective by using two separate requests: 1) Move parent Row. 2) Move child Rows.</aside>
 
 # Searching
 
@@ -9179,7 +9179,7 @@ Extends the [Email object](#email-object), adding the following:
 
 <%= partial "snippets/sendReport.md.erb" %>
 
-## Send Row(s)
+## Send Rows
 
 <%= partial "snippets/sendRows.md.erb" %>
 
@@ -9453,7 +9453,7 @@ Shares a Sight with the specified Users and Groups.
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
 <%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Update Sight Share
 
@@ -10407,7 +10407,7 @@ Shares a Workspace with the specified Users and Groups.
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
 <%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request.
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-address(es)) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Update Workspace Share
 
@@ -11860,7 +11860,7 @@ smartsheet.Sheets.move_sheet(
 
 Moves the specified Sheet to a new location.
 
-<aside class="notice">When a Sheet that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>sheet-level</i> shares will be preserved.</aside>
+<aside class="notice">When a Sheet that is shared to one or more users and/or groups is moved into or out of a workspace, those <i>sheet-level</i> shares will be preserved.</aside>
 
      |     |
 -----|-----|
@@ -12025,7 +12025,7 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled (required)</li><li>readOnlyFullEnabled (required)</li><li>readOnlyFullAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readOnlyFullEnabled</b>=true</li><li>readWriteEnabled (required)</li><li>readWriteAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readWriteEnabled</b>=true</li><li>icalEnabled (required)</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding "Enabled" attribute(s) to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding "Enabled" attribute(s) to `false`.
+<%= REQUEST %> | [SheetPublish object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled (required)</li><li>readOnlyFullEnabled (required)</li><li>readOnlyFullAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readOnlyFullEnabled</b>=true</li><li>readWriteEnabled (required)</li><li>readWriteAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readWriteEnabled</b>=true</li><li>icalEnabled (required)</li></ul>To enable one or more of the Publish Options for the Sheet (i.e., to publish the Sheet), set the corresponding "Enabled" attributes to `true`. To disable one or more of the Publish Options for the Sheet (i.e., to unpublish the Sheet), set the corresponding "Enabled" attributes to `false`.
 <%= RETURNS %> | [Result object](#result-object) containing a [SheetPublish object](#sheetpublish-object)
 
 <aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, then the value of <b>readOnlyFullAccessibleBy</b> will be defaulted to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
@@ -12148,7 +12148,7 @@ smartsheet.Sheets.update_sheet(
 
 Updates the Sheet specified in the URL.
 
-To modify Sheet contents, see [Add Row(s)](#add-row(s)), [Update Row(s)](#update-row(s)), [Add Column(s)](#add-column(s)), and [Update Column](#update-column).
+To modify Sheet contents, see [Add Rows](#add-rows), [Update Rows](#update-rows), [Add Columns](#add-columns), and [Update Column](#update-column).
 
 This operation can be used to update an individual user's sheet settings.  If the request body contains only the **userSettings** attribute, this operation may be performed even if the user
 only has read-only access to the sheet (i.e. the user has viewer permissions, or the sheet is read-only).
@@ -12612,7 +12612,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 
 Moves the specified Sight to a new location.
 
-<aside class="notice">When a Sight that is shared to one or more user(s) and/or group(s) is moved into or out of a workspace, those <i>Sight-level</i> shares will be preserved.</aside>
+<aside class="notice">When a Sight that is shared to one or more users and/or groups is moved into or out of a workspace, those <i>Sight-level</i> shares will be preserved.</aside>
 
      |     |
 -----|-----|
@@ -13128,7 +13128,7 @@ Revokes the access token used to make this request.  The access token will no lo
 **groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
-**alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
+**alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email addresses associated with the User account
 **sheetCount** | number | The number of sheets owned by the current user within the organization
 **lastLogin** | timestamp | Last login time of the current user
 **customWelcomeScreenViewed** | timestamp | Timestamp of viewing an Enterprise [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) by the current user
@@ -13149,7 +13149,7 @@ Revokes the access token used to make this request.  The access token will no lo
 **groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
 **resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string | User status, set to one of the following values: <ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
-**alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email address(es) associated with the User account
+**alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email addresses associated with the User account
 **sheetCount** | number | The number of sheets owned by the current user within the organization
 **lastLogin** | timestamp | Last login time of the current user
 **customWelcomeScreenViewed** | timestamp | Timestamp of viewing an Enterprise [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) by the current user
@@ -13262,19 +13262,19 @@ Adds a User to the organization.
 <%= PARAMETERS %> | **sendEmail** (optional): A boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
 <%= REQUEST %> | [User object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceViewer (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created [User object](#user-object).
-<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-address(es)) (i.e., not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-addresses) (i.e., not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 <aside class="notice">If successful, and user auto provisioning (UAP) is on, and user matches the auto provisioning rules, user will be added to the org.  If UAP is off, or user does not match UAP rules, user will be invited to the org and must explicitly accept the invitation to join.</aside>
 
 <aside class="notice">In some specific scenarios, supplied attributes such as <b>firstName</b> and <b>lastName</b> may be ignored.  For example, if you are inviting an existing Smartsheet user to join your organization, and the invited user has not yet accepted your invitation, any supplied <b>firstName</b> and <b>lastName</b> will be ignored.</aside>
 
-## Alternate Email Address(es)
+## Alternate Email Addresses
 
 A [User](#user-object) in Smartsheet must have a *primary* email address associated with their account (**User.email**) and may optionally have one or more *alternate* email addresses associated with their account (**User.alternateEmails**). 
 
-<aside class="notice">The following operations must be performed using an User's <i>primary</i> email address:<ul><li><a href="#add-group-member(s)">Add Group Member(s)</a></li><li><a href="#add-user">Add User</a></li><li><a href="#create-update-request">Create Update Request</a></li><li><a href="#share-report">Share Report</a></li><li><a href="#share-sheet">Share Sheet</a></li><li><a href="#share-workspace">Share Workspace</a></li></ul>Attempting to specify a User's <i>alternate</i> email address for any of the above operations will result in an error.</aside>
+<aside class="notice">The following operations must be performed using an User's <i>primary</i> email address:<ul><li><a href="#add-group-members">Add Group Members</a></li><li><a href="#add-user">Add User</a></li><li><a href="#create-update-request">Create Update Request</a></li><li><a href="#share-report">Share Report</a></li><li><a href="#share-sheet">Share Sheet</a></li><li><a href="#share-workspace">Share Workspace</a></li></ul>Attempting to specify a User's <i>alternate</i> email address for any of the above operations will result in an error.</aside>
 
-### Add Alternate Email(s)
+### Add Alternate Emails
 
 > Example Request:
 
@@ -14605,8 +14605,8 @@ The following endpoints have been deprecated in version 2.0 of the Smartsheet AP
 
 Operation | Deprecated Endpoint | Replaced by 
 -------- | -------- | ----- | -----------------
- Delete Row (singular) | DELETE /sheets/{sheetId}/rows/{rowId} | new endpoint for [Delete Row(s)](#delete-row(s))
- Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Row(s)](#send-row(s))
+ Delete Row (singular) | DELETE /sheets/{sheetId}/rows/{rowId} | new endpoint for [Delete Rows](#delete-rows)
+ Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Rows](#send-rows)
  
 ## Deprecated Parameters
 
@@ -14796,7 +14796,7 @@ false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet suppo
 
 A "callback" is the notification that Smartsheet sends to a webhook's **callbackUrl**. There are two types of callbacks:
 
-* [**Event** callback](#event-callbacks): Alerts the subscriber when the specified event(s) have occurred in Smartsheet. This is the most common type of callback.
+* [**Event** callback](#event-callbacks): Alerts the subscriber when the specified events have occurred in Smartsheet. This is the most common type of callback.
 
 * [**Status Change** callback](#status-change-callbacks): Alerts the subscriber that a webhook has been automatically disabled due to loss of access or automatically re-enabled due to restoration of access.
 
@@ -14833,7 +14833,7 @@ For more information, see [Authenticating Callbacks](#authenticating-callbacks-(
 }
 ```
 
-Smartsheet sends an Event callback to notify the Subscriber when the specified event(s) occur in Smartsheet.
+Smartsheet sends an Event callback to notify the Subscriber when the specified events occur in Smartsheet.
 
 <aside class="warning">Any events that occur while a webhook is disabled will NOT be communicated via callback if/when webhook is enabled.</aside>
 
@@ -15013,7 +15013,7 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **columnId** | number | Only present if **objectType** is "cell". The ID of the column where the cell is located.
 **userId** | number | The user ID of the person who caused this event.
 **timestamp** | timestamp | Time that this event occurred. A callback may contain events with different timestamps, as multiple separate events may be aggregated into a single callback request.
-**changeAgent** | string | A comma-delimited list of values that uniquely identify the agent(s) responsible for making the change(s) that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
+**changeAgent** | string | A comma-delimited list of values that uniquely identify the agents responsible for making the changes that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
 
 ## SharedSecret Object
 
