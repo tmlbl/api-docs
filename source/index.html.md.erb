@@ -508,7 +508,7 @@ Smartsheet supports the following standard column types, which are represented i
 Column Type | Column.type Value | Notes |
 ------------|--------------------------|-------|
 Text/Number		| TEXT_NUMBER	|
-Contact List	| CONTACT_LIST	|
+Contact List	| CONTACT_LIST	| Can be a traditional contact list or a list of names or roles for a project. **NOTE:** By using the [contactOption object](#contactOption-object), you can designate dropdown values that can also be used as lanes in card view. 
 Date			| DATE			|
 Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
 Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
@@ -3542,6 +3542,7 @@ A Column is a component of a Sheet or Report.
 **primary** | boolean | Returned only if the column is the Primary Column (value = `true`)
 **type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
 **options** | string[] | Array of the options available for the column
+**contactOptions** | string[] | Array of dropdown values that can also be used as lanes in card view. Only available if **type** is **CONTACT_LIST** 
 **hidden** | boolean | Flag indicating whether the column is hidden
 **symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
@@ -3552,6 +3553,15 @@ A Column is a component of a Sheet or Report.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
 **locked** | boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
 **lockedForUser** | boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
+
+### contactOption Object
+
+     |     |     |
+-----|-----|-----|
+**name** | string | Optional. Can be a user's name, display name, or free text, such as a job class or TBD.
+**email** | string | Optional.  A parsable email address.
+
+<aside class="notice"> Either **name* or **email** (or both) must be specified. </aside>
 
 ### Criteria Object
 
