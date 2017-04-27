@@ -1146,15 +1146,15 @@ WRITE_SHEETS | Insert and modify sheet data, including comments, attachments and
 SHARE_SHEETS | Share sheets, including sending sheets as attachments
 DELETE_SHEETS | Delete sheets
 CREATE_SHEETS | Create new sheets
-CREATE_SIGHTS | Create new sights
-READ_SIGHTS | Read all sight data
-DELETE_SIGHTS | Delete sight
-SHARE_SIGHTS | Share sight
+CREATE_SIGHTS | Create new Sights
+READ_SIGHTS | Read all Sight data
+DELETE_SIGHTS | Delete Sight
+SHARE_SIGHTS | Share Sight
 READ_USERS | Retrieve users and groups for your Smartsheet organization
 READ_CONTACTS | Retrieve contacts
 ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
-ADMIN_SIGHTS | Modify sight structure
+ADMIN_SIGHTS | Modify Sight structure
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
 
 
@@ -6111,7 +6111,7 @@ Creates a copy of the specified Folder.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified.
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and sights that reference objects in the source folder will be re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder will continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within sights in the newly created folder will continue to point to the original source sheets / reports.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source folder will be re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder will continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created folder will continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Folder object](#folder-object) for the newly created Folder
 
@@ -6449,7 +6449,7 @@ Gets the specified Folder (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
-<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or sights are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
+<%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
 
 ## List Child Folders
 
@@ -7457,7 +7457,7 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 **reports** | [Report](#report-object)[] | Array of Report objects
 **templates** | [Template](#template-object)[] | Array of Template objects
 **workspaces** | [Workspace](#workspace-object)[] | Array of Workspace objects
-**sights** | [Sight](#sight-object)[] | Array of Sight objects
+**Sights** | [Sight](#sight-object)[] | Array of Sight objects
 
 ## List All Contents
 
@@ -9295,7 +9295,7 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 **message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **ccMe**		| boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
 
-## Sights Sharing
+## Sight Sharing
 
 ### Delete Sight Share
 
@@ -12234,9 +12234,9 @@ A Sight is a collection of widgets that can contain data from a variety of diffe
 
      |     |     |
 -----|-----|-----|
-**readOnlyFullEnabled** | boolean | If `true`, a rich version of the Sights is published with the ability to use shortcuts and widget interactions.
-**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published Sights.<br/>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published Sights:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the Sights owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullEnabled** | boolean | If `true`, a rich version of the Sight is published with the ability to use shortcuts and widget interactions.
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published Sight.<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published Sight:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the Sight owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 
 ### Widget Object
 
@@ -12675,7 +12675,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 
 `GET /sights/{sightId}/publish`
 
-Gets the Sights 'Publish' settings.
+Gets the Sight 'Publish' settings.
 
      |     |
 -----|-----|
@@ -12744,7 +12744,7 @@ Publishes or unpublishes a Sight.
 
 ## Share Sight
 
-For details about Sight sharing, see [Sights Sharing](#sights-sharing).
+For details about Sight sharing, see [Sight Sharing](#sights-sharing).
 
 ## Update Sight
 
@@ -14065,7 +14065,7 @@ Creates a copy of the specified Workspace.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history will not be copied, regardless of which **include** parameter values are specified. 
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and sights that reference objects in the source workspace will be re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within sights in the newly created workspace will continue to point to the original source sheets / reports.</li></ul>
+ | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source workspace will be re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace will continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace will continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace will continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created workspace will continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing a [Workspace object](#workspace-object) for the newly created Workspace
 
