@@ -408,57 +408,6 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 500 | 4004 | An unexpected error has occurred. Please retry your request. If you encounter this error repeatedly, please contact api@smartsheet.com for assistance.<br/><br/>**Or**<br/><br/>Request failed because sheetId {0} is currently being updated by another request that uses the same access token. Please retry your request once the previous request has completed. | <span class="retryAgainLater">Retry using <a href="https://en.wikipedia.org/wiki/Exponential_backoff" target="_blank">exponential backoff</a>.</span>
 400 | 5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur. | <span class="doNotRetry">Do not retry.<br/></span>
 
-## Column Types
-
-Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
-
-Column Type | Column.type Value | Notes |
-------------|--------------------------|-------|
-Text/Number		| TEXT_NUMBER	|
-Contact List	| CONTACT_LIST	| List containing contacts or roles for a project. **NOTE:** You can use the [contactOptions](#contactoption-object) property to specify a pre-defined list of values for the column, which can also become lanes in card view. 
-Date			| DATE			|
-Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
-Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
-Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.)
-Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) 
-Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
-Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
-
-<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
-
-### Symbol Columns
-
-In addition to the basic column types above, the Smartsheet app also supports columns that display symbols. These are simply specialized columns of type PICKLIST or CHECKBOX,
-whose **[symbol](#column-object)** attribute is set to one of the values below:
-
-**Symbols for CHECKBOX columns:**
-
-<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
-
-<%= CHECKBOX_SYMBOL_LIST %>
-
-**Symbols for PICKLIST columns:**
-
-<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
-
-<%= PICKLIST_SYMBOL_LIST %>
- 
-<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
-
-### System Columns
-
-In addition to the standard column types and symbols, Smartsheet has a number of *system columns*, which represent data that is
-filled in by Smartsheet and whose values cannot be changed by the user. These columns are represented with standard
-[column types](#column-types), with the **[Column.systemColumnType](#column-object)** attribute set to one of the following:
-
-Column.systemColumnType Value | Column Type | Notes
------|-----|-----|
-MODIFIED_DATE | DATETIME
-MODIFIED_BY | CONTACT_LIST
-CREATED_DATE | DATETIME
-CREATED_BY  | CONTACT_LIST
-AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
-
 ## Cell Values
 
 Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either
@@ -1421,6 +1370,57 @@ for org_sheet in sheets:
 ```
 
 # Miscellaneous
+
+## Column Types
+
+Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
+
+Column Type | Column.type Value | Notes |
+------------|--------------------------|-------|
+Text/Number		| TEXT_NUMBER	|
+Contact List	| CONTACT_LIST	| List containing contacts or roles for a project. **NOTE:** You can use the [contactOptions](#contactoption-object) property to specify a pre-defined list of values for the column, which can also become lanes in card view. 
+Date			| DATE			|
+Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
+Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
+Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.)
+Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) 
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
+Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
+
+<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
+
+### Symbol Columns
+
+In addition to the basic column types above, the Smartsheet app also supports columns that display symbols. These are simply specialized columns of type PICKLIST or CHECKBOX,
+whose **[symbol](#column-object)** attribute is set to one of the values below:
+
+**Symbols for CHECKBOX columns:**
+
+<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
+
+<%= CHECKBOX_SYMBOL_LIST %>
+
+**Symbols for PICKLIST columns:**
+
+<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
+
+<%= PICKLIST_SYMBOL_LIST %>
+ 
+<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
+
+### System Columns
+
+In addition to the standard column types and symbols, Smartsheet has a number of *system columns*, which represent data that is
+filled in by Smartsheet and whose values cannot be changed by the user. These columns are represented with standard
+[column types](#column-types), with the **[Column.systemColumnType](#column-object)** attribute set to one of the following:
+
+Column.systemColumnType Value | Column Type | Notes
+-----|-----|-----|
+MODIFIED_DATE | DATETIME
+MODIFIED_BY | CONTACT_LIST
+CREATED_DATE | DATETIME
+CREATED_BY  | CONTACT_LIST
+AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
 
 ## Working at Scale 
 
