@@ -149,27 +149,6 @@ Also, make sure your code does not depend on the order in which records are retu
 
 # API Fundamentals
 
-## API Troubleshooting
-
-Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
-
-<ol>
-	<li>
-		<b>Try executing the same API Request using a tool like <a href="#testing-with-curl">cURL</a> or <a href="#testing-with-postman">Postman</a>.</b> By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.<br/><br/>
-		<ul>
-			<li>If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Consult the <a href="http://smartsheet-platform.github.io/api-docs/" target="_blank">API Documentation</a> to ensure that the Request being sent matches what the documentation specifies. Once you have the Request working in cURL or Postman, update your code accordingly.<br/><br/></li>
-			<li>If you're able to execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. You'll need to compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code is generating. (See step #2 below.)</li>
-		</ul><br/><br/>
-	</li>
-	<li>
-		<b>Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).</b><br/><br/>
-		<ul>
-			<li>If you've implemented Request / Response logging in your application (as suggested in <a href="#api-best-practices">API Best Practices</a>), inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.<br/><br/></li>
-			<li>Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.<br/><br/></li>
-		</ul>
-	</li>
-</ol>
-
 ## Authentication
 
 The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. 
@@ -219,6 +198,15 @@ Use this information to implement error handling logic according to the followin
 * If the error code indicates a permanent error condition, do not retry the request.
 * If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
 * If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
+
+Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
+
+1. Try executing the same API Request using a tool like <a href="https://curl.haxx.se/">cURL</a> or <a href="https://www.getpostman.com/">Postman</a>. By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
+  * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
+  * If you're able to execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. You'll need to compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code is generating. (See step #2 below.)
+2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
+  * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+  * Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
 
 For a list of all Smartsheet error codes, see the [Complete Error Code List](#complete-error-code-list). 
 
