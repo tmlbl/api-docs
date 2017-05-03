@@ -78,7 +78,12 @@ This API assumes a good working knowledge of the Smartsheet application UI, conc
 ```apires
 Resources:
 
+/attachments
+/cells
+/columns
+/comments
 /contacts
+/discussions
 /favorites
 /folders
 /groups
@@ -92,6 +97,7 @@ Resources:
 /sheets/{id}/attachments
 /sheets/{id}/discussions
 /sheets/{id}/updaterequests
+/sights
 /templates
 /token
 /users
@@ -155,28 +161,6 @@ For a list of Smartsheet API 2.0 deprecations, see [Deprecations](#deprecations)
 # API Fundamentals
 
 ## API Best Practices
-
-We strongly recommend that you design your integration with the following guidelines in mind:
-
-* **Be efficient**: Use "bulk"-enabled operations
-* **Be practical**: Adhere to rate limiting guidelines
-* **Be smart**: Handle errors appropriately
-* **Be diligent**: Implement logging
-
-<br/>
-<span class="inSectionSubheading">Be efficient: Use "bulk"-enabled operations</span>
-
-For maximum efficiency, we recommend that you use bulk-enabled API operations whenever possible. 
-A bulk-enabled API operation allows you to add, update, or delete multiple items using a single API request. 
-For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
-
-Bulk-enabled operations improve efficiency by:
-
-* Dramatically reducing the number of outbound calls you have to make
-* Reducing your chances of hitting the [rate limit](#rate-limiting) (since each bulk operation counts as only one request toward the limit)
-* Lightening the load on our systems, making your requests more likely to complete in a timely manner
-
-See the section on [Bulk Operations](#bulk-operations) for more details, including a list of bulk-enabled operations.
 
 <br/>
 <span class="inSectionSubheading">Be practical: Adhere to rate limiting guidelines</span>
@@ -1543,7 +1527,7 @@ Index endpoints all return paged responses via an **IndexResult** object which p
 ### Bulk Operations
 
 The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
-mulitple objects in a single request, which we recommend as a [best practice](#api-best-practices) for optimal performance.
+mulitple objects in a single request. For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
 
 The following API operations currently allow you to do things in bulk:
 
