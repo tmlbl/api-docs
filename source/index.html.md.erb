@@ -42,7 +42,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-04-27
+Updated 2017-05-03
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sdks-and-sample-code))
@@ -294,10 +294,6 @@ EDITOR | The user can edit the resource, but cannot alter the structure of, dele
 EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
 ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
 OWNER | The user has complete control over the resource.
-
-## Rate Limiting
-
-<%= partial "snippets/rateLimiting.md.erb" %>
 
 ## Errors
 
@@ -682,77 +678,6 @@ When creating or updating cells for a contact list column, the **displayValue** 
 <li>If **displayValue** is an empty string, the Smartsheet cell will display the email address.</li>
 <li>If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.</li>
 </ul>
-
-## Paging
-
-The Smartsheet API contains a number of *index endpoints* (typically denoted in the documentation with titles beginning with "Get All..." or "List...") which return arrays of objects.
-Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination, meaning
-you can retrieve paged subsets of results, enabling you to process potentially large result sets in smaller chunks.
-
-### Paging Query String Parameters
-Index endpoints all support pagination via the following optional query string parameters:
-
-     |     |     |
------|-----|-----|
-**pageSize** 	| number  | The maximum number of items to return per page.  Unless otherwise stated for a specific endpoint, defaults to **100** if not specified.
-**page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results will be returned.
-**includeAll**  | boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
-
-<aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
-
-### Paged Responses
-
-Index endpoints all return paged responses via an **IndexResult** object which provides paging metadata that can be used to navigate the full set of pages in the result set:
-
-<%= partial "snippets/indexResult_object.md.erb" %>
-
-## Bulk Operations
-
-The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
-mulitple objects in a single request, which we recommend as a [best practice](#api-best-practices) for optimal performance.
-
-The following API operations currently allow you to do things in bulk:
-
-* [Add Columns](#add-columns)
-* [Add Favorites](#add-favorites)
-* [Remove Favorites](#remove-favorites-(in-bulk))
-* [Add Group Members](#add-group-members)
-* [Add Rows](#add-rows)
-* [Copy Rows to Another Sheet](#copy-rows-to-another-sheet)
-* [Delete Rows](#delete-rows)
-* [Move Rows to Another Sheet](#move-rows-to-another-sheet)
-* [Send Rows via Email](#send-rows)
-* [Update Rows](#update-rows)
-
-### Optional Bulk Operations
-
-Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
-Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
-pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
-noted as such in their API reference documentation.
-
-**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
-return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result object](#result-object) returned will omit them.
-
-<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
-
-### Partial Success
-
-In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
-if not, none of them will be.
-
-However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
-*not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This will be noted in the documentation for operations that support partial success.
-
-<%= PARTIAL_SUCCESS %>
-
-## Dates and Times
-
-The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
-
-You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
-This flag works for any API request.
 
 # Getting Started
 
@@ -1347,70 +1272,6 @@ Smartsheet users with System Admin rights have access to additional API features
 
 As an org Administrator, you can provision, de-provision and otherwise manage users in your Smartsheet organization.  See [Users](#users) for more information on relevant API calls.
 
-## Assume-User
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/users/me \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Assume-User: john.doe%40smartsheet.com" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
-
-// Get current user (call gets executed as "john.doe@smartsheet.com").
-UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
-```
-
-```java
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
-
-// Get current user (call gets executed as "john.doe@smartsheet.com").
-UserProfile user= smartsheet.userResources().getCurrentUser();
-```
-
-```python
-# Create the 'smartsheet' object and run the assume_user method.
-smartsheet = smartsheet.Smartsheet()
-smartsheet.assume_user('john.doe@smartsheet.com')
-
-# Get the current user (call executed as "john.doe@smartsheet.com").
-user = smartsheet.Users.get_current_user()
-
-# Reset the 'smartsheet' object so no Assume-User header is used in further requests.
-smartsheet.assume_user()
-```
-
-> Example Response:
-
-```json
-{
-    "email": "john.doe@smartsheet.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "id": 48569348493401200
-}
-```
-
-As an org Administrator, you can assume the identity of any user in your organization. 
-This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
- 
-Here is how it works. 
-Simply add an **Assume-User** header to your call, with the URI-encoded email address of the user whose identity you want to assume as the value. 
-For example, if you want to assume the identity of **john.doe@smartsheet.com** and john.doe@smartsheet.com is a confirmed member of your Smartsheet organization, you would add the following header:
-
-`Assume-User: john.doe%40smartsheet.com`
-
-You can then act on behalf of the user and make API calls as though you were that user.
-
 ## Maintain Data Attribution
 
 > Example Request:
@@ -1647,6 +1508,151 @@ for org_sheet in sheets:
     smartsheet.Sheets.get_sheet_as_csv(org_sheet.id, dl_path)
 
 ```
+
+# Miscellaneous
+
+## Working at Scale 
+
+### Paging
+
+The Smartsheet API contains a number of *index endpoints* (typically denoted in the documentation with titles beginning with "Get All..." or "List...") which return arrays of objects.
+Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination, meaning
+you can retrieve paged subsets of results, enabling you to process potentially large result sets in smaller chunks.
+
+### Paging Query String Parameters
+Index endpoints all support pagination via the following optional query string parameters:
+
+     |     |     |
+-----|-----|-----|
+**pageSize** 	| number  | The maximum number of items to return per page.  Unless otherwise stated for a specific endpoint, defaults to **100** if not specified.
+**page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results will be returned.
+**includeAll**  | boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
+
+<aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
+
+#### Paged Responses
+
+Index endpoints all return paged responses via an **IndexResult** object which provides paging metadata that can be used to navigate the full set of pages in the result set:
+
+<%= partial "snippets/indexResult_object.md.erb" %>
+
+### Rate Limiting
+
+<%= partial "snippets/rateLimiting.md.erb" %>
+
+### Bulk Operations
+
+The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
+mulitple objects in a single request, which we recommend as a [best practice](#api-best-practices) for optimal performance.
+
+The following API operations currently allow you to do things in bulk:
+
+* [Add Columns](#add-columns)
+* [Add Favorites](#add-favorites)
+* [Remove Favorites](#remove-favorites-(in-bulk))
+* [Add Group Members](#add-group-members)
+* [Add Rows](#add-rows)
+* [Copy Rows to Another Sheet](#copy-rows-to-another-sheet)
+* [Delete Rows](#delete-rows)
+* [Move Rows to Another Sheet](#move-rows-to-another-sheet)
+* [Send Rows via Email](#send-rows)
+* [Update Rows](#update-rows)
+
+#### Optional Bulk Operations
+
+Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
+Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
+pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
+noted as such in their API reference documentation.
+
+**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
+return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result object](#result-object) returned will omit them.
+
+<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
+
+#### Partial Success
+
+In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
+if not, none of them will be.
+
+However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
+*not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This will be noted in the documentation for operations that support partial success.
+
+<%= PARTIAL_SUCCESS %>
+
+### Assume-User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Assume-User: john.doe%40smartsheet.com" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile user= smartsheet.userResources().getCurrentUser();
+```
+
+```python
+# Create the 'smartsheet' object and run the assume_user method.
+smartsheet = smartsheet.Smartsheet()
+smartsheet.assume_user('john.doe@smartsheet.com')
+
+# Get the current user (call executed as "john.doe@smartsheet.com").
+user = smartsheet.Users.get_current_user()
+
+# Reset the 'smartsheet' object so no Assume-User header is used in further requests.
+smartsheet.assume_user()
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
+As an org Administrator, you can assume the identity of any user in your organization. 
+This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
+ 
+Here is how it works. 
+Simply add an **Assume-User** header to your call, with the URI-encoded email address of the user whose identity you want to assume as the value. 
+For example, if you want to assume the identity of **john.doe@smartsheet.com** and john.doe@smartsheet.com is a confirmed member of your Smartsheet organization, you would add the following header:
+
+`Assume-User: john.doe%40smartsheet.com`
+
+You can then act on behalf of the user and make API calls as though you were that user.
+
+## Dates and Times
+
+The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
+
+You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
+This flag works for any API request.
+
+
 # <span class="customTOCSectionHeading">API Reference</span>
 
 # Attachments
