@@ -9013,223 +9013,6 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 **message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **ccMe**		| boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
 
-## Sight Sharing
-
-### Delete Sight Share
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/deleteShare_response.md.erb" %>
-
-`DELETE /sights/{sightId}/shares/{shareId}`
-
-Deletes the Share specified in the URL. 
-
-     |     |
------|-----|
-<%= SCOPE %> | SHARE_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result object](#result-object)
-
-### Get Sight Share
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
--H "Authorization: Bearer ACCESS_TOKEN" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/getShare_response.md.erb" %>
-
-`GET /sights/{sightId}/shares/{shareId}`
-
-Gets the Share specified in the URL. 
-
-     |     |
------|-----|
-<%= SCOPE %> | READ_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Share object](#share-object)
-
-### List Sight Shares
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
--H "Authorization: Bearer ACCESS_TOKEN" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/listShares_response.md.erb" %>
-
-`GET /sights/{sightId}/shares`
-
-Gets a list of all Users and Groups to whom the specified Sight is shared, and their access level. 
-
-<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
-
-<aside class="notice"><%= SUPPORTS_PAGING %></aside>
-
-     |     |
------|-----|
-<%= SCOPE %> | READ_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of `workspaceShares`, response will contain both <i>item-level</i> shares ([<b>scope</b>](#share-object)='ITEM') and <i>workspace-level</i> shares ([<b>scope</b>](#share-object)='WORKSPACE').<br/><br/><%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)<br/><br/>**NOTE:** If the response contains an *item-level* share (**scope**='ITEM') and a *workspace-level* share (**scope**='WORKSPACE') for the same user or group, the **id** of those two [Share](#share-object) objects will be identical, but the **scope** attribute value can be used to disambiguate the two.
-
-### Share Sight
-
-> Example Request: 
-
-```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X POST \
--d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/share_response.md.erb" %>
-
-`POST /sights/{sightId}/shares`
-
-Shares a Sight with the specified Users and Groups.
-
-<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
-
-<%= SHARING_ERRORS %>
-
-     |     |
------|-----|
-<%= SCOPE %> | SHARE_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
-<%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
-<%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
-
-### Update Sight Share
-
-> Example Request: 
-
-```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Content-Type: application/json" \
--X PUT \
--d '{"accessLevel": "VIEWER"}'
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/updateShare_response.md.erb" %>
-
-`PUT /sights/{sightId}/shares/{shareId}`
-
-Updates the access level of a User or Group for the specified Sight.
-
-     |     |
------|-----|
-<%= SCOPE %> | SHARE_SIGHTS
-<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Share object](#share-object) limited to the following attribute:<ul><li>accessLevel (string)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object)
-
 ## Report Sharing
 
 ### Delete Report Share
@@ -9874,6 +9657,223 @@ smartsheet.Sheets.update_share(
 Updates the access level of a User or Group for the specified Sheet.
 
 <%= partial "snippets/updateShare_table.md.erb" %>
+
+## Sight Sharing
+
+### Delete Sight Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/deleteShare_response.md.erb" %>
+
+`DELETE /sights/{sightId}/shares/{shareId}`
+
+Deletes the Share specified in the URL. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | SHARE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result object](#result-object)
+
+### Get Sight Share
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/getShare_response.md.erb" %>
+
+`GET /sights/{sightId}/shares/{shareId}`
+
+Gets the Share specified in the URL. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Share object](#share-object)
+
+### List Sight Shares
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
+-H "Authorization: Bearer ACCESS_TOKEN" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/listShares_response.md.erb" %>
+
+`GET /sights/{sightId}/shares`
+
+Gets a list of all Users and Groups to whom the specified Sight is shared, and their access level. 
+
+<aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional): when specified with a value of `workspaceShares`, response will contain both <i>item-level</i> shares ([<b>scope</b>](#share-object)='ITEM') and <i>workspace-level</i> shares ([<b>scope</b>](#share-object)='WORKSPACE').<br/><br/><%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Share objects](#share-object)<br/><br/>**NOTE:** If the response contains an *item-level* share (**scope**='ITEM') and a *workspace-level* share (**scope**='WORKSPACE') for the same user or group, the **id** of those two [Share](#share-object) objects will be identical, but the **scope** attribute value can be used to disambiguate the two.
+
+### Share Sight
+
+> Example Request: 
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/share_response.md.erb" %>
+
+`POST /sights/{sightId}/shares`
+
+Shares a Sight with the specified Users and Groups.
+
+<aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
+
+<%= SHARING_ERRORS %>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | SHARE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
+<%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
+<%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+
+### Update Sight Share
+
+> Example Request: 
+
+```shell
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"accessLevel": "VIEWER"}'
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/updateShare_response.md.erb" %>
+
+`PUT /sights/{sightId}/shares/{shareId}`
+
+Updates the access level of a User or Group for the specified Sight.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | SHARE_SIGHTS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Share object](#share-object) limited to the following attribute:<ul><li>accessLevel (string)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the modified [Share object](#share-object)
 
 ## Workspace Sharing
 
