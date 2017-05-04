@@ -6,9 +6,11 @@ def toc_data(page_content)
   # get a flat list of headers
   headers = []
   html_doc.css('h1, h2, h3').each do |header|
+    # puts "Children: " + header.children.text
     headers.push({
       id: header.attribute('id').to_s,
       content: header.children,
+      content_clean: Nokogiri::HTML(header.children.text).text,
       level: header.name[1].to_i,
       children: []
     })
