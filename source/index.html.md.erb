@@ -42,7 +42,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-03
+Updated 2017-05-04
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sdks-and-sample-code))
@@ -378,7 +378,7 @@ using Smartsheet.Api;
 using Smartsheet.Api.Models;
 using Smartsheet.Api.OAuth;
 
-// Set the Access Token.
+// Set the access token.
 Token token = new Token();
 token.AccessToken = "INSERT_YOUR_TOKEN_HERE";
 
@@ -391,38 +391,24 @@ smartsheet.UserResources.GetCurrentUser();
 // Get server info.
 smartsheet.ServerInfoResources.GetServerInfo();
 
+// Use the Id naming convention.
+smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);
+
 // For additional C# code samples, see each operation in the API REFERENCE section.
 ```
 
 The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
-To use the C# SDK, you'll need to include the appropriate **using** directives in your code. For example:
+For code samples discussed in this document, use the tabs to the right.
 
-<code>
-using Smartsheet.Api;<br/>
-using Smartsheet.Api.Models;<br/>
-using Smartsheet.Api.OAuth;<br/>
-</code>
+To use the C# SDK, you'll need to include the appropriate **using** directives in your code.
 
-Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created as follows:
-
-<code>
-// Set the Access Token<br/>
-Token token = new Token();<br/>
-token.AccessToken = "INSERT_YOUR_TOKEN_HERE";<br/>
-</code>
-
-<code>
-// Use the Smartsheet Builder to create an instance of SmartsheetClient<br/>
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
-</code>
+Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created using the sample to the right.
 
 For operations that support querystring parameters, the C# code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
 The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
 
 Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
-
-<code>smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);</code>
+For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
 
 ### Java Sample Code
 
@@ -432,7 +418,7 @@ import com.smartsheet.api.models.*;
 import com.smartsheet.api.models.enums.*;
 import com.smartsheet.api.oauth.*;
 
-// Set the Access Token.
+// Set the access token.
 Token token = new Token();
 token.setAccessToken("INSERT_YOUR_TOKEN_HERE");
 
@@ -442,6 +428,9 @@ Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessTo
 // Get current user.
 smartsheet.userResources().getCurrentUser();
 
+// Use the Id naming convention.
+smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
+
 // Get server info.
 smartsheet.serverInfoResources().getServerInfo();
 
@@ -449,35 +438,17 @@ smartsheet.serverInfoResources().getServerInfo();
 ```
 
 The Java code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Java SDK](https://github.com/smartsheet-platform/smartsheet-java-sdk). 
-To use the Java SDK, you'll need to include the appropriate **import** directives in your code. For example:
+For code samples discussed in this document, use the tabs to the right.
 
-<code>
-import com.smartsheet.api.&#42;;<br/>
-import com.smartsheet.api.models.&#42;;<br/>
-import com.smartsheet.api.models.enums.&#42;;<br/>
-import com.smartsheet.api.oauth.&#42;;<br/>
-</code>
+To use the Java SDK, you'll need to include the appropriate **import** directives in your code.
 
-Each code sample uses a **Smartsheet** object called "smartsheet" that can be created as follows:
-
-<code>
-// Set the Access Token<br/>
-Token token = new Token();<br/>
-token.setAccessToken("INSERT_YOUR_TOKEN_HERE");<br/>
-</code>
-
-<code>
-// Use the Smartsheet Builder to create an instance of Smartsheet<br/>
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();<br/>
-</code>
+Each code sample uses a **Smartsheet** object called "smartsheet" that can be created using the sample to the right.
 
 For operations that support querystring parameters, the Java code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
 The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
 
 Within the Java code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:  
-
-<code>smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);</code>
+For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
 
 ### Node.js Sample Code
 
@@ -506,26 +477,12 @@ smartsheet.server.getInfo()
 // For additional Node.js code samples, see each operation in the API REFERENCE section.
 ```
 
-The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises. 
-Each code sample uses a root module called "smartsheet" that can be created as follows:
+The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises. For code samples discussed in this document, use the tabs to the right.
 
-<code>
-var client = require('smartsheet');<br/>
-var smartsheet = client.createClient({accessToken:'INSERT_YOUR_TOKEN_HERE'});
-</code>
+Each code sample uses a root module called "smartsheet" that can be created using the sample to the right.
 
 Once you've created the **smartsheet** variable, you can use it to execute API operations. 
-For example, the following code example shows how to execute the [Get Current User](#get-current-user) operation.
-
-<code>
-smartsheet.users.getCurrentUser()<br/>
-&#160;&#160;.then(function(data) {<br/>
-&#160;&#160;&#160;&#160;console.log(data);<br/>
-&#160;&#160;})<br/>
-&#160;&#160;.catch(function(error) {<br/>
-&#160;&#160;&#160;&#160;console.log(error);<br/>
-&#160;&#160;});<br/>
-</code>
+For example, the sample to the right shows how to execute the [Get Current User](#get-current-user) operation.
 
 For more information about using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), including examples of using callbacks (instead of promises), see the [SDK Readme](https://github.com/smartsheet-platform/smartsheet-javascript-sdk).
 
@@ -533,40 +490,15 @@ For more information about using the [Smartsheet JavaScript SDK](https://github.
 
 ```python
 import smartsheet
+
 smartsheet = smartsheet.Smartsheet()
 
-# Get Current User
+# Get current user.
 me = smartsheet.Users.get_current_user()
 print(me)
 
-# Get server info.
-info = smartsheet.Server.server_info()
-
-# For additional Python code samples, see each operation in the API REFERENCE section.
-```
-
-The Python samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Python SDK](https://github.com/smartsheet-platform/smartsheet-python-sdk). 
-To use the Python SDK, you'll first need to include the appropriate **import** directive in your code: 
-
-<code>import smartsheet</code>
-
-Next, create the base client object that will be used to execute API requests via the SDK:
-
-<code>smartsheet = smartsheet.Smartsheet()<br/></code>
-
-<aside class="notice">The snippet above assumes that your Smartsheet API Access Token has been set as an environment variable named <b>SMARTSHEET_ACCESS_TOKEN</b>. If you prefer, you may alternatively pass your Smartsheet Access Token to the instantiation of the Smartsheet object like this: <code>smartsheet = smartsheet.Smartsheet('INSERT_YOUR_TOKEN_HERE')</code></aside>
-
-Once you've created the **smartsheet** object, you can use it to execute API operations. For example, the following example shows how to execute the [Get Current User](#get-current-user) operation.
-
-<code>
-me = smartsheet.Users.get_current_user()<br/>
-print(me)<br/>
-</code>
-
-Within the Python code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the following code example, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row:
-
-<code>smartsheet.Discussions.create_discussion_on_row(<br/>
+# Use the Id naming convention.
+smartsheet.Discussions.create_discussion_on_row(<br/>
 &#160;&#160;&#160;&#160;sheetId,<br/>
 &#160;&#160;&#160;&#160;rowId,<br/>
 &#160;&#160;&#160;&#160;smartsheet.models.Discussion({<br/>
@@ -575,7 +507,26 @@ For example, in the following code example, **sheetId** should be replaced with 
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'text': 'Expenses greater than $500 require manager approval.'<br/>
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;})<br/>
 &#160;&#160;&#160;&#160;})<br/>
-)</code>
+)
+
+# Get server info.
+info = smartsheet.Server.server_info()
+
+# For additional Python code samples, see each operation in the API REFERENCE section.
+```
+
+The Python samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Python SDK](https://github.com/smartsheet-platform/smartsheet-python-sdk). For code samples discussed in this document, use the tabs to the right.
+
+To use the Python SDK, you'll first need to include the appropriate **import** directive in your code. 
+
+Next, create the base client object that will be used to execute API requests via the SDK.
+
+<aside class="notice">The snippet to the right assumes that your Smartsheet API Access Token has been set as an environment variable named <b>SMARTSHEET_ACCESS_TOKEN</b>. If you prefer, you may alternatively pass your Smartsheet Access Token to the instantiation of the Smartsheet object like this: <code>smartsheet = smartsheet.Smartsheet('INSERT_YOUR_TOKEN_HERE')</code></aside>
+
+Once you've created the **smartsheet** object, you can use it to execute API operations. For example, the sample to the right shows how to execute the [Get Current User](#get-current-user) operation.
+
+Within the Python code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
+For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
 
 ## Direct API Access
 
