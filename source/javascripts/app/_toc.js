@@ -59,6 +59,7 @@
       }
 
       var best = null;
+ 
       for (var name in headerHeights) {
         if ((headerHeights[name] < currentTop && headerHeights[name] > headerHeights[best]) || best === null) {
           best = name;
@@ -77,7 +78,10 @@
         $toc.find(tocListSelector).filter(":not(.active)").slideUp(150);
         $toc.find(tocListSelector).filter(".active").slideDown(150);
         if (window.history.pushState) {
-          window.history.pushState(null, "", best);
+          if (currentTop > scrollOffset + 10 )
+            window.history.pushState(null, "", best);
+          else
+            window.history.pushState(null, "", window.location.pathname + window.location.search);
         }
         // TODO remove classnames
         document.title = $best.data("title") + " – " + originalTitle;
