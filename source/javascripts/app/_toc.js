@@ -21,6 +21,14 @@
     $("#nav-button").removeClass('open');
   };
 
+
+  // Scroll down to account for nav bar
+  function offsetAnchor() {
+    if (location.hash.length !== 0) {
+    window.scrollTo(window.scrollX, window.scrollY - 60);
+    }
+  }
+
   function loadToc($toc, tocLinkSelector, tocListSelector, scrollOffset) {
     var headerHeights = {};
     var pageHeight = 0;
@@ -91,6 +99,7 @@
       // reload immediately after scrolling on toc click
       $toc.find(tocLinkSelector).click(function() {
         setTimeout(function() {
+           offsetAnchor();
           refreshToc();
         }, 0);
       });
