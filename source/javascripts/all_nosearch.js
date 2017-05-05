@@ -8,7 +8,6 @@ $(function() {
   $('.content').imagesLoaded( function() {
     window.recacheHeights();
     window.refreshToc();
-    offsetAnchor();
   });
 });
 
