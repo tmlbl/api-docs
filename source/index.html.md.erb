@@ -674,7 +674,7 @@ hash<br/>(required)| SHA-256 hash of your App secret concatenated with a pipe an
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
-#### Getting basic user info
+### Getting basic user info
 Once you have obtained an access token on behalf of the user, you can fetch basic information (including user ID, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
 
 # Admin Features
@@ -684,6 +684,70 @@ Smartsheet users with System Admin rights have access to additional API features
 ## Manage Users
 
 As an org Administrator, you can provision, de-provision and otherwise manage users in your Smartsheet organization.  See [Users](#users) for more information on relevant API calls.
+
+### Assume-User
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Assume-User: john.doe%40smartsheet.com" 
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
+
+// Get current user (call gets executed as "john.doe@smartsheet.com").
+UserProfile user= smartsheet.userResources().getCurrentUser();
+```
+
+```python
+# Create the 'smartsheet' object and run the assume_user method.
+smartsheet = smartsheet.Smartsheet()
+smartsheet.assume_user('john.doe@smartsheet.com')
+
+# Get the current user (call executed as "john.doe@smartsheet.com").
+user = smartsheet.Users.get_current_user()
+
+# Reset the 'smartsheet' object so no Assume-User header is used in further requests.
+smartsheet.assume_user()
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
+As an org Administrator, you can assume the identity of any user in your organization. 
+This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
+ 
+Here is how it works. 
+Simply add an **Assume-User** header to your call, with the URI-encoded email address of the user whose identity you want to assume as the value. 
+For example, if you want to assume the identity of **john.doe@smartsheet.com** and john.doe@smartsheet.com is a confirmed member of your Smartsheet organization, you would add the following header:
+
+`Assume-User: john.doe%40smartsheet.com`
+
+You can then act on behalf of the user and make API calls as though you were that user.
 
 ## Maintain Data Attribution
 
@@ -924,9 +988,20 @@ for org_sheet in sheets:
 
 # Miscellaneous
 
-Not sure if this graphic will stay. But leaving it here for now:
+## Access Levels
 
-<img src="images/API-model-outline-format.png" alt="Graphical representation of object model">
+Throughout the API we have "Share" objects that represent the shared user's access level. 
+Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
+This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
+The **accessLevel** attribute has one of the following values:
+
+     |     |
+-----|-----|
+VIEWER | The user has read-only access to the resource.
+EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
+EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
+ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
+OWNER | The user has complete control over the resource.
 
 ## Cell Reference
 
@@ -1104,6 +1179,24 @@ CREATED_DATE | DATETIME
 CREATED_BY  | CONTACT_LIST
 AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
 
+## Dates and Times
+
+The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
+
+You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
+This flag works for any API request.
+
+## Developer Account
+
+Developer accounts provide access to the full range of features and functionality available in production. 
+They are easy to set up, will not expire, and will let you focus on your development without any risk to your production data.
+ 
+To set up a Developer account, please visit the Smartsheet Developer Portal [registration page](https://www.smartsheet.com/developers/register). 
+If you already have a paid Smartsheet account and your goal is to keep your development and production accounts separate, make sure to use a different email address when registering.
+ 
+Please note that Developer accounts are intended for development and testing purposes only, and are subject to the [Smartsheet Developer Program Agreement](https://www.smartsheet.com/files/SmartsheetDeveloperProgramAgreement20150630.pdf).
+
 ## Direct API Access
 
 Smartsheet makes it easy to directly access your data via the API. 
@@ -1197,9 +1290,49 @@ Once you have an Access Token, include it in the **Authorization** header for ev
 
 The header name is <b>Authorization</b> and the value of the header is <b>Bearer ACCESS_TOKEN</b>, where ACCESS_TOKEN is a token generated by you. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
 
-## Working at Scale 
+# Working at Scale 
 
-### Paging
+## Bulk Operations
+
+The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
+multiple objects in a single request. For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
+
+The following API operations currently allow you to do things in bulk:
+
+* [Add Columns](#add-columns)
+* [Add Favorites](#add-favorites)
+* [Remove Favorites](#remove-favorites-(in-bulk))
+* [Add Group Members](#add-group-members)
+* [Add Rows](#add-rows)
+* [Copy Rows to Another Sheet](#copy-rows-to-another-sheet)
+* [Delete Rows](#delete-rows)
+* [Move Rows to Another Sheet](#move-rows-to-another-sheet)
+* [Send Rows via Email](#send-rows)
+* [Update Rows](#update-rows)
+
+### Optional Bulk Operations
+
+Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
+Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
+pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
+noted as such in their API reference documentation.
+
+**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
+return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result object](#result-object) returned will omit them.
+
+<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
+
+### Partial Success
+
+In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
+if not, none of them will be.
+
+However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
+*not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This will be noted in the documentation for operations that support partial success.
+
+<%= PARTIAL_SUCCESS %>
+
+## Paging
 
 The Smartsheet API contains a number of *index endpoints* (typically denoted in the documentation with titles beginning with "Get All..." or "List...") which return arrays of objects.
 Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination, meaning
@@ -1216,152 +1349,15 @@ Index endpoints all support pagination via the following optional query string p
 
 <aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
 
-#### Paged Responses
+### Paged Responses
 
 Index endpoints all return paged responses via an **IndexResult** object which provides paging metadata that can be used to navigate the full set of pages in the result set:
 
 <%= partial "snippets/indexResult_object.md.erb" %>
 
-### Rate Limiting
+## Rate Limiting
 
 <%= partial "snippets/rateLimiting.md.erb" %>
-
-### Bulk Operations
-
-The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
-mulitple objects in a single request. For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
-
-The following API operations currently allow you to do things in bulk:
-
-* [Add Columns](#add-columns)
-* [Add Favorites](#add-favorites)
-* [Remove Favorites](#remove-favorites-(in-bulk))
-* [Add Group Members](#add-group-members)
-* [Add Rows](#add-rows)
-* [Copy Rows to Another Sheet](#copy-rows-to-another-sheet)
-* [Delete Rows](#delete-rows)
-* [Move Rows to Another Sheet](#move-rows-to-another-sheet)
-* [Send Rows via Email](#send-rows)
-* [Update Rows](#update-rows)
-
-#### Optional Bulk Operations
-
-Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
-Depending on what was passed in, the [Result object](#result-object) returned will contain either a single object, or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
-pass in a single [Favorite object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
-noted as such in their API reference documentation.
-
-**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
-return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result object](#result-object) returned will omit them.
-
-<aside class="notice">As we make future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
-
-#### Partial Success
-
-In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
-if not, none of them will be.
-
-However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
-*not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This will be noted in the documentation for operations that support partial success.
-
-<%= PARTIAL_SUCCESS %>
-
-### Assume-User
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/users/me \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Assume-User: john.doe%40smartsheet.com" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
-
-// Get current user (call gets executed as "john.doe@smartsheet.com").
-UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
-```
-
-```java
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
-
-// Get current user (call gets executed as "john.doe@smartsheet.com").
-UserProfile user= smartsheet.userResources().getCurrentUser();
-```
-
-```python
-# Create the 'smartsheet' object and run the assume_user method.
-smartsheet = smartsheet.Smartsheet()
-smartsheet.assume_user('john.doe@smartsheet.com')
-
-# Get the current user (call executed as "john.doe@smartsheet.com").
-user = smartsheet.Users.get_current_user()
-
-# Reset the 'smartsheet' object so no Assume-User header is used in further requests.
-smartsheet.assume_user()
-```
-
-> Example Response:
-
-```json
-{
-    "email": "john.doe@smartsheet.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "id": 48569348493401200
-}
-```
-
-As an org Administrator, you can assume the identity of any user in your organization. 
-This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
- 
-Here is how it works. 
-Simply add an **Assume-User** header to your call, with the URI-encoded email address of the user whose identity you want to assume as the value. 
-For example, if you want to assume the identity of **john.doe@smartsheet.com** and john.doe@smartsheet.com is a confirmed member of your Smartsheet organization, you would add the following header:
-
-`Assume-User: john.doe%40smartsheet.com`
-
-You can then act on behalf of the user and make API calls as though you were that user.
-
-## Dates and Times
-
-The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
-
-You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
-This flag works for any API request.
-
-## Developer Account
-
-Developer accounts provide access to the full range of features and functionality available in production. 
-They are easy to set up, will not expire, and will let you focus on your development without any risk to your production data.
- 
-To set up a Developer account, please visit the Smartsheet Developer Portal [registration page](https://www.smartsheet.com/developers/register). 
-If you already have a paid Smartsheet account and your goal is to keep your development and production accounts separate, make sure to use a different email address when registering.
- 
-Please note that Developer accounts are intended for development and testing purposes only, and are subject to the [Smartsheet Developer Program Agreement](https://www.smartsheet.com/files/SmartsheetDeveloperProgramAgreement20150630.pdf).
-
-## Access Levels
-
-Throughout the API we have "Share" objects that represent the shared user's access level. 
-Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
-This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
-The **accessLevel** attribute has one of the following values:
-
-     |     |
------|-----|
-VIEWER | The user has read-only access to the resource.
-EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
-EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
-ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
-OWNER | The user has complete control over the resource.
 
 # <span class="customTOCSectionHeading">API Reference</span>
 
