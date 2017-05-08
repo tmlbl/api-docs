@@ -42,7 +42,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-04
+Updated 2017-05-08
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sdks-and-sample-code))
@@ -68,11 +68,22 @@ Updated 2017-05-04
 https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
 
-The Smartsheet API provides programmatic access to Smartsheet features and data. 
-In designing the API, our goal was to make it simple, intuitive, and predictable. 
-We do our best to adhere to common open and widely accepted standards, including REST for access, JSON format for the data, and OAuth for Authentication and Authorization. 
-This API assumes a good working knowledge of the Smartsheet application UI, concepts and terminology.
-## RESTful Architecture
+[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. 
+
+To give you some idea of how data is organized, there are two main locations for a user's data:
+
+* Home
+* Sheet
+
+Home is where a user's Workspaces and root folder live. A high-level data model is provided below:
+
+<img src="images/Home-high-levelb.png" alt="Graphical representation of objects in relation to Home">
+
+Sheets are where you can find common data objects, such as Column definitions, Rows, and Cells.  A high-level data model is provided below:
+
+<img src="images/Sheet-high-level.png" alt="Graphical representation of objects in relation to a Sheet">
+
+### HTTP Standards and RESTful Architecture
 > **Base URL**:  https://api.smartsheet.com/2.0
 
 ```apires
@@ -103,24 +114,25 @@ Resources:
 /workspaces
 
 ```
+You call the API using [standard HTTP methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html): GET (to retrieve an object or all objects in a specific category), POST (to create), PUT (to modify), and DELETE.
 
-Everything in Smartsheet is represented as an object with a defined structure. 
-For example, the "Home" object contains a list of your Sheets, Folders, Reports, Templates, and Workspaces, and a Sheet object contains Columns, Rows, Attachments, and Discussions. 
-All aspects of Smartsheet are modeled as structured objects.
+The REST URL structure follows typical resource-oriented conventions. For example, to get a list of sheets, use:
 
-<img src="images/API-model-outline-format.png" alt="Graphical representation of object model">
+ `GET https://api.smartsheet.com/2.0/sheets`
+ 
+This will return a list of Sheet objects, where each Sheet will have an “id” attribute. To get details on the sheet with id 123456, use:
+ 
+ `GET https://api.smartsheet.com/2.0/sheets/123456`
 
-URL structure follows typical resource-oriented conventions. For example, to get a list of sheets, use `GET https://api.smartsheet.com/2.0/sheets`. 
-This will return a list of Sheet objects, where each Sheet will have an "id" attribute. 
-To get details on a particular sheet, use `GET https://api.smartsheet.com/2.0/sheets/123456`, where 123456 is the "id" of the Sheet you want. 
-Similarly, to share a sheet, `POST` a Share object to `https://api.smartsheet.com/2.0/sheets/123456/shares`.
+This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique ID.
 
-## HTTP Standards
-
-All actions taken through the API are done via HTTP using [standard HTTP methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html): GET (to retrieve an object), POST (to create), PUT (to modify), and DELETE. 
+If you don't want to make raw HTTP calls, Smartsheet also has software development kits (SDKs), which provide a higher level interface for [C#](https://github.com/smartsheet-platform/smartsheet-csharp-sdk), [Java](https://github.com/smartsheet-platform/smartsheet-java-sdk), [Python](https://github.com/smartsheet-platform/smartsheet-python-sdk), and [Node.js](https://github.com/smartsheet-platform/smartsheet-javascript-sdk) code. However, it is still helpful to understand the underlying messages.
+  
 [Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions.
 
-## Input / Output Format
+In addition, Smartsheet has more detailed error codes to help you troubleshoot issues. See the [Complete Error Code List.](#complete-error-code-list)
+
+### Input / Output Format
 
 Unless otherwise specified, all API endpoints expect request body data to be in [JSON](https://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON.
 The following HTTP request headers may be required, depending on the operation and endpoint being invoked:
@@ -128,37 +140,24 @@ The following HTTP request headers may be required, depending on the operation a
      |     |
 -----|-----|
 *Content-Type* | For POST and PUT requests, must be set to the appropriate value (typically `application/json`).  Ignored for GET and DELETE requests.
-*Accept*       | Optional; if not specified, `*/*` is assumed (i.e. any response type is accepted), else it must match the output of the invoked endpoint (typically `application/json`).
+*Accept*       | Optional; if not specified, `*/*` is assumed (i.e., any response type is accepted), else it must match the output of the invoked endpoint (typically `application/json`).
  
 <aside class="notice">Some of the data returned by the Smartsheet API is user-generated content. Caution should be taken to ensure that the user-generated content is consumed safely in any external system to avoid introducing vulnerabilities.</aside>
 
-## Example Requests & Responses
+### How to Use the API Documentation
 
-For every API operation in this documentation, we show example requests in multiple languages and an example (JSON) response. 
+For every API operation in this documentation, Smartsheet shows example requests in multiple languages and an example (JSON) response. 
 You'll see the examples displayed in the dark blue panel next to each operation. 
 To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
 For more information about using the sample code in this API documentation, see [SDKs and Sample Code](#sdks-and-sample-code). 
 
 As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://www.getpostman.com/). 
 
-## Versioning and Changes
-
-Smartsheet will add new functionality and bug fixes to the API over time. Make sure that your code can handle new attributes gracefully. 
-Also, make sure your code does not depend on the order in which records are returned, unless it is explicitly stated in this documentation. 
-
-<aside class="success">To stay informed about changes to the API, subscribe to our Developer Newsletter (using the <i>Get Developer Updates</i> form on the <a href="https://www.smartsheet.com/developers" target="_blank">Smartsheet Developer Portal</a>) or follow us via <a href="https://twitter.com/smartsheetapi" target="_blank">Twitter</a>.</aside>
-
-# API Fundamentals
-
 ## Authentication
 
-The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. 
-An **Authorization** HTTP header containing an Access Token is required to authenticate requests. 
-Access Tokens can be acquired in one of two ways:
-<ul>
-<li>via the Smartsheet UI ([User-generated Access Tokens](#user-generated-access-tokens)) </li>
-<li>via OAuth 2.0 (see [Third-party Access Tokens](#third-party-access-tokens))</li>
-</ul> 
+The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
+
+The access token must be sent with every API call in an HTTP authorization header.
 
 ### User-generated Access Tokens
 
@@ -171,57 +170,17 @@ See [Direct API Access](#direct-api-access) for more information on user-generat
 Third-party developers are able to build applications that can acquire Access Tokens using OAuth 2.0. 
 See [Third Party App Development](#third-party-app-development) for more information.
 
-## Access Levels
-
-Throughout the API we have "Share" objects that represent the shared user's access level. 
-Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
-This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
-The **accessLevel** attribute has one of the following values:
-
-     |     |
------|-----|
-VIEWER | The user has read-only access to the resource.
-EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
-EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
-ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
-OWNER | The user has complete control over the resource.
-
-## Errors
-
-<%= partial "snippets/errorHandling.md.erb" %>
-
-### Error Handling
-
-Smartsheet uses HTTP 400 and 500-level status codes, and then adds a custom errorCode to give you more detail. In general terms, 400-level status codes indicate that there is something you should fix or add to your request before you try the request again. 500-level status codes indicate there is some kind of permanent error. 
- 
-Use this information to implement error handling logic according to the following guidelines:
-
-* If the error code indicates a permanent error condition, do not retry the request.
-* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
-* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
-
-Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
-
-1. Try executing the same API Request using a tool like <a href="https://curl.haxx.se/">cURL</a> or <a href="https://www.getpostman.com/">Postman</a>. By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
-  * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
-  * If you're able to execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. You'll need to compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code is generating. (See step #2 below.)
-2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
-  * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-  * Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-
-For a list of all Smartsheet error codes, see the [Complete Error Code List](#complete-error-code-list). 
-
 ## Cell Values
 
 Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either
-a value specific to the column type (e.g. dates, checkboxes, symbols, etc.) or a free-form text value.  This allows for a very
+a value specific to the column type (e.g., dates, checkboxes, symbols, etc.) or a free-form text value.  This allows for a very
 flexible UI and is one of the key benefits to using Smartsheet.
 
 <aside class="notice">See the <a href="#column-types">Column Types</a> section for information on the different column types.</aside>
 
 ### Cell Value Representation
 
-[Cell objects](#cell-object) retrieved through the Smartsheet API's have two main attributes representing cell values: **Cell.value**, and
+[Cell objects](#cell-object) retrieved through the Smartsheet APIs have two main attributes representing cell values: **Cell.value**, and
 **Cell.displayValue**.  A third attribute, **Cell.objectValue** is currently used only for adding and updating predecessors.
 An empty cell is always represented by **null** for all of these attributes.
 
@@ -341,6 +300,38 @@ When creating or updating cells for a contact list column, the **displayValue** 
 <li>If **displayValue** is an empty string, the Smartsheet cell will display the email address.</li>
 <li>If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.</li>
 </ul>
+
+## Errors
+
+<%= partial "snippets/errorHandling.md.erb" %>
+
+### Error Handling
+
+Smartsheet uses HTTP 400 and 500-level status codes, and then adds a custom errorCode to give you more detail. In general terms, 400-level status codes indicate that there is something you should fix or add to your request before you try the request again. 500-level status codes indicate there is some kind of permanent error. 
+ 
+Use this information to implement error handling logic according to the following guidelines:
+
+* If the error code indicates a permanent error condition, do not retry the request.
+* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
+* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
+
+Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
+
+1. Try executing the same API Request using a tool like <a href="https://curl.haxx.se/">cURL</a> or <a href="https://www.getpostman.com/">Postman</a>. By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
+  * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
+  * If you're able to execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. You'll need to compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code is generating. (See step #2 below.)
+2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
+  * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+  * Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+
+For a list of all Smartsheet error codes, see the [Complete Error Code List.](#complete-error-code-list)
+
+## Versioning and Changes
+
+Smartsheet will add new functionality and bug fixes to the API over time. Make sure that your code can handle new attributes gracefully. 
+Also, make sure your code does not depend on the order in which records are returned, unless it is explicitly stated in this documentation. 
+
+<aside class="success">To stay informed about changes to the API, subscribe to our Developer Newsletter (using the <i>Get Developer Updates</i> form on the <a href="https://www.smartsheet.com/developers" target="_blank">Smartsheet Developer Portal</a>) or follow us via <a href="https://twitter.com/smartsheetapi" target="_blank">Twitter</a>.</aside>
 
 # Getting Started
 
@@ -1115,6 +1106,10 @@ for org_sheet in sheets:
 
 # Miscellaneous
 
+Not sure if this graphic will stay. But leaving it here for now:
+
+<img src="images/API-model-outline-format.png" alt="Graphical representation of object model">
+
 ## Column Types
 
 Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
@@ -1316,6 +1311,21 @@ To set up a Developer account, please visit the Smartsheet Developer Portal [reg
 If you already have a paid Smartsheet account and your goal is to keep your development and production accounts separate, make sure to use a different email address when registering.
  
 Please note that Developer accounts are intended for development and testing purposes only, and are subject to the [Smartsheet Developer Program Agreement](https://www.smartsheet.com/files/SmartsheetDeveloperProgramAgreement20150630.pdf).
+
+## Access Levels
+
+Throughout the API we have "Share" objects that represent the shared user's access level. 
+Also, on Sheets, Workspaces and Templates, there is an **accessLevel** attribute that describes the current user's access level to that object. 
+This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
+The **accessLevel** attribute has one of the following values:
+
+     |     |
+-----|-----|
+VIEWER | The user has read-only access to the resource.
+EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
+EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
+ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
+OWNER | The user has complete control over the resource.
 
 # <span class="customTOCSectionHeading">API Reference</span>
 
