@@ -830,7 +830,7 @@ Specifying the **Assume-User** header API requests allows org Administrators to 
 ## List All Sheets
 
 As an org Administrator, you can get a list of all sheets in your organization, regardless of ownership or whether or not the sheets have been shared to you. 
-Please see [List All Org Sheets](#list-all-org-sheets) for more information.
+Please see [Get All Org Sheets](#get-all-org-sheets) for more information.
 
 ## Backup All Org Data
 
@@ -852,12 +852,12 @@ smartsheet.sheets.listOrganizationSheets()
 ```
 
 ```csharp
-// List all org sheets.
+// Get all org sheets.
 smartsheet.UserResources.SheetResources.ListSheets();
 ```
 
 ```java
-// List all org sheets.
+// Get all org sheets.
 smartsheet.userResources().listOrgSheets();
 ```
 
@@ -2257,7 +2257,7 @@ Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and 
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
-## Get Discussion Attachments
+## Get All Discussion Attachments
 
 > Example Request:
 
@@ -2273,7 +2273,7 @@ var options = {
     discussionId: 3962273862576004
 };
 
-// Get discussion attachments.
+// Get all discussion attachments.
 smartsheet.sheets.listDiscussionAttachments(options)
     .then(function (data) {
         console.log(data);
@@ -2284,10 +2284,10 @@ smartsheet.sheets.listDiscussionAttachments(options)
 ```
 
 ```csharp
-// Get discussion attachments (omit pagination parameters).
+// Get all discussion attachments (omit pagination parameters).
 smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, null);
 
-// Get discussion attachments (specify 'includeAll' parameter with value of "true").
+// Get all discussion attachments (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
 ```
 
@@ -2303,7 +2303,7 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionReso
 ```
 
 ```python
-# Get discussion attachments.
+# Get all discussion attachments.
 action = smartsheet.Attachments.list_discussion_attachments(
     sheetId, 
     discussionId, 
@@ -2362,7 +2362,7 @@ Gets a list of all Attachments that are in the Discussion.
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult object](#indexresult-object) containing an array of [Attachment objects](#attachment-object)
 
-## Get Row Attachments
+## Get All Row Attachments
 
 > Example Request:
 
@@ -2378,7 +2378,7 @@ var options = {
     rowId: 4293147074291588
 };
 
-// Get row attachments.
+// Get all row attachments.
 smartsheet.sheets.getRowAttachments(options)
     .then(function (data) {
         console.log(data);
@@ -2389,10 +2389,10 @@ smartsheet.sheets.getRowAttachments(options)
 ```
 
 ```csharp
-// Get row attachments (omit pagination parameters).
+// Get all row attachments (omit pagination parameters).
 smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, null);
 
-// Get row attachments (specify 'includeAll' parameter with value of "true").
+// Get all row attachments (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
 ```
 
@@ -2408,7 +2408,7 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources()
 ```
 
 ```python
-# Get row attachments.
+# Get all row attachments.
 action = smartsheet.Attachments.list_row_attachments(
     sheetId, 
     rowId, 
@@ -2656,7 +2656,7 @@ Deletes all versions of the attachment corresponding to the specified Attachment
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Result object](#result-object)
 
-### List All Versions
+### Get All Versions
 
 > Example Request:
 
@@ -2672,7 +2672,7 @@ var options = {
     attachmentId: 5510069950408580
 };
 
-// List all versions of the attachment.
+// Get all versions of the attachment.
 smartsheet.sheets.listAttachmentVersions(options)
     .then(function (data) {
         console.log(data);
@@ -2683,10 +2683,10 @@ smartsheet.sheets.listAttachmentVersions(options)
 ```
 
 ```csharp
-// List all versions of the attachment (omit pagination parameters).
+// Get all versions of the attachment (omit pagination parameters).
 smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, null);
 
-// List all versions of the attachment (specify 'includeAll' parameter with value of "true").
+// Get all versions of the attachment (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
 ```
 
@@ -2694,15 +2694,15 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(s
 // Specify pagination parameter 'includeAll'.
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List all attachment versions with pagination.
+// Get all attachment versions with pagination.
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, parameters);
 
-// List all attachment versions without pagination.
+// Get all attachment versions without pagination.
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(sheetId, attachmentId, null);
 ```
 
 ```python
-# List all attachment versions.
+# Get all attachment versions.
 action = smartsheet.Attachments.list_attachment_versions(
     sheetId, 
     attachmentId, 
@@ -3095,10 +3095,10 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
      |     |     |
 -----|-----|-----|
 **imageId** | string | Image ID
-**width** | number | Image width (in pixels).<br/>In the [Get Image URLs](#get-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get Image URLs](#get-image-urls).) 
-**height** | number | Image height (in pixels).<br/>In the [Get Image URLs](#get-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get Image URLs](#get-image-urls).) 
+**width** | number | Image width (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
+**height** | number | Image height (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
 **url** | string | Temporary URL that can be used to retrieve the image. This attribute can be present in a response but will never be specified in a request.
-**error** | [Error](#errors) | Error object. Present in the [Get Image URLs](#get-image-urls) response only if an error occurred retrieving the image.
+**error** | [Error](#errors) | Error object. Present in the [Get All Image URLs](#get-all-image-urls) response only if an error occurred retrieving the image.
 
 ### ImageUrlMap Object
 
@@ -3160,7 +3160,7 @@ Uploads an image to the specified Cell within a Sheet.
 <%= REQUEST %> | Binary content for the file
 <%= RETURNS %> | [Result object](#result-object)
 
-## Get Image URLs
+## Get All Image URLs
 
 > Example Request:
 
@@ -3808,7 +3808,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 
 A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
 
-<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row, use one of the following operations:<ul><li><a href="#get-all-discussions">Get All Discussions</a></li><li><a href="#get-row-discussions">Get Row Discussions</a></li></ul></aside>
+<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row, use one of the following operations:<ul><li><a href="#get-all-discussions">Get All Discussions</a></li><li><a href="#get-all-row-discussions">Get All Row Discussions</a></li></ul></aside>
 
 ## <%= OBJECTS %>
 
@@ -4216,7 +4216,7 @@ Gets the specified Contact.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Contact object](#contact-object)
 
-## List Contacts
+## Get All Contacts
 
 > Example Request:
 
@@ -4226,10 +4226,10 @@ curl https://api.smartsheet.com/2.0/contacts \
 ```
 
 ```csharp
-// List contacts (omit pagination parameters).
+// Get all contacts (omit pagination parameters).
 smartsheet.ContactResources.ListContacts(null);
 
-// List contacts (specify 'includeAll' parameter with value of "true").
+// Get all contacts (specify 'includeAll' parameter with value of "true").
 smartsheet.ContactResources.ListContacts(new PaginationParameters(true, null, null));
 ```
 
@@ -4237,10 +4237,10 @@ smartsheet.ContactResources.ListContacts(new PaginationParameters(true, null, nu
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List contacts (specify 'includeAll' parameter with value of "true").
+// Get all contacts (specify 'includeAll' parameter with value of "true").
 smartsheet.contactResources().listContacts(parameters);
 
-// List contacts (omit pagination parameters).
+// Get all contacts (omit pagination parameters).
 smartsheet.contactResources().listContacts(null);
 ```
 
@@ -4822,7 +4822,7 @@ Gets the Discussion specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Discussion object](#discussion-object)
 
-## Get Row Discussions
+## Get All Row Discussions
 
 > Example Request:
 
@@ -4838,7 +4838,7 @@ var options = {
     rowId: 4293147074291588
 };
 
-// Get row discussions.
+// Get all row discussions.
 smartsheet.sheets.getRowDiscussions(options)
     .then(function (data) {
         console.log(data);
@@ -4849,10 +4849,10 @@ smartsheet.sheets.getRowDiscussions(options)
 ```
 
 ```csharp
-// Get row discussions (omit 'include' parameter and pagination parameters).
+// Get all row discussions (omit 'include' parameter and pagination parameters).
 smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, null, null);
 
-// Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+// Get all row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheetId, rowId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
 ```
 
@@ -4860,15 +4860,15 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(sheet
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+// Get all row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
 smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
 
-// Get row discussions (omit 'include' parameter and pagination parameters).
+// Get all row discussions (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, null, null);
 ```
 
 ```python
-# Get row discussions.
+# Get all row discussions.
 action = smartsheet.Discussions.get_row_discussions(sheetId, rowId, include_all=True)
 discussions = action.data
 
@@ -5008,7 +5008,7 @@ If called with a single [Favorite object](#favorite-object), and that favorite a
 <%= REQUEST %> | [Favorite object](#favorite-object) or an array of Favorite objects, with the following attributes:<ul><li>type</li><li>objectId</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing objects that were marked as favorites -- either a single [Favorite object](#favorite-object) or an array of Favorite objects, corresponding to what was specified in the request.
 
-## List Favorites
+## Get All Favorites
 
 > Example Request:
 
@@ -5018,7 +5018,7 @@ curl https://api.smartsheet.com/2.0/favorites \
 ```
 
 ```javascript
-// List favorites.
+// Get all favorites.
 smartsheet.favorites.listFavorites()
     .then(function (data) {
         console.log(data);
@@ -5029,10 +5029,10 @@ smartsheet.favorites.listFavorites()
 ```
 
 ```csharp
-// List favorites (omit pagination parameters).
+// Get all favorites (omit pagination parameters).
 smartsheet.FavoriteResources.ListFavorites(null);
 
-// List favorites (specify 'includeAll' parameter with value of "true").
+// Get all favorites (specify 'includeAll' parameter with value of "true").
 smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true, null, null));
 ```
 
@@ -5040,10 +5040,10 @@ smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true, null, 
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List favorites (specify 'includeAll' parameter with value of "true").
+// Get all favorites (specify 'includeAll' parameter with value of "true").
 smartsheet.favoriteResources().listFavorites(parameters);
 
-// List favorites (omit pagination parameters).
+// Get all favorites (omit pagination parameters).
 smartsheet.favoriteResources().listFavorites(null);
 ```
 
@@ -5409,45 +5409,9 @@ Removes a single Workspace from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorite_table.md.erb" %>
 
-## Remove Favorites (in bulk)
+## Remove All Favorites
 
-### Remove Favorite Sights
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{folderId2} \
--H "Authorization: Bearer ACCESS_TOKEN" \
--X DELETE
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
-> Example Response:
-
-<%= partial "snippets/removeFavorites_response.md.erb" %>
-
-`DELETE /favorites/sights`
-
-Removes multiple Sights from the user's list of Favorite items.
-
-<%= partial "snippets/removeFavorites_table.md.erb" %>
-
-### Remove Favorite Folders
+### Remove All Favorite Folders
 
 > Example Request:
 
@@ -5503,7 +5467,7 @@ Removes multiple Folders from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove Favorite Reports
+### Remove All Favorite Reports
 
 > Example Request:
 
@@ -5559,7 +5523,7 @@ Removes multiple Reports from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove Favorite Sheets
+### Remove All Favorite Sheets
 
 > Example Request:
 
@@ -5615,7 +5579,43 @@ Removes multiple Sheets from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove Favorite Templates
+### Remove All Favorite Sights
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{folderId2} \
+-H "Authorization: Bearer ACCESS_TOKEN" \
+-X DELETE
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+<%= partial "snippets/removeFavorites_response.md.erb" %>
+
+`DELETE /favorites/sights`
+
+Removes multiple Sights from the user's list of Favorite items.
+
+<%= partial "snippets/removeFavorites_table.md.erb" %>
+
+### Remove All Favorite Templates
 
 > Example Request:
 
@@ -5671,7 +5671,7 @@ Removes multiple Templates from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove Favorite Workspaces
+### Remove All Favorite Workspaces
 
 > Example Request:
 
@@ -6169,11 +6169,11 @@ Gets the specified Folder (and lists its contents).
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
 
-## List Child Folders
+## Get All Child Folders
 
 Top-level child Folders can be retrieved from the user's **Sheets** folder ([Home](#home)), from another Folder, or from a Workspace.
 
-### List Folders
+### Get All Folders
 
 > Example Request:
 
@@ -6184,7 +6184,7 @@ curl https://api.smartsheet.com/2.0/home/folders \
 ```
 
 ```javascript
-// List folders in "Sheets" folder. 
+// Get all folders in "Sheets" folder. 
 smartsheet.home.listFolders()
     .then(function (data) {
         console.log(data);
@@ -6195,10 +6195,10 @@ smartsheet.home.listFolders()
 ```
 
 ```csharp
-// List folders in "Sheets" folder (omit pagination parameters).
+// Get all folders in "Sheets" folder (omit pagination parameters).
 smartsheet.HomeResources.FolderResources.ListFolders(null);
 
-// List folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
+// Get all folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
 smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(true, null, null));
 ```
 
@@ -6206,10 +6206,10 @@ smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(tr
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List folders (specify 'includeAll' parameter with value of "true").
+// Get all folders (specify 'includeAll' parameter with value of "true").
 smartsheet.homeResources().folderResources().listFolders(parameters);
 
-// List folders (omit pagination parameters).
+// Get all folders (omit pagination parameters).
 smartsheet.homeResources().folderResources().listFolders(null);
 ```
 
@@ -6236,7 +6236,7 @@ Gets a list of the top-level child Folders within the user's **Sheets** folder (
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
-### List Folders (Folder)
+### Get All Folders (Folder)
 
 > Example Request:
 
@@ -6252,7 +6252,7 @@ var options = {
     folderId: 5107651446105988
 };
 
-// List folders in another folder.
+// Get all folders in another folder.
 smartsheet.folders.listChildFolders(options)
     .then(function (data) {
         console.log(data);
@@ -6263,10 +6263,10 @@ smartsheet.folders.listChildFolders(options)
 ```
 
 ```csharp
-// List folders in another folder (omit pagination parameters).
+// Get all folders in another folder (omit pagination parameters).
 smartsheet.FolderResources.ListFolders(folderId, null);
 
-// List folders in another folder (specify 'includeAll' parameter with value of "true").
+// Get all folders in another folder (specify 'includeAll' parameter with value of "true").
 smartsheet.FolderResources.ListFolders(folderId, new PaginationParameters(true, null, null));
 ```
 
@@ -6274,10 +6274,10 @@ smartsheet.FolderResources.ListFolders(folderId, new PaginationParameters(true, 
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List folders in another folder (specify 'includeAll' parameter with value of "true").
+// Get all folders in another folder (specify 'includeAll' parameter with value of "true").
 smartsheet.folderResources().listFolders(parameters);
 
-// List folders in another folder (omit pagination parameters).
+// Get all folders in another folder (omit pagination parameters).
 smartsheet.folderResources().listFolders(null);
 ```
 
@@ -6304,7 +6304,7 @@ Gets a list of the top-level child Folders within the specified Folder.
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
-### List Folders (Workspace)
+### List All Folders (Workspace)
 
 > Example Request:
 
@@ -6320,7 +6320,7 @@ var options = {
     workspaceId: 1656220827314052
 };
 
-// List folders in workspace.
+// Get all folders in workspace.
 smartsheet.workspaces.listWorkspaceFolders(options)
     .then(function (data) {
         console.log(data);
@@ -6331,10 +6331,10 @@ smartsheet.workspaces.listWorkspaceFolders(options)
 ```
 
 ```csharp
-// List folders in workspace (omit pagination parameters).
+// Get all folders in workspace (omit pagination parameters).
 smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, null);
 
-// List folders in workspace (specify 'includeAll' parameter with value of "true").
+// Get all folders in workspace (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, new PaginationParameters(true, null, null));
 ```
 
@@ -6342,15 +6342,15 @@ smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, new Pagin
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List folders in workspace (specify 'includeAll' parameter with value of "true").
+// Get all folders in workspace (specify 'includeAll' parameter with value of "true").
 smartsheet.workspaceResources().folderResources().listFolders(parameters);
 
-// List folders in workspace (omit pagination parameters).
+// Get all folders in workspace (omit pagination parameters).
 smartsheet.workspaceResources().folderResources().listFolders(null);
 ```
 
 ```python
-# Get complete list of folders in a workspace.
+# Get all folders in a workspace.
 action = smartsheet.Workspaces.list_folders(workspaceId, include_all=True)
 folders = action.data
 
@@ -6798,7 +6798,7 @@ Gets the Group specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Group object](#group-object) that includes the list of [GroupMembers](#groupmember-object)
 
-## List All Org Groups
+## Get All Org Groups
 
 > Example Request:
 
@@ -6808,7 +6808,7 @@ curl https://api.smartsheet.com/2.0/groups \
 ```
 
 ```javascript
-// List all org groups.
+// Get all org groups.
 smartsheet.groups.listGroups()
     .then(function (data) {
         console.log(data);
@@ -6819,10 +6819,10 @@ smartsheet.groups.listGroups()
 ```
 
 ```csharp
-// List all org groups (omit pagination parameters).
+// Get all org groups (omit pagination parameters).
 smartsheet.GroupResources.ListGroups(null);
 
-// List all org groups (specify 'includeAll' parameter with value of "true").
+// Get all org groups (specify 'includeAll' parameter with value of "true").
 smartsheet.GroupResources.ListGroups(new PaginationParameters(true, null, null));
 ```
 
@@ -6830,10 +6830,10 @@ smartsheet.GroupResources.ListGroups(new PaginationParameters(true, null, null))
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List all org groups (specify 'includeAll' parameter with value of "true").
+// Get all org groups (specify 'includeAll' parameter with value of "true").
 smartsheet.groupResources().listGroups(parameters);
 
-// List all org groups (omit pagination parameters).
+// Get all org groups (omit pagination parameters).
 smartsheet.groupResources().listGroups(null);
 ```
 
@@ -7177,7 +7177,7 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 **workspaces** | [Workspace](#workspace-object)[] | Array of Workspace objects
 **Sights** | [Sight](#sight-object)[] | Array of Sight objects
 
-## List All Contents
+## Get All Contents
 
 > Example Request:
 
@@ -7187,7 +7187,7 @@ curl https://api.smartsheet.com/2.0/home?include=source \
 ```
 
 ```javascript
-// List all contents.
+// Get all contents.
 smartsheet.home.listContents()
 	.then(function(data) {
 		console.log(data);
@@ -7198,23 +7198,23 @@ smartsheet.home.listContents()
 ```
 
 ```csharp
-// List all contents (omit 'include' parameter).
+// Get all contents (omit 'include' parameter).
 smartsheet.HomeResources.GetHome(null);
 
-// List all contents (specify 'include' parameter with value of "source").
+// Get all contents (specify 'include' parameter with value of "source").
 smartsheet.HomeResources.GetHome(new HomeInclusion[] { HomeInclusion.SOURCE });
 ```
 
 ```java
-// List all contents (omit 'include' parameter).
+// Get all contents (omit 'include' parameter).
 smartsheet.homeResources().getHome(null);
 
-// List all contents (specify 'include' parameter with value of "source").
+// Get all contents (specify 'include' parameter with value of "source").
 smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
 ```
 
 ```python
-# List all contents (include source).
+# Get all contents (include source).
 contents = smartsheet.Home.list_all_contents(include='source')
 ```
 
@@ -7606,7 +7606,7 @@ Gets the Report in the format specified, based on the Report ID.
  | **Accept** -- must be set to one of the following values:<ul><li>application/vnd.ms-excel</li><li>text/csv</li></ul>
 <%= RETURNS %> | The report file in either Excel or CSV format.
 
-## List Reports
+## Get All Reports
 
 > Example Request:
 
@@ -7616,7 +7616,7 @@ curl https://api.smartsheet.com/2.0/reports
 ```
 
 ```javascript
-// List reports.
+// Get all reports.
 smartsheet.reports.listReports()
     .then(function (data) {
         console.log(data);
@@ -7627,10 +7627,10 @@ smartsheet.reports.listReports()
 ```
 
 ```csharp
-// List reports (omit pagination parameters).
+// Get all reports (omit pagination parameters).
 smartsheet.ReportResources.ListReports(null);
 
-// List reports (specify 'includeAll' parameter with value of "true").
+// Get all reports (specify 'includeAll' parameter with value of "true").
 smartsheet.ReportResources.ListReports(new PaginationParameters(true, null, null));
 ```
 
@@ -7638,10 +7638,10 @@ smartsheet.ReportResources.ListReports(new PaginationParameters(true, null, null
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List reports (specify 'includeAll' parameter with value of "true").
+// Get all reports (specify 'includeAll' parameter with value of "true").
 smartsheet.reportResources().listReports(parameters);
 
-// List reports (omit pagination parameters).
+// Get all reports (omit pagination parameters).
 smartsheet.reportResources().listReports(null);
 ```
 
@@ -8347,7 +8347,7 @@ Gets the Row specified in the URL.
   | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
 <%= RETURNS %> | [Row object](#row-object), populated according to the specified parameters
 
-## List Rows
+## Get All Rows
 
 To get the list of all Rows in a Sheet, use the [Get Sheet](#get-sheet) operation.
 
@@ -9118,7 +9118,7 @@ Gets the Share specified in the URL.
 
 <%= partial "snippets/getShare_table.md.erb" %>
 
-### List Report Shares
+### Get All Report Shares
 
 > Example Request:
 
@@ -9133,7 +9133,7 @@ var options = {
     reportId: 665829219035012
 };
 
-// List report shares.
+// Get all report shares.
 smartsheet.reports.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -9144,10 +9144,10 @@ smartsheet.reports.listShares(options)
 ```
 
 ```csharp
-// List report shares (omit pagination parameters).
+// Get all report shares (omit pagination parameters).
 smartsheet.ReportResources.ShareResources.ListShares(reportId, null);
 
-// List report shares (specify 'includeAll' parameter with value of "true").
+// Get all report shares (specify 'includeAll' parameter with value of "true").
 smartsheet.ReportResources.ShareResources.ListShares(reportId, new PaginationParameters(true, null, null));
 ```
 
@@ -9155,10 +9155,10 @@ smartsheet.ReportResources.ShareResources.ListShares(reportId, new PaginationPar
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List report shares (specify 'includeAll' parameter with value of "true").
+// Get all report shares (specify 'includeAll' parameter with value of "true").
 smartsheet.reportResources().shareResources().listShares(reportId, parameters);
 
-// List report shares (omit pagination parameters).
+// Get all report shares (omit pagination parameters).
 smartsheet.reportResources().shareResources().listShares(reportId, null);
 ```
 
@@ -9440,7 +9440,7 @@ Gets the Share specified in the URL.
 
 <%= partial "snippets/getShare_table.md.erb" %>
 
-### List Sheet Shares
+### Get All Sheet Shares
 
 > Example Request:
 
@@ -9455,7 +9455,7 @@ var options = {
     sheetId: 4583614634583940
 };
 
-// List sheet shares.
+// Get all sheet shares.
 smartsheet.sheets.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -9466,10 +9466,10 @@ smartsheet.sheets.listShares(options)
 ```
 
 ```csharp
-// List sheet shares (omit pagination parameters).
+// Get all sheet shares (omit pagination parameters).
 smartsheet.SheetResources.ShareResources.ListShares(sheetId, null);
 
-// List sheet shares (specify 'includeAll' parameter with value of "true").
+// Get all sheet shares (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.ShareResources.ListShares(sheetId, new PaginationParameters(true, null, null));
 ```
 
@@ -9477,10 +9477,10 @@ smartsheet.SheetResources.ShareResources.ListShares(sheetId, new PaginationParam
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List sheet shares (specify 'includeAll' parameter with value of "true").
+// Get all sheet shares (specify 'includeAll' parameter with value of "true").
 smartsheet.sheetResources().shareResources().listShares(sheetId, parameters);
 
-// List sheet shares (omit pagination parameters).
+// Get all sheet shares (omit pagination parameters).
 smartsheet.sheetResources().shareResources().listShares(sheetId, null);
 ```
 
@@ -9739,7 +9739,7 @@ Gets the Share specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Share object](#share-object)
 
-### List Sight Shares
+### Get All Sight Shares
 
 > Example Request:
 
@@ -9984,7 +9984,7 @@ Gets the Share specified in the URL.
 
 <%= partial "snippets/getShare_table.md.erb" %>
 
-### List Workspace Shares
+### Get All Workspace Shares
 
 > Example Request:
 
@@ -9999,7 +9999,7 @@ var options = {
     workspaceId: 1656220827314052
 };
 
-// List workspace shares.
+// Get all workspace shares.
 smartsheet.workspaces.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -10010,10 +10010,10 @@ smartsheet.workspaces.listShares(options)
 ```
 
 ```csharp
-// List workspace shares (omit pagination parameters).
+// Get all workspace shares (omit pagination parameters).
 smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, null);
 
-// List workspace shares (specify 'includeAll' parameter with value of "true").
+// Get all workspace shares (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, new PaginationParameters(true, null, null));
 ```
 
@@ -10021,10 +10021,10 @@ smartsheet.WorkspaceResources.ShareResources.ListShares(workspaceId, new Paginat
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List workspace shares (specify 'includeAll' parameter with value of "true").
+// Get all workspace shares (specify 'includeAll' parameter with value of "true").
 smartsheet.workspaceResources().shareResources().listShares(workspaceId, parameters);
 
-// List workspace shares (omit pagination parameters).
+// Get all workspace shares (omit pagination parameters).
 smartsheet.workspaceResources().shareResources().listShares(workspaceId, null);
 ```
 
@@ -11429,11 +11429,11 @@ Gets the Sheet in the format specified, based on the Sheet ID.
 <%= PARAMETERS %> | **paperSize** (optional) -- applies to PDF only, must be one of:<ul><li>LETTER (default)</li><li>LEGAL</li><li>WIDE (same as 11x17)</li><li>ARCHD</li><li>A4</li><li>A3</li><li>A2</li><li>A1</li><li>A0</li></ul>
 <%= RETURNS %> | The file in either Excel, PDF, or CSV format.
 
-## List All Org Sheets
+## Get All Org Sheets
 
 <%= partial "snippets/listAllOrgSheets.md.erb" %>
 
-## List Sheets
+## Get All Sheets
 
 > Example Request:
 
@@ -11443,7 +11443,7 @@ curl https://api.smartsheet.com/2.0/sheets \
 ```
 
 ```javascript
-// List sheets.
+// Get all sheets.
 smartsheet.sheets.listSheets()
 	.then(function(data) {
 		console.log(data);
@@ -11454,10 +11454,10 @@ smartsheet.sheets.listSheets()
 ```
 
 ```csharp
-// List sheets (omit 'include' parameter and pagination parameters).
+// Get all sheets (omit 'include' parameter and pagination parameters).
 smartsheet.SheetResources.ListSheets(null, null);
 
-// List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.ListSheets(new SheetInclusion[] { SheetInclusion.SOURCE }, new PaginationParameters(true, null, null));
 ```
 
@@ -11465,15 +11465,15 @@ smartsheet.SheetResources.ListSheets(new SheetInclusion[] { SheetInclusion.SOURC
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
 smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters);
 
-// List sheets (omit 'include' parameter and pagination parameters).
+// Get all sheets (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().listSheets(null, null);
 ```
 
 ```python
-# List sheets.
+# Get all sheets.
 action = smartsheet.Sheets.list_sheets(include_all=True)
 sheets = action.data
 ```
@@ -12225,7 +12225,7 @@ Gets the specified Sight.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Sight object](#sight-object)
 
-## List Sights
+## Get All Sights
 
 > Example Request:
 
@@ -12541,7 +12541,7 @@ A Template can be used to create a Sheet, as described in [Create Sheet from Tem
 **blank** | boolean | Flag indicating whether the template is blank<br/>*Only applicable to public templates*
 **globalTemplate** | string | Type of global template. One of: "BLANK_SHEET", "TASK_LIST", or "PROJECT_SHEET"<br/>*Only applicable to blank public templates*
 
-## List Public Templates
+## Get All Public Templates
 
 > Example Request:
 
@@ -12551,7 +12551,7 @@ curl https://api.smartsheet.com/2.0/templates/public \
 ```
 
 ```javascript
-// List public templates.
+// Get all public templates.
 smartsheet.templates.listPublicTemplates()
     .then(function (data) {
         console.log(data);
@@ -12562,10 +12562,10 @@ smartsheet.templates.listPublicTemplates()
 ```
 
 ```csharp
-// List public templates (omit pagination parameters).
+// Get all public templates (omit pagination parameters).
 smartsheet.TemplateResources.ListPublicTemplates(null);
 
-// List public templates (specify 'includeAll' parameter with value of "true").
+// Get all public templates (specify 'includeAll' parameter with value of "true").
 smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true, null, null));
 ```
 
@@ -12573,15 +12573,15 @@ smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true, 
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List public templates (specify 'includeAll' parameter with value of "true").
+// Get all public templates (specify 'includeAll' parameter with value of "true").
 smartsheet.templateResources().listPublicTemplates(parameters);
 
-// List public templates (omit pagination parameters).
+// Get all public templates (omit pagination parameters).
 smartsheet.templateResources().listPublicTemplates(null);
 ```
 
 ```python
-# List public templates.
+# Get all public templates.
 action = smartsheet.Templates.list_public_templates()
 pages = action.total_pages
 templates = action.data
@@ -12599,7 +12599,7 @@ Gets the list of public Templates to which the user has access.
 
 <%= partial "snippets/listTemplates_table.md.erb" %>
 
-## List User-created Templates
+## Get All User-created Templates
 
 > Example Request:
 
@@ -12609,7 +12609,7 @@ curl https://api.smartsheet.com/2.0/templates \
 ```
 
 ```javascript
-// List user-created templates.
+// Get all user-created templates.
 smartsheet.templates.listUserCreatedTemplates()
     .then(function (data) {
         console.log(data);
@@ -12620,10 +12620,10 @@ smartsheet.templates.listUserCreatedTemplates()
 ```
 
 ```csharp
-// List user-created templates (omit pagination parameters).
+// Get all user-created templates (omit pagination parameters).
 smartsheet.TemplateResources.ListUserCreatedTemplates(null);
 
-// List user-created templates (specify 'includeAll' parameter with value of "true").
+// Get all user-created templates (specify 'includeAll' parameter with value of "true").
 smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(true, null, null));
 ```
 
@@ -12631,15 +12631,15 @@ smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(t
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List user-created templates (specify 'includeAll' parameter with value of "true").
+// Get all user-created templates (specify 'includeAll' parameter with value of "true").
 smartsheet.templateResources().listUserCreatedTemplates(parameters);
 
-// List user-created templates (omit pagination parameters).
+// Get all user-created templates (omit pagination parameters).
 smartsheet.templateResources().listUserCreatedTemplates(null);
 ```
 
 ```python
-# List user-created templates.
+# Get all user-created templates.
 action = smartsheet.Templates.list_user_created_templates()
 pages = action.total_pages
 templates = action.data
@@ -12827,7 +12827,7 @@ Revokes the access token used to make this request.  The access token will no lo
 
 <%= partial "snippets/getUpdateRequest.md.erb" %>
 
-## List Update Requests
+## Get All Update Requests
 
 <%= partial "snippets/listUpdateRequests.md.erb" %>
 
@@ -12843,7 +12843,7 @@ Revokes the access token used to make this request.  The access token will no lo
 
 <%= partial "snippets/getSentUpdateRequest.md.erb" %>
 
-## List Sent Update Requests
+## Get All Sent Update Requests
 
 <%= partial "snippets/listSentUpdateRequests.md.erb" %>
 
@@ -13236,7 +13236,7 @@ Gets the specified Alternate Email.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [AlternateEmail object](#alternateemail-object)<br/><br/>
 
-### List Alternate Emails
+### Get All Alternate Emails
 
 > Example Request:
 
@@ -13442,11 +13442,11 @@ Gets the User specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [UserProfile object](#userprofile-object)<br/><br/><b>Note</b>: For system administrators, the following UserProfile attributes will be included in the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (only returned if the user has logged in)</li><li>sheetCount (only returned if the status attribute is ACTIVE)</li><li>customWelcomeScreenViewed (only returned when an Enterprise user has viewed the [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>))</li></ul>
 
-## List All Org Sheets
+## Get All Org Sheets
 
 <%= partial "snippets/listAllOrgSheets.md.erb" %>
 
-## List Users
+## Get All Users
 
 > Example Request:
 
@@ -13456,7 +13456,7 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com&include=
 ```
 
 ```javascript 
-// List users.
+// Get all users.
 smartsheet.users.listAllUsers()
 	.then(function(data) {
 		console.log(data)
@@ -13467,10 +13467,10 @@ smartsheet.users.listAllUsers()
 ```
 
 ```csharp
-// List users (omit 'email' parameter and pagination parameters).
+// Get all users (omit 'email' parameter and pagination parameters).
 smartsheet.UserResources.ListUsers(null, null);
 
-// List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
+// Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
 smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
 ```
 
@@ -13478,10 +13478,10 @@ smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, n
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
+// Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
 smartsheet.userResources().listUsers(new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
 
-// List users (omit 'email' parameter and pagination parameters).
+// Get all users (omit 'email' parameter and pagination parameters).
 smartsheet.userResources().listUsers(null, null);
 ```
 
@@ -14013,7 +14013,7 @@ Gets the specified Workspace (and lists its contents).
 	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Workspace object](#workspace-object), populated according to the **include** parameter
 
-## List Workspaces
+## Get All Workspaces
 
 > Example Request:
 
@@ -14023,7 +14023,7 @@ curl https://api.smartsheet.com/2.0/workspaces \
 ```
 
 ```javascript
-// List workspaces.
+// Get all workspaces.
 smartsheet.workspaces.listWorkspaces()
 	.then(function(data) {
 		console.log(data);
@@ -14034,10 +14034,10 @@ smartsheet.workspaces.listWorkspaces()
 ```
 
 ```csharp
-// List workspaces (omit pagination parameters).
+// Get all workspaces (omit pagination parameters).
 smartsheet.WorkspaceResources.ListWorkspaces(null);
 
-// List workspaces (specify 'includeAll' parameter with value of "true").
+// Get all workspaces (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true, null, null)););
 ```
 
@@ -14045,10 +14045,10 @@ smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true, null
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// List workspaces (specify 'includeAll' parameter with value of "true").
+// Get all workspaces (specify 'includeAll' parameter with value of "true").
 smartsheet.workspaceResources().listWorkspaces(parameters);
 
-// List workspaces (omit pagination parameters).
+// Get all workspaces (omit pagination parameters).
 smartsheet.workspaceResources().listWorkspaces(null);
 ```
 
@@ -15127,7 +15127,7 @@ Gets the Webhook specified in the URL.
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [Webhook object](#webhook-object)
 
-# List Webhooks
+# Get All Webhooks
 
 > Example Request:
 
