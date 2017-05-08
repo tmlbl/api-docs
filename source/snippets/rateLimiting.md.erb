@@ -1,7 +1,7 @@
 **Handle "Rate Limit Exceeded" error**<br/>
 In order to prevent abuse and undue stress on the Smartsheet servers, the API has a rate limiting feature that restricts users to **300** requests per minute per Access Token. 
 Certain resource intensive operations, such as attaching a file and getting cell history, count as 10 requests to prevent abuse of these operations. 
-We reserve the right to enforce this limit depending on the load on our systems. 
+Smartsheet reserves the right to enforce this limit depending on the load on our systems. 
 If and when the limit is enforced, any requests that exceed this limit will be rejected with an **429** HTTP status code, along with the following JSON response body:
 
 `{`<br/>
@@ -9,7 +9,7 @@ If and when the limit is enforced, any requests that exceed this limit will be r
 &#160;&#160;&#160;&#160;`"message": "Rate limit exceeded."`<br/>
 `}`
 
-We recommend that you design your integration to gracefully handle this rate limit error. 
+Smartsheet recommends that you design your integration to gracefully handle this rate limit error. 
 One way of doing that would be to have your integration *sleep* for 60 seconds when this error is encountered, and then subsequently retry the request. 
 Alternatively, you might choose to implement [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (an error handling strategy whereby you periodically retry a failed request with progressively longer wait times between retries, until either the request succeeds or the certain number of retry attempts is reached). 
 
