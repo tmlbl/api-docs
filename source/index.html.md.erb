@@ -206,6 +206,47 @@ Also, make sure your code does not depend on the order in which records are retu
 
 # Getting Started
 
+## Making Your First API Call
+Before you write any code, try executing API requests using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request and Response.
+
+You will need to use an access token. See instructions at [Generating Access Token](#generating-access-token). In the examples below, replace "MY_ACCESS_TOKEN" with your actual token value.
+
+To get a list of all your sheets, try the following command:
+
+`curl -X GET -H "Authorization: Bearer MY_ACCESS_TOKEN" "https://api.smartsheet.com/2.0/sheets"`
+
+In Postman, it would look like this:
+
+<img src="images/postman-sample.png" alt="Postman screen shot">
+
+The result should look something like the sample to the right (after formatting):
+
+```json
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+    "data": [{
+            "id": 6141831453927300,
+            "name": "My first sheet",
+            "accessLevel": "ADMIN",
+            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
+            "createdAt": "2016-01-28T22:02:35Z",
+            "modifiedAt": "2016-08-09T17:50:06Z"
+        },
+        {
+            "id": 6141831453927300,
+            "name": "Sheet shared to me",
+            "accessLevel": "VIEWER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
+            "createdAt": "2016-01-28T22:02:35Z",
+            "modifiedAt": "2016-08-09T17:50:06Z"
+        }
+    ]
+}
+```
+
 ## SDKs and Sample Code
 
 Smartsheet SDKs (client libraries) are available in a variety of languages. 
@@ -213,13 +254,12 @@ For the complete list, see our [SDK page](https://www.smartsheet.com/developers/
 Submit your vote for additional language coverage by emailing us at <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
 
 This API documentation currently contains sample code in the following languages: 
-<ul>
-<li>cURL</li>
-<li>C#</li>
-<li>Java</li>
-<li>Node.js</li>
-<li>Python</li>
-</ul>
+
+* cURL
+* C#
+* Java
+* Node.js
+* Python
 
 For each operation, you'll see sample code displayed in the dark blue panel next to the operation. 
 To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
@@ -391,100 +431,7 @@ Once you've created the **smartsheet** object, you can use it to execute API ope
 Within the Python code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
 For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
 
-## Direct API Access
-
-Smartsheet makes it easy to directly access your data via the API. 
-The first step is to generate an Access Token via the Smartsheet UI. 
-Users can generate and have more than one active token at any time. 
-Access Tokens generated in Smartsheet UI are long lived, meaning they won’t expire for 10 years. 
-They are best used in system-level integrations, such as applications designed to keep Smartsheet and other systems in sync, or to integrate with Zapier, ifttt or similar API integration services.
-
-### Generating Access Token
-
-These instructions assume that you already have an existing Smartsheet account. Follow these steps to generate an Access Token:
-<ol>
-<li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Personal Settings**.  This will open the Personal Settings form.</li>
-<li>Click the **API Access** button to open the API Access form.
-<li>Use the API Access form to generate new or manage existing acces tokens.
-</ol>
- 
-Because you can generate and have more than one active token at any time, you have the ability to implement a granular security policy by designating a separate token for each application or integration scenario you may have. 
-That way, should any one token become compromised, you can easily revoke it without impacting any of your other API-enabled applications.
- 
-<aside class="notice">You will have only one opportunity to view and copy your newly generated token. For security reasons, you will not be able to retrieve it at a later time. If you lose your token, however, it is easy to use the UI to revoke it and generate a new one.</aside>
- 
-<aside class="success">Access Tokens are essentially passwords and grant the holder access to all of your Smartsheet data. It is imperative that you keep them secure.</aside>
-
-### Using Access Tokens
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/users/me \
-`-H "Authorization: Bearer ACCESS_TOKEN"
-```
-
-```javascript
-// Set the access token.
-var client = require('smartsheet');
-var smartsheet = client.createClient({accessToken:'INSERT_YOUR_TOKEN_HERE'});
-
-// Get current user.
-smartsheet.users.getCurrentUser()
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-    	console.log(error);
-  	});
-```
-
-```csharp
-// Set the access token.
-Token token = new Token();
-token.AccessToken = "INSERT_YOUR_TOKEN_HERE";
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
-
-// Get current user.
-smartsheet.UserResources.GetCurrentUser();
-```
-
-```java
-// Set the access token.
-Token token = new Token();
-token.setAccessToken("INSERT_YOUR_TOKEN_HERE");
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
-
-// Get current user.
-smartsheet.userResources().getCurrentUser();
-```
-
-```python
-# Create base client object and set the access token.
-smartsheet = smartsheet.Smartsheet('INSERT_YOUR_TOKEN_HERE')
-
-# Get current user.
-smartsheet.Users.get_current_user()
-```
-
-> Example Response:
-
-```json
-{
-    "email": "john.doe@smartsheet.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "id": 48569348493401200
-}
-```
-
-Once you have an Access Token, include it in the **Authorization** header for every request you make:
-
-`Authorization: Bearer 0da6cf0d848266b4cd32a6151b1`
-
-The header name is <b>Authorization</b> and the value of the header is <b>Bearer ACCESS_TOKEN</b>, where ACCESS_TOKEN is a token generated by you. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
-
-## Third Party App Development
+# Third Party App Development
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
 We are committed to making it easy to build applications on top of Smartsheet - whether you are developing a solution for your organization or creating an app for the Smartsheet customer community at large. 
@@ -497,7 +444,7 @@ Doing so requires that you complete the following steps.
 2. [Register your App](#registering-your-app)
 3. Within your app, [implement a 3-legged OAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
  
-### Developer Registration
+## Developer Registration
 
 Third party app registration and management is available via the Developer Tools. 
 To get access to Developer Tools, you must first [register](https//www.smartsheet.com/developers/register) as a Smartsheet developer. 
@@ -511,7 +458,7 @@ Once you complete the developer registration, log in to Smartsheet to access Dev
 <li>Once your developer profile is complete, you will be able to use **Developer Tools** to register and manage your apps.</li>
 </ol>
 
-### Registering Your App
+## Registering Your App
 
 To build a third party app, you must first register it with Smartsheet using Developer Tools:
 <ol>
@@ -521,7 +468,7 @@ To build a third party app, you must first register it with Smartsheet using Dev
 <li>Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
 </ol>
 
-### Access Scopes
+## Access Scopes
 
 In order to access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
 The Access Scopes enable your app to communicate to the end users what type of operations it will be performing. 
@@ -553,7 +500,7 @@ ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
  
 <aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
-### OAuth Flow
+## OAuth Flow
 
 Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
 This process involves the following steps:
@@ -563,7 +510,7 @@ This process involves the following steps:
 3. [Use the authorization code to obtain an access token](#obtaining-an-access-token)
 4. [Refresh the access token](#refreshing-an-access-token) (as necessary)
 
-#### Requesting authorization from the user
+### Requesting authorization from the user
 
 To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
 
@@ -582,7 +529,7 @@ Here is an example of a URL to which you would send your user as a `GET` request
 If your user has not logged in to Smartsheet, he/she will first be directed to the Smartsheet login page. 
 After a successful login, your user will be prompted to allow or deny the access scopes you requested.
 
-#### Obtaining the authorization code
+### Obtaining the authorization code
 
 If the user clicks "Allow", he/she will be redirected to the **redirect_uri** with the following parameters:
 
@@ -606,7 +553,7 @@ Other errors that may be returned include:
 unsupported_response_type | response_type must be set to "code"
 invalid_scope | one or more of the requested access scopes are invalid. Please check the list of access scopes
 
-#### Obtaining an access token
+### Obtaining an access token
 
 > Request an access token:
 
@@ -675,7 +622,7 @@ invalid_client | The client information is invalid. Ensure your client id is cor
 invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the App secret and/or code.
 unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
 
-#### Refreshing an access token
+### Refreshing an access token
 
 > Refresh an access token:
 
@@ -727,7 +674,7 @@ hash<br/>(required)| SHA-256 hash of your App secret concatenated with a pipe an
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
-##### Getting basic user info
+#### Getting basic user info
 Once you have obtained an access token on behalf of the user, you can fetch basic information (including user ID, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
 
 # Admin Features
@@ -1156,6 +1103,99 @@ MODIFIED_BY | CONTACT_LIST
 CREATED_DATE | DATETIME
 CREATED_BY  | CONTACT_LIST
 AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
+
+## Direct API Access
+
+Smartsheet makes it easy to directly access your data via the API. 
+The first step is to generate an Access Token via the Smartsheet UI. 
+Users can generate and have more than one active token at any time. 
+Access Tokens generated in Smartsheet UI are long lived, meaning they won’t expire for 10 years. 
+They are best used in system-level integrations, such as applications designed to keep Smartsheet and other systems in sync, or to integrate with Zapier, ifttt or similar API integration services.
+
+### Generating Access Token
+
+These instructions assume that you already have an existing Smartsheet account. Follow these steps to generate an Access Token:
+<ol>
+<li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Personal Settings**.  This will open the Personal Settings form.</li>
+<li>Click the **API Access** button to open the API Access form.
+<li>Use the API Access form to generate new or manage existing acces tokens.
+</ol>
+ 
+Because you can generate and have more than one active token at any time, you have the ability to implement a granular security policy by designating a separate token for each application or integration scenario you may have. 
+That way, should any one token become compromised, you can easily revoke it without impacting any of your other API-enabled applications.
+ 
+<aside class="notice">You will have only one opportunity to view and copy your newly generated token. For security reasons, you will not be able to retrieve it at a later time. If you lose your token, however, it is easy to use the UI to revoke it and generate a new one.</aside>
+ 
+<aside class="success">Access Tokens are essentially passwords and grant the holder access to all of your Smartsheet data. It is imperative that you keep them secure.</aside>
+
+### Using Access Tokens
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+`-H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+```javascript
+// Set the access token.
+var client = require('smartsheet');
+var smartsheet = client.createClient({accessToken:'INSERT_YOUR_TOKEN_HERE'});
+
+// Get current user.
+smartsheet.users.getCurrentUser()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+    	console.log(error);
+  	});
+```
+
+```csharp
+// Set the access token.
+Token token = new Token();
+token.AccessToken = "INSERT_YOUR_TOKEN_HERE";
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+
+// Get current user.
+smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Set the access token.
+Token token = new Token();
+token.setAccessToken("INSERT_YOUR_TOKEN_HERE");
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
+
+// Get current user.
+smartsheet.userResources().getCurrentUser();
+```
+
+```python
+# Create base client object and set the access token.
+smartsheet = smartsheet.Smartsheet('INSERT_YOUR_TOKEN_HERE')
+
+# Get current user.
+smartsheet.Users.get_current_user()
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
+
+Once you have an Access Token, include it in the **Authorization** header for every request you make:
+
+`Authorization: Bearer 0da6cf0d848266b4cd32a6151b1`
+
+The header name is <b>Authorization</b> and the value of the header is <b>Bearer ACCESS_TOKEN</b>, where ACCESS_TOKEN is a token generated by you. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
 
 ## Working at Scale 
 
