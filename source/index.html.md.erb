@@ -42,10 +42,10 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-08
+Updated 2017-05-09
 # Overview
 ## Introduction
-> Sample Code (more information [here](#sdks-and-sample-code))
+> Sample Code (more information [here](#sample-code))
 
 ```shell
 # The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool cURL: http://en.wikipedia.org/wiki/CURL. 
@@ -68,7 +68,9 @@ Updated 2017-05-08
 https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
 
-[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. 
+[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information.
+
+Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either a value specific to the column type (e.g., dates, checkboxes, symbols, etc.) or a free-form text value.  This flexibility for the end user creates some specific issues when approaching Smartsheet data through the API.
 
 To give you some idea of how data is organized, there are two main locations for a user's data:
 
@@ -82,6 +84,10 @@ Home is where a user's Workspaces and root folder live. Workspaces can contain m
 Sheets are where you can find common data objects, such as Column definitions, Rows, and Cells.  A high-level data model is provided below:
 
 <img src="images/Sheet-detail-level.png" alt="Graphical representation of objects in relation to a Sheet">
+
+<aside class="notice">See <a href="#cell-reference">Cell Reference</a> or <a href="#column-types">Column Types</a> for more information.</aside>
+
+Before you do anything else, you should use a different email address from your paid Smartsheet account to register for a [developer account](https://www.smartsheet.com/developers/register) so you can test the API and make API calls. While you're at the Smartsheet Developer Portal, you may also want to subscribe to our Developer Newsletter (using the <i>Get Developer Updates</i> form or follow us on <a href="https://twitter.com/smartsheetapi" target="_blank">Twitter</a>.
 
 ### HTTP Standards and RESTful Architecture
 > **Base URL**:  https://api.smartsheet.com/2.0
@@ -139,17 +145,17 @@ The following HTTP request headers may be required, depending on the operation a
 
      |     |
 -----|-----|
-*Content-Type* | For POST and PUT requests, must be set to the appropriate value (typically `application/json`).  Ignored for GET and DELETE requests.
-*Accept*       | Optional; if not specified, `*/*` is assumed (i.e., any response type is accepted), else it must match the output of the invoked endpoint (typically `application/json`).
+*Authorization* | Required for all endpoints. The value should look like the following: Bearer ACCESS_TOKEN, where the actual token replaces the text ACCESS_TOKEN.
+*Content-Type* | Required for POST and PUT requests. Must be set to the appropriate value (typically `application/json`).  Optional (but ignored) for GET and DELETE requests.
  
-<aside class="notice">Some of the data returned by the Smartsheet API is user-generated content. Caution should be taken to ensure that the user-generated content is consumed safely in any external system to avoid introducing vulnerabilities.</aside>
+<aside class="notice">Be sure to protect any user-generated content to avoid introducing vulnerabilities.</aside>
 
 ### How to Use the API Documentation
 
 For every API operation in this documentation, Smartsheet shows example requests in multiple languages and an example (JSON) response. 
-You'll see the examples displayed in the dark blue panel next to each operation. 
-To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
-For more information about using the sample code in this API documentation, see [SDKs and Sample Code](#sdks-and-sample-code). 
+You'll see the examples displayed in the dark-blue panel next to each operation. 
+<%= partial "snippets/sampleCode.md.erb" %>
+For more information about using the sample code in this API documentation, see [Sample Code](#sample-code). 
 
 As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://www.getpostman.com/). 
 
@@ -157,20 +163,12 @@ As with any REST API, you can also test API requests / responses using a Chrome 
 
 The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
 
-The access token must be sent with every API call in an HTTP authorization header.
+If you want to get started quickly, or are developing a standalone application that can run with your credentials, you can generate an Access Token through the UI.
+Open the Account/Personal Settings form and select the "API Access" tab. Click the "Generate new access token" button to obtain an access token.
 
-* See [Direct API Access](#direct-api-access) for information on user-generated tokens.
-* See [Third Party App Development](#third-party-app-development) for information on acquiring tokens for your own apps.
+If your application requires users to be able to login with their own account, you will need to implement the full OAuth flow. See the documentation for [Third party apps](#third-party-app-development) and [Developer Registration](https://www.smartsheet.com/developers/register).
 
-## Cell Values
-
-Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either
-a value specific to the column type (e.g., dates, checkboxes, symbols, etc.) or a free-form text value.  This allows for a very
-flexible UI and is one of the key benefits to using Smartsheet.
-
-See [Cell Reference](#cell-reference) for more information.
-
-<aside class="notice">See the <a href="#column-types">Column Types</a> section for information on the different column types.</aside>
+The access token must be sent with every API call in an HTTP authorization header. See samples at [Using Access Tokens.](#using-access-tokens)
 
 ## Errors
 
@@ -178,31 +176,10 @@ See [Cell Reference](#cell-reference) for more information.
 
 For a list of all Smartsheet error codes, see the [Complete Error Code List.](#complete-error-code-list)
 
-### Error Handling
-
-Smartsheet uses HTTP 400 and 500-level status codes, and then adds a custom errorCode to give you more detail. In general terms, 400-level status codes indicate that there is something you should fix or add to your request before you try the request again. 500-level status codes indicate there is some kind of permanent error. 
- 
-Use this information to implement error handling logic according to the following guidelines:
-
-* If the error code indicates a permanent error condition, do not retry the request.
-* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
-* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
-
-Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
-
-1. Try executing the same API Request using a tool like <a href="https://curl.haxx.se/">cURL</a> or <a href="https://www.getpostman.com/">Postman</a>. By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
-  * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
-  * If you're able to execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. You'll need to compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code is generating. (See step #2 below.)
-2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
-  * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-  * Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-
 ## Versioning and Changes
 
-Smartsheet will add new functionality and bug fixes to the API over time. Make sure that your code can handle new attributes gracefully. 
-Also, make sure your code does not depend on the order in which records are returned, unless it is explicitly stated in this documentation. 
-
-<aside class="success">To stay informed about changes to the API, subscribe to our Developer Newsletter (using the <i>Get Developer Updates</i> form on the <a href="https://www.smartsheet.com/developers" target="_blank">Smartsheet Developer Portal</a>) or follow us via <a href="https://twitter.com/smartsheetapi" target="_blank">Twitter</a>.</aside>
+Smartsheet will add new functionality and bug fixes to the API over time. Make sure that your code can handle new JSON properties gracefully. 
+Also, make sure your code does not depend on the order in which JSON objects are returned, unless it is explicitly stated in this documentation. 
 
 # Getting Started
 
@@ -219,39 +196,36 @@ In Postman, it would look like this:
 
 <img src="images/postman-sample.png" alt="Postman screen shot">
 
-The result should look something like the sample to the right (after formatting):
+The JSON result should look something like this (after formatting):
 
-```json
-{
-    "pageNumber": 1,
-    "pageSize": 100,
-    "totalPages": 1,
-    "totalCount": 2,
-    "data": [{
-            "id": 6141831453927300,
-            "name": "My first sheet",
-            "accessLevel": "ADMIN",
-            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
-            "createdAt": "2016-01-28T22:02:35Z",
-            "modifiedAt": "2016-08-09T17:50:06Z"
-        },
-        {
-            "id": 6141831453927300,
-            "name": "Sheet shared to me",
-            "accessLevel": "VIEWER",
-            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
-            "createdAt": "2016-01-28T22:02:35Z",
-            "modifiedAt": "2016-08-09T17:50:06Z"
-        }
-    ]
-}
-```
+[Kevin] Play around with the EXAMPLE_ACCESS_TOKEN TOKEN_ABCD1234 <TOKEN> [TOKEN] thing and see if there is a better way to indicate they need to change it? Wide range of devs. Maybe some example that looks real: ABCD1234. 
 
-## SDKs and Sample Code
 
-Smartsheet SDKs (client libraries) are available in a variety of languages. 
-For the complete list, see our [SDK page](https://www.smartsheet.com/developers/sdks). 
-Submit your vote for additional language coverage by emailing us at <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
+&#160;&#160;&#160;&#160;{ <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"pageNumber": 1, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"pageSize": 100, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"totalPages": 1, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"totalCount": 2, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"data": [{ <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"id": 6141831453927300, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"name": "My first sheet", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"accessLevel": "ADMIN", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"createdAt": "2016-01-28T22:02:35Z", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"modifiedAt": "2016-08-09T17:50:06Z" <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;}, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;{ <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"id": 6141831453927300, <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"name": "Sheet shared to me", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"accessLevel": "VIEWER", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"createdAt": "2016-01-28T22:02:35Z", <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"modifiedAt": "2016-08-09T17:50:06Z" <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;} <br>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;] <br>
+&#160;&#160;&#160;&#160;} <br>
+
+## Sample Code
 
 This API documentation currently contains sample code in the following languages: 
 
@@ -261,8 +235,8 @@ This API documentation currently contains sample code in the following languages
 * Node.js
 * Python
 
-For each operation, you'll see sample code displayed in the dark blue panel next to the operation. 
-To view the sample code in a specific language, select the corresponding language tab along the top of the dark blue panel. 
+For each operation, you'll see sample code displayed in the dark-blue panel next to the operation. 
+<%= partial "snippets/sampleCode.md.erb" %> 
 Each [C#](#c#-sample-code), [Java](#java-sample-code), and [Node.js](#node.js-sample-code) code sample demonstrates how to execute an operation using the corresponding [Smartsheet SDK](https://www.smartsheet.com/developers/sdks). 
 See the corresponding section below for more information about using the sample code in a specific language.
 
@@ -273,6 +247,8 @@ See the corresponding section below for more information about using the sample 
 ```
 
 The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool [cURL](https://en.wikipedia.org/wiki/CURL). 
+
+<%= partial "snippets/sampleCode.md.erb" %>
 
 ### C# Sample Code
 
@@ -301,7 +277,8 @@ smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(shee
 ```
 
 The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
-For code samples discussed in this document, use the tabs to the right.
+
+<%= partial "snippets/sampleCode.md.erb" %>
 
 To use the C# SDK, you'll need to include the appropriate **using** directives in your code.
 
@@ -341,7 +318,8 @@ smartsheet.serverInfoResources().getServerInfo();
 ```
 
 The Java code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Java SDK](https://github.com/smartsheet-platform/smartsheet-java-sdk). 
-For code samples discussed in this document, use the tabs to the right.
+
+<%= partial "snippets/sampleCode.md.erb" %>
 
 To use the Java SDK, you'll need to include the appropriate **import** directives in your code.
 
@@ -380,7 +358,9 @@ smartsheet.server.getInfo()
 // For additional Node.js code samples, see each operation in the API REFERENCE section.
 ```
 
-The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises. For code samples discussed in this document, use the tabs to the right.
+The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises.
+
+<%= partial "snippets/sampleCode.md.erb" %>
 
 Each code sample uses a root module called "smartsheet" that can be created using the sample to the right.
 
@@ -418,7 +398,9 @@ info = smartsheet.Server.server_info()
 # For additional Python code samples, see each operation in the API REFERENCE section.
 ```
 
-The Python samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Python SDK](https://github.com/smartsheet-platform/smartsheet-python-sdk). For code samples discussed in this document, use the tabs to the right.
+The Python samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Python SDK](https://github.com/smartsheet-platform/smartsheet-python-sdk). 
+
+<%= partial "snippets/sampleCode.md.erb" %>
 
 To use the Python SDK, you'll first need to include the appropriate **import** directive in your code. 
 
@@ -430,6 +412,12 @@ Once you've created the **smartsheet** object, you can use it to execute API ope
 
 Within the Python code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
 For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
+
+## SDKs
+
+Smartsheet SDKs (client libraries) are available in a variety of languages. 
+For the complete list, see our [SDK page](https://www.smartsheet.com/developers/sdks). 
+Submit your vote for additional language coverage by emailing us at <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
 
 # Third Party App Development
 
@@ -681,11 +669,7 @@ Once you have obtained an access token on behalf of the user, you can fetch basi
 
 Smartsheet users with System Admin rights have access to additional API features, including user management and ability to access any sheet in the organization.
 
-## Manage Users
-
-As an org Administrator, you can provision, de-provision and otherwise manage users in your Smartsheet organization.  See [Users](#users) for more information on relevant API calls.
-
-### Assume-User
+## Assume-User
 
 > Example Request:
 
@@ -749,90 +733,9 @@ For example, if you want to assume the identity of **john.doe@smartsheet.com** a
 
 You can then act on behalf of the user and make API calls as though you were that user.
 
-## Maintain Data Attribution
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
--H "Authorization: Bearer ACCESS_TOKEN" \
--H "Assume-User: john.doe%40smartsheet.com" \
--H "Content-Type: application/json" \
--X POST \
--d '{"text":"This is a new comment."}'
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
-
-// Create comment.
-Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
-
-// Add comment to discussion (call gets executed as "john.doe@smartsheet.com").
-smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(sheetId, discussionId, comment);
-```
-
-```java
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
-
-// Create comment.
-Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
-
-// Add comment to discussion (call gets executed as "john.doe@smartsheet.com").
-smartsheet.sheetResources().discussionResources().commentResources().addComment(sheetId, discussionId, comment);
-```
-
-```python
-# Create the 'smartsheet' object and run the assume_user method.
-smartsheet = smartsheet.Smartsheet()
-smartsheet.assume_user('john.doe@smartsheet.com')
-
-# Create comment.
-comment = smartsheet.models.Comment({
-    'text': 'Expense reports require manager approval.'
-})
-
-# Add comment to discussion (call executed as "john.doe@smartsheet.com").
-smartsheet.Discussions.add_comment_to_discussion(sheetId, discussionId, comment)
-```
-
-> Example Response:
-
-```json
-{
-    "message": "SUCCESS",
-    "result": {
-        "createdAt": "2013-02-28T22:58:30-08:00",
-        "createdBy": {
-            "email": "john.doe@smartsheet.com",
-            "name": "John Doe"
-        },
-        "id": 6834973207488388,
-        "modifiedAt": "2013-02-28T22:58:30-08:00",
-        "text": "This is a new comment."
-    },
-    "version": 12,
-    "resultCode": 0
-}
-```
-
-If you are integrating Smartsheet with another API-enabled system, such as Salesforce, it may be useful to maintain attribution when adding data to Smartsheet. 
-For example, let's say you want to add a new row to a Sales Pipeline sheet in Smartsheet whenever your sales team updates a sales pipeline in Salesforce. 
-So, if Bob Johnson makes a change in Salesforce, wouldn't it be great to make the new row show up in Smartsheet as if it were created by Bob? 
-Specifying the **Assume-User** header API requests allows org Administrators to develop integrations which do just that.
- 
-## List All Sheets
-
-As an org Administrator, you can get a list of all sheets in your organization, regardless of ownership or whether or not the sheets have been shared to you. 
-Please see [Get All Org Sheets](#get-all-org-sheets) for more information.
-
 ## Backup All Org Data
+
+[Kevin] Partial solution. Evaluate whether this is useful/needed.
 
 > Get list of all sheets in the org:
 
@@ -1187,41 +1090,13 @@ displayed to an end-user in their local time zone, you will need to do the conve
 You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
 This flag works for any API request.
 
-## Developer Account
+## Resource Map
 
-Developer accounts provide access to the full range of features and functionality available in production. 
-They are easy to set up, will not expire, and will let you focus on your development without any risk to your production data.
- 
-To set up a Developer account, please visit the Smartsheet Developer Portal [registration page](https://www.smartsheet.com/developers/register). 
-If you already have a paid Smartsheet account and your goal is to keep your development and production accounts separate, make sure to use a different email address when registering.
- 
-Please note that Developer accounts are intended for development and testing purposes only, and are subject to the [Smartsheet Developer Program Agreement](https://www.smartsheet.com/files/SmartsheetDeveloperProgramAgreement20150630.pdf).
+Until you get used to the logic behind the various Smartsheet resources, this resource map might help you figure out which resource name maps to which UI element:
 
-## Direct API Access
+<img src="images/API-model-outline-formatb.png" alt="Map showing UI element and which resource it corresponds to.">
 
-Smartsheet makes it easy to directly access your data via the API. 
-The first step is to generate an Access Token via the Smartsheet UI. 
-Users can generate and have more than one active token at any time. 
-Access Tokens generated in Smartsheet UI are long lived, meaning they won’t expire for 10 years. 
-They are best used in system-level integrations, such as applications designed to keep Smartsheet and other systems in sync, or to integrate with Zapier, ifttt or similar API integration services.
-
-### Generating Access Token
-
-These instructions assume that you already have an existing Smartsheet account. Follow these steps to generate an Access Token:
-<ol>
-<li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Personal Settings**.  This will open the Personal Settings form.</li>
-<li>Click the **API Access** button to open the API Access form.
-<li>Use the API Access form to generate new or manage existing acces tokens.
-</ol>
- 
-Because you can generate and have more than one active token at any time, you have the ability to implement a granular security policy by designating a separate token for each application or integration scenario you may have. 
-That way, should any one token become compromised, you can easily revoke it without impacting any of your other API-enabled applications.
- 
-<aside class="notice">You will have only one opportunity to view and copy your newly generated token. For security reasons, you will not be able to retrieve it at a later time. If you lose your token, however, it is easy to use the UI to revoke it and generate a new one.</aside>
- 
-<aside class="success">Access Tokens are essentially passwords and grant the holder access to all of your Smartsheet data. It is imperative that you keep them secure.</aside>
-
-### Using Access Tokens
+## Using Access Tokens
 
 > Example Request:
 
@@ -1289,12 +1164,6 @@ Once you have an Access Token, include it in the **Authorization** header for ev
 `Authorization: Bearer 0da6cf0d848266b4cd32a6151b1`
 
 The header name is <b>Authorization</b> and the value of the header is <b>Bearer ACCESS_TOKEN</b>, where ACCESS_TOKEN is a token generated by you. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
-
-## Resource Map
-
-Until you get used to the logic behind the various Smartsheet resources, this resource map might help you figure out which resource name maps to which UI element:
-
-<img src="images/API-model-outline-formatb.png" alt="Map showing UI element and which resource it corresponds to.">
 
 # Working at Scale 
 
@@ -14577,6 +14446,16 @@ Object | Deprecated Attribute | Replaced by
 [Sheet object](#sheet-object) | fromId | new endpoint for [Copy Sheet](#copy-sheet)
 [Workspace object](#workspace-object) | fromId | new endpoint for [Copy Workspace](#copy-workspace)
 
+# Troubleshooting
+
+Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
+
+1. Try executing the same API Request using a tool like <a href="https://curl.haxx.se/">cURL</a> or <a href="https://www.getpostman.com/">Postman</a>. By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
+  * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
+  * If you're able to execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. You'll need to compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code is generating. (See step #2 below.)
+2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
+  * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+  * Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
 
 # <span class="customTOCSectionHeading">Webhooks</span>
 
