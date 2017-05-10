@@ -42,7 +42,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-09
+Updated 2017-05-10
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sample-code))
@@ -72,55 +72,41 @@ https://github.com/smartsheet-platform/smartsheet-python-sdk.
 
 Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either a value specific to the column type (e.g., dates, checkboxes, symbols, etc.) or a free-form text value.  This flexibility for the end user creates some specific issues when approaching Smartsheet data through the API.
 
-To give you some idea of how data is organized, there are two main locations for a user's data:
+## How Do I Start?
 
-* Home
-* Sheet
+Before programmatically creating dazzling sheets with attachments and images, this documentation provides a Getting Started tutorial that will walk you through making an API call and retrieving detailed sheet information. The following are some resources to get you started or that you may want to bookmark:
 
-Home is where a user's Workspaces and root folder live. Workspaces can contain more workspaces; folders can contain more folders. A high-level data model is provided below:
+* [Getting Started tutorial](#getting-started)
+* [Smartsheet Developer Portal:](https://www.smartsheet.com/developers/register) Use a different email address from your paid Smartsheet account so you can test the API and make API calls
+* Developer Newsletter (subscribe while at the Developer Portal using the <i>Get Developer Updates</i> form)
+* [Twitter](https://twitter.com/smartsheetapi)
+* [StackOverflow](https://stackoverflow.com/questions/tagged/smartsheet-api) using the "smartsheet-api" tag
+* [File an issue](https://github.com/smartsheet-platform/getting-started/issues/new)
+* Contact us at [api@smartsheet.com](mailto:api@smartsheet.com)
 
-<img src="images/Home-high-levelb.png" alt="Graphical representation of objects in relation to Home">
+## Standards Used
 
-Sheets are where you can find common data objects, such as Column definitions, Rows, and Cells.  A high-level data model is provided below:
+Where possible, Smartsheet uses several industry standards that you may already be familiar with:
 
-<img src="images/Sheet-detail-level.png" alt="Graphical representation of objects in relation to a Sheet">
+* [HTTP verbs and status codes](#http-verbs-and-status-codes)
+* [RESTful architecture](#restful-architecture)
+* [JSON](#json)
+  * Authorization Header
+  * Content-type header
+* [OAUTH 2.0](#oauth-2-0)
+* [Dates and Times](#dates-and-times)
 
-<aside class="notice">See <a href="#cell-reference">Cell Reference</a> or <a href="#column-types">Column Types</a> for more information.</aside>
+### HTTP Verbs and Status Codes
 
-Before you do anything else, you should use a different email address from your paid Smartsheet account to register for a [developer account](https://www.smartsheet.com/developers/register) so you can test the API and make API calls. While you're at the Smartsheet Developer Portal, you may also want to subscribe to our Developer Newsletter (using the <i>Get Developer Updates</i> form or follow us on <a href="https://twitter.com/smartsheetapi" target="_blank">Twitter</a>.
+You call the API using [standard HTTP methods:](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) GET (to retrieve an object or all objects in a specific category), POST (to create), PUT (to modify), and DELETE.
 
-### HTTP Standards and RESTful Architecture
-> **Base URL**:  https://api.smartsheet.com/2.0
+[Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions.
 
-```apires
-Resources:
+<%= partial "snippets/errorHandling.md.erb" %>
 
-/contacts
-/favorites
-/folders
-/groups
-/home
-/imageurls
-/reports
-/search
-/serverinfo
-/sheets
-/sheets/{id}/attachments
-/sheets/{id}/columns
-/sheets/{id}/comments
-/sheets/{id}/discussions
-/sheets/{id}/rows
-/sheets/{id}/updaterequests
-/sheets/{id}/version
-/sights
-/templates
-/token
-/users
-/users/{id}/alternateemails
-/workspaces
+<aside class="notice">Smartsheet has custom error codes to help you troubleshoot issues. See the [Complete Error Code List.](#complete-error-code-list)</aside>
 
-```
-You call the API using [standard HTTP methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html): GET (to retrieve an object or all objects in a specific category), POST (to create), PUT (to modify), and DELETE.
+### RESTful Architecture
 
 The REST URL structure follows typical resource-oriented conventions. For example, to get a list of sheets, use:
 
@@ -133,14 +119,11 @@ This will return a list of Sheet objects, where each Sheet will have an “id”
 This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique ID.
 
 If you don't want to make raw HTTP calls, Smartsheet also has software development kits (SDKs), which provide a higher level interface for [C#](https://github.com/smartsheet-platform/smartsheet-csharp-sdk), [Java](https://github.com/smartsheet-platform/smartsheet-java-sdk), [Python](https://github.com/smartsheet-platform/smartsheet-python-sdk), and [Node.js](https://github.com/smartsheet-platform/smartsheet-javascript-sdk) code. However, it is still helpful to understand the underlying messages.
-  
-[Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions.
 
-In addition, Smartsheet has more detailed error codes to help you troubleshoot issues. See the [Complete Error Code List.](#complete-error-code-list)
-
-### Input / Output Format
+### JSON
 
 Unless otherwise specified, all API endpoints expect request body data to be in [JSON](https://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON.
+
 The following HTTP request headers may be required, depending on the operation and endpoint being invoked:
 
      |     |
@@ -149,6 +132,37 @@ The following HTTP request headers may be required, depending on the operation a
 *Content-Type* | Required for POST and PUT requests. Must be set to the appropriate value (typically `application/json`).  Optional (but ignored) for GET and DELETE requests.
  
 <aside class="notice">Be sure to protect any user-generated content to avoid introducing vulnerabilities.</aside>
+
+### OAUTH 2.0
+
+The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
+
+If you want to get started quickly, or are developing a standalone application that can run with your credentials, follow these instructions:
+
+1. Generate an Access Token through the UI.
+2. Open the Account/Personal Settings form, and then select the "API Access" tab.
+3. Click the "Generate new access token" button to obtain an access token.
+
+If your application requires users to be able to login with their own account, you will need to implement the full OAuth flow. See the documentation for [Third party apps](#third-party-app-development) and [Developer Registration](https://www.smartsheet.com/developers/register).
+
+The access token must be sent with every API call in an HTTP authorization header. See samples at [Access Tokens.](#access-tokens)
+
+### Dates and Times
+
+The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
+
+You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
+This flag works for any API request. 
+
+## Key Concepts
+
+Before you dive in, it's also helpful to understand some key concepts for how the API works with Smartsheet. In this section, you can read about the following:
+
+* How to Use the API Documentation
+* Catchall
+* Smartsheet Custom Error Codes
+* Versioning
 
 ### How to Use the API Documentation
 
@@ -159,24 +173,24 @@ For more information about using the sample code in this API documentation, see 
 
 As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://www.getpostman.com/). 
 
-## Authentication
+### Catchall topic to introduce Sheets/Columns/Rows/Cells
 
-The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
+Intro text
 
-If you want to get started quickly, or are developing a standalone application that can run with your credentials, you can generate an Access Token through the UI.
-Open the Account/Personal Settings form and select the "API Access" tab. Click the "Generate new access token" button to obtain an access token.
+UI Element | Overview | Definitions
+-----|-----|-----|
+Sheet | |
+Column | |
+Row | |
+Cell | |
 
-If your application requires users to be able to login with their own account, you will need to implement the full OAuth flow. See the documentation for [Third party apps](#third-party-app-development) and [Developer Registration](https://www.smartsheet.com/developers/register).
+### Smartsheet Custom Error Codes
 
-The access token must be sent with every API call in an HTTP authorization header. See samples at [Access Tokens.](#access-tokens)
-
-## Errors
-
-<%= partial "snippets/errorHandling.md.erb" %>
+Some intro text here with some key ideas, and then link to the main list.
 
 For a list of all Smartsheet error codes, see the [Complete Error Code List.](#complete-error-code-list)
 
-## Versioning and Changes
+### Versioning and Changes
 
 Smartsheet will add new functionality and bug fixes to the API over time. Make sure that your code can handle new JSON properties gracefully. 
 Also, make sure your code does not depend on the order in which JSON objects are returned, unless it is explicitly stated in this documentation. 
@@ -897,14 +911,6 @@ MODIFIED_BY | CONTACT_LIST
 CREATED_DATE | DATETIME
 CREATED_BY  | CONTACT_LIST
 AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
-
-## Dates and Times
-
-The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
-
-You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
-This flag works for any API request.
 
 ## Resource Map
 
