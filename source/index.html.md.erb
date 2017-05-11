@@ -74,6 +74,8 @@ https://github.com/smartsheet-platform/smartsheet-python-sdk.
 
 Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either a value specific to the column type (e.g., dates, checkboxes, symbols, etc.) or a free-form text value.  This flexibility for the end user creates some specific issues when approaching Smartsheet data through the API.
 
+You can view code examples in the dark-blue area in the next pane, and you can use the tabs at the top to switch the programming language of the example.
+
 ## How Do I Start?
 
 Before programmatically creating dazzling sheets with attachments and images, this documentation provides a Getting Started tutorial that will walk you through making an API call and retrieving detailed sheet information. The following are some resources to get you started or that you may want to bookmark:
@@ -83,28 +85,15 @@ Before programmatically creating dazzling sheets with attachments and images, th
 * Developer Newsletter (subscribe while at the Developer Portal using the <i>Get Developer Updates</i> form)
 * [Twitter](https://twitter.com/smartsheetapi)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/smartsheet-api) using the "smartsheet-api" tag
-* [File an issue](https://github.com/smartsheet-platform/getting-started/issues/new)
 * Contact us at [api@smartsheet.com](mailto:api@smartsheet.com)
 
-## Standards Used
-
-Where possible, Smartsheet uses several industry standards that you may already be familiar with:
-
-* [HTTP verbs and status codes](#http-verbs-and-status-codes)
-* [RESTful architecture](#restful-architecture)
-* [JSON](#json)
-  * Authorization Header
-  * Content-type header
-* [Authentication, Access Tokens, and OAUTH](#authentication-access-tokens-and-oauth)
-* [Dates and Times](#dates-and-times)
-
-### HTTP Verbs and Status Codes
+## HTTP Verbs and Status Codes
 
 You call the API using [standard HTTP methods:](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) GET (to retrieve an object or all objects in a specific category), POST (to create), PUT (to modify), and DELETE.
 
 <%= partial "snippets/errorHandling.md.erb" %>
 
-<aside class="notice">Smartsheet has custom error codes to help you troubleshoot issues. See the [Complete Error Code List.](#complete-error-code-list)</aside>
+<aside class="notice">Smartsheet has custom error codes to help you troubleshoot issues. See the <a href="#complete-error-code-list">Complete Error Code List.</a></aside>
 
 ### RESTful Architecture
 
@@ -118,22 +107,29 @@ This will return a list of Sheet objects, where each Sheet will have an “id”
 
 This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique ID.
 
-If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs). For more information, see [SDKs.](#sdks)
+If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs). For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
 
-### JSON
+## Global Considerations
+
+### Headers
 
 Unless otherwise specified, all API endpoints expect request body data to be in [JSON](https://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON.
 
 The following HTTP request headers may be required, depending on the operation and endpoint being invoked:
 
-     |     |
------|-----|
-*Authorization* | Required for all endpoints. The value should look like the following: Bearer ll352u9jujauoqz4gstvsae05, where your actual token replaces the example token.
-*Content-Type* | Required for POST and PUT requests. Must be set to the appropriate value (typically `application/json`).  Optional (but ignored) for GET and DELETE requests.
+Header | Definition | Example |
+-----|-----|-----|
+*Authorization* | Required for all endpoints. The access token. | Bearer ll352u9jujauoqz4gstvsae05
+*Assume-User* | Optional. Allows an admin to act on behalf of the user to make API calls. NOTE: The email address used to identify the user must be URI-encoded. | jane.doe%40smartsheet.com
+*Content-Type* | Required for POST and PUT requests. Optional (but ignored) for GET and DELETE requests. Defines the structure for the response. | application/json
  
 <aside class="notice">Be sure to protect any user-generated content to avoid introducing vulnerabilities.</aside>
 
-### Authentication, Access Tokens, and OAUTH
+### Query Strings
+
+[Kevin] Pagination and date/time are query strings. 
+
+## Authentication, Access Tokens, and OAUTH
 
 > Example Request:
 
@@ -212,33 +208,17 @@ The access token must be sent with every API call in an HTTP authorization heade
 
 The header name is <b>Authorization</b> and the value of the header is <b>Bearer ll352u9jujauoqz4gstvsae05</b>. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
 
-### Dates and Times
+## Dates and Times
 
-The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone, in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format.  If a date/time needs to be
-displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone which you can obtain by [getting the current user](#get-current-user).
+The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, i.e., YYYY-MM-DDTHH:MM:SSZ.  If a date/time needs to be
+displayed to an end-user in their local time zone, you will need to do the conversion using the user's time zone, which you can obtain by [getting the current user](#get-current-user).
 
 You can optionally choose to receive and input dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
 This flag works for any API request. 
 
-## Key Concepts
+## Sheets/Columns/Rows/Cells
 
-Before you dive in, it's also helpful to understand some key concepts for how the API works with Smartsheet. In this section, you can read about the following:
-
-* [How to use the API documentation](#how-to-use-the-api-documentation)
-* [Sheets, columns, rows, and cells](#sheets-columns-rows-cells)
-* [Smartsheet custom error codes](#smartsheet-custom-error-codes)
-* [Versioning and changes](#versioning-and-changes)
-
-### How to Use the API Documentation
-
-For every API operation in this documentation, Smartsheet shows example requests in multiple languages and an example (JSON) response. 
-You'll see the examples displayed in the dark-blue panel next to each operation. 
-<%= partial "snippets/sampleCode.md.erb" %>
-For more information about using the sample code in this API documentation, see [Sample Code](#sample-code). 
-
-As with any REST API, you can also test API requests / responses using a Chrome extension like [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) or [POSTMAN](https://www.getpostman.com/). 
-
-### Sheets/Columns/Rows/Cells
+[Kevin] The tutorial will determine what, if anything, goes here, i.e., this section.
 
 For many API calls, you will be manipulating some combination of sheets, columns, rows, and cells. To work in any sheet, you will need to GET a sheet ID first. If you want to work in a specific column or row, you will need to GET a column ID or a row ID. And to work in a cell, you will need the x and y value for that cell, otherwise known as the column ID + the row ID. The following table defines these elements and gives you some helpful pointers to more information:
 
@@ -249,17 +229,7 @@ Column | A Column is a component of a Sheet or Report. | [Column object,](#colum
 Row | A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Discussions and/or Attachments. | [Row object](#row-object)
 Cell | A collection of Cells comprises each Row in a Sheet. | [Cell object,](#cell-object) [Cell reference](#cell-reference)
 
-### Smartsheet Custom Error Codes
-
-In addition to the standard [HTPP Verbs and Status Codes](#http-verbs-and-status-codes), Smartsheet has custom error codes to troubleshoot issues. Use this information to implement error handling logic according to the following guidelines:
-
-* If the error code indicates a permanent error condition, do not retry the request.
-* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
-* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
-
-For a list of all Smartsheet error codes, see the [Complete Error Code List.](#complete-error-code-list)
-
-### Versioning and Changes
+## Versioning and Changes
 
 Smartsheet will add new functionality and bug fixes to the API over time. Make sure that your code can handle new JSON properties gracefully. 
 Also, make sure your code does not depend on the order in which JSON objects are returned, unless it is explicitly stated in this documentation. 
@@ -307,6 +277,8 @@ The JSON result should look something like this (after formatting):
 
 ## Retrieving Detailed Sheet Information
 
+[Kevin] This should just be about GET sheets/{id}, and then a description of the sheets, rows, columns, and cell objects so they understand how to read the response. Don't get into other API calls. 
+
 To drill down to the cell level, you need to locate and record a few object IDs first. 
 
 1. Get All Sheets returns a sheetId.
@@ -316,206 +288,20 @@ To drill down to the cell level, you need to locate and record a few object IDs 
 
 # Sample Code and SDKs
 
-This section gives you some tips on how to use the sample code in the dark-blue panel next to each operation. Smartsheet also has several software development kits [SDKs](#sdks) available.
+Sample code is always displayed in the dark-blue panel next to the operation.
 
-## Sample Code
+Smartsheet has SDKs providing a higher level interface for several languages.
 
-This API documentation currently contains sample code in the following languages: 
-
-* [cURL](#curl-sample-code)
-* [C#](#c-sample-code)
-* [Java](#java-sample-code)
-* [Node.js](#node-js-sample-code)
-* [Python](#python-sample-code)
-
-For each operation, you'll see sample code displayed in the dark-blue panel next to the operation. 
-<%= partial "snippets/sampleCode.md.erb" %> 
-Each C#, Java, Node.js, and Python code sample demonstrates how to execute an operation using the corresponding [Smartsheet SDK](https://www.smartsheet.com/developers/sdks). 
-See the corresponding section below for more information about using the sample code in a specific language.
-
-### cURL Sample Code
-
-```shell
-# For cURL code samples, see each operation in the API REFERENCE section.
-```
-
-The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool [cURL](https://curl.haxx.se/). 
-
-<%= partial "snippets/sampleCode.md.erb" %>
-
-### C# Sample Code
-
-```csharp
-using Smartsheet.Api;
-using Smartsheet.Api.Models;
-using Smartsheet.Api.OAuth;
-
-// Set the access token.
-Token token = new Token();
-token.AccessToken = "ll352u9jujauoqz4gstvsae05";
-
-// Use the Smartsheet Builder to create an instance of SmartsheetClient.
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
-
-// Get current user.
-smartsheet.UserResources.GetCurrentUser();
-
-// Get server info.
-smartsheet.ServerInfoResources.GetServerInfo();
-
-// Use the Id naming convention.
-smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(sheetId, rowId, discussion);
-
-// For additional C# code samples, see each operation in the API REFERENCE section.
-```
-
-The C# code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet C# SDK](https://github.com/smartsheet-platform/smartsheet-csharp-sdk). 
-
-<%= partial "snippets/sampleCode.md.erb" %>
-
-To use the C# SDK, you'll need to include the appropriate **using** directives in your code.
-
-Each code sample uses a **SmartsheetClient** object called "smartsheet" that can be created using the sample to the right.
-
-For operations that support querystring parameters, the C# code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
-The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
-
-Within the C# code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
-
-### Java Sample Code
-
-```java
-import com.smartsheet.api.*;
-import com.smartsheet.api.models.*;
-import com.smartsheet.api.models.enums.*;
-import com.smartsheet.api.oauth.*;
-
-// Set the access token.
-Token token = new Token();
-token.setAccessToken("ll352u9jujauoqz4gstvsae05");
-
-// Use the Smartsheet Builder to create an instance of Smartsheet.
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
-
-// Get current user.
-smartsheet.userResources().getCurrentUser();
-
-// Use the Id naming convention.
-smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(sheetId, rowId, discussion);
-
-// Get server info.
-smartsheet.serverInfoResources().getServerInfo();
-
-// For additional Java code samples, see each operation in the API REFERENCE section.
-```
-
-The Java code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Java SDK](https://github.com/smartsheet-platform/smartsheet-java-sdk). 
-
-<%= partial "snippets/sampleCode.md.erb" %>
-
-To use the Java SDK, you'll need to include the appropriate **import** directives in your code.
-
-Each code sample uses a **Smartsheet** object called "smartsheet" that can be created using the sample to the right.
-
-For operations that support querystring parameters, the Java code sample often contains multiple example requests, each one showing a different combination of querystring parameters. 
-The code samples are intended for example purposes only and should not be considered to cover all possible combinations of querystring parameters. 
-
-Within the Java code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
-
-### Node.js Sample Code
-
-```javascript
-var client = require('smartsheet');
-var smartsheet = client.createClient({accessToken:'ll352u9jujauoqz4gstvsae05'});
-
-// Get current user.
-smartsheet.users.getCurrentUser()
-    .then(function(data) {
-        console.log(data);
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-
-// Get server info.
-smartsheet.server.getInfo()
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
-
-// For additional Node.js code samples, see each operation in the API REFERENCE section.
-```
-
-The Node.js code samples included in this API documentation demonstrate how to execute operations using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), with promises.
-
-<%= partial "snippets/sampleCode.md.erb" %>
-
-Each code sample uses a root module called "smartsheet" that can be created using the sample to the right.
-
-Once you've created the **smartsheet** variable, you can use it to execute API operations. 
-For example, the sample to the right shows how to execute the [Get Current User](#get-current-user) operation.
-
-### Python Sample Code
-
-```python
-import smartsheet
-
-smartsheet = smartsheet.Smartsheet()
-
-# Get current user.
-me = smartsheet.Users.get_current_user()
-print(me)
-
-# Use the Id naming convention.
-smartsheet.Discussions.create_discussion_on_row(<br/>
-&#160;&#160;&#160;&#160;sheetId,<br/>
-&#160;&#160;&#160;&#160;rowId,<br/>
-&#160;&#160;&#160;&#160;smartsheet.models.Discussion({<br/>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'title': 'Expense Reimbursement',<br/>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'comment': smartsheet.models.Comment({<br/>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;'text': 'Expenses greater than $500 require manager approval.'<br/>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;})<br/>
-&#160;&#160;&#160;&#160;})<br/>
-)
-
-# Get server info.
-info = smartsheet.Server.server_info()
-
-# For additional Python code samples, see each operation in the API REFERENCE section.
-```
-
-The Python samples included in this API documentation demonstrate how to execute operations using the [Smartsheet Python SDK](https://github.com/smartsheet-platform/smartsheet-python-sdk). 
-
-<%= partial "snippets/sampleCode.md.erb" %>
-
-To use the Python SDK, you'll first need to include the appropriate **import** directive in your code. 
-
-Next, create the base client object that will be used to execute API requests via the SDK.
-
-<aside class="notice">The snippet to the right assumes that your Smartsheet API Access Token has been set as an environment variable named <b>SMARTSHEET_ACCESS_TOKEN</b>. If you prefer, you may alternatively pass your Smartsheet Access Token to the instantiation of the Smartsheet object like this: <code>smartsheet = smartsheet.Smartsheet('ll352u9jujauoqz4gstvsae05')</code></aside>
-
-Once you've created the **smartsheet** object, you can use it to execute API operations. For example, the sample to the right shows how to execute the [Get Current User](#get-current-user) operation.
-
-Within the Python code samples, the **...Id** naming convention is used to denote an object ID that will need to be replaced with an actual object ID, should you use the code in your application.
-For example, in the code example to the right, **sheetId** should be replaced with the actual ID of the Sheet and **rowId** should be replaced with the actual ID of the Row.
-
-## SDKs
-
-Smartsheet SDKs (client libraries) provide a higher level interface for the following languages:
-
-* [C#](https://github.com/smartsheet-platform/smartsheet-csharp-sdk)
-* [Java](https://github.com/smartsheet-platform/smartsheet-java-sdk)
-* [Node.js](https://github.com/smartsheet-platform/smartsheet-javascript-sdk)
-* [Python](https://github.com/smartsheet-platform/smartsheet-python-sdk)
+Language | SDK | Sample application
+-----|-----|-----|
+| C# | [smartsheet-csharp-sdk](https://github.com/smartsheet-platform/smartsheet-csharp-sdk) | [csharp-read-write-sheet](https://github.com/smartsheet-samples/csharp-read-write-sheet)
+| Java | [smartsheet-java-sdk](https://github.com/smartsheet-platform/smartsheet-java-sdk) | [java-read-write-sheet](https://github.com/smartsheet-samples/java-read-write-sheet)
+| Node.js | [smartsheet-javascript-sdk](https://github.com/smartsheet-platform/smartsheet-javascript-sdk) | [node-read-write-sheet](https://github.com/smartsheet-samples/node-read-write-sheet)
+| Python | [smartsheet-python-sdk](https://github.com/smartsheet-platform/smartsheet-python-sdk) | [python-read-write-sheet](https://github.com/smartsheet-samples/python-read-write-sheet)
 
 Submit your vote for additional language coverage by sending email to <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
 
-# Miscellaneous
+# Other Topics
 
 ## Access Levels
 
@@ -532,240 +318,14 @@ EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to
 ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
 OWNER | The user has complete control over the resource.
 
-## Assume-User
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/users/me \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Assume-User: john.doe%40smartsheet.com" 
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).SetAssumedUser("john.doe@smartsheet.com").Build();
-
-// Get current user (call gets executed as "john.doe@smartsheet.com").
-UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
-```
-
-```java
-// Create the 'smartsheet' object and set the 'Assume-User' header value to "john.doe@smartsheet.com".
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(accessToken).setAssumedUser("john.doe@smartsheet.com").build();
-
-// Get current user (call gets executed as "john.doe@smartsheet.com").
-UserProfile user= smartsheet.userResources().getCurrentUser();
-```
-
-```python
-# Create the 'smartsheet' object and run the assume_user method.
-smartsheet = smartsheet.Smartsheet()
-smartsheet.assume_user('john.doe@smartsheet.com')
-
-# Get the current user (call executed as "john.doe@smartsheet.com").
-user = smartsheet.Users.get_current_user()
-
-# Reset the 'smartsheet' object so no Assume-User header is used in further requests.
-smartsheet.assume_user()
-```
-
-> Example Response:
-
-```json
-{
-    "email": "john.doe@smartsheet.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "id": 48569348493401200
-}
-```
-
-As an org Administrator, you can assume the identity of any user in your organization. 
-This advanced feature enables a number of useful business scenarios, such as executing an organization-wide backup or maintaining data attribution when integrating with another system.
- 
-Here is how it works. 
-Simply add an **Assume-User** header to your call, with the URI-encoded email address of the user whose identity you want to assume as the value. 
-For example, if you want to assume the identity of **john.doe@smartsheet.com** and john.doe@smartsheet.com is a confirmed member of your Smartsheet organization, you would add the following header:
-
-`Assume-User: john.doe%40smartsheet.com`
-
-You can then act on behalf of the user and make API calls as though you were that user.
-
-## Backup Tips
-
-> Get list of all sheets in the org:
-
-```shell
-curl https://api.smartsheet.com/2.0/users/sheets \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
-```
-
-```javascript
-smartsheet.sheets.listOrganizationSheets()
-	.then(function(data) {
-		console.log(data)
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
-```
-
-```csharp
-// Get all org sheets.
-smartsheet.UserResources.SheetResources.ListSheets();
-```
-
-```java
-// Get all org sheets.
-smartsheet.userResources().listOrgSheets();
-```
-
-```python
-action = smartsheet.Sheets.list_org_sheets()
-sheets = action.result
-```
-
-> Fetch each sheet (using Assume-User):
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}?include=discussions,attachments \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Assume-User: OWNER_EMAIL"
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-dl_path = 'backup'
-for org_sheet in sheets:
-    smartsheet.assume_user(org_sheet.owner)
-    sheet = smartsheet.Sheets.get_sheet(
-        org_sheet.id,
-        include='discussions,attachments'
-    )
-```
-
-> Fetch each attachment:
-
-```shell
-curl -0 URL_TO_ATTACHMENT
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-for attachment in sheet.attachments:
-	attachment_obj = smartsheet.Attachments.get_attachment(sheet.id, attachment.id)
-	result = smartsheet.Attachments.download_attachment(attachment_obj, dl_path)
-	if result.message == 'SUCCESS':
-		print(result.filename + ' downloaded')
-```
-
-The following are a few tips for how backups work with Smartsheet.
-
-* Attachments
-  1. Get a list of all sheets in your organization.
-  2. For each sheet in the list, fetch the sheet (optionally including a list of discussions and attachments) by assuming the identity of the owner of the sheet. (The value of the **Assume-User** header must be the URI-encoded email address of the sheet owner.)
-  3. To backup all files attached to each sheet, fetch them one at a time, using your favorite download method. See [Get Attachment](#get-attachment) for more information.
-* Incremental Backups
-  1. You can use the sheet version number to enable incremental backups.
-  2. [Fetch the sheet version number](#get-sheet-version).
-  3. Compare it to the last backed up version number (you will need to store the sheet ID and the last backup up version number) - if they are the same, no need to include the sheet in your incremental backup run.
-
-> Backup Script
-
-```shell
-mkdir backup
-curl https://api.smartsheet.com/2.0/users/sheets \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
-...
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-import smartsheet
-import os
-
-os.mkdir('backup')
-os.chdir('backup')
-
-smartsheet = smartsheet.Smartsheet()
-
-action = smartsheet.Sheets.list_org_sheets()
-sheets = action.result
-
-for org_sheet in sheets:
-    os.mkdir(str(org_sheet.id))
-    dl_path = os.path.realpath(str(org_sheet.id))
-    
-    smartsheet.assume_user(org_sheet.owner)
-    sheet = smartsheet.Sheets.get_sheet(
-        org_sheet.id,
-        include='discussions,attachments'
-    )
-    
-    # download all attachments
-    for attachment in sheet.attachments:
-        attachment_obj = smartsheet.Attachments.get_attachment(sheet.id, attachment.id)
-        result = smartsheet.Attachments.download_attachment(attachment_obj, dl_path)
-        if result.message == 'SUCCESS':
-            print(result.filename + ' downloaded')
-            
-    # download sheet itself
-    smartsheet.Sheets.get_sheet_as_csv(org_sheet.id, dl_path)
-
-```
-
 # Third-party App Development
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
 We are committed to making it easy to build applications on top of Smartsheet - whether you are developing a solution for your organization or creating an App for the Smartsheet customer community at large. 
 Smartsheet is here to support you and would love your feedback on how to improve the API and the developer experience.
  
-As a developer, you may be building applications that allow any Smartsheet user to access his or her Smartsheet data. 
-Doing so requires that you complete the following steps.
+As a developer, you may be building applications that allow any Smartsheet user to access his or her Smartsheet data. The following sub-sections describe next steps.
 
-1. [Developer Registration](#developer-registration) 
-2. [Register your App](#registering-your-app)
-3. Learn about [Access Scopes](#access-scopes)
-4. Within your App, implement a 3-legged [OAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
- 
 ## Developer Registration
 
 Third-party App registration and management is available via the Developer Tools. 
@@ -773,22 +333,20 @@ To get access to Developer Tools, you must first [register](https://www.smartshe
 Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
  
 Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
-<ol>
-<li>Click the **Account** button in the upper-left corner of your Smartsheet screen.</li>
-<li>Now that you are registered as a Smartsheet developer, you should see a new **Developer Tools** option in the dropdown menu. Select it to open Developer Tools.</li>
-<li>Before you can register your first App, you will need to complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.</li>
-<li>Once your developer profile is complete, you will be able to use **Developer Tools** to register and manage your Apps.</li>
-</ol>
+
+1. Click the **Account** button in the upper-left corner of your Smartsheet screen.
+2. Now that you are registered as a Smartsheet developer, you should see a new **Developer Tools** option in the dropdown menu. Select it to open Developer Tools.
+3. Before you can register your first App, you will need to complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.
+4. Once your developer profile is complete, you will be able to use **Developer Tools** to register and manage your Apps.
 
 ## Registering Your App
 
 To build a third-party App, you must first register it with Smartsheet using Developer Tools:
-<ol>
-<li>Login to Smartsheet.</li>
-<li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Developer Tools**.</li>
-<li>Create new App and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your App where Smartsheet must redirect after authentication is complete.</li>
-<li>Use the generated App **client id** and **secret** to connect your App to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
-</ol>
+
+1. Login to Smartsheet.
+2. Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Developer Tools**.
+3. Create new App and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your App where Smartsheet must redirect after authentication is complete.
+4. Use the generated App **client id** and **secret** to connect your App to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
 
 ## Access Scopes
 
@@ -817,20 +375,12 @@ ADMIN_SHEETS | Modify sheet structure, including column definition, publish stat
 ADMIN_SIGHTS | Modify Sight structure
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
 
-
-
- 
 <aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party App attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
 ## OAuth Flow
 
 Your App must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
-This process involves the following steps:
-
-1. [Request authorization from the user](#requesting-authorization-from-the-user)
-2. [Obtain the authorization code](#obtaining-the-authorization-code)
-3. Use the authorization code to [obtain an access token](#obtaining-an-access-token)
-4. [Refresh the access token](#refreshing-an-access-token) (as necessary)
+The following sub-sections describe next steps.
 
 ### Requesting authorization from the user
 
@@ -1006,18 +556,7 @@ Once you have obtained an access token on behalf of the user, you can fetch basi
 The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
 multiple objects in a single request. For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
 
-The following API operations currently allow you to do things in bulk:
-
-* [Add Columns](#add-columns)
-* [Add Favorites](#add-favorites)
-* [Remove Favorites](#remove-all-favorites)
-* [Add Group Members](#add-group-members)
-* [Add Rows](#add-rows)
-* [Copy Rows to Another Sheet](#copy-rows-to-another-sheet)
-* [Delete Rows](#delete-rows)
-* [Move Rows to Another Sheet](#move-rows-to-another-sheet)
-* [Send Rows via Email](#send-rows)
-* [Update Rows](#update-rows)
+[Kevin] re-look at "get all" vs "list". Lean towards List, but look at the code samples and see if there's any justification for both terms and, if so, why.
 
 ### Optional Bulk Operations
 
@@ -1032,6 +571,8 @@ return an error if one or more items in the array already exist.  Existing items
 <aside class="notice">As Smartsheet makes future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
 
 ### Partial Success
+
+[Kevin] This seems to be a query param/setting. Move up to the new global considations section. Or keep it here, but reference it in the global area. Also, reference formatting section for cells.
 
 In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
 if not, none of them will be.
