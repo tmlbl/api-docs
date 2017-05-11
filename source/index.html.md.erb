@@ -159,10 +159,10 @@ This flag works for any API request.
 
 Before you dive in, it's also helpful to understand some key concepts for how the API works with Smartsheet. In this section, you can read about the following:
 
-* How to Use the API Documentation
-* Sheets, Columns, Rows, and Cells
-* Smartsheet Custom Error Codes
-* Versioning
+* [How to use the API documentation](#how-to-use-the-api-documentation)
+* [Sheets, columns, rows, and cells](#sheets-columns-rows-cells)
+* [Smartsheet custom error codes](#smartsheet-custom-error-codes)
+* [Versioning and changes](#versioning-and-changes)
 
 ### How to Use the API Documentation
 
@@ -175,7 +175,7 @@ As with any REST API, you can also test API requests / responses using a Chrome 
 
 ### Sheets/Columns/Rows/Cells
 
-Intro text
+For many API calls, you will be manipulating some combination of sheets, columns, rows, and cells. To work in any sheet, you will need to GET a sheet ID first. If you want to work in a specific column or row, you will need to GET a column ID or a row ID. And to work in a cell, you will need the x and y value for that cell, otherwise known as the column ID + the row ID. The following table defines these elements and gives you some helpful pointers to more information:
 
 UI Element | Overview | Definitions
 -----|-----|-----|
@@ -186,7 +186,11 @@ Cell | A collection of Cells comprises each Row in a Sheet. | [Cell object,](#ce
 
 ### Smartsheet Custom Error Codes
 
-Some intro text here with some key ideas, and then link to the main list.
+In addition to the standard [HTPP Verbs and Status Codes](#http-verbs-and-status-codes), Smartsheet has custom error codes to troubleshoot issues. Use this information to implement error handling logic according to the following guidelines:
+
+* If the error code indicates a permanent error condition, do not retry the request.
+* If the error code indicates a problem that can be fixed, do not retry the request until the problem has been fixed.
+* If the error code indicates a problem that could be overcome by retrying the request after a period of time, retry the request using exponential backoff.
 
 For a list of all Smartsheet error codes, see the [Complete Error Code List.](#complete-error-code-list)
 
@@ -236,15 +240,28 @@ The JSON result should look something like this (after formatting):
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;] <br>
 &#160;&#160;&#160;&#160;} <br>
 
+## Retrieving Detailed Sheet Information
+
+To drill down to the cell level, you need to locate and record a few object IDs first. 
+
+1. Get All Sheets returns a sheetId.
+2. Get All Columns returns column titles, which help you find the columnIds that are also in the response.
+3. Get Sheets (with a sheetId) returns a rowId.
+4. Update Rows takes all three object IDs you've collected to this point: sheetId, columnId, and rowId.
+
+# Sample Code and SDKs
+
+This section gives you some tips on how to use the sample code in the dark-blue panel next to each operation. Smartsheet also has several software development kits [SDKs](#sdks) available.
+
 ## Sample Code
 
 This API documentation currently contains sample code in the following languages: 
 
-* cURL
-* C#
-* Java
-* Node.js
-* Python
+* [cURL](#curl-sample-code)
+* [C#](#c-sample-code)
+* [Java](#java-sample-code)
+* [Node.js](#node-js-sample-code)
+* [Python](#python-sample-code)
 
 For each operation, you'll see sample code displayed in the dark-blue panel next to the operation. 
 <%= partial "snippets/sampleCode.md.erb" %> 
@@ -14122,7 +14139,7 @@ Object that contains information about an item that failed to be added or update
 
 # Complete Error Code List
 
-For an explanation of the logic behind Smartsheet error codes and error handling, see the [Errors](#errors) portion of the Introduction. 
+For an explanation of the logic behind Smartsheet error codes and error handling, see the [HTTP Verbs and Status Codes](#http-verbs-and-status-codes) portion of the Introduction. 
 
 ## 400-Level Error Codes
 
