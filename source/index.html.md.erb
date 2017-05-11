@@ -24,6 +24,8 @@ search: false
 <% REQUEST = "**Request Body**" %>
 <% RETURNS = "**Returns**" %>
 <% ERRORS = "**Errors**" %>
+<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
+<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ll352u9jujauoqz4gstvsae05" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
@@ -93,14 +95,12 @@ Where possible, Smartsheet uses several industry standards that you may already 
 * [JSON](#json)
   * Authorization Header
   * Content-type header
-* [OAUTH 2.0](#oauth-2-0)
+* [Authentication, Access Tokens, and OAUTH](#authentication-access-tokens-and-oauth)
 * [Dates and Times](#dates-and-times)
 
 ### HTTP Verbs and Status Codes
 
 You call the API using [standard HTTP methods:](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) GET (to retrieve an object or all objects in a specific category), POST (to create), PUT (to modify), and DELETE.
-
-[Standard HTTP Response codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) are used to indicate success and error conditions.
 
 <%= partial "snippets/errorHandling.md.erb" %>
 
@@ -118,7 +118,7 @@ This will return a list of Sheet objects, where each Sheet will have an “id”
 
 This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique ID.
 
-If you don't want to make raw HTTP calls, Smartsheet also has software development kits (SDKs), which provide a higher level interface for [C#](https://github.com/smartsheet-platform/smartsheet-csharp-sdk), [Java](https://github.com/smartsheet-platform/smartsheet-java-sdk), [Python](https://github.com/smartsheet-platform/smartsheet-python-sdk), and [Node.js](https://github.com/smartsheet-platform/smartsheet-javascript-sdk) code. However, it is still helpful to understand the underlying messages.
+If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs). For more information, see [SDKs.](#sdks)
 
 ### JSON
 
@@ -133,7 +133,68 @@ The following HTTP request headers may be required, depending on the operation a
  
 <aside class="notice">Be sure to protect any user-generated content to avoid introducing vulnerabilities.</aside>
 
-### OAUTH 2.0
+### Authentication, Access Tokens, and OAUTH
+
+> Example Request:
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+`-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set the access token.
+var client = require('smartsheet');
+var smartsheet = client.createClient({accessToken:'ll352u9jujauoqz4gstvsae05'});
+
+// Get current user.
+smartsheet.users.getCurrentUser()
+	.then(function(data) {
+		console.log(data);
+	})
+	.catch(function(error) {
+    	console.log(error);
+  	});
+```
+
+```csharp
+// Set the access token.
+Token token = new Token();
+token.AccessToken = "ll352u9jujauoqz4gstvsae05";
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+
+// Get current user.
+smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+// Set the access token.
+Token token = new Token();
+token.setAccessToken("ll352u9jujauoqz4gstvsae05");
+Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
+
+// Get current user.
+smartsheet.userResources().getCurrentUser();
+```
+
+```python
+# Create base client object and set the access token.
+smartsheet = smartsheet.Smartsheet('ll352u9jujauoqz4gstvsae05')
+
+# Get current user.
+smartsheet.Users.get_current_user()
+```
+
+> Example Response:
+
+```json
+{
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200
+}
+```
 
 The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
 
@@ -143,9 +204,13 @@ If you want to get started quickly, or are developing a standalone application t
 2. Open the Account/Personal Settings form, and then select the "API Access" tab.
 3. Click the "Generate new access token" button to obtain an access token.
 
-If your application requires users to be able to login with their own account, you will need to implement the full OAuth flow. See the documentation for [Third party apps](#third-party-app-development) and [Developer Registration](https://www.smartsheet.com/developers/register).
+If your application requires users to be able to login with their own account, you will need to implement the full OAuth flow. See the documentation for [Third-party Apps](#third-party-app-development) and [Developer Registration](https://www.smartsheet.com/developers/register).
 
-The access token must be sent with every API call in an HTTP authorization header. See samples at [Access Tokens.](#access-tokens)
+The access token must be sent with every API call in an HTTP authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
+
+`Authorization: Bearer ll352u9jujauoqz4gstvsae05`
+
+The header name is <b>Authorization</b> and the value of the header is <b>Bearer ll352u9jujauoqz4gstvsae05</b>. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
 
 ### Dates and Times
 
@@ -204,7 +269,7 @@ Also, make sure your code does not depend on the order in which JSON objects are
 ## Making Your First API Call
 Before you write any code, try executing API requests using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request and Response.
 
-You will need to use an access token. See instructions at [Authentication](#authentication). In the examples below, replace this sample token, "ll352u9jujauoqz4gstvsae05", with your actual token value.
+You will need to use an access token. See instructions at [Authentication, Access Tokens, and OAUTH](#authentication-access-tokens-and-oauth). In the examples below, replace this sample token, "ll352u9jujauoqz4gstvsae05", with your actual token value.
 
 To get a list of all your sheets, try the following command:
 
@@ -265,7 +330,7 @@ This API documentation currently contains sample code in the following languages
 
 For each operation, you'll see sample code displayed in the dark-blue panel next to the operation. 
 <%= partial "snippets/sampleCode.md.erb" %> 
-Each [C#](#c#-sample-code), [Java](#java-sample-code), and [Node.js](#node.js-sample-code) code sample demonstrates how to execute an operation using the corresponding [Smartsheet SDK](https://www.smartsheet.com/developers/sdks). 
+Each C#, Java, Node.js, and Python code sample demonstrates how to execute an operation using the corresponding [Smartsheet SDK](https://www.smartsheet.com/developers/sdks). 
 See the corresponding section below for more information about using the sample code in a specific language.
 
 ### cURL Sample Code
@@ -274,7 +339,7 @@ See the corresponding section below for more information about using the sample 
 # For cURL code samples, see each operation in the API REFERENCE section.
 ```
 
-The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool [cURL](https://en.wikipedia.org/wiki/CURL). 
+The cURL code samples included in this API documentation demonstrate how to execute operations using the command line data transfer tool [cURL](https://curl.haxx.se/). 
 
 <%= partial "snippets/sampleCode.md.erb" %>
 
@@ -395,8 +460,6 @@ Each code sample uses a root module called "smartsheet" that can be created usin
 Once you've created the **smartsheet** variable, you can use it to execute API operations. 
 For example, the sample to the right shows how to execute the [Get Current User](#get-current-user) operation.
 
-For more information about using the [Smartsheet JavaScript SDK](https://github.com/smartsheet-platform/smartsheet-javascript-sdk), including examples of using callbacks (instead of promises), see the [SDK Readme](https://github.com/smartsheet-platform/smartsheet-javascript-sdk).
-
 ### Python Sample Code
 
 ```python
@@ -443,9 +506,14 @@ For example, in the code example to the right, **sheetId** should be replaced wi
 
 ## SDKs
 
-Smartsheet SDKs (client libraries) are available in a variety of languages. 
-For the complete list, see our [SDK page](https://www.smartsheet.com/developers/sdks). 
-Submit your vote for additional language coverage by emailing us at <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
+Smartsheet SDKs (client libraries) provide a higher level interface for the following languages:
+
+* [C#](https://github.com/smartsheet-platform/smartsheet-csharp-sdk)
+* [Java](https://github.com/smartsheet-platform/smartsheet-java-sdk)
+* [Node.js](https://github.com/smartsheet-platform/smartsheet-javascript-sdk)
+* [Python](https://github.com/smartsheet-platform/smartsheet-python-sdk)
+
+Submit your vote for additional language coverage by sending email to <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
 
 # Miscellaneous
 
@@ -463,75 +531,6 @@ EDITOR | The user can edit the resource, but cannot alter the structure of, dele
 EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
 ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
 OWNER | The user has complete control over the resource.
-
-## Access Tokens
-
-> Example Request:
-
-```shell
-curl https://api.smartsheet.com/2.0/users/me \
-`-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
-```
-
-```javascript
-// Set the access token.
-var client = require('smartsheet');
-var smartsheet = client.createClient({accessToken:'ll352u9jujauoqz4gstvsae05'});
-
-// Get current user.
-smartsheet.users.getCurrentUser()
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-    	console.log(error);
-  	});
-```
-
-```csharp
-// Set the access token.
-Token token = new Token();
-token.AccessToken = "ll352u9jujauoqz4gstvsae05";
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
-
-// Get current user.
-smartsheet.UserResources.GetCurrentUser();
-```
-
-```java
-// Set the access token.
-Token token = new Token();
-token.setAccessToken("ll352u9jujauoqz4gstvsae05");
-Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
-
-// Get current user.
-smartsheet.userResources().getCurrentUser();
-```
-
-```python
-# Create base client object and set the access token.
-smartsheet = smartsheet.Smartsheet('ll352u9jujauoqz4gstvsae05')
-
-# Get current user.
-smartsheet.Users.get_current_user()
-```
-
-> Example Response:
-
-```json
-{
-    "email": "john.doe@smartsheet.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "id": 48569348493401200
-}
-```
-
-Once you have an Access Token, include it in the **Authorization** header for every request you make:
-
-`Authorization: Bearer 0da6cf0d848266b4cd32a6151b1`
-
-The header name is <b>Authorization</b> and the value of the header is <b>Bearer ll352u9jujauoqz4gstvsae05</b>. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
 
 ## Assume-User
 
@@ -753,204 +752,23 @@ for org_sheet in sheets:
 
 ```
 
-## Cell Reference
-
-### Cell Value Representation
-
-[Cell objects](#cell-object) retrieved through the Smartsheet APIs have two main attributes representing cell values: **Cell.value**, and
-**Cell.displayValue**.  A third attribute, **Cell.objectValue** is currently used only for adding and updating predecessors.
-An empty cell is always represented by **null** for all of these attributes.
-
-**Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
-be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
-like 1234.5678, but its **displayValue** would be "$1,234.57".
-
-**Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **boolean**,
-depending on the column type.  Complex types are represented as strings, formatted as described below:
-
-<% PROJECT_COLUMN_HELP_URL = "https://help.smartsheet.com/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
-
-| Column Type | Possible Types for Cell.value | Returns Cell.displayValue?
-|-------------|-------------------------------|---------------------------
-| TEXT_NUMBER	| **string**: free-form text values<br/>**number**: numeric values											| Yes: same as **value** for strings; for number values, the number with formatting applied.
-| CONTACT_LIST	| **string**: an email address representing a contact, or a free-form text value.							| Yes: same as **value** for free-form strings; for contacts, the contact's name if any, else their email address.
-| DATE			| **string**: a date in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
-| PICKLIST		| **string**: one of the picklist's column options, or a free-form text value.<br/>**number**: numeric values| Yes: same as **value** for strings; for number values, the number with formatting applied.
-| CHECKBOX		| **boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
-| DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
-| PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
-| ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
-
-**Cell.objectValue** is an object representation of a cell's value and is currently used for adding or updating predecessor cell values.
-It provides a more "programmer friendly" format for assembling predecessors. To update a cell's predecessors, set objectValue to a
-[PredecessorList object](#predecessorlist-object) containing [Predecessor objects](#predecessor-object).
-
-### Cell Value Parsing
-
-The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
-for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
-to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
-as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
-as a Text value? Probably not.
- 
-To address this problem, the Smartsheet API employs a simple scheme to indicate whether you want a more predictable and strict
-interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules for the type of the cell's column.
-If an input value doesn't conform, the API will return [error code 1042](#errors).
-
-If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
-sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) in your request body.
-
-The parsing rules for the various column types are as follows:
-
-**TEXT_NUMBER**:
-
-     |     |
------|-----|
-*Strict* | All numeric and text values are valid and are interpreted literally.
-*Lenient* | All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
-
-<aside class="notice">The Smartsheet application only supports numeric values in the range -9007199254740992 to 9007199254740992. If using strict parsing, any numeric value outside that range will result in <a href="#errors">error code 1148</a>. If using lenient parsing, the value will be silently converted to text.</aside>
-
-**PICKLIST**:
-
-     |     |
------|-----|
-*Strict* | The value must be a string and must be one of the options for the Picklist.
-*Lenient* | All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
-
-**DATE**:
-
-     |     |
------|-----|
-*Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
-*Lenient* | Smartsheet will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet will recognize the date and store it as such. All other values are simply text values.
-
-<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
-
-**CONTACT_LIST**:
-
-     |     |
------|-----|
-*Strict* | The value must be a valid email address. If "displayValue" is set, Smartsheet uses that as the name, otherwise if Smartsheet finds a match among the the Access Token owner's contacts, Smartsheet will associate this cell with that existing contact.
-*Lenient* | If the value is a valid email address, Smartsheet handles it the same way as Strict. If not, Smartsheet saves the value as a text value.
-
-<aside class="notice">See <a href="#contact-list-columns">Contact List Columns</a> for more information.</aside>
-
-**CHECKBOX**:
-
-     |     |
------|-----|
-*Strict* | Only boolean values (true or false) are valid.
-*Lenient* | Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
-
-**DURATION**:
-
-     |     |
------|-----|
-*Strict* | Only valid duration strings in the user's locale are valid.  Information on duration strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
-*Lenient* | Numeric values are treated as duration values in days.  String values which are valid duration strings in the user's locale are treated as durations, and any other values are treated as free-form text values.
-
-<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
-
-**PREDECESSOR**:
-
-The Smartsheet API doesn't support parsing of predecessor strings, so strict and lenient parsing don't apply to predecessors.  Instead, you can set the **objectValue** attribute to a [PredecessorList object](#predecessorlist-object) containing
-[Predecessor objects](#predecessor-object). To set a cell in a predecessor column to a non-predecessor string value, simply set **objectValue** to a string.
-
-**ABSTRACT_DATETIME**:
-
-     |     |
------|-----|
-*Strict* | The value must be a string value and a valid ISO 8601 date and time.
-*Lenient* | Smartsheet will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet will recognize the date and store it as such. All other values are simply text values.
-
-<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
-
-#### Contact List Columns
-
-With columns of type CONTACT_LIST, cells’ "value" and "displayValue" attributes are treated independently. 
-The contact’s email address is represented by **value**, while the contact’s name (and the value displayed in the cell in the Smartsheet app) is represented by **displayValue**.
- 
-When creating or updating cells for a contact list column, the **displayValue** attribute works as follows:
-<ul>
-<li>If **displayValue** is non-null and non-empty, the Smartsheet cell will display the value provided.</li>
-<li>If **displayValue** is an empty string, the Smartsheet cell will display the email address.</li>
-<li>If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.</li>
-</ul>
-
-## Column Types
-
-Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
-
-Column Type | Column.type Value | Notes |
-------------|--------------------------|-------|
-Text/Number		| TEXT_NUMBER	|
-Contact List	| CONTACT_LIST	| List containing contacts or roles for a project. **NOTE:** You can use the [contactOptions](#contactoption-object) property to specify a pre-defined list of values for the column, which can also become lanes in card view. 
-Date			| DATE			|
-Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
-Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
-Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.)
-Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) 
-Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
-Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
-
-<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
-
-### Symbol Columns
-
-In addition to the basic column types above, the Smartsheet app also supports columns that display symbols. These are simply specialized columns of type PICKLIST or CHECKBOX,
-whose **[symbol](#column-object)** attribute is set to one of the values below:
-
-**Symbols for CHECKBOX columns:**
-
-<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
-
-<%= CHECKBOX_SYMBOL_LIST %>
-
-**Symbols for PICKLIST columns:**
-
-<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
-
-<%= PICKLIST_SYMBOL_LIST %>
- 
-<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
-
-### System Columns
-
-In addition to the standard column types and symbols, Smartsheet has a number of *system columns*, which represent data that is
-filled in by Smartsheet and whose values cannot be changed by the user. These columns are represented with standard
-[column types](#column-types), with the **[Column.systemColumnType](#column-object)** attribute set to one of the following:
-
-Column.systemColumnType Value | Column Type | Notes
------|-----|-----|
-MODIFIED_DATE | DATETIME
-MODIFIED_BY | CONTACT_LIST
-CREATED_DATE | DATETIME
-CREATED_BY  | CONTACT_LIST
-AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
-
-## Resource Map
-
-Until you get used to the logic behind the various Smartsheet resources, this resource map might help you figure out which resource name maps to which UI element:
-
-<img src="images/API-model-outline-formatb.png" alt="Map showing UI element and which resource it corresponds to.">
-
-# Third Party App Development
+# Third-party App Development
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
-We are committed to making it easy to build applications on top of Smartsheet - whether you are developing a solution for your organization or creating an app for the Smartsheet customer community at large. 
+We are committed to making it easy to build applications on top of Smartsheet - whether you are developing a solution for your organization or creating an App for the Smartsheet customer community at large. 
 Smartsheet is here to support you and would love your feedback on how to improve the API and the developer experience.
  
 As a developer, you may be building applications that allow any Smartsheet user to access his or her Smartsheet data. 
 Doing so requires that you complete the following steps.
 
-1. [Complete your Developer Profile](#developer-registration) 
+1. [Developer Registration](#developer-registration) 
 2. [Register your App](#registering-your-app)
-3. Within your app, [implement a 3-legged OAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
+3. Learn about [Access Scopes](#access-scopes)
+4. Within your App, [implement a 3-legged OAuth flow](#oauth-flow) to obtain an access token that can be used to access Smartsheet data on behalf of an end user. 
  
 ## Developer Registration
 
-Third party app registration and management is available via the Developer Tools. 
+Third-party App registration and management is available via the Developer Tools. 
 To get access to Developer Tools, you must first [register](https//www.smartsheet.com/developers/register) as a Smartsheet developer. 
 Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
  
@@ -958,26 +776,26 @@ Once you complete the developer registration, log in to Smartsheet to access Dev
 <ol>
 <li>Click the **Account** button in the upper-left corner of your Smartsheet screen.</li>
 <li>Now that you are registered as a Smartsheet developer, you should see a new **Developer Tools** option in the dropdown menu. Select it to open Developer Tools.</li>
-<li>Before you can register your first app, you will need to complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.</li>
-<li>Once your developer profile is complete, you will be able to use **Developer Tools** to register and manage your apps.</li>
+<li>Before you can register your first App, you will need to complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.</li>
+<li>Once your developer profile is complete, you will be able to use **Developer Tools** to register and manage your Apps.</li>
 </ol>
 
 ## Registering Your App
 
-To build a third party app, you must first register it with Smartsheet using Developer Tools:
+To build a third-party App, you must first register it with Smartsheet using Developer Tools:
 <ol>
 <li>Login to Smartsheet.</li>
 <li>Click the **Account** button in the upper-left corner of your Smartsheet screen and select **Developer Tools**.</li>
-<li>Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.</li>
-<li>Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
+<li>Create new App and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your App where Smartsheet must redirect after authentication is complete.</li>
+<li>Use the generated App **client id** and **secret** to connect your App to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.</li>
 </ol>
 
 ## Access Scopes
 
 In order to access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
-The Access Scopes enable your app to communicate to the end users what type of operations it will be performing. 
+The Access Scopes enable your App to communicate to the end users what type of operations it will be performing. 
 Access Scopes do not override existing Access Level restrictions. 
-For example, having the Access Scope of WRITE_SHEETS will not allow your app to update a sheet on which the end user has read-only permission.
+For example, having the Access Scope of WRITE_SHEETS will not allow your App to update a sheet on which the end user has read-only permission.
  
 The Access Scopes are as follows:
 
@@ -1002,11 +820,11 @@ ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing
 
 
  
-<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
+<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party App attains a valid access token, it will be able to execute <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
 ## OAuth Flow
 
-Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
+Your App must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
 This process involves the following steps:
 
 1. [Request authorization from the user](#requesting-authorization-from-the-user)
@@ -1021,10 +839,10 @@ To request authorization from an end user, direct your user to `https://app.smar
      |     |
 -----|-----|
 response_type<br/>(required) | must be set to "code"
-client_id<br/>(required) | client id for your app
-redirect_uri<br/>(optional) | redirect URL you [registered](#registering-your-app) for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
+client_id<br/>(required) | client id for your App
+redirect_uri<br/>(optional) | redirect URL you [registered](#registering-your-app) for your App (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
 scope<br/>(required) | space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
-state | arbitrary string that will be returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated
+state | arbitrary string that will be returned to your App; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated
 
 Here is an example of a URL to which you would send your user as a `GET` request:
  
@@ -1110,9 +928,9 @@ To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/
      |     |
 -----|-----|
 grant_type<br/>(required) | must be set to "authorization_code"
-client_id<br/>(required) | client id for your app
+client_id<br/>(required) | client id for your App
 code<br/>(required) | authorization code returned in the [previous step](#obtaining-the-authorization-code)
-redirect_uri<br/>(optional) | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
+redirect_uri<br/>(optional) | redirect URL [registered](#registering-your-app) for your App, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
 hash<br/>(required) | SHA-256 hash of your App secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -1171,9 +989,9 @@ To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/
      |     |
 -----|-----|
 grant_type<br/>(required)| must be set to "refresh_token"
-client_id<br/>(required)| client id for your app
+client_id<br/>(required)| client id for your App
 refresh_token<br/>(required)| refresh_token value that came with the access token
-redirect_uri<br/>(optional)| redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://")
+redirect_uri<br/>(optional)| redirect URL [registered](#registering-your-app) for your App, including the protocol (e.g., "http://")
 hash<br/>(required)| SHA-256 hash of your App secret concatenated with a pipe and the refresh token value
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -2938,10 +2756,6 @@ To update the Cells in a Sheet, use the [Update Rows](#update-rows) operation.
 
 ## <%= RELATED %>
 
-### Images in Cells
-
-For details about working with images in cells, see [Cell Images](#cell-images).
-
 ### Cell Links
 
 Creating or updating cell links via the **cell.linkInFromCell** attribute is a special operation. 
@@ -2953,12 +2767,140 @@ When creating a cell link, **cell.value** must be null (the data will be pulled 
  
 A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **linkInFromCell** may never both be non-null at the same time.
 
+### Cell Reference
+
+#### Cell Value Representation
+
+[Cell objects](#cell-object) retrieved through the Smartsheet APIs have two main attributes representing cell values: **Cell.value**, and
+**Cell.displayValue**.  A third attribute, **Cell.objectValue** is currently used only for adding and updating predecessors.
+An empty cell is always represented by **null** for all of these attributes.
+
+**Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
+be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
+like 1234.5678, but its **displayValue** would be "$1,234.57".
+
+**Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **boolean**,
+depending on the column type.  Complex types are represented as strings, formatted as described below:
+
+<% PROJECT_COLUMN_HELP_URL = "https://help.smartsheet.com/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
+
+| Column Type | Possible Types for Cell.value | Returns Cell.displayValue?
+|-------------|-------------------------------|---------------------------
+| TEXT_NUMBER	| **string**: free-form text values<br/>**number**: numeric values											| Yes: same as **value** for strings; for number values, the number with formatting applied.
+| CONTACT_LIST	| **string**: an email address representing a contact, or a free-form text value.							| Yes: same as **value** for free-form strings; for contacts, the contact's name if any, else their email address.
+| DATE			| **string**: a date in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+| PICKLIST		| **string**: one of the picklist's column options, or a free-form text value.<br/>**number**: numeric values| Yes: same as **value** for strings; for number values, the number with formatting applied.
+| CHECKBOX		| **boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
+| DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
+| PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
+| ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
+
+**Cell.objectValue** is an object representation of a cell's value and is currently used for adding or updating predecessor cell values.
+It provides a more "programmer friendly" format for assembling predecessors. To update a cell's predecessors, set objectValue to a
+[PredecessorList object](#predecessorlist-object) containing [Predecessor objects](#predecessor-object).
+
+#### Cell Value Parsing
+
+The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
+for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
+to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
+as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
+as a Text value? Probably not.
+ 
+To address this problem, the Smartsheet API employs a simple scheme to indicate whether you want a more predictable and strict
+interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules for the type of the cell's column.
+If an input value doesn't conform, the API will return [error code 1042](#errors).
+
+If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
+sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) in your request body.
+
+The parsing rules for the various column types are as follows:
+
+**TEXT_NUMBER**:
+
+     |     |
+-----|-----|
+*Strict* | All numeric and text values are valid and are interpreted literally.
+*Lenient* | All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
+
+<aside class="notice">The Smartsheet application only supports numeric values in the range -9007199254740992 to 9007199254740992. If using strict parsing, any numeric value outside that range will result in <a href="#errors">error code 1148</a>. If using lenient parsing, the value will be silently converted to text.</aside>
+
+**PICKLIST**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string and must be one of the options for the Picklist.
+*Lenient* | All numeric and text values are valid. Formatted numbers will be parsed like TEXT_NUMBER formatted numbers.
+
+**DATE**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
+*Lenient* | Smartsheet will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet will recognize the date and store it as such. All other values are simply text values.
+
+<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
+
+**CONTACT_LIST**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a valid email address. If "displayValue" is set, Smartsheet uses that as the name, otherwise if Smartsheet finds a match among the the Access Token owner's contacts, Smartsheet will associate this cell with that existing contact.
+*Lenient* | If the value is a valid email address, Smartsheet handles it the same way as Strict. If not, Smartsheet saves the value as a text value.
+
+<aside class="notice">See <a href="#contact-list-columns">Contact List Columns</a> for more information.</aside>
+
+**CHECKBOX**:
+
+     |     |
+-----|-----|
+*Strict* | Only boolean values (true or false) are valid.
+*Lenient* | Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
+
+**DURATION**:
+
+     |     |
+-----|-----|
+*Strict* | Only valid duration strings in the user's locale are valid.  Information on duration strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
+*Lenient* | Numeric values are treated as duration values in days.  String values which are valid duration strings in the user's locale are treated as durations, and any other values are treated as free-form text values.
+
+<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
+
+**PREDECESSOR**:
+
+The Smartsheet API doesn't support parsing of predecessor strings, so strict and lenient parsing don't apply to predecessors.  Instead, you can set the **objectValue** attribute to a [PredecessorList object](#predecessorlist-object) containing
+[Predecessor objects](#predecessor-object). To set a cell in a predecessor column to a non-predecessor string value, simply set **objectValue** to a string.
+
+**ABSTRACT_DATETIME**:
+
+     |     |
+-----|-----|
+*Strict* | The value must be a string value and a valid ISO 8601 date and time.
+*Lenient* | Smartsheet will attempt to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet will recognize the date and store it as such. All other values are simply text values.
+
+<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
+
+#### Contact List Columns
+
+With columns of type CONTACT_LIST, cells’ "value" and "displayValue" attributes are treated independently. 
+The contact’s email address is represented by **value**, while the contact’s name (and the value displayed in the cell in the Smartsheet app) is represented by **displayValue**.
+ 
+When creating or updating cells for a contact list column, the **displayValue** attribute works as follows:
+
+* If **displayValue** is non-null and non-empty, the Smartsheet cell will display the value provided.
+* If **displayValue** is an empty string, the Smartsheet cell will display the email address.
+* If **displayValue** is null or absent, Smartsheet will make a best guess effort at filling it in with a contact’s name based on the email address.
+
 ### Hyperlinks
 
 You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
 When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
 If null, the cell's value will be derived from the hyperlink: 
 <ul><li>If the hyperlink is a URL link, the cell's value will be set to the URL itself.</li><li>If the hyperlink is a sheet or report or Sight link, the cell's value will be set to the sheet or report or Sight name.</li></ul>
+
+### Images in Cells
+
+For details about working with images in cells, see [Cell Images](#cell-images).
 
 # Cell Images
 
@@ -3688,6 +3630,55 @@ Updates properties of the column, moves the column, and/or renames the column.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
+
+## <%= RELATED %>
+
+### Column Types
+
+Smartsheet supports the following standard column types, which are represented in a [Column object](#column-object) with a **type** attribute set to one of the following:
+
+Column Type | Column.type Value | Notes |
+------------|--------------------------|-------|
+Text/Number		| TEXT_NUMBER	|
+Contact List	| CONTACT_LIST	| List containing contacts or roles for a project. **NOTE:** You can use the [contactOptions](#contactoption-object) property to specify a pre-defined list of values for the column, which can also become lanes in card view. 
+Date			| DATE			|
+Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
+Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
+Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.)
+Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) 
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
+Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
+
+<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
+
+#### Symbol Columns
+
+In addition to the basic column types above, the Smartsheet App also supports columns that display symbols. These are simply specialized columns of type PICKLIST or CHECKBOX,
+whose **[symbol](#column-object)** attribute is set to one of the values below:
+
+**Symbols for CHECKBOX columns:**
+
+<%= CHECKBOX_SYMBOL_LIST %>
+
+**Symbols for PICKLIST columns:**
+
+<%= PICKLIST_SYMBOL_LIST %>
+ 
+<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
+
+#### System Columns
+
+In addition to the standard column types and symbols, Smartsheet has a number of *system columns*, which represent data that is
+filled in by Smartsheet and whose values cannot be changed by the user. These columns are represented with standard
+[column types](#column-types), with the **[Column.systemColumnType](#column-object)** attribute set to one of the following:
+
+Column.systemColumnType Value | Column Type | Notes
+-----|-----|-----|
+MODIFIED_DATE | DATETIME
+MODIFIED_BY | CONTACT_LIST
+CREATED_DATE | DATETIME
+CREATED_BY  | CONTACT_LIST
+AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type will include an [AutoNumberFormat object](#autonumberformat-object) that describes the mask used to generate the value.
 
 # Comments
 
@@ -12544,7 +12535,7 @@ Gets the list of user-created Templates to which the user has access.
 
 # Token
 
-The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication).
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-access-tokens-and-oauth).
 
 ## Get Access Token
 
@@ -12590,9 +12581,9 @@ Gets an access token, as part of the OAuth process. For more information, see [O
      |     |
 -----|-----|
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
- | **client_id** (required) -- client id for your app
+ | **client_id** (required) -- client id for your App
  | **code** (required) -- authorization code returned in the previous step
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
+ | **redirect_uri** (optional) -- redirect URL registered for your App, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- SHA-256 hash of your App secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 ## Refresh Access Token
@@ -12641,9 +12632,9 @@ Refreshes an access token, as part of the OAuth process. For more information, s
      |     |
 -----|-----|
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
- | **client_id** (required) -- client id for your app
+ | **client_id** (required) -- client id for your App
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (e.g., "http://")
+ | **redirect_uri** (optional) -- redirect URL registered for your App, including the protocol (e.g., "http://")
  | **hash** (required) -- SHA-256 hash of your App secret concatenated with a pipe and the refresh token value
 
 ## Revoke Access Token
@@ -14350,7 +14341,7 @@ Because the amount of format data in a large sheet can potentially be very large
 
 Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
  
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet web app and set a format (e.g. bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
+The equivalent API action for what happens when you highlight a column or row in the Smartsheet web App and set a format (e.g., bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
 
 ## Format Descriptor
 
@@ -14383,7 +14374,7 @@ The format descriptor contains 16 comma-separated numeric indexes.  Each index r
 
 The FormatTables object is retrieved via the `GET /serverinfo` operation and contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet web application displays for unset formats.
  
-<aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
+<aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your App has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
 
      |     |     |
 -----|-----|-----|
@@ -14515,7 +14506,7 @@ Webhooks are created and managed by using the Smartsheet API. See [Webhooks API 
 
 ## Webhook Ownership & Access
 
-Webhooks can be created and managed via [Direct API Access](http://smartsheet-platform.github.io/api-docs/#direct-api-access) or by a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development). 
+Webhooks can be created and managed via [Direct API Access](http://smartsheet-platform.github.io/api-docs/#direct-api-access) or by a [third-party App](http://smartsheet-platform.github.io/api-docs/#third-party-app-development). 
 
 A webhook that is created via Direct API Access:
 
@@ -14523,11 +14514,11 @@ A webhook that is created via Direct API Access:
 * can be managed only by the User who created it
 * will not be affected if the access token that was used to create it is revoked, as long as the User remains active
 
-A webhook that is created by a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development):
+A webhook that is created by a [third-party App](http://smartsheet-platform.github.io/api-docs/#third-party-app-development):
 
-* is owned by the User who authorized the third-party app (and is associated with the third-party app)
-* can be managed by the third-party-app (as long as it maintains authorization) OR by the User who owns it
-* will be permanently disabled if the third-party app's permissions are revoked
+* is owned by the User who authorized the third-party App (and is associated with the third-party App)
+* can be managed by the third-party App (as long as it maintains authorization) OR by the User who owns it
+* will be permanently disabled if the third-party App's permissions are revoked
 
 ## Webhook Scope & Events
 
@@ -14626,7 +14617,7 @@ false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because i
 false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook will become enabled.
-false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (i.e., webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third party app's access is subsequently restored, it will need to create new webhooks.
+false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party App associated with the webhook has had its access revoked. | This is a terminal state (i.e., webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third-party App's access is subsequently restored, it will need to create new webhooks.
 false  | DISABLED_SCOPE_INACCESSIBLE | Webhook has been disabled because its owner lost access to the corresponding data in Smartsheet (either because the object was deleted or sharing permissions were revoked). | Webhook will automatically be re-enabled if access to data is restored (i.e., if deleted object is restored or sharing permissions are restored).
 false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet support. | A webhook in this state can only be re-enabled by Smartsheet (contact <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>).  Attempting to re-enable a webhook in this state will result in error code 1154.
 
@@ -14865,8 +14856,8 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 -----|-----|-----|
 **id** | number | Webhook ID
 **name** | string | Webhook name
-**apiClientId** | string | API Client Id corresponding to third-party app that created the Webhook. Read-only. Only present if webhook was created by third-party app.
-**apiClientName** | string | API Client Name corresponding to third-party app that created the Webhook. Read-only. Only present if webhook was created by third-party app.
+**apiClientId** | string | API Client Id corresponding to third-party App that created the Webhook. Read-only. Only present if webhook was created by third-party App.
+**apiClientName** | string | API Client Name corresponding to third-party App that created the Webhook. Read-only. Only present if webhook was created by third-party App.
 **scope** | string | Scope of the subscription. Currently, the only supported value is "sheet". Specified when a webhook is created and cannot be changed.
 **scopeObjectId** | number | ID of the object that is subscribed to. Specified when a webhook is created and cannot be changed.
 **events** | string[] | Array of the events that are subscribed to. Currently, must be an array of size 1 that contains the string value "&#42;.&#42;", which means "all objects" and "all events".
@@ -15067,7 +15058,7 @@ curl https://api.smartsheet.com/2.0/webhooks \
 `GET /webhooks`
 
 Gets the list of all Webhooks that the user owns (if a [user generated token](http://smartsheet-platform.github.io/api-docs/#generating-access-token) was used to make the request) 
-or the list of all Webhooks associated with the third-party app (if a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development) made the request). 
+or the list of all Webhooks associated with the third-party App (if a [third-party App](http://smartsheet-platform.github.io/api-docs/#third-party-app-development) made the request). 
 Items in the response are ordered by API Client name, then Webhook name, then creation date.
 
      |     |
