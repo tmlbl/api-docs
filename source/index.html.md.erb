@@ -127,7 +127,17 @@ Header | Definition | Example |
 
 ### Query Strings
 
-[Kevin] Pagination and date/time are query strings. 
+Smartsheet has several query strings to help you customize responses to your API calls. The following table provides a quick reference and links for more information: 
+
+Query String | Type | Example | More Info |
+-----|-----|-----|-----|
+pageSize | Number | pageSize=25 | [Paging](#paging)
+page | String | page=4 | [Paging](#paging)
+includeAll | Boolean | includeAll=false | [Paging](#paging)
+allowPartialSuccess | Boolean | allowPartialSuccess=true | [Bulk Operations](#bulk-operations)
+numericDates | Boolean | numericDates=true | [Dates and Times](#dates-and-times)
+
+<aside class="notice">You also have many options for programmatically formatting cells. See <a href="#formatting">Formatting.</a></aside>
 
 ## Authentication, Access Tokens, and OAUTH
 
@@ -282,9 +292,6 @@ The JSON result should look something like this (after formatting):
 To drill down to the cell level, you need to locate and record a few object IDs first. 
 
 1. Get All Sheets returns a sheetId.
-2. Get All Columns returns column titles, which help you find the columnIds that are also in the response.
-3. Get Sheets (with a sheetId) returns a rowId.
-4. Update Rows takes all three object IDs you've collected to this point: sheetId, columnId, and rowId.
 
 # Sample Code and SDKs
 
@@ -556,8 +563,6 @@ Once you have obtained an access token on behalf of the user, you can fetch basi
 The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
 multiple objects in a single request. For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
 
-[Kevin] re-look at "get all" vs "list". Lean towards List, but look at the code samples and see if there's any justification for both terms and, if so, why.
-
 ### Optional Bulk Operations
 
 Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object, or an array of objects.
@@ -571,8 +576,6 @@ return an error if one or more items in the array already exist.  Existing items
 <aside class="notice">As Smartsheet makes future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
 
 ### Partial Success
-
-[Kevin] This seems to be a query param/setting. Move up to the new global considations section. Or keep it here, but reference it in the global area. Also, reference formatting section for cells.
 
 In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
 if not, none of them will be.
