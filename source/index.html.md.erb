@@ -228,9 +228,7 @@ This flag works for any API request.
 
 ## Sheets/Columns/Rows/Cells
 
-[Kevin] The tutorial will determine what, if anything, goes here, i.e., this section.
-
-For many API calls, you will be manipulating some combination of sheets, columns, rows, and cells. To work in any sheet, you will need to GET a sheet ID first. If you want to work in a specific column or row, you will need to GET a column ID or a row ID. And to work in a cell, you will need the x and y value for that cell, otherwise known as the column ID + the row ID. The following table defines these elements and gives you some helpful pointers to more information:
+Everything you do with the Smartsheet API has something to do with the hierachy of sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). The following table defines these terms and points you to places in this documentation where you can find more information:
 
 UI Element | Overview | Definitions
 -----|-----|-----|
@@ -238,6 +236,11 @@ Sheet | A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [F
 Column | A Column is a component of a Sheet or Report. | [Column object,](#column-object) [Column types](#column-types)
 Row | A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Discussions and/or Attachments. | [Row object](#row-object)
 Cell | A collection of Cells comprises each Row in a Sheet. | [Cell object,](#cell-object) [Cell reference](#cell-reference)
+
+To illustrate this essential hierachy, there are two code walkthroughs in the [Getting Started](#getting-started) section below.
+
+* [Making Your First API Call](#making-your-first-api-call)
+* [How to Read a Sheet Response](#how-to-read-a-sheet-response)
 
 ## Versioning and Changes
 
@@ -247,6 +250,41 @@ Also, make sure your code does not depend on the order in which JSON objects are
 # Getting Started
 
 ## Making Your First API Call
+
+> Example Request:
+
+```cURL
+curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets"
+```
+
+> Example Response:
+
+```json
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+    "data": [{
+            "id": 6141831453927300,
+            "name": "My first sheet",
+            "accessLevel": "ADMIN",
+            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
+            "createdAt": "2016-01-28T22:02:35Z",
+            "modifiedAt": "2016-08-09T17:50:06Z"
+        },
+        {
+            "id": 6141831453927300,
+            "name": "Sheet shared to me",
+            "accessLevel": "VIEWER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
+            "createdAt": "2016-01-28T22:02:35Z",
+            "modifiedAt": "2016-08-09T17:50:06Z"
+        }
+    ]
+}
+```
+
 Before you write any code, try executing API requests using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request and Response.
 
 You will need to use an access token. See instructions at [Authentication, Access Tokens, and OAUTH](#authentication-access-tokens-and-oauth). In the examples below, replace this sample token, "ll352u9jujauoqz4gstvsae05", with your actual token value.
@@ -285,13 +323,100 @@ The JSON result should look something like this (after formatting):
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;] <br>
 &#160;&#160;&#160;&#160;} <br>
 
-## Retrieving Detailed Sheet Information
+## How to Read a Sheet Response
 
-[Kevin] This should just be about GET sheets/{id}, and then a description of the sheets, rows, columns, and cell objects so they understand how to read the response. Don't get into other API calls. 
+> Example Request:
 
-To drill down to the cell level, you need to locate and record a few object IDs first. 
+```cURL
 
-1. Get All Sheets returns a sheetId.
+curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets/6141831453927300"
+
+```
+
+> Example Response:
+
+```json
+{
+  //This is the sheetId. 
+  "id": 6141831453927300,
+  "name": "My first sheet",
+  //This is the column object. At a minimum, you will want to track the title and column ID.
+  "columns": [
+    {
+      "id": 2517104256673668,
+      "index": 0,
+      "title": "Choice",
+      "type": "TEXT_NUMBER",
+      "primary": true,
+      "width": 150
+    },
+    {
+      "id": 7020703884044164,
+      "index": 1,
+      "title": "Description",
+      "type": "TEXT_NUMBER",
+      "width": 150
+    }
+  ],
+  //This is the row object. Note this contains the cell object. 
+  "rows": [
+    {
+      "id": 564480076736388,
+      "rowNumber": 1,
+      "expanded": true,
+      "createdAt": "2017-05-12T16:52:38Z",
+      "modifiedAt": "2017-05-12T16:52:38Z",
+      //This is the cell object. Note how this object repeats the columnId, but doesn't include a column Title.
+      "cells": [
+        {
+          "columnId": 2517104256673668,
+          "value": "A",
+          "displayValue": "A"
+        },
+        {
+          "columnId": 7020703884044164,
+          "value": "Option A is...",
+          "displayValue": "Option A is..."
+        }
+      ]
+    },
+    //This is the next row with a new rowId and rowNumber. The siblingId tells you it's in the same sheet as the row above.
+    {
+      "id": 5068079704106884,
+      "rowNumber": 2,
+      "siblingId": 564480076736388,
+      "expanded": true,
+      "createdAt": "2017-05-12T16:52:38Z",
+      "modifiedAt": "2017-05-12T16:52:38Z",
+      "cells": [
+        {
+          "columnId": 2517104256673668,
+          "value": "B",
+          "displayValue": "B"
+        },
+        {
+          "columnId": 7020703884044164,
+          "value": "Option B is...",
+          "displayValue": "Option B is..."
+        }
+      ]
+    }
+  ]
+}
+```
+
+Everything you do with the Smartsheet API has something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need a rowId and a columnId to go with the sheetId you found above. You can find these all-important IDs by using [GET All Sheets](#get-all-sheets) and examining the response. In this walkthrough, you'll learn where you can find these IDs by working with one of the sample sheets returned above, called My first sheet.
+
+<img src="images/Survey.png" alt="Basic sheet with 2 rows and 2 columns" />
+
+Before you begin, you should already have an access token, which you used in the exercise above. You'll use the same access token for this walkthrough.
+
+1. In the response above, find the ID for "My first sheet". It should look like this: "id": 6141831453927300.
+2. Copy that sheetId into the API call, GET All Sheets (GET /sheet/{sheetId}) where 6141831453927300 takes the place of {sheetId}.<br>
+  `curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets/6141831453927300"`
+3. The sample request and response are displayed in the dark-blue panel next to this one. Be sure to select the cURL tab. NOTE: while JSON doesn't have a comment feature, I've taken some liberties. First, in the interest of saving space, I've truncated the beginning of the response. Second, I am using a commenting convention as if JSON could actually parse that.
+
+This core hierarchy of Sheet > Column > Row > Cell is essential to working with the Smartsheet API. As your user's sheets grow in complexity, the responses will too. This walkthrough has given you some navigational aid in finding the right value to plug into your API calls. Use the API Reference and the example language tabs to learn more.
 
 # Sample Code and SDKs
 
@@ -14095,7 +14220,7 @@ An API client can create a webhook by using the [Create Webhook](#create-webhook
 After successfully creating a webhook, the API client must subsequently initiate and complete the [verification process](#webhook-verification) before the webhook will become enabled. 
 The following diagram illustrates the process of creating and enabling a Webhook. 
 
-<img src="images/v4-CreateAndEnableWebhook.png" alt="Workflow to create a Webhoook" />
+<img src="images/v4-CreateAndEnableWebhook.png" alt="Workflow to create a Webhook" />
 
 <span class="customSubHeading">Step-by-Step:</span>
 
