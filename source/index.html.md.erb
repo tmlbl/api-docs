@@ -37,7 +37,7 @@ search: false
 <% SUPPORTS_NUMERICDATES = "You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href='#dates-and-times'>Dates and Times</a> for more information." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object will contain a **failedItems** attribute -- an array of [BulkItemFailure objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
-<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#errors) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
+<% SHARING_ERRORS = "If called with a single [Share object](#share-object), and that user or group share already exists, [error code](#complete-error-code-list) **1025** will be returned.  If called with an array of Share objects, and one or more user or group shares in the array already exist, they will be ignored and omitted from the response." %>
 <% LIST_SHARES_RESPONSE_DESC = "By default, this operation returns only <i>item-level</i> shares (<b><a href='#share-object'>scope</b></a>='ITEM'). Use the <b>include</b> parameter to request that <i>workspace-level</i> shares (<b><a href='#share-object'>scope</b></a>=='WORKSPACE') also be returned." %>
 <% WEBHOOKS_INTRO = "Webhooks provide a way for Smartsheet to automatically notify your external application or service when certain events occur in Smartsheet. Webhooks offer a more efficient alternative to using the API to periodically <i>poll</i> for changes." %>
 <% CUSTOM_WELCOME_SCREEN_URL = "https://help.smartsheet.com/articles/1392225-customizing-a-welcome-message-upgrade-screen-enterprise-only-#welcomescreen" %>
@@ -723,7 +723,7 @@ Index endpoints all support pagination via the following optional query string p
 -----|-----|-----|
 **pageSize** 	| number  | The maximum number of items to return per page.  Unless otherwise stated for a specific endpoint, defaults to **100** if not specified.
 **page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results will be returned.
-**includeAll**  | boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
+**includeAll**  | Boolean | If true, include all results (i.e. do not paginate).  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
 
 <aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
 
@@ -2145,7 +2145,7 @@ A collection of Cells comprises each Row in a Sheet.
 -----|-----|-----|
 **columnId** | number | The ID of the column that the cell is located in
 **columnType** | string | See type definition on the [Column object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
-**value** | string,<br/>number,<br/>or boolean | A string, a number or a boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
+**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
 **objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set
@@ -2154,7 +2154,7 @@ A collection of Cells comprises each Row in a Sheet.
 **linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a non-default format applied.
 **conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a conditional format applied.
-**strict** | boolean | Set to **false** to enable lenient parsing. Defaults to **true**. <%= REQUEST_ONLY_ATTRIBUTE %> See [Cell Value Parsing](#cell-value-parsing) for more information about using this attribute. 
+**strict** | Boolean | Set to **false** to enable lenient parsing. Defaults to **true**. <%= REQUEST_ONLY_ATTRIBUTE %> See [Cell Value Parsing](#cell-value-parsing) for more information about using this attribute. 
 **image** | [Image](#image-object) | The image that the cell contains.<br/>Only returned if the cell contains an image.
 
 ### Cell History Object
@@ -2270,8 +2270,8 @@ In a project sheet with dependencies enabled, the **objectValue** attribute for 
 **rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
 **type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
 **lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
-**invalid** | boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Read-only. Omitted if false.
-**inCriticalPath** | boolean | True if this predecessor is in the critical path. Read-only.
+**invalid** | Boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Read-only. Omitted if false.
+**inCriticalPath** | Boolean | True if this predecessor is in the critical path. Read-only.
 
 ### Duration object
 
@@ -2282,8 +2282,8 @@ In a project sheet, represents a value in a duration cell, or a lag value of a p
      |     |     |
 -----|-----|-----|
 **objectType** | string | DURATION
-**negative** | boolean | When used as a predecessor's lag value, indicates whether the lag is negative (if true), or positive (false). The individual duration values themselves (e.g. **days**, **hours**, **minutes**, etc.) will always be positive.
-**elapsed** | boolean | If true, indicates this duration represents elapsed time, which ignores non-working time.
+**negative** | Boolean | When used as a predecessor's lag value, indicates whether the lag is negative (if true), or positive (false). The individual duration values themselves (e.g. **days**, **hours**, **minutes**, etc.) will always be positive.
+**elapsed** | Boolean | If true, indicates this duration represents elapsed time, which ignores non-working time.
 **weeks** | number | The number of weeks for this duration.
 **days** | number | The number of days for this duration.
 **hours** | number | The number of hours for this duration.
@@ -2448,7 +2448,7 @@ An empty cell is always represented by **null** for all of these attributes.
 be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
 like 1234.5678, but its **displayValue** would be "$1,234.57".
 
-**Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **boolean**,
+**Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **Boolean**,
 depending on the column type.  Complex types are represented as strings, formatted as described below:
 
 <% PROJECT_COLUMN_HELP_URL = "https://help.smartsheet.com/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
@@ -2459,7 +2459,7 @@ depending on the column type.  Complex types are represented as strings, formatt
 | CONTACT_LIST	| **string**: an email address representing a contact, or a free-form text value.							| Yes: same as **value** for free-form strings; for contacts, the contact's name if any, else their email address.
 | DATE			| **string**: a date in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
 | PICKLIST		| **string**: one of the picklist's column options, or a free-form text value.<br/>**number**: numeric values| Yes: same as **value** for strings; for number values, the number with formatting applied.
-| CHECKBOX		| **boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
+| CHECKBOX		| **Boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
 | DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
 | PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
 | ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
@@ -2478,7 +2478,7 @@ as a Text value? Probably not.
  
 To address this problem, the Smartsheet API employs a simple scheme to indicate whether you want a more predictable and strict
 interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules for the type of the cell's column.
-If an input value doesn't conform, the API will return [error code 1042](#errors).
+If an input value doesn't conform, the API will return [error code 1042](#400-level-error-codes).
 
 If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
 sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell object](#cell-object) in your request body.
@@ -2492,7 +2492,7 @@ The parsing rules for the various column types are as follows:
 *Strict* | All numeric and text values are valid and are interpreted literally.
 *Lenient* | All numeric and text values are valid. Formatted numbers passed as text values, such as currencies ("$5,000"), percentages ("50%"), or decimals ("100.5")  will be parsed to their numeric equivalents, based on the locale of the Access Token owner,  with the proper formatting enabled for the cell.
 
-<aside class="notice">The Smartsheet application only supports numeric values in the range -9007199254740992 to 9007199254740992. If using strict parsing, any numeric value outside that range will result in <a href="#errors">error code 1148</a>. If using lenient parsing, the value will be silently converted to text.</aside>
+<aside class="notice">The Smartsheet application only supports numeric values in the range -9007199254740992 to 9007199254740992. If using strict parsing, any numeric value outside that range will result in <a href="#complete-error-code-list">error code 1148</a>. If using lenient parsing, the value will be silently converted to text.</aside>
 
 **PICKLIST**:
 
@@ -2523,7 +2523,7 @@ The parsing rules for the various column types are as follows:
 
      |     |
 -----|-----|
-*Strict* | Only boolean values (true or false) are valid.
+*Strict* | Only Boolean values (true or false) are valid.
 *Lenient* | Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
 
 **DURATION**:
@@ -2594,7 +2594,7 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 **width** | number | Image width (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
 **height** | number | Image height (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
 **url** | string | Temporary URL that can be used to retrieve the image. This attribute can be present in a response but will never be specified in a request.
-**error** | [Error](#errors) | Error object. Present in the [Get All Image URLs](#get-all-image-urls) response only if an error occurred retrieving the image.
+**error** | [Error](#complete-error-code-list) | Error object. Present in the [Get All Image URLs](#get-all-image-urls) response only if an error occurred retrieving the image.
 
 ### ImageUrlMap Object
 
@@ -2753,11 +2753,11 @@ A Column is a component of a Sheet or Report.
 **id** | number | Column ID
 **index** | number | Column index
 **title** | string | Column title
-**primary** | boolean | Returned only if the column is the Primary Column (value = `true`)
+**primary** | Boolean | Returned only if the column is the Primary Column (value = `true`)
 **type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
 **options** | string[] | Array of the options available for the column
 **contactOptions** | ContactOption[] | Array of ContactOption objects to specify a pre-defined list of values for the column. Column **type** must be **CONTACT_LIST** 
-**hidden** | boolean | Flag indicating whether the column is hidden
+**hidden** | Boolean | Flag indicating whether the column is hidden
 **symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
 **autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
@@ -2765,8 +2765,8 @@ A Column is a component of a Sheet or Report.
 **width** | number | Display width of the column in pixels
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
-**locked** | boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
-**lockedForUser** | boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
+**locked** | Boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
+**lockedForUser** | Boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
 
 ### ContactOption Object
 
@@ -2792,8 +2792,8 @@ Smartsheet users can define and save personal column filters on sheets they can 
      |     |     |
 -----|-----|-----|
 **type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
-**excludeSelected** | boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
-**values** | object[] containing strings, numbers, and booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, booleans, or dates.
+**excludeSelected** | Boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
+**values** | object[] containing strings, numbers, and Booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter will match against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.
 **criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria objects specifying custom criteria against which to match cell values.
 
 ## Add Columns
@@ -3858,7 +3858,7 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 **lastCommentedUser** | [User](#user-object) | User object containing name and email of the author of the most recent Comment
 **createdBy** | [User](#user-object) | User object containing name and email of the creator of the Discussion
 **accessLevel** | string | User's permissions on the Discussion
-**readOnly** | boolean | Flag to indicate if the User can modify the Discussion
+**readOnly** | Boolean | Flag to indicate if the User can modify the Discussion
 
 ## Create Discussion on Row
 
@@ -4544,7 +4544,7 @@ Adds one or more items to the user's list of Favorite items.
 
 <aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
-If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code](#errors) **1129** will be returned.  If called with an array of [Favorite objects](#favorite-object), any objects specified in the array that are already marked as favorites will be ignored and omitted from the response.
+If called with a single [Favorite object](#favorite-object), and that favorite already exists, [error code](#complete-error-code-list) **1129** will be returned.  If called with an array of [Favorite objects](#favorite-object), any objects specified in the array that are already marked as favorites will be ignored and omitted from the response.
 
      |     |
 -----|-----|
@@ -5284,7 +5284,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 -----|-----|-----|
 **id** | number | Folder ID
 **name** | string | Folder name
-**favorite** | boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
+**favorite** | Boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | URL that represents a direct link to the Folder in Smartsheet
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
 **folders** | [Folder](#folder-object)[] | Array of Folder objects
@@ -6625,7 +6625,7 @@ Adds one or more members to a Group.
 
 <aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
-If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code](#errors) **1129** will be returned. If called with an array
+If called with a single [GroupMember object](#groupmember-object), and that group member already exists, [error code](#complete-error-code-list) **1129** will be returned. If called with an array
 of [GroupMember objects](#groupmember-object) any users specified in the array that are already group members will be ignored and omitted from the response.
 
 <aside class="notice">This operation is only available to group administrators and system administrators.</aside>
@@ -6636,7 +6636,7 @@ of [GroupMember objects](#groupmember-object) any users specified in the array t
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | A single [GroupMember object](#groupmember-object) or an array of Group Member objects, limited to the following attribute:<ul><li>email</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the members added to the group -- either a single [group member](#groupmember-object) or array of group member objects, corresponding to what was specified in the request.
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry using their primary address u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 <aside class="notice"><b>This operation is asynchronous</b>, meaning the users may not yet have sharing access to sheets for a period of time after this operation returns.  For small groups with limited sharing, the operation should complete quickly (within a few seconds).  For large groups with many shares, this operation could possibly take more than a minute to complete.</aside>
 
@@ -6854,7 +6854,7 @@ Extends the [Column object](#column-object), adding the following:
      |     |     |
 -----|-----|-----|
 **virtualId** | number | The virtual ID of this report column
-**sheetNameColumn** | boolean | Returned only for the special "Sheet Name" report column (value = "true")
+**sheetNameColumn** | Boolean | Returned only for the special "Sheet Name" report column (value = "true")
 
 A report column is a "virtual" column, in that it appears identical to source sheet columns, but is in fact a different column belonging to the report. 
 [Cells](#reportcell-object) in the report refer to this column via their **virtualColumnId** attribute, and to their actual column from their source sheet via their **columnId** attribute.
@@ -6871,7 +6871,7 @@ Extends the [Row object](#row-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**readOnlyFullEnabled** | boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
+**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 
@@ -7389,11 +7389,11 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **sheetId** | number | Parent Sheet ID
 **rowNumber** | number | Row number within the sheet (1-based - starts at 1)
 **version** | number | Number that is incremented every time a sheet is modified
-**filteredOut** | boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
-**inCriticalPath** | boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
-**locked** | boolean | Flag indicating whether the row is locked. In a response, a value of `true` indicates that the row has been locked by the sheet owner or the admin.
-**lockedForUser** | boolean | Flag indicating whether the row is locked for the requesting user. This attribute may be present in a response, but cannot be specified in a request.
-**expanded** | boolean | Flag to indicate if the row is expanded or collapsed
+**filteredOut** | Boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
+**inCriticalPath** | Boolean | Only returned, with a value of `true`, if the sheet is a project sheet with dependencies enabled and this row is in the critical path
+**locked** | Boolean | Flag indicating whether the row is locked. In a response, a value of `true` indicates that the row has been locked by the sheet owner or the admin.
+**lockedForUser** | Boolean | Flag indicating whether the row is locked for the requesting user. This attribute may be present in a response, but cannot be specified in a request.
+**expanded** | Boolean | Flag to indicate if the row is expanded or collapsed
 **accessLevel** | string | User's permission level on the Sheet that contains the Row
 **format** | string | Format descriptor (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a non-default format applied.
 **conditionalFormat** | string | Format descriptor describing this row's conditional format (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this row has a conditional format applied.
@@ -7408,9 +7408,9 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **permalink** | string | URL that represents a direct link to the Row in Smartsheet<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **rowPermalink**.
 **parentId** | number | In a response - the ID of the parent row (if any).<br/><br/>In a request - the ID of the desired parent row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
 **siblingId** | number | In a response - the ID of the previous sibling row at the same hierarchical level of this row (if any).<br/><br/>In a request - the ID of the desired sibling row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
-**toTop** | boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
-**toBottom** | boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
-**above** | boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
+**toTop** | Boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
+**toBottom** | Boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
+**above** | Boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
 
 ### CopyOrMoveRowDirective Object
 
@@ -7636,7 +7636,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 <%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><%= partial "snippets/addRowUpdateRow.md.erb" %></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created rows -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
-<%= ERRORS %> | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request will fail (no rows will be added), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
+<%= ERRORS %> | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request will fail (no rows will be added), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
 
 ## Copy Rows to Another Sheet
 
@@ -7799,7 +7799,7 @@ Deletes one or more rows from the Sheet specified in the URL.
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **ids** (required) - comma-separated list of Row IDs
- | **ignoreRowsNotFound** (optional) - true or false. If set to false and any of the specified Row IDs are not found, no rows will be deleted, and the "not found" [error](#errors) will be returned.
+ | **ignoreRowsNotFound** (optional) - true or false. If set to false and any of the specified Row IDs are not found, no rows will be deleted, and the "not found" [error](#complete-error-code-list) will be returned.
 <%= RETURNS %> | [Result object](#result-object) containing Row IDs corresponding to all rows that were successfully deleted (including any child rows of rows specified in the URL).
 
 ## Get Row
@@ -8205,7 +8205,7 @@ Updates cell values in the specified rows, expands/collapses the specified rows,
 <%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><%= partial "snippets/addRowUpdateRow.md.erb" %></ul>
 <%= RETURNS %> | [Result object](#result-object) containing an array of the updated rows. 
-<%= ERRORS %>  | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request will fail (no rows will be updated), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
+<%= ERRORS %>  | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request will fail (no rows will be updated), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
 
 ## <%= RELATED %>
 
@@ -8406,7 +8406,7 @@ Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 **sendTo**  | [Recipient](#recipient-object)[]  | Array of Recipient objects. Required.
 **subject** | string | The subject of the email. Optional.
 **message** | string | The message of the email. Optional.
-**ccMe** | boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
+**ccMe** | Boolean | A flag to indicate whether or not to send a copy of the email to the sender. Optional, defaults to false.
 
 ### FormatDetails Object
 
@@ -8431,8 +8431,8 @@ Extends the [Email object](#email-object), adding the following:
      |     |     |
 -----|-----|-----|
 **columnIds** | number[] | IDs of the columns to be included.
-**includeAttachments** | boolean | A flag to indicate whether or not to include Attachments in the email.
-**includeDiscussions** | boolean | A flag to indicate whether or not to include Discussions in the email.
+**includeAttachments** | Boolean | A flag to indicate whether or not to include Attachments in the email.
+**includeDiscussions** | Boolean | A flag to indicate whether or not to include Discussions in the email.
 **layout**   | string | One of the following values: HORIZONTAL, VERTICAL.  Optional, defaults to HORIZONTAL when multiple rows are being sent, and to VERTICAL when a single row is being sent.  HORIZONTAL formats the rows being sent as a grid, whereas VERTICAL formats the rows being sent as separate cards.
 
 ### MultiRowEmail Object
@@ -8556,7 +8556,7 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 **modifiedAt**	| timestamp | Time that the share was modified.
 **subject**		| string | The subject of the email that will optionally be sent to notify the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
 **message**		| string | The message to be included in the body of the email that will optionally be sent to the recipient. <%= REQUEST_ONLY_ATTRIBUTE %>
-**ccMe**		| boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
+**ccMe**		| Boolean | Flag to indicate whether or not to send a copy of the email to the sharer of the sheet. <%= REQUEST_ONLY_ATTRIBUTE %>
 
 ## Report Sharing
 
@@ -9375,7 +9375,7 @@ Shares a Sight with the specified Users and Groups.
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
 <%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Update Sight Share
 
@@ -9684,7 +9684,7 @@ Shares a Workspace with the specified Users and Groups.
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
 <%= REQUEST %> | [Share object](#share-object) or an array of Share objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result object](#result-object) containing either a single [Share object](#share-object) or an array of Share objects, corresponding to what was specified in the request.
-<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Update Workspace Share
 
@@ -9778,12 +9778,12 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **accessLevel** | string | User's permissions on the Sheet
 **projectSettings** | [ProjectSettings](#projectsettings-object) | Sheet's project settings containing the working days, non-working days, and length of day for a project sheet
 **effectiveAttachmentOptions** | array | Array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
-**readOnly** | boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
-**ganttEnabled** | boolean | Flag to indicate that Gantt is enabled
-**dependenciesEnabled** | boolean | Flag to indicate that dependencies are enabled
-**resourceManagementEnabled** | boolean | Flag to indicate that resource management is enabled
-**favorite** | boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
-**showParentRowsForFilters** | boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
+**readOnly** | Boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
+**ganttEnabled** | Boolean | Flag to indicate that Gantt is enabled
+**dependenciesEnabled** | Boolean | Flag to indicate that dependencies are enabled
+**resourceManagementEnabled** | Boolean | Flag to indicate that resource management is enabled
+**favorite** | Boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
+**showParentRowsForFilters** | Boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
 **userSettings** | [SheetUserSettings](#sheetusersettings-object) | A SheetUserSettings object containing the current user's sheet-specific settings.
 **owner** | string | Email address of the Sheet owner
 **ownerId** | number | User ID of the Sheet owner
@@ -9801,10 +9801,10 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**readOnlyLiteEnabled** | boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
-**readOnlyFullEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
-**readWriteEnabled** | boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
-**icalEnabled** | boolean | If `true`, a webcal will be available for the calendar in the sheet.
+**readOnlyLiteEnabled** | Boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
+**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
+**readWriteEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
+**icalEnabled** | Boolean | If `true`, a webcal will be available for the calendar in the sheet.
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 **readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
 **readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
@@ -9818,8 +9818,8 @@ Represents individual user settings for a specific sheet.  User settings may be 
 
      |     |     |
 -----|-----|-----|
-**criticalPathEnabled** | boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
-**displaySummaryTasks** | boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
+**criticalPathEnabled** | Boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
+**displaySummaryTasks** | Boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
 
 ### ProjectSettings Object
 
@@ -11486,7 +11486,7 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 **name** | string | Sight Name 
 **columnCount** | number | Number of Columns that the Sight contains
 **widgets** | [widget](#widget-object)[] | Array of Widget objects
-**favorite** | boolean | Indicates whether the User has marked the Sight as a favorite
+**favorite** | Boolean | Indicates whether the User has marked the Sight as a favorite
 **accessLevel** | string | User's permissions on the Sight. Valid values: <ul><li>OWNER</li> <li>ADMIN</li> <li>VIEWER</li></ul>
 **permalink** | string | URL that represents a direct link to the Sight in Smartsheet
 **createdAt** | timestamp | Time of creation
@@ -11497,7 +11497,7 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 
      |     |     |
 -----|-----|-----|
-**readOnlyFullEnabled** | boolean | If `true`, a rich version of the Sight is published with the ability to use shortcuts and widget interactions.
+**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the Sight is published with the ability to use shortcuts and widget interactions.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published Sight.<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published Sight:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the Sight owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 
@@ -11508,8 +11508,8 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 **id** | number | Widget ID
 **type** | string | Type of widget
 **title** | string | _(Optional)_ Title of the widget
-**showTitle** | boolean | **True** indicates that the client should display the widget title.  Note that this is independent of the "title" string which may be null or empty.
-**showTitleIcon** | boolean | **True** indicates that the client should display the Sheet icon in the widget title
+**showTitle** | Boolean | **True** indicates that the client should display the widget title.  Note that this is independent of the "title" string which may be null or empty.
+**showTitleIcon** | Boolean | **True** indicates that the client should display the Sheet icon in the widget title
 **titleFormat** | string | [FormatDescriptor](#formatting)
 **xPosition** | number | X-coordinate of widget's position on the Sight
 **yPosition** | number | Y-coordinate of widget's position on the Sight
@@ -11563,7 +11563,7 @@ htmlContent | string | HTML snippet to render Report
 -----|-----|-----|
 **label** | string | Label for the data point. This will be either the column name or a user-provided string
 **labelFormat** | string | [formatDescriptor](#formatting)
-**objectValue** | A **string**, **number**, or a **boolean** value | The type of data returned will depend on the cell type and the data in the cell
+**objectValue** | A **string**, **number**, or a **Boolean** value | The type of data returned will depend on the cell type and the data in the cell
 **cell** | [cell](#cell-object) | Cell Object
 **valueFormat** | string | [formatDescriptor](#formatting)
 **order** | integer | The display order for the CellDataItem
@@ -12083,7 +12083,7 @@ A Template can be used to create a Sheet, as described in [Create Sheet from Tem
 **type** | string | Type of the template. One of "sheet" or "report"<br/>*Only applicable to public templates*
 **tags** | string[] | List of search tags for this template<br/>*Only applicable to non-blank public templates*
 **categories** | string[] | List of categories this template belongs to<br/>*Only applicable to public templates*
-**blank** | boolean | Flag indicating whether the template is blank<br/>*Only applicable to public templates*
+**blank** | Boolean | Flag indicating whether the template is blank<br/>*Only applicable to public templates*
 **globalTemplate** | string | Type of global template. One of: "BLANK_SHEET", "TASK_LIST", or "PROJECT_SHEET"<br/>*Only applicable to blank public templates*
 
 ## Get All Public Templates
@@ -12405,10 +12405,10 @@ Revokes the access token used to make this request.  The access token will no lo
 **name** | string | User's full name (read-only)
 **firstName** | string | User's first name
 **lastName** | string | User's last name
-**admin** | boolean | Flag indicating whether the user is a system admin (can manage users and account)
-**licensedSheetCreator** | boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
-**groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
-**resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**admin** | Boolean | Flag indicating whether the user is a system admin (can manage users and account)
+**licensedSheetCreator** | Boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
+**groupAdmin** | Boolean | Flag indicating whether the user is a group admin (can create and edit groups)
+**resourceViewer** | Boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email addresses associated with the User account
 **sheetCount** | number | The number of sheets owned by the current user within the organization
@@ -12426,10 +12426,10 @@ Revokes the access token used to make this request.  The access token will no lo
 **timeZone** | string | Current user's time zone ID
 **locale** | string | Current user's locale (see [Server Information](#server-information))
 **account** | [Account](#account-object) | Account object representing the current user's customer account
-**admin** | boolean | Flag indicating whether the user is a system admin (can manage users and account)
-**licensedSheetCreator** | boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
-**groupAdmin** | boolean | Flag indicating whether the user is a group admin (can create and edit groups)
-**resourceViewer** | boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**admin** | Boolean | Flag indicating whether the user is a system admin (can manage users and account)
+**licensedSheetCreator** | Boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
+**groupAdmin** | Boolean | Flag indicating whether the user is a group admin (can create and edit groups)
+**resourceViewer** | Boolean | Flag indicating whether the user is a resource viewer (can access resource views)
 **status** | string | User status, set to one of the following values: <ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
 **alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail objects](#alternateemail-object) representing the alternate email addresses associated with the User account
 **sheetCount** | number | The number of sheets owned by the current user within the organization
@@ -12449,7 +12449,7 @@ Revokes the access token used to make this request.  The access token will no lo
 -----|-----|-----|
 **id** | number | AlternateEmail ID
 **email** | string | User's alternate email address
-**confirmed** | boolean | Flag indicating whether the alternate email address has been confirmed
+**confirmed** | Boolean | Flag indicating whether the alternate email address has been confirmed
 
 ## Add User
 
@@ -12541,10 +12541,10 @@ Adds a User to the organization.
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **sendEmail** (optional): A boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
+<%= PARAMETERS %> | **sendEmail** (optional): A Boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
 <%= REQUEST %> | [User object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceViewer (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created [User object](#user-object).
-<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-addresses) (i.e., not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-addresses) (i.e., not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 <aside class="notice">If successful, and user auto provisioning (UAP) is on, and user matches the auto provisioning rules, user will be added to the org.  If UAP is off, or user does not match UAP rules, user will be invited to the org and must explicitly accept the invitation to join.</aside>
 
@@ -12630,7 +12630,7 @@ Adds one or more alternate email addresses for the specified User.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | Array of [AlternateEmail objects](#alternateemail-object), each limited to only the **email** attribute
 <%= RETURNS %> | [Result object](#result-object) containing an array of the newly created [AlternateEmail objects](#alternateemail-object).
-<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response will contain the typical [Error object](#errors).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#error-handling)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response will contain the typical [Error object](#complete-error-code-list).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the [Error object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#error-handling)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Make Alternate Email Primary
 
@@ -13249,7 +13249,7 @@ Updates the User specified in the URL.
 -----|-----|-----|
 **id** | number | Workspace ID
 **name** | string | Workspace name
-**favorite** | boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
+**favorite** | Boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
 **accessLevel** | string | User's permissions on the Workspace
 **permalink** | string | URL that represents a direct link to the Workspace in Smartsheet
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet objects
@@ -13794,7 +13794,7 @@ Object that contains information about an item that failed to be added or update
      |     |     |
 -----|-----|-----|
 **index** | number | The index of the failed item in the bulk request array
-**error** | [Error object](#errors) | The error caused by the failed item
+**error** | [Error object](#complete-error-code-list) | The error caused by the failed item
 **rowId** | number | The id of the [Row](#row-object) that failed.<br/>*Applicable only to bulk row operations* 
 
 # Complete Error Code List
@@ -14532,7 +14532,7 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **events** | string[] | Array of the events that are subscribed to. Currently, must be an array of size 1 that contains the string value "&#42;.&#42;", which means "all objects" and "all events".
 **callbackUrl** | string | HTTPS URL where callbacks will be sent.<br/><br/>**Note:** Smartsheet webhooks do not support callbacks to servers using self-signed certificates. The callback server must be using a signed certificate from a certificate authority.
 **sharedSecret** | string | Shared secret for this webhook, randomly generated by Smartsheet. Read-only. See [Authenticating Callbacks](#authenticating-callbacks-(optional)) for details about how this value can be used.
-**enabled** | boolean | Flag indicating whether the Webhook is on (`true`) or off (`false`)
+**enabled** | Boolean | Flag indicating whether the Webhook is on (`true`) or off (`false`)
 **status** | string | Webhook status. Read-only. See [Webhook Status](#webhook-status) for list of possible values.
 **disabledDetails** | string | Details about the reason the Webhook was disabled. Read-only. Only present when **enabled**=`false`.
 **version** | number | Webhook version. Currently, the only supported value is 1. This attribute is intended to ensure backward compatibility as new webhook functionality is released. For example, a webhook with a version of 1 is guaranteed to always be sent callback objects that are compatible with the version 1 release of webhooks.
