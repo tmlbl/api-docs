@@ -331,84 +331,75 @@ curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.sm
 
 ```json
 {
-  //This is the sheetId. 
-  "id": 6141831453927300,
-  "name": "My first sheet",
-  //This is the Column Object. At a minimum, you will want to track the title and column Id.
-  "columns": [
-    {
-      "id": 2517104256673668,
-      "index": 0,
-      "title": "Choice",
-      "type": "TEXT_NUMBER",
-      "primary": true,
-      "width": 150
-    },
-    {
-      "id": 7020703884044164,
-      "index": 1,
-      "title": "Description",
-      "type": "TEXT_NUMBER",
-      "width": 150
-    }
-  ],
-  //This is the Row Object. Note this contains the Cell Object. 
-  "rows": [
-    {
-      "id": 564480076736388,
-      "rowNumber": 1,
-      "expanded": true,
-      "createdAt": "2017-05-12T16:52:38Z",
-      "modifiedAt": "2017-05-12T16:52:38Z",
-      //This is the Cell Object. Note how this object repeats the columnId, but doesn't include a column Title.
-      "cells": [
-        {
-          "columnId": 2517104256673668,
-          "value": "A",
-          "displayValue": "A"
-        },
-        {
-          "columnId": 7020703884044164,
-          "value": "Option A is...",
-          "displayValue": "Option A is..."
-        }
-      ]
-    },
-    //This is the next row with a new rowId and rowNumber. The siblingId tells you it's in the same sheet as the row above.
-    {
-      "id": 5068079704106884,
-      "rowNumber": 2,
-      "siblingId": 564480076736388,
-      "expanded": true,
-      "createdAt": "2017-05-12T16:52:38Z",
-      "modifiedAt": "2017-05-12T16:52:38Z",
-      "cells": [
-        {
-          "columnId": 2517104256673668,
-          "value": "B",
-          "displayValue": "B"
-        },
-        {
-          "columnId": 7020703884044164,
-          "value": "Option B is...",
-          "displayValue": "Option B is..."
-        }
-      ]
-    }
-  ]
+	"id": 6141831453927300,                         // This is the Id of the entire sheet
+	"name": "My first sheet",
+	"columns": [{                                   // Each Column Object connects column title to Id and defines the column details
+			"id": 2517104256673668,                 // Column Id will be needed to indentify cells on a row
+			"index": 0,
+			"title": "Name",                        // This is the column name as seen in the UI
+			"type": "TEXT_NUMBER",
+			"primary": true,
+			"width": 150
+		},
+		{
+			"id": 7020703884044164,
+			"index": 1,
+			"title": "EmployeeId",
+			"type": "TEXT_NUMBER",
+			"width": 150
+		}
+	],
+	"rows": [{                                      // A Row Object
+			"id": 564480076736388,                  // You will need the row Id if you want to make updates
+			"rowNumber": 1,
+			"expanded": true,
+			"createdAt": "2017-05-12T16:52:38Z",
+			"modifiedAt": "2017-05-22T20:40:14Z",
+			"cells": [{                             // Each row contains an array of Cells, which have the actual content
+					"columnId": 2517104256673668,   // The column Id can be interpreted by looking at the array of column definitions above. That tells us this is the "Name" column
+					"value": "John Doe",            // Actual cell value
+					"displayValue": "John Doe"
+				},
+				{
+					"columnId": 7020703884044164,
+					"value": 12345,
+					"displayValue": "12345"
+				}
+			]
+		},
+		{
+			"id": 5068079704106884,
+			"rowNumber": 2,
+			"siblingId": 564480076736388,
+			"expanded": true,
+			"createdAt": "2017-05-12T16:52:38Z",
+			"modifiedAt": "2017-05-22T20:40:14Z",
+			"cells": [{
+					"columnId": 2517104256673668,
+					"value": "Jane Roe",
+					"displayValue": "Jane Roe"
+				},
+				{
+					"columnId": 7020703884044164,
+					"value": 67890,
+					"displayValue": "67890"
+				}
+			]
+		}
+	]
 }
 ```
 
-Everything you do with the Smartsheet API has something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need a rowId and a columnId to go with the sheetId you found above. You can find these all-important Ids by using [GET All Sheets](#get-all-sheets) and examining the response. In this walkthrough, you'll learn where you can find these Ids by working with one of the sample sheets returned above, called My first sheet.
+Many things you do with the Smartsheet API have something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need a row, rowId, column, and columnId to go with the sheetId you found above. You can find these all-important Ids by using [GET All Sheets](#get-all-sheets) and examining the response. In this walkthrough, you'll learn where you can find these Ids by working with one of the sample sheets returned above, called My first sheet.
 
 <img src="images/Survey.png" alt="Basic sheet with 2 rows and 2 columns" />
 
 Before you begin, you should already have an access token, which you used in the exercise above. You'll use the same access token for this walkthrough.
 
 1. In the response above, find the Id for "My first sheet". It should look like this: "id": 6141831453927300.
-2. Copy that sheetId into the API call, GET All Sheets (GET /sheet/{sheetId}) where 6141831453927300 takes the place of {sheetId}.<br>
+2. Copy that sheetId into the API call, GET Sheet (GET /sheet/{sheetId}) where 6141831453927300 takes the place of {sheetId}.<br>
   `curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets/6141831453927300"`
-3. The sample request and response are displayed in the dark-blue panel next to this one. Be sure to select the cURL tab. NOTE: while JSON doesn't have a comment feature, I've taken some liberties. First, in the interest of saving space, I've truncated the beginning of the response. Second, I am using a commenting convention as if JSON could actually parse that.
+3. The sample request and response are displayed in the dark-blue panel next to this one. Be sure to select the cURL tab. NOTE: while JSON doesn't have a comment feature, this sample uses comments to help you identify the objects in the response.
 
 This core hierarchy of Sheet > Column > Row > Cell is essential to working with the Smartsheet API. As your user's sheets grow in complexity, the responses will too. This walkthrough has given you some navigational aid in finding the right value to plug into your API calls. Use the API Reference and the example language tabs to learn more.
 
@@ -13793,7 +13784,7 @@ Object that contains information about an item that failed to be added or update
 
 # Complete Error Code List
 
-For an explanation of the logic behind Smartsheet error codes and error handling, see the [HTTP Verbs and Status Codes](#http-verbs-and-status-codes) portion of the Introduction. 
+For an explanation of the logic behind Smartsheet error codes and error handling, see the [HTTP Verbs, REST, and Status Codes](#http-verbs-rest-and-status-codes) portion of the Introduction. 
 
 ## 400-Level Error Codes
 
