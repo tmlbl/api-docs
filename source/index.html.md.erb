@@ -390,13 +390,13 @@ curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.sm
 }
 ```
 
-Many things you do with the Smartsheet API have something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need a row, rowId, column, and columnId to go with the sheetId you found above. You can find these all-important Ids by using [GET All Sheets](#get-all-sheets) and examining the response. In this walkthrough, you'll learn where you can find these Ids by working with one of the sample sheets returned above, called My first sheet.
+Many things you do with the Smartsheet API have something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need to know the row and its rowId and the column and its columnId to go with the sheetId you found above. You can find these all-important Ids by using [GET Sheet](#get-sheet) and examining the response. In this walkthrough, you'll learn where you can find these Ids by working with one of the sample sheets returned above, called My first sheet.
 
-<img src="images/Survey.png" alt="Basic sheet with 2 rows and 2 columns" />
+<img src="images/Employee_roster.png" alt="Basic sheet with 2 rows and 2 columns" />
 
 Before you begin, you should already have an access token, which you used in the exercise above. You'll use the same access token for this walkthrough.
 
-1. In the response above, find the Id for "My first sheet". It should look like this: "id": 6141831453927300.
+1. The first thing you need is a sheetId. You can get this through the UI (Title tab for sheet > dropdown arrow > Properties > Sheet ID). Note: use [GET All Sheets](#get-all-sheets) if you want to do this programmatically.
 2. Copy that sheetId into the API call, GET Sheet (GET /sheet/{sheetId}) where 6141831453927300 takes the place of {sheetId}.<br>
   `curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets/6141831453927300"`
 3. The sample request and response are displayed in the dark-blue panel next to this one. Be sure to select the cURL tab. NOTE: while JSON doesn't have a comment feature, this sample uses comments to help you identify the objects in the response.
