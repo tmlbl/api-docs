@@ -44,7 +44,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-12
+Updated 2017-05-22
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sample-code))
@@ -70,9 +70,7 @@ Updated 2017-05-12
 https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
 
-[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information.
-
-Within the Smartsheet web application, all editable column types are flexible and cells in those columns can contain either a value specific to the column type (e.g., dates, checkboxes, symbols, etc.) or a free-form text value.  This flexibility for the end user creates some specific issues when approaching Smartsheet data through the API.
+[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. Using the API, you can read and update sheets, manage folders and workspaces, and administer users and accounts.
 
 You can view code examples in the dark-blue area in the next pane, and you can use the tabs at the top to switch the programming language of the example.
 
@@ -81,21 +79,14 @@ You can view code examples in the dark-blue area in the next pane, and you can u
 Before programmatically creating dazzling sheets with attachments and images, this documentation provides a Getting Started tutorial that will walk you through making an API call and retrieving detailed sheet information. The following are some resources to get you started or that you may want to bookmark:
 
 * [Getting Started tutorial](#getting-started)
-* [Smartsheet Developer Portal:](https://www.smartsheet.com/developers/register) Use a different email address from your paid Smartsheet account so you can test the API and make API calls
+* [Smartsheet Developer Portal:](https://www.smartsheet.com/developers) If registering, use a different email address from your paid Smartsheet account so you can test the API and make API calls
 * Developer Newsletter (subscribe while at the Developer Portal using the <i>Get Developer Updates</i> form)
-* [Twitter](https://twitter.com/smartsheetapi)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/smartsheet-api) using the "smartsheet-api" tag
 * Contact us at [api@smartsheet.com](mailto:api@smartsheet.com)
 
-## HTTP Verbs and Status Codes
+## HTTP Verbs, REST, and Status Codes
 
 You call the API using [standard HTTP methods:](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) GET (to retrieve an object or all objects in a specific category), POST (to create), PUT (to modify), and DELETE.
-
-<%= partial "snippets/errorHandling.md.erb" %>
-
-<aside class="notice">Smartsheet has custom error codes to help you troubleshoot issues. See the <a href="#complete-error-code-list">Complete Error Code List.</a></aside>
-
-### RESTful Architecture
 
 The REST URL structure follows typical resource-oriented conventions. For example, to get a list of sheets, use:
 
@@ -105,9 +96,13 @@ This will return a list of Sheet Objects, where each Sheet will have an “id”
  
  `GET https://api.smartsheet.com/2.0/sheets/123456`
 
-This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
+This Id structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
 
 If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs). For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
+
+<%= partial "snippets/errorHandling.md.erb" %>
+
+<aside class="notice">Smartsheet has custom error codes to help you troubleshoot issues. See the <a href="#complete-error-code-list">Complete Error Code List.</a></aside>
 
 ## Global Considerations
 
@@ -120,24 +115,23 @@ The following HTTP request headers may be required, depending on the operation a
 Header | Definition | Example |
 -----|-----|-----|
 *Authorization* | Required for all endpoints. The access token. | Bearer ll352u9jujauoqz4gstvsae05
+*Content-Type* | Required for POST and PUT requests. Defines the structure for the response. | application/json
 *Assume-User* | Optional. Allows an admin to act on behalf of the user to make API calls. NOTE: The email address used to identify the user must be URI-encoded. | jane.doe%40smartsheet.com
-*Content-Type* | Required for POST and PUT requests. Optional (but ignored) for GET and DELETE requests. Defines the structure for the response. | application/json
  
 <aside class="notice">Be sure to protect any user-generated content to avoid introducing vulnerabilities.</aside>
 
 ### Query Strings
 
-Smartsheet has several query strings to help you customize responses to your API calls. The following table provides a quick reference and links for more information: 
+Many API calls can be modified by including one or more of these common query strings: 
 
-Query String | Type | Example | More Info |
+Query String | Type | Description | More Info |
 -----|-----|-----|-----|
-pageSize | Number | pageSize=25 | [Paging](#paging)
-page | String | page=4 | [Paging](#paging)
-includeAll | Boolean | includeAll=false | [Paging](#paging)
-allowPartialSuccess | Boolean | allowPartialSuccess=true | [Bulk Operations](#bulk-operations)
-numericDates | Boolean | numericDates=true | [Dates and Times](#dates-and-times)
-
-<aside class="notice">You also have many options for programmatically formatting cells. See <a href="#formatting">Formatting.</a></aside>
+pageSize | Number | Specifies the maximum number of items to return per page, i.e., pageSize=25 | [Paging](#paging)
+page | String | Specifies which page to return, i.e., page=4 | [Paging](#paging)
+include | String | Adds a format property to any object that contains non-default formatting, i.e., include=formatting | [Formatting](#formatting)
+includeAll | Boolean | If true, includes all results, i.e., includeAll=true | [Paging](#paging)
+allowPartialSuccess | Boolean | If true, allows bulk operations to process even if one or more operations are invalid for some reason, i.e., allowPartialSuccess=true | [Bulk Operations](#bulk-operations)
+numericDates | Boolean | If true, allows you to input or receive dates in numeric format, i.e., numericDates=true | [Dates and Times](#dates-and-times)
 
 ## Authentication, Access Tokens, and OAUTH
 
