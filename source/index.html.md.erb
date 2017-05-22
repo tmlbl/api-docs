@@ -105,7 +105,7 @@ This will return a list of Sheet Objects, where each Sheet will have an “id”
  
  `GET https://api.smartsheet.com/2.0/sheets/123456`
 
-This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique ID.
+This "id" structure is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
 
 If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs). For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
 
@@ -340,7 +340,7 @@ curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.sm
   //This is the sheetId. 
   "id": 6141831453927300,
   "name": "My first sheet",
-  //This is the Column Object. At a minimum, you will want to track the title and column ID.
+  //This is the Column Object. At a minimum, you will want to track the title and column Id.
   "columns": [
     {
       "id": 2517104256673668,
@@ -405,13 +405,13 @@ curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.sm
 }
 ```
 
-Everything you do with the Smartsheet API has something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need a rowId and a columnId to go with the sheetId you found above. You can find these all-important IDs by using [GET All Sheets](#get-all-sheets) and examining the response. In this walkthrough, you'll learn where you can find these IDs by working with one of the sample sheets returned above, called My first sheet.
+Everything you do with the Smartsheet API has something to do with sheets, rows, columns, and cells. For instance, the location of a cell is essentially where the x-axis (row) meets the y-axis (column). Logically, this means you'll need a rowId and a columnId to go with the sheetId you found above. You can find these all-important Ids by using [GET All Sheets](#get-all-sheets) and examining the response. In this walkthrough, you'll learn where you can find these Ids by working with one of the sample sheets returned above, called My first sheet.
 
 <img src="images/Survey.png" alt="Basic sheet with 2 rows and 2 columns" />
 
 Before you begin, you should already have an access token, which you used in the exercise above. You'll use the same access token for this walkthrough.
 
-1. In the response above, find the ID for "My first sheet". It should look like this: "id": 6141831453927300.
+1. In the response above, find the Id for "My first sheet". It should look like this: "id": 6141831453927300.
 2. Copy that sheetId into the API call, GET All Sheets (GET /sheet/{sheetId}) where 6141831453927300 takes the place of {sheetId}.<br>
   `curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets/6141831453927300"`
 3. The sample request and response are displayed in the dark-blue panel next to this one. Be sure to select the cURL tab. NOTE: while JSON doesn't have a comment feature, I've taken some liberties. First, in the interest of saving space, I've truncated the beginning of the response. Second, I am using a commenting convention as if JSON could actually parse that.
@@ -679,7 +679,7 @@ hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe an
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
 ### Getting basic user info
-Once you have obtained an access token on behalf of the user, you can fetch basic information (including user ID, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
+Once you have obtained an access token on behalf of the user, you can fetch basic information (including user Id, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
 
 # Working at Scale 
 
@@ -749,7 +749,7 @@ Attachments can exist on a [Comment](#comments) (i.e., within a Discussion), on 
 
      |     |     |
 -----|-----|-----|
-**id** | number | Attachment ID
+**id** | number | Attachment Id
 **name** | string | Attachment name
 **url** | string | Attachment temporary URL (files only)
 **urlExpiresInMillis** | number | Attachment temporary URL time to live (files only) 
@@ -1457,7 +1457,7 @@ smartsheet.Attachments.delete_attachment(sheetId, attachmentId)
 
 Deletes the Attachment specified in the URL.  
 
-<aside class="notice">If the Attachment has multiple versions this deletes only the specific version specified by the attachmentId (each version has a different attachment ID).</aside>
+<aside class="notice">If the Attachment has multiple versions this deletes only the specific version specified by the attachmentId (each version has a different attachment Id).</aside>
 
      |     |
 -----|-----|
@@ -2020,7 +2020,7 @@ smartsheet.Attachments.delete_attachment_versions(sheetId, attachmentId)
 
 `DELETE /sheets/{sheetId}/attachments/{attachmentId}/versions`
 
-Deletes all versions of the attachment corresponding to the specified Attachment ID.  For attachments with multiple versions, this will effectively delete the attachment from the object that it’s attached to.
+Deletes all versions of the attachment corresponding to the specified Attachment Id.  For attachments with multiple versions, this will effectively delete the attachment from the object that it’s attached to.
 
      |     |
 -----|-----|
@@ -2120,7 +2120,7 @@ versions = action.data
 
 `GET /sheets/{sheetId}/attachments/{attachmentId}/versions`
 
-Gets a list of all versions of the given Attachment ID, in order from newest to oldest.
+Gets a list of all versions of the given Attachment Id, in order from newest to oldest.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -2143,7 +2143,7 @@ A collection of Cells comprises each Row in a Sheet.
 
      |     |     |
 -----|-----|-----|
-**columnId** | number | The ID of the column that the cell is located in
+**columnId** | number | The Id of the column that the cell is located in
 **columnType** | string | See type definition on the [Column Object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
 **value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
@@ -2175,9 +2175,9 @@ Represents a link to a Cell in a different Sheet.
      |     |     |
 -----|-----|-----|
 **status** | string | One of the following values:<ul><li>**OK**: the link is in a good state</li><li>**BROKEN**: the row or sheet linked to was deleted</li><li>**INACCESSIBLE**: the sheet linked to cannot be viewed by this user</li><li>Several other values indicating unusual error conditions: **NOT_SHARED**, **BLOCKED**, **CIRCULAR**, **INVALID**, and **DISABLED**.</li></ul>
-**sheetId** | number | Sheet ID of the sheet that the linked cell belongs to
-**rowId** | number | Row ID of the linked cell
-**columnId** | number | Column ID of the linked cell
+**sheetId** | number | Sheet Id of the sheet that the linked cell belongs to
+**rowId** | number | Row Id of the linked cell
+**columnId** | number | Column Id of the linked cell
 **sheetName** | string | Sheet name of the linked cell
 
 ### Hyperlink Object
@@ -2189,9 +2189,9 @@ Represents a hyperlink to a URL, a Sheet, a Report, or a Sight.
      |     |     |
 -----|-----|-----|
 **url** | string | When the hyperlink is a URL link, this property will contain the URL value.<br/><br/>When the hyperlink is a Sheet/Report/Sight link (i.e. **sheetId** or **reportId** or **sightId** is non-null), this property will contain the permalink to the Sheet or Report or Sight.
-**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this ID.
-**reportId** | number | If non-null, this hyperlink is a link to the Report with this ID.
-**sightId** | number | If non-null, this hyperlink is a link to the Sight with this ID.
+**sheetId** | number | If non-null, this hyperlink is a link to the Sheet with this Id.
+**reportId** | number | If non-null, this hyperlink is a link to the Report with this Id.
+**sightId** | number | If non-null, this hyperlink is a link to the Sight with this Id.
 
 ### ObjectValue Object
 
@@ -2266,7 +2266,7 @@ In a project sheet with dependencies enabled, the **objectValue** attribute for 
 
      |     |     |
 -----|-----|-----|
-**rowId** | number| The ID of the predecessor row
+**rowId** | number| The Id of the predecessor row
 **rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
 **type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
 **lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
@@ -2581,7 +2581,7 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 
      |     |     |
 -----|-----|-----|
-**id** | string | Image ID
+**id** | string | Image Id
 **width** | number | Original width (in pixels) of the uploaded image
 **height** | number | Original height (in pixels) of the uploaded image
 **altText** | string | Alternate Text for the image
@@ -2590,7 +2590,7 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 
      |     |     |
 -----|-----|-----|
-**imageId** | string | Image ID
+**imageId** | string | Image Id
 **width** | number | Image width (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
 **height** | number | Image height (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
 **url** | string | Temporary URL that can be used to retrieve the image. This attribute can be present in a response but will never be specified in a request.
@@ -2750,7 +2750,7 @@ A Column is a component of a Sheet or Report.
 
      |     |     |
 -----|-----|-----|
-**id** | number | Column ID
+**id** | number | Column Id
 **index** | number | Column index
 **title** | string | Column title
 **primary** | Boolean | Returned only if the column is the Primary Column (value = `true`)
@@ -3361,13 +3361,13 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 
      |     |     |
 -----|-----|-----|
-**id** | number | Comment ID
+**id** | number | Comment Id
 **text** | string | Comment body
 **createdBy** | [User](#user-object) | User Object containing name and email of the Comment's author
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects
-**discussionId** | number (optional) | Discussion ID
+**discussionId** | number (optional) | Discussion Id
 
 ## Add Comment
 
@@ -3713,7 +3713,7 @@ A Contact is a user's personal contact in Smartsheet (as described [here](https:
 
      |     |     |
 -----|-----|-----|
-**id** | string | Contact ID
+**id** | string | Contact Id
 **name** | string | Contact's full name
 **email** | string | Contact's email address
 
@@ -3847,12 +3847,12 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 
      |     |     |
 -----|-----|-----|
-**id** | number | Discussion ID
+**id** | number | Discussion Id
 **title** | string | Discussion title
 **comments** | [Comment](#comment-object)[] | Array of Comment Objects
 **commentCount** | number | The number of comments in the discussion
 **commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects
-**parentId** | number | ID of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
+**parentId** | number | Id of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **parentType** | string | "SHEET" or "ROW": present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
 **lastCommentedAt** | timestamp | Time of most recent comment
 **lastCommentedUser** | [User](#user-object) | User Object containing name and email of the author of the most recent Comment
@@ -4459,7 +4459,7 @@ These API operations allow you to access the user's favorite API-supported objec
      |     |     |
 -----|-----|-----|
 **type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
-**objectId** | number | ID of the favorited item.  If **type** is "template", only private sheet-type template ID is allowed.
+**objectId** | number | Id of the favorited item.  If **type** is "template", only private sheet-type template Id is allowed.
 
 ## Add Favorites
 
@@ -5282,7 +5282,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 
      |     |     |
 -----|-----|-----|
-**id** | number | Folder ID
+**id** | number | Folder Id
 **name** | string | Folder name
 **favorite** | Boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
 **permalink** | string | URL that represents a direct link to the Folder in Smartsheet
@@ -5589,7 +5589,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```javascript
 // Set options.
 var options = {
-    id: 965780272637828 // ID of Folder
+    id: 965780272637828 // Id of Folder
 };
 
 // Delete folder.
@@ -5648,7 +5648,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```javascript
 // Set options.
 var options = {
-    id: 7116448184199044 // ID of Folder
+    id: 7116448184199044 // Id of Folder
 };
 
 // Get folder.
@@ -5711,7 +5711,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
 
 ## Get All Child Folders
@@ -6013,7 +6013,7 @@ var folder = {
 
 // Set options.
 var options = {
-    id: 1486948649985924, // ID of Folder
+    id: 1486948649985924, // Id of Folder
     body: folder
 };
 
@@ -6082,11 +6082,11 @@ A Group is a collection of [Group Members](#group-members).
 
      |     |     |
 -----|-----|-----|
-**id** | number | Group ID
+**id** | number | Group Id
 **name** | string | Group name
 **description** | string | Group description
 **owner** | string | Group owner’s email address
-**ownerId** | number | Group owner's User ID
+**ownerId** | number | Group owner's User Id
 **members** | [GroupMember](#groupmember-object)[] | Array of GroupMember Objects
 **createdAt** | timestamp | Time of creation
 **modifiedAt** | timestamp | Time of last modification
@@ -6218,7 +6218,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```javascript
 // Set options.
 var options = {
-    id: 6932724448552836 // ID of Group
+    id: 6932724448552836 // Id of Group
 };
 
 // Delete group.
@@ -6281,7 +6281,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```javascript
 // Set options.
 var options = {
-    id: 4583173393803140 // ID of Group
+    id: 4583173393803140 // Id of Group
 };
 
 // Get group.
@@ -6450,7 +6450,7 @@ var group = {
 // Set options.
 var options = {
     body: group,
-    id: 2331373580117892 // ID of Group
+    id: 2331373580117892 // Id of Group
 };
 
 // Update group.
@@ -6518,7 +6518,7 @@ Updates the Group specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Group Object](#group-object), limited to the following attributes:<ul><li>name (optional) -- must be unique within the organization</li><li>description (optional)</li><li>ownerId (optional): ID of an admin User to whom the group ownership will be transferred</li></ul>
+<%= REQUEST %> | [Group Object](#group-object), limited to the following attributes:<ul><li>name (optional) -- must be unique within the organization</li><li>description (optional)</li><li>ownerId (optional): Id of an admin User to whom the group ownership will be transferred</li></ul>
 <%= RETURNS %> | [Result Object](#result-object) containing the [Group Object](#group-object) for the updated group
 
 ## <%= RELATED %>
@@ -6539,7 +6539,7 @@ A Group Member is a User that belongs to a [Group](#groups).
 
      |     |     |
 -----|-----|-----|
-**id** | number | Group Member's User ID
+**id** | number | Group Member's User Id
 **email** | string | Group Member's email address
 **firstName** | string | Group Member's first name
 **lastName** | string | Group Member's last name
@@ -6811,7 +6811,7 @@ Gets a nested list of all Home Objects, including Sheets, Workspaces, Folders, R
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Home Object](#home-object), populated according to the **include** parameter
 
 ## <%= RELATED %>
@@ -6844,7 +6844,7 @@ Extends the [Cell Object](#cell-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**virtualColumnId** | number | The virtual ID of the cell's column. This property refers to the cell's parent column in the Report, while the **columnId** property refers to the cell's parent column in its originating source Sheet.
+**virtualColumnId** | number | The virtual Id of the cell's column. This property refers to the cell's parent column in the Report, while the **columnId** property refers to the cell's parent column in its originating source Sheet.
 
 
 ### ReportColumn Object
@@ -6853,7 +6853,7 @@ Extends the [Column Object](#column-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**virtualId** | number | The virtual ID of this report column
+**virtualId** | number | The virtual Id of this report column
 **sheetNameColumn** | Boolean | Returned only for the special "Sheet Name" report column (value = "true")
 
 A report column is a "virtual" column, in that it appears identical to source sheet columns, but is in fact a different column belonging to the report. 
@@ -6865,7 +6865,7 @@ Extends the [Row Object](#row-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**sheetId** | number | The ID of the Sheet from which the Row originates
+**sheetId** | number | The Id of the Sheet from which the Row originates
 
 ### ReportPublish Object 
 
@@ -6887,7 +6887,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```javascript
 // Set options.
 var options = {
-    id: 4583173393803140 // ID of Report
+    id: 4583173393803140 // Id of Report
 };
 
 // Get report.
@@ -7006,7 +7006,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```javascript
 // Set options.
 var options = {
-    id: 3882962191181700 // ID of Report
+    id: 3882962191181700 // Id of Report
 };
 
 // Get report as Excel.
@@ -7078,7 +7078,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```javascript
 // Set options.
 var options = {
-    id: 3882962191181700 // ID of Report
+    id: 3882962191181700 // Id of Report
 };
 
 // Get report as CSV.
@@ -7140,7 +7140,7 @@ smartsheet.Reports.get_report_as_csv(
 
 `GET /reports/{reportId}`
 
-Gets the Report in the format specified, based on the Report ID.  
+Gets the Report in the format specified, based on the Report Id.  
 
 <aside class="notice">Note: For Excel format, only .xlsx output format is supported at this time.</aside>
 
@@ -7385,8 +7385,8 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 
      |     |     |
 -----|-----|-----|
-**id** | number | Row ID
-**sheetId** | number | Parent Sheet ID
+**id** | number | Row Id
+**sheetId** | number | Parent Sheet Id
 **rowNumber** | number | Row number within the sheet (1-based - starts at 1)
 **version** | number | Number that is incremented every time a sheet is modified
 **filteredOut** | Boolean | `true` if this row is filtered out by a column filter (and thus is not displayed in the Smartsheet app), `false` if the row is not filtered out.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **filters**.
@@ -7406,8 +7406,8 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects.<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **attachments**.
 **columns** | [Column](#column-object)[] | Array of Column Objects.<br/>Only returned if the [Get Row](#get-row) **include** query string parameter contains **columns**.
 **permalink** | string | URL that represents a direct link to the Row in Smartsheet<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **rowPermalink**.
-**parentId** | number | In a response - the ID of the parent row (if any).<br/><br/>In a request - the ID of the desired parent row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
-**siblingId** | number | In a response - the ID of the previous sibling row at the same hierarchical level of this row (if any).<br/><br/>In a request - the ID of the desired sibling row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
+**parentId** | number | In a response - the Id of the parent row (if any).<br/><br/>In a request - the Id of the desired parent row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
+**siblingId** | number | In a response - the Id of the previous sibling row at the same hierarchical level of this row (if any).<br/><br/>In a request - the Id of the desired sibling row (used to specify the location for a new or moved row). For more information, see [Row Location](#row-location).
 **toTop** | Boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
 **toBottom** | Boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
 **above** | Boolean | Flag used to specify the location for a new or moved row. <%= REQUEST_ONLY_ATTRIBUTE %> For more information, see [Row Location](#row-location).
@@ -7416,28 +7416,28 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 
      |     |     |
 -----|-----|-----|
-**rowIds** | number[] | The IDs of the rows to move or copy from the source sheet
+**rowIds** | number[] | The Ids of the rows to move or copy from the source sheet
 **to** | [CopyOrMoveRowDestination](#copyormoverowdestination-object) | A CopyOrMoveRowDestination Object that identifies the destination sheet 
 
 ### CopyOrMoveRowDestination Object
 
      |     |     |
 -----|-----|-----|
-**sheetId** | number | ID of the destination sheet
+**sheetId** | number | Id of the destination sheet
 
 ### CopyOrMoveRowResult Object
 
      |     |     |
 -----|-----|-----|
-**destinationSheetId** | number | ID of the destination sheet
+**destinationSheetId** | number | Id of the destination sheet
 **rowMappings** | [RowMapping](#rowmapping-object)[] | Array of RowMapping Objects 
 
 ### RowMapping Object
 
      |     |     |
 -----|-----|-----|
-**from** | number | Row ID in the source sheet
-**to** | number | Row ID in the destination sheet
+**from** | number | Row Id in the source sheet
+**to** | number | Row Id in the destination sheet
 
 ## Add Rows
 
@@ -7723,7 +7723,7 @@ smartsheet.Sheets.copy_rows(
 
 Copies Rows from the Sheet specified in the URL to (the bottom of) another sheet.
 
-<aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the copy exceeds the Smartsheet row limit, an error response will be returned.</aside>
+<aside class="notice">Up to 5,000 row Ids can be specified in the request, but if the total number of rows in the destination sheet after the copy exceeds the Smartsheet row limit, an error response will be returned.</aside>
      |     |
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
@@ -7798,9 +7798,9 @@ Deletes one or more rows from the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **ids** (required) - comma-separated list of Row IDs
- | **ignoreRowsNotFound** (optional) - true or false. If set to false and any of the specified Row IDs are not found, no rows will be deleted, and the "not found" [error](#complete-error-code-list) will be returned.
-<%= RETURNS %> | [Result Object](#result-object) containing Row IDs corresponding to all rows that were successfully deleted (including any child rows of rows specified in the URL).
+<%= PARAMETERS %> | **ids** (required) - comma-separated list of Row Ids
+ | **ignoreRowsNotFound** (optional) - true or false. If set to false and any of the specified Row Ids are not found, no rows will be deleted, and the "not found" [error](#complete-error-code-list) will be returned.
+<%= RETURNS %> | [Result Object](#result-object) containing Row Ids corresponding to all rows that were successfully deleted (including any child rows of rows specified in the URL).
 
 ## Get Row
 
@@ -7979,7 +7979,7 @@ smartsheet.Sheets.move_rows(
 `POST /sheets/{sheetId}/rows/move`
 
 Moves Rows from the Sheet specified in the URL to (the bottom of) another sheet.
-<aside class="notice">Up to 5,000 row IDs can be specified in the request, but if the total number of rows in the destination sheet after the move exceeds the Smartsheet row limit, an error response will be returned.</aside>
+<aside class="notice">Up to 5,000 row Ids can be specified in the request, but if the total number of rows in the destination sheet after the move exceeds the Smartsheet row limit, an error response will be returned.</aside>
 <aside class="notice">Any child rows of the rows specified in the request will also be moved. Parent-child relationships amongst rows will be preserved within the destination sheet.</aside>
 
      |     |
@@ -8260,10 +8260,10 @@ Action | Row attributes
 -------|--------
 Add or move the Row to the top of the Sheet. | **toTop** = `true`
 Add or move the Row to the bottom of the Sheet. | **toBottom** = `true`
-Add or move the Row directly above the specified sibling Row (at the same hierarchical level). | **above** = `true`<br/>**siblingId** = (ID of sibling row)
-Add or move the Row directly below the specified sibling Row (at the same hierarchical level). | **siblingId** = (ID of sibling row)
-Add or move the Row so that it is the first child row of the specified parent Row. | **parentId** = (ID of parent row)
-Add or move the Row so that it is the last child row of the specified parent Row. | **parentId** = (ID of parent row)<br/>**toBottom** = `true`
+Add or move the Row directly above the specified sibling Row (at the same hierarchical level). | **above** = `true`<br/>**siblingId** = (Id of sibling row)
+Add or move the Row directly below the specified sibling Row (at the same hierarchical level). | **siblingId** = (Id of sibling row)
+Add or move the Row so that it is the first child row of the specified parent Row. | **parentId** = (Id of parent row)
+Add or move the Row so that it is the last child row of the specified parent Row. | **parentId** = (Id of parent row)<br/>**toBottom** = `true`
 Indent an existing Row. | **indent** = (number of level to indent, minimum of 1)
 Outdent an existing Row. | **outdent** = (number of level to outdent, minimum of 1)
 
@@ -8287,9 +8287,9 @@ Use the *Search* operations to search a specific Sheet or to search across all S
      |     |     |
 -----|-----|-----|
 **text** | string | Search result text excerpt
-**objectId** | number | Search result object ID
+**objectId** | number | Search result object Id
 **objectType** | string | Search result object type (row, sheet, report, template, discussion, attachment)
-**parentObjectId** | number | Search result parent object ID
+**parentObjectId** | number | Search result parent object Id
 **parentObjectType** | string | Search result parent object type (workspace, folder, sheet, report, template)
 **parentObjectName** | string | Search result parent object name
 **contextData** | array | Additional info on search result context (row num...)
@@ -8422,7 +8422,7 @@ Either **email** and **groupId** may be set, but not both.
      |     |     |
 -----|-----|-----|
 **email**   | string | The email address of an individual recipient. Optional.
-**groupId** | number | The ID of a group recipient. Optional.
+**groupId** | number | The Id of a group recipient. Optional.
 
 ### RowEmail Object
 
@@ -8430,7 +8430,7 @@ Extends the [Email Object](#email-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**columnIds** | number[] | IDs of the columns to be included.
+**columnIds** | number[] | Ids of the columns to be included.
 **includeAttachments** | Boolean | A flag to indicate whether or not to include Attachments in the email.
 **includeDiscussions** | Boolean | A flag to indicate whether or not to include Discussions in the email.
 **layout**   | string | One of the following values: HORIZONTAL, VERTICAL.  Optional, defaults to HORIZONTAL when multiple rows are being sent, and to VERTICAL when a single row is being sent.  HORIZONTAL formats the rows being sent as a grid, whereas VERTICAL formats the rows being sent as separate cards.
@@ -8441,7 +8441,7 @@ Extends the [RowEmail Object](#rowemail-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**rowIds** | number[] | IDs of rows to be included.
+**rowIds** | number[] | Ids of rows to be included.
 
 ### SheetEmail Object
 
@@ -8544,10 +8544,10 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 
      |     |     |
 -----|-----|-----|
-**id**          | number | Share ID.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
+**id**          | number | Share Id.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
 **type**        | string | The type of this share. One of the following values: `USER` or `GROUP`.
-**userId**      | number | User ID if the share is a user share, else null.
-**groupId**     | number | Group ID if the share is a group share, else null.
+**userId**      | number | User Id if the share is a user share, else null.
+**groupId**     | number | Group Id if the share is a group share, else null.
 **email**       | string | User's primary email address for user shares; null for group shares.
 **name**        | string | If a user share and user is also a contact, the user's full name.  If a group share, the group's name.
 **accessLevel** | string | User or group's [access level](#access-levels) on shared object.
@@ -9373,7 +9373,7 @@ Shares a Sight with the specified Users and Groups.
 <%= SCOPE %> | SHARE_SIGHTS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
-<%= REQUEST %> | [Share Object](#share-object) or an array of Share Objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
+<%= REQUEST %> | [Share Object](#share-object) or an array of Share Objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group Id</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result Object](#result-object) containing either a single [Share Object](#share-object) or an array of Share Objects, corresponding to what was specified in the request. All shares will have <b>[scope](#share-object)</b>="ITEM".
 <%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error Object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
@@ -9682,7 +9682,7 @@ Shares a Workspace with the specified Users and Groups.
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **sendEmail** (optional): Either `true` or `false` to indicate whether or not to notify the user by email. Default is **false**.
-<%= REQUEST %> | [Share Object](#share-object) or an array of Share Objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group ID</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
+<%= REQUEST %> | [Share Object](#share-object) or an array of Share Objects, with the following attributes:<ul><li>email (optional): the individual share recipient's email address</li><li>groupId (optional): the group share recipient's group Id</li><li>accessLevel (required)</li><li>subject (optional): The subject of the email that will optionally be sent to notify the recipient.</li><li>message (optional): The message to be included in the body of the email that will optionally be sent to the recipient.</li><li>ccMe (optional): Boolean flag to indicate whether or not to CC the user sharing the sheet.</li></ul>**NOTE:** One of **email** or **groupId** must be specified, but not both.
 <%= RETURNS %> | [Result Object](#result-object) containing either a single [Share Object](#share-object) or an array of Share Objects, corresponding to what was specified in the request.
 <%= ERRORS %>  | If an error occurs because the request specified one or more [*alternate* email addresses](#alternate-email-addresses) (i.e., not the primary email address associated with the User account), the [Error Object](#complete-error-code-list) returned will contain a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "u1+1@smartsheet.com is an alternate address of the user u1@smartsheet.com. Please retry sharing directly to u1@smartsheet.com."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
@@ -9771,7 +9771,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**id** | number | Sheet ID
+**id** | number | Sheet Id
 **name** | string | Sheet name
 **version** | number | A number that is incremented every time a Sheet is modified
 **totalRowCount** | number | The total number of rows in the Sheet
@@ -9786,7 +9786,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **showParentRowsForFilters** | Boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
 **userSettings** | [SheetUserSettings](#sheetusersettings-object) | A SheetUserSettings Object containing the current user's sheet-specific settings.
 **owner** | string | Email address of the Sheet owner
-**ownerId** | number | User ID of the Sheet owner
+**ownerId** | number | User Id of the Sheet owner
 **permalink** | string | URL that represents a direct link to the Sheet in Smartsheet
 **source** | [Source](#source-object) | A Source Object indicating the Sheet or Template from which this sheet was created
 **createdAt** | timestamp | Time that the Sheet was created
@@ -9795,7 +9795,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **rows** | [Row](#row-object)[] | Array of Row Objects
 **discussions** | [Discussion](#discussion-object)[] | Array of Discussion Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
-**fromId** | number | The ID of the Template from which to create the Sheet. This attribute can be specified in a request, but will never be present in a response.
+**fromId** | number | The Id of the Template from which to create the Sheet. This attribute can be specified in a request, but will never be present in a response.
 
 ### SheetPublish Object 
 
@@ -9835,7 +9835,7 @@ Represents the project settings dependencies for a specific sheet.  Project sett
 
      |     |     |
 -----|-----|-----|
-**id** | number | ID of the Sheet or Template from which the enclosing sheet was created
+**id** | number | Id of the Sheet or Template from which the enclosing sheet was created
 **type** | string | "sheet" or "template"
 
 ## Copy Sheet
@@ -10344,7 +10344,7 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```
 
 ```csharp
-// Specify name for the sheet and ID of the template.
+// Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
 
 // Create sheet from template (omit 'include' parameter).
@@ -10355,7 +10355,7 @@ smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[]
 ```
 
 ```java
-// Specify name for the sheet and ID of the template.
+// Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
 
 // Create sheet from template (omit 'include' parameter).
@@ -10422,7 +10422,7 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```
 
 ```csharp
-// Specify name for the sheet and ID of the template.
+// Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
@@ -10433,7 +10433,7 @@ smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(folderId, shee
 ```
 
 ```java
-// Specify name for the sheet and ID of the template.
+// Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
@@ -10500,7 +10500,7 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```
 
 ```csharp
-// Specify name for the sheet and ID of the template.
+// Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet", templateId).Build();
 
 // Create sheet from template in the specified workspace (omit 'include' parameter).
@@ -10511,7 +10511,7 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(workspaceId
 ```
 
 ```java
-// Specify name for the sheet and ID of the template.
+// Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
@@ -10555,7 +10555,7 @@ Creates a Sheet at the top-level of the specified Workspace, from the specified 
 ```javascript
 // Set options.
 var options = {
-    id: 1531988831168388 // ID of Sheet
+    id: 1531988831168388 // Id of Sheet
 };
 
 // Delete sheet.
@@ -10682,7 +10682,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```javascript
 // Set options.
 var options = {
-	id: 4583173393803140 // ID of Sheet
+	id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet.
@@ -10763,11 +10763,11 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**ownerInfo**: includes owner's email address and user ID</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
-  | **rowIds** (optional): a comma-separated list of Row IDs on which to filter the rows included in the result
+  | **rowIds** (optional): a comma-separated list of Row Ids on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
-  | **columnIds** (optional): a comma-separated list of Column IDs. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
+  | **columnIds** (optional): a comma-separated list of Column Ids. The response will contain only the specified columns in the "columns" array, and individual rows' "cells" array will only contain cells in the specified columns.
   | **pageSize** (optional): number of rows per page to include with the sheet.  If neither **pageSize** or **page** are specified, returns all rows in the sheet.  If only page is specified, defaults to a page size of 100.
   | **page** (optional): which page number (1-based) to return.  If not specified, the default value is 1.  If a page number is specified that is greater than the number of total pages, the last page will be returned.
 <%= RETURNS %> | [Sheet Object](#sheet-object), populated according to the specified parameters
@@ -10786,7 +10786,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```javascript
 // Set options.
 var options = {
-  id: 4583173393803140 // ID of Sheet
+  id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet as Excel.
@@ -10848,7 +10848,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```javascript
 // Set options.
 var options = {
-  id: 4583173393803140 // ID of Sheet
+  id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet as PDF.
@@ -10910,7 +10910,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```javascript
 // Set options.
 var options = {
-  id: 4583173393803140 // ID of Sheet
+  id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet as CSV.
@@ -10962,7 +10962,7 @@ smartsheet.Sheets.get_sheet_as_csv(sheetId, download_directory_path)
 
 `GET /sheets/{sheetId}`
 
-Gets the Sheet in the format specified, based on the Sheet ID.  
+Gets the Sheet in the format specified, based on the Sheet Id.  
 
 <aside class="notice">Note:<ul><li>For Excel format, only .xlsx output format is supported at this time.</li><li>Gantt chart is not generated at this time.</li></ul></aside>
 
@@ -11064,7 +11064,7 @@ Gets the list of all Sheets that the User has access to, in alphabetical order, 
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
  | <%= PARAMETER_MODIFIEDSINCE %>
  | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Sheet Objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
@@ -11357,7 +11357,7 @@ var sheet = {
 // Set options.
 var options = {
     body: sheet,
-    id: 7960873114331012 // ID of Sheet
+    id: 7960873114331012 // Id of Sheet
 };
 
 // Update sheet.
@@ -11482,7 +11482,7 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 
      |     |     |
 -----|-----|-----|
-**id** | number | Sight ID
+**id** | number | Sight Id
 **name** | string | Sight Name 
 **columnCount** | number | Number of Columns that the Sight contains
 **widgets** | [widget](#widget-object)[] | Array of Widget Objects
@@ -11505,7 +11505,7 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 
      |     |     |
 -----|-----|-----|
-**id** | number | Widget ID
+**id** | number | Widget Id
 **type** | string | Type of widget
 **title** | string | _(Optional)_ Title of the widget
 **showTitle** | Boolean | **True** indicates that the client should display the widget title.  Note that this is independent of the "title" string which may be null or empty.
@@ -11550,7 +11550,7 @@ htmlContent | string | HTML snippet to render Report
 
      |     |     |
 -----|-----|-----|
-**privateId** | string | The image private ID
+**privateId** | string | The image private Id
 **height** | integer | Original height of the image in pixels
 **width** | integer | Original width of the image in pixels
 **fileName** | string | Name of the image file
@@ -11567,7 +11567,7 @@ htmlContent | string | HTML snippet to render Report
 **cell** | [cell](#cell-object) | Cell Object
 **valueFormat** | string | [formatDescriptor](#formatting)
 **order** | integer | The display order for the CellDataItem
-**columnId** | number | Column ID for the cell
+**columnId** | number | Column Id for the cell
 
 ### ShortcutDataItem Object
 
@@ -12073,7 +12073,7 @@ A Template can be used to create a Sheet, as described in [Create Sheet from Tem
 
      |     |     |
 -----|-----|-----|
-**id** | number | Template ID
+**id** | number | Template Id
 **name** | string | Template name
 **description** | string | Template description
 **accessLevel** | string | User's permissions on the Template
@@ -12400,7 +12400,7 @@ Revokes the access token used to make this request.  The access token will no lo
 
      |     |     |
 -----|-----|-----|
-**id** | number | User ID
+**id** | number | User Id
 **email** | string | User's primary email address
 **name** | string | User's full name (read-only)
 **firstName** | string | User's first name
@@ -12419,11 +12419,11 @@ Revokes the access token used to make this request.  The access token will no lo
 
      |     |     |
 -----|-----|-----|
-**id** | number | Current user's ID
+**id** | number | Current user's Id
 **email** | string | Current user's primary email address
 **firstName** | string | Current user's first name
 **lastName** | string | Current user's last name
-**timeZone** | string | Current user's time zone ID
+**timeZone** | string | Current user's time zone Id
 **locale** | string | Current user's locale (see [Server Information](#server-information))
 **account** | [Account](#account-object) | Account Object representing the current user's customer account
 **admin** | Boolean | Flag indicating whether the user is a system admin (can manage users and account)
@@ -12441,13 +12441,13 @@ Revokes the access token used to make this request.  The access token will no lo
      |     |     |
 -----|-----|-----|
 **name** | string | Account name
-**id** | number | Account ID
+**id** | number | Account Id
 
 ### AlternateEmail Object
 
      |     |     |
 -----|-----|-----|
-**id** | number | AlternateEmail ID
+**id** | number | AlternateEmail Id
 **email** | string | User's alternate email address
 **confirmed** | Boolean | Flag indicating whether the alternate email address has been confirmed
 
@@ -12923,7 +12923,7 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 ```javascript
 // Set options.
 var options = {
-	id: 48569348493401200	// ID of user
+	id: 48569348493401200	// Id of user
 };
 
 // Get user.
@@ -13089,7 +13089,7 @@ Gets the list of Users in the organization. To filter by email, use the optional
 > Example Request:
 
 ```shell
-curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFromSharing=true \
+curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_Id&removeFromSharing=true \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -13097,7 +13097,7 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_ID&removeFrom
 ```javascript
 // Set options.
 var options = {
-	id: 94094820842 // ID of User
+	id: 94094820842 // Id of User
 };
 
 // Remove user.
@@ -13145,7 +13145,7 @@ Removes a User from an organization. User is transitioned to a free collaborator
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **transferTo** (required if user owns groups): The ID of the user to transfer ownership to.  If the user being removed owns groups, they will be transferred to this user.  If the user owns sheets, *and* **transferSheets** is true, then the removed user's sheets will be transferred to this user.
+<%= PARAMETERS %> | **transferTo** (required if user owns groups): The Id of the user to transfer ownership to.  If the user being removed owns groups, they will be transferred to this user.  If the user owns sheets, *and* **transferSheets** is true, then the removed user's sheets will be transferred to this user.
   | **transferSheets** (optional): If `true`, and **transferTo** is specified, the removed user's sheets will be transferred.  Else, sheets will not be transferred.  Defaults to `false`.
   | **removeFromSharing** (optional): Set to `true` to remove the user from sharing for all sheets/workspaces in the organization. If not specified, User will not be removed from sharing.
 <%= RETURNS %> | [Result Object](#result-object)
@@ -13176,7 +13176,7 @@ var user = {
 // Set options.
 var options = {
 	body: user,
-	id: 82349925918590 // ID of User
+	id: 82349925918590 // Id of User
 };
 
 // Update user.
@@ -13247,7 +13247,7 @@ Updates the User specified in the URL.
 
      |     |     |
 -----|-----|-----|
-**id** | number | Workspace ID
+**id** | number | Workspace Id
 **name** | string | Workspace name
 **favorite** | Boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
 **accessLevel** | string | User's permissions on the Workspace
@@ -13555,7 +13555,7 @@ Gets the specified Workspace (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
-	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user ID for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Workspace Object](#workspace-object), populated according to the **include** parameter
 
 ## Get All Workspaces
@@ -13766,7 +13766,7 @@ Object that describes the destination container when a Sheet or Folder is moved,
      |     |     |
 -----|-----|-----|
 **destinationType** | string | Type of the destination container (when copying or moving a Sheet or a Folder). One of the following values:<ul><li>home</li><li>workspace</li><li>folder</li></ul>
-**destinationId** | number | ID of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
+**destinationId** | number | Id of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
 **newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, Sight, or Workspace). This attribute is not supported for "move" operations (i.e., a moved Sheet, Folder, Sight, or Workspace retains its original name).
  
 ## IndexResult Object
@@ -13840,7 +13840,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message
 400 | 1031 | The value {0} was not valid for the attribute {1}. 
 400 | 1032 | The attribute(s) {0} are not allowed for this operation. 
 404 | 1033 | The template was not found. 
-400 | 1034 | Invalid Row ID.
+400 | 1034 | Invalid Row Id.
 400 | 1035 | Attachments and discussions cannot be POSTed with a row. 
 400 | 1036 | The columnId {0} is invalid. 
 400 | 1037 | The columnId {0} is included more than once in a single row. 
@@ -14265,8 +14265,8 @@ The request specifies a unique random value in the **Smartsheet-Hook-Challenge**
 
 * If the Subscriber does not successfully respond to the verification request, the webhook will remain disabled (`enabled: false` and `status: "DISABLED_VERIFICATION_FAILED"`).
 
-When a webhook is initially [created through the API](#create-webhook), the response will contain the webhook's ID.  If you wish to guarantee that your server only receives callbacks for webhooks that you created,
-you can check the verification request's `webhookId` attribute against your list of created webhook IDs.  If the ID is not in the list, return a response with a non-200 status code (for example, 403 Forbidden),
+When a webhook is initially [created through the API](#create-webhook), the response will contain the webhook's Id.  If you wish to guarantee that your server only receives callbacks for webhooks that you created,
+you can check the verification request's `webhookId` attribute against your list of created webhook Ids.  If the Id is not in the list, return a response with a non-200 status code (for example, 403 Forbidden),
 and the webhook that initiated the verification request will be disabled as described above.
 
 <aside class="notice"><b>IMPORTANT</b>: ONGOING VERIFICATION. Once a webhook has been enabled, Smartsheet will send a verification request to the webhook's <b>callbackUrl</b> once every 100 callbacks. The Subscriber should respond to the verification request as described above -- failure to do so will result in the webhook being disabled (<code>enabled: false</code> and <code>status: "DISABLED_VERIFICATION_FAILED"</code>).</aside>
@@ -14494,9 +14494,9 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 -----|-----|-----|
 **nonce** | string | Random value that will be distinct for each Callback
 **timestamp** | timestamp | Time that the callback was generated
-**webhookId** | number | ID of the corresponding Webhook
+**webhookId** | number | Id of the corresponding Webhook
 **scope** | string | Scope of the Webhook. Currently, the only supported value is "sheet".
-**scopeObjectId** | number | ID of the object that corresponds to **scope**
+**scopeObjectId** | number | Id of the object that corresponds to **scope**
 **events** | [CallbackEvent](#callbackevent-object)[] | Array of CallbackEvent Objects
 **newWebhookStatus** | string | New status of the corresponding Webhook <br/>Only returned for "Webhook Status Change" [callbacks](#webhook-callbacks) (null for "Event" Callbacks).
 
@@ -14506,10 +14506,10 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 -----|-----|-----|
 **objectType** | string | Type of object for which event occurred. One of the following values:<ul><li>sheet</li><li>column</li><li>row</li><li>cell</li><li>attachment</li><li>discussion</li><li>comment</li></ul>
 **eventType** | string | Type of event that occurred. One of the following values:<ul><li>created</li><li>updated</li><li>deleted</li></ul>
-**id** | number | ID of the object that corresponds to **objectType**. Omitted if **objectType** is "cell". 
-**rowId** | number | Only present if **objectType** is "cell". The ID of the row where the cell is located.
-**columnId** | number | Only present if **objectType** is "cell". The ID of the column where the cell is located.
-**userId** | number | The user ID of the person who caused this event.
+**id** | number | Id of the object that corresponds to **objectType**. Omitted if **objectType** is "cell". 
+**rowId** | number | Only present if **objectType** is "cell". The Id of the row where the cell is located.
+**columnId** | number | Only present if **objectType** is "cell". The Id of the column where the cell is located.
+**userId** | number | The user Id of the person who caused this event.
 **timestamp** | timestamp | Time that this event occurred. A callback may contain events with different timestamps, as multiple separate events may be aggregated into a single callback request.
 **changeAgent** | string | A comma-delimited list of values that uniquely identify the agents responsible for making the changes that caused the callback to occur. Only present if the change agent included the **Smartsheet-Change-Agent** header in the API request that changed data in Smartsheet. For more information, see [Preventing Infinite Loops](#preventing-infinite-loops). 
 
@@ -14523,12 +14523,12 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 
      |     |     |
 -----|-----|-----|
-**id** | number | Webhook ID
+**id** | number | Webhook Id
 **name** | string | Webhook name
 **apiClientId** | string | API Client Id corresponding to third-party app that created the Webhook. Read-only. Only present if webhook was created by third-party app.
 **apiClientName** | string | API Client Name corresponding to third-party app that created the Webhook. Read-only. Only present if webhook was created by third-party app.
 **scope** | string | Scope of the subscription. Currently, the only supported value is "sheet". Specified when a webhook is created and cannot be changed.
-**scopeObjectId** | number | ID of the object that is subscribed to. Specified when a webhook is created and cannot be changed.
+**scopeObjectId** | number | Id of the object that is subscribed to. Specified when a webhook is created and cannot be changed.
 **events** | string[] | Array of the events that are subscribed to. Currently, must be an array of size 1 that contains the string value "&#42;.&#42;", which means "all objects" and "all events".
 **callbackUrl** | string | HTTPS URL where callbacks will be sent.<br/><br/>**Note:** Smartsheet webhooks do not support callbacks to servers using self-signed certificates. The callback server must be using a signed certificate from a certificate authority.
 **sharedSecret** | string | Shared secret for this webhook, randomly generated by Smartsheet. Read-only. See [Authenticating Callbacks](#authenticating-callbacks-(optional)) for details about how this value can be used.
