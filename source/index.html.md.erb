@@ -70,15 +70,18 @@ Updated 2017-05-22
 https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
 
-[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. Using the API, you can read and update sheets, manage folders and workspaces, and administer users and accounts.
+[Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. Using the API, you can do the following:
 
-You can view code examples in the dark-blue area in the next pane, and you can use the tabs at the top to switch the programming language of the example.
+* Read and update sheets
+* Manage folders and workspaces
+* Administer users and accounts
+
+You can view code examples in the programming language of your choice by clicking the corresponding tab in the dark-blue area in the next pane.
 
 ## How Do I Start?
 
-Before programmatically creating dazzling sheets with attachments and images, this documentation provides a Getting Started tutorial that will walk you through making an API call and retrieving detailed sheet information. The following are some resources to get you started or that you may want to bookmark:
+This documentation provides two [Getting Started](#getting-started) tutorials that will walk you through making your first API call and interpreting the response to a GET sheet request. You may also want to bookmark or note the following resources:
 
-* [Getting Started tutorial](#getting-started)
 * [Smartsheet Developer Portal:](https://www.smartsheet.com/developers) If registering, use a different email address from your paid Smartsheet account so you can test the API and make API calls
 * Developer Newsletter (subscribe while at the Developer Portal using the <i>Get Developer Updates</i> form)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/smartsheet-api) using the "smartsheet-api" tag
@@ -465,7 +468,7 @@ To request authorization from an end user, direct your user to `https://app.smar
 -----|-----|
 response_type<br/>(required) | must be set to "code"
 client_id<br/>(required) | client id for your app
-redirect_uri<br/>(optional) | redirect URL you [registered](#registering-your-app) for your app (including protocol, e.g. "http://"); if not provided, the redirect URL set during registration is used
+redirect_uri<br/>(optional) | redirect URL you [registered](#registering-your-app) for your app (including protocol, for example, "http://"); if not provided, the redirect URL set during registration is used
 scope<br/>(required) | space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20")
 state | arbitrary string that will be returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated
 
@@ -555,7 +558,7 @@ To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/
 grant_type<br/>(required) | must be set to "authorization_code"
 client_id<br/>(required) | client id for your app
 code<br/>(required) | authorization code returned in the [previous step](#obtaining-the-authorization-code)
-redirect_uri<br/>(optional) | redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used
+redirect_uri<br/>(optional) | redirect URL [registered](#registering-your-app) for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used
 hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -616,7 +619,7 @@ To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/
 grant_type<br/>(required)| must be set to "refresh_token"
 client_id<br/>(required)| client id for your app
 refresh_token<br/>(required)| refresh_token value that came with the access token
-redirect_uri<br/>(optional)| redirect URL [registered](#registering-your-app) for your app, including the protocol (e.g., "http://")
+redirect_uri<br/>(optional)| redirect URL [registered](#registering-your-app) for your app, including the protocol (for example, "http://")
 hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -638,7 +641,7 @@ Depending on what was passed in, the [Result Object](#result-object) returned wi
 pass in a single [Favorite Object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations will be
 noted as such in their API reference documentation.
 
-**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (e.g. favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
+**NOTE**: Several `POST` operations fail when attempting to create a single object which already exists (for example, favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
 return an error if one or more items in the array already exist.  Existing items will simply be ignored, and [Result Object](#result-object) returned will omit them.
 
 <aside class="notice">As Smartsheet makes future updates to the API, we may add bulk support to additional endpoints.  Because the endpoints will continue to support single-object semantics, this will not result in a breaking change, and existing code will continue to function.</aside>
@@ -648,7 +651,7 @@ return an error if one or more items in the array already exist.  Existing items
 In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
 if not, none of them will be.
 
-However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (e.g. an object is invalid).  Partial success is typically
+However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (for example, an object is invalid).  Partial success is typically
 *not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This will be noted in the documentation for operations that support partial success.
 
 <%= PARTIAL_SUCCESS %>
@@ -707,7 +710,7 @@ Attachments can exist on a [Comment](#comments) (that is, within a Discussion), 
 
 ## Posting an Attachment
 
-Like the Smartsheet web application, the Smartsheet API allows uploading files to Sheets, Rows and Comments. 
+Like the Smartsheet Web app, the Smartsheet API allows uploading files to Sheets, Rows and Comments. 
 You can upload a file by performing either a *simple upload* or a *multipart upload*. 
 
 A [simple upload](#simple-uploads) allows you to add a single file attachment to the specified object. 
@@ -2213,7 +2216,7 @@ In a project sheet with dependencies enabled, the **objectValue** attribute for 
 **rowNumber** | number | The row number of the predecessor row. Omitted if **invalid** is true. Read-only.
 **type** | string | The type of the predecessor. One of FS, FF, SS, or SF.
 **lag** | [Duration](#duration-object) | The lag value of this predecessor. Omitted if there is no lag.
-**invalid** | Boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet web application as "#REF"). Read-only. Omitted if false.
+**invalid** | Boolean | True if the row referenced by rowId is not a valid row in this sheet, or there is a circular reference (displayed in the Smartsheet Web app as "#REF"). Read-only. Omitted if false.
 **inCriticalPath** | Boolean | True if this predecessor is in the critical path. Read-only.
 
 ### Duration Object
@@ -2225,7 +2228,7 @@ In a project sheet, represents a value in a duration cell, or a lag value of a p
      |     |     |
 -----|-----|-----|
 **objectType** | string | DURATION
-**negative** | Boolean | When used as a predecessor's lag value, indicates whether the lag is negative (if true), or positive (false). The individual duration values themselves (e.g. **days**, **hours**, **minutes**, etc.) will always be positive.
+**negative** | Boolean | When used as a predecessor's lag value, indicates whether the lag is negative (if true), or positive (false). The individual duration values themselves (for example, **days**, **hours**, **minutes**) will always be positive.
 **elapsed** | Boolean | If true, indicates this duration represents elapsed time, which ignores non-working time.
 **weeks** | number | The number of weeks for this duration.
 **days** | number | The number of days for this duration.
@@ -2423,7 +2426,7 @@ To address this problem, the Smartsheet API employs a simple scheme to indicate 
 interface or a more flexible one. By default, a cell value is expected to conform to "strict" rules for the type of the cell's column.
 If an input value doesn't conform, the API will return [error code 1042](#400-level-error-codes).
 
-If, however, you want the same flexibility as the Smartsheet web application, you can disable the strict rules, and we’ll do our best to make
+If, however, you want the same flexibility as the Smartsheet Web app, you can disable the strict rules, and we’ll do our best to make
 sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell Object](#cell-object) in your request body.
 
 The parsing rules for the various column types are as follows:
@@ -2476,7 +2479,7 @@ The parsing rules for the various column types are as follows:
 *Strict* | Only valid duration strings in the user's locale are valid.  Information on duration strings can be found in the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>).
 *Lenient* | Numeric values are treated as duration values in days.  String values which are valid duration strings in the user's locale are treated as durations, and any other values are treated as free-form text values.
 
-<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (e.g. using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
+<aside class="notice">You may use the query string parameter <b>projectParseLocale</b> with a <a href="#server-information">supported locale string</a> to force parsing in the specified locale (for example, using <code>en_US</code> will let you send in English values regardless of the user's locale)</aside>
 
 **PREDECESSOR**:
 
@@ -3256,9 +3259,9 @@ Contact List	| CONTACT_LIST	| List containing contacts or roles for a project. *
 Date			| DATE			|
 Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
 Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
-Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.)
-Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) 
-Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet web application when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
+Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.)
+Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) 
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
 Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
 
 <aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
@@ -3276,7 +3279,7 @@ whose **[symbol](#column-object)** attribute is set to one of the values below:
 
 <%= PICKLIST_SYMBOL_LIST %>
  
-<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (e.g., row number, attachments, discussions, row action indicator, etc.) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
+<aside class="notice">The Smartsheet grid user interface presents several row attributes and features (for example, row number, attachments, discussions, row action indicator) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
 
 #### System Columns
 
@@ -5655,7 +5658,7 @@ Gets the specified Folder (and lists its contents).
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
-<%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.
+<%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (for example, "folders", "sheets") will not be present in the response.
 
 ## Get All Child Folders
 
@@ -8170,7 +8173,7 @@ For details about working with a Row's discussions, see [Discussions](#discussio
 
 ### Row Include Flags
 
-Endpoints which return rows (e.g. [get sheet](#get-sheet), [get row](#get-row)) support the optional **include** query string parameter. If specified, the value of the **include** parameter is 
+Endpoints which return rows (for example, [get sheet](#get-sheet), [get row](#get-row)) support the optional **include** query string parameter. If specified, the value of the **include** parameter is 
 a comma-delimited list of flags that indicate additional attributes to be included in each [Row Object](#row-object) within the response.
 
 Include Flag | Notes |
@@ -9757,7 +9760,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
 ### SheetUserSettings Object
 
-Represents individual user settings for a specific sheet.  User settings may be updated even on sheets where the current user only has read access (e.g. viewer permissions or a read-only sheet).
+Represents individual user settings for a specific sheet.  User settings may be updated even on sheets where the current user only has read access (for example, viewer permissions or a read-only sheet).
 
      |     |     |
 -----|-----|-----|
@@ -12195,7 +12198,7 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned in the previous step
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (e.g., "http://"); if not provided, the redirect URL set during registration is used.
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 ## Refresh Access Token
@@ -12246,7 +12249,7 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (e.g., "http://")
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "http://")
  | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the refresh token value
 
 ## Revoke Access Token
@@ -13491,7 +13494,7 @@ Gets the specified Workspace (and lists its contents).
 
 <aside class="notice">By default, this operation only returns the top-level items in the Workspace. To load all of the contents, including nested Folders, include the <b>loadAll</b> query string parameter with a value of <b>true</b>.</aside>
 
-<aside class="notice">If no Folders, Sheets, Reports, Templates, or Sights are present in the Workspace, the corresponding attribute (e.g., "folders", "sheets", etc.) will not be present in the response.</aside>
+<aside class="notice">If no Folders, Sheets, Reports, Templates, or Sights are present in the Workspace, the corresponding attribute (for example, "folders", "sheets") will not be present in the response.</aside>
 
      |     |
 -----|-----|
@@ -13953,7 +13956,7 @@ Because the amount of format data in a large sheet can potentially be very large
 
 Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
  
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet web app and set a format (e.g., bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
+The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
 
 ## Format Descriptor
 
@@ -13980,17 +13983,17 @@ The format descriptor contains 16 comma-separated numeric indexes.  Each index r
 
 <aside class="notice">Formats which have not been explicitly set are omitted in the descriptor string.  For example, a cell which has been set to bold and italic, but has no other formats applied to it, would have a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
 
-<aside class="notice">As a convenience, the FormatTables Object contains a <b>defaults</b> property which is a format descriptor that describes which formats the Smartsheet web application displays for unset formats.  Your application can use these values to display unformatted cells identically to the Smartsheet web application.</aside>
+<aside class="notice">As a convenience, the FormatTables Object contains a <b>defaults</b> property which is a format descriptor that describes which formats the Smartsheet Web app displays for unset formats.  Your application can use these values to display unformatted cells identically to the Smartsheet Web app.</aside>
 
 ## FormatTables Object
 
-The FormatTables Object is retrieved via the `GET /serverinfo` operation and contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet web application displays for unset formats.
+The FormatTables Object is retrieved via the `GET /serverinfo` operation and contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet Web app displays for unset formats.
  
 <aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
 
      |     |     |
 -----|-----|-----|
-**defaults** | string | A format descriptor where each element describes the formats the Smartsheet web application displays for format values that have not been set.
+**defaults** | string | A format descriptor where each element describes the formats the Smartsheet Web app displays for format values that have not been set.
 **fontFamily** | array of [FontFamily Objects](#fontfamily-object) | Font families with additional font information
 **fontSize** | array of strings | Font sizes in points
 **bold** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
@@ -14010,15 +14013,15 @@ The FormatTables Object is retrieved via the `GET /serverinfo` operation and con
 
      |     |     |
 -----|-----|-----|
-**name** | string | Name of the font family (e.g. "Arial")
+**name** | string | Name of the font family (for example, "Arial")
 **traits** | array | Platform-independent traits of the font family. One of the following values:<ul><li>serif</li><li>sans-serif</li>
 
 ## Currency Object
 
      |     |     |
 -----|-----|-----|
-**code** | string | The ISO 4217 currency code (e.g. "EUR")
-**symbol** | string | The currency symbol (e.g. "€")
+**code** | string | The ISO 4217 currency code (for example, "EUR")
+**symbol** | string | The currency symbol (for example, "€")
 
 # <span class="customTOCSectionHeading">Deprecations</span>
 
