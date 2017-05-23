@@ -24,8 +24,6 @@ search: false
 <% REQUEST = "**Request Body**" %>
 <% RETURNS = "**Returns**" %>
 <% ERRORS = "**Errors**" %>
-<% CHECKBOX_SYMBOL_LIST = "<ul><li>STAR</li><li>FLAG</li></ul>" %>
-<% PICKLIST_SYMBOL_LIST = "<ul><li>HARVEY_BALLS</li><li>PRIORITY</li><li>RYG</li><li>PRIORITY_HML</li><li>DECISION_SYMBOLS</li><li>DECISION_SHAPES</li><li>VCR</li><li>RYGB</li><li>RYGG</li><li>WEATHER</li><li>PROGRESS</li><li>ARROWS_3_WAY</li><li>ARROWS_4_WAY</li><li>ARROWS_5_WAY</li><li>DIRECTIONS_3_WAY</li><li>DIRECTIONS_4_WAY</li><li>SKI</li><li>SIGNAL</li><li>STAR_RATING</li><li>HEARTS</li><li>MONEY</li><li>EFFORT</li><li>PAIN</li></ul>" %>
 <% HEADER_AUTH = "**Authorization**: Bearer ll352u9jujauoqz4gstvsae05" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
@@ -327,7 +325,8 @@ Before you begin, you should already have an access token, which you used in the
 			"createdAt": "2017-05-12T16:52:38Z",
 			"modifiedAt": "2017-05-22T20:40:14Z",
 			"cells": [{                             // Each row contains an array of Cells, which have the actual content
-					"columnId": 2517104256673668,   // The column Id can be interpreted by looking at the array of column definitions above. That tells us this is the "Name" column
+					"columnId": 2517104256673668,   // The column Id can be interpreted by looking at the array of
+                                                    // column definitions above. That tells us this is the "Name" column
 					"value": "John Doe",            // Actual cell value
 					"displayValue": "John Doe"
 				},
@@ -2704,7 +2703,7 @@ A Column is a component of a Sheet or Report.
 **options** | string[] | Array of the options available for the column
 **contactOptions** | ContactOption[] | Array of ContactOption Objects to specify a pre-defined list of values for the column. Column **type** must be **CONTACT_LIST** 
 **hidden** | Boolean | Flag indicating whether the column is hidden
-**symbol** | string | When applicable for CHECKBOX column type:<%= CHECKBOX_SYMBOL_LIST %>When applicable for PICKLIST column type:<%= PICKLIST_SYMBOL_LIST %>See [Symbol Columns](#symbol-columns).
+**symbol** | string | When applicable for CHECKBOX or PICKLIST column types. See [Symbol Columns](#symbol-columns).
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
 **autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns. Each element in the array will be set to one of the following values:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
@@ -3273,11 +3272,38 @@ whose **[symbol](#column-object)** attribute is set to one of the values below:
 
 **Symbols for CHECKBOX columns:**
 
-<%= CHECKBOX_SYMBOL_LIST %>
+Value | Example |
+-----|-----|
+FLAG | <img src="images/img_pl_flagc.png" alt="A flag symbol" /> |
+STAR | <img src="images/img_pl_starc.png" alt="A star symbol" /> |
 
 **Symbols for PICKLIST columns:**
 
-<%= PICKLIST_SYMBOL_LIST %>
+Value | Example |
+-----|-----|
+ARROWS_3_WAY | <img src="images/img_pl_arrows3.png" alt="An arrows_3_way symbol" /> |
+ARROWS_4_WAY | <img src="images/img_pl_arrows4.png" alt="An arrows_4_way symbol" /> |
+ARROWS_5_WAY | <img src="images/img_pl_arrows5.png" alt="An arrows_5_way symbol" /> |
+DECISION_SHAPES | <img src="images/img_pl_decisionshapes.png" alt="A decision_shapes symbol" /> |
+DECISION_SYMBOLS | <img src="images/img_pl_decisionsymbols.png" alt="A decision_symbols symbol" /> |
+DIRECTIONS_3_WAY | <img src="images/img_pl_directions3.png" alt="A directions_3_way symbol" /> |
+DIRECTIONS_4_WAY | <img src="images/img_pl_directions4.png" alt="A directions_4_way symbol" /> |
+EFFORT | <img src="images/img_pl_effort6Three.png" alt="An effort symbol" /> |
+HARVEY_BALLS | <img src="images/img_pl_harvey5.png" alt="A harvey_balls symbol" /> |
+HEARTS | <img src="images/img_pl_heart6Three.png" alt="A hearts symbol" /> |
+MONEY | <img src="images/img_pl_money6Three.png" alt="A money symbol" /> |
+PAIN | <img src="images/img_pl_pain6.png" alt="A pain symbol" /> |
+PRIORITY | <img src="images/img_pl_priority.png" alt="A priority symbol" /> |
+PRIORITY_HML | <img src="images/img_pl_priorityhml.png" alt="A priority_hml symbol" /> |
+PROGRESS | <img src="images/img_pl_progress5Half.png" alt="A progress symbol" /> |
+RYG | <img src="images/img_pl_ryg.png" alt="An RYG symbol" /> |
+RYGB | <img src="images/img_pl_rygb.png" alt="An RYGB symbol" /> |
+RYGG | <img src="images/img_pl_rygg.png" alt="An RYGG symbol" /> |
+SIGNAL | <img src="images/img_pl_signal5.png" alt="A signal symbol" /> |
+SKI | <img src="images/img_pl_difficulty4.png" alt="A ski symbol" /> |
+STAR_RATING | <img src="images/img_pl_star6Three.png" alt="A star_rating symbol" /> 
+VCR | <img src="images/img_pl_decisionvcr.png" alt="A VCR symbol" /> |
+WEATHER | <img src="images/img_pl_weather5.png" alt="A weather symbol" /> |
  
 <aside class="notice">The Smartsheet grid user interface presents several row attributes and features (for example, row number, attachments, discussions, row action indicator) visually as columns.  The API does not consider these to be columns, and does not return or otherwise expose them as columns.  The only columns returned by the API are user data columns.</aside>
 
