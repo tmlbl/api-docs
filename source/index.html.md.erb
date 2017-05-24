@@ -3553,12 +3553,12 @@ A Column is a component of a Sheet or Report.
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
 **autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns. Each element in the array will be set to one of the following values:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
+**validation** | Boolean | Flag indicating whether validation has been enabled for the column (value = `true`)
 **width** | number | Display width of the column in pixels
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
 **locked** | boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
 **lockedForUser** | boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
-**validation** | Boolean | Flag indicating whether validation has been enabled for the column (value = `true`)
 
 ### ContactOption Object
 
@@ -3597,7 +3597,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
--d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "index":4}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 4}]'
+-d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "validation":"true", index":4}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 4}]'
 ```
 
 ```javascript
@@ -3616,6 +3616,7 @@ var column = [
     {
         "title": "New Date Column",
         "type": "DATE",
+        "validation": "true",
         "index": 5
     },
     {
@@ -3664,7 +3665,7 @@ smartsheet.SheetResources.ColumnResources.AddColumns(sheetId, new Column[] { col
 // Create columns.
 Column column1 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 1").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("First", "Second", "Third")).build();
 
-Column column2 = new Column.AddColumnToSheetBuilder().setTitle("New Date Column").setType(ColumnType.DATE).setIndex(4).build();
+Column column2 = new Column.AddColumnToSheetBuilder().setTitle("New Date Column").setType(ColumnType.DATE).setValidation(true).setIndex(4).build();
 
 Column column3 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 2").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("1", "2", "3")).build();
 
@@ -3688,6 +3689,7 @@ column1 = smartsheet.models.Column({
 column2 = smartsheet.models.Column({
     'title': 'New Date Column',
     'type': 'DATE',
+    'validation': 'true',
     'index': 4
 })
 
@@ -3726,7 +3728,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
             "index": 4,
             "title": "New Date Column",
             "type": "DATE",
-            "validation": "false",
+            "validation": "true",
             "width": 150
         },
         {
@@ -3759,7 +3761,7 @@ Inserts one or more columns into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>width (optional)</li><li>locked (optional)</li></ul>
+<%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>locked (optional)</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the the newly created columns -- either a single [Column object](#column-object) or an array of Column objects, corresponding to what was specified in the request.
 
 ## Delete Column
