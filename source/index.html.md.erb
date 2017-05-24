@@ -3558,6 +3558,7 @@ A Column is a component of a Sheet or Report.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
 **locked** | boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
 **lockedForUser** | boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
+**validation** | Boolean | Flag indicating whether validation has been enabled for the column (value = `true`)
 
 ### ContactOption Object
 
@@ -3717,6 +3718,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
                 "Second",
                 "Third"
             ],
+            "validation": "false",
             "width": 150
         },
         {
@@ -3724,6 +3726,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
             "index": 4,
             "title": "New Date Column",
             "type": "DATE",
+            "validation": "false",
             "width": 150
         },
         {
@@ -3736,6 +3739,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
                 "2",
                 "3"
             ],
+            "validation": "false",
             "width": 150
         }
     ],
@@ -3874,7 +3878,8 @@ column = smartsheet.Sheets.get_column(sheetId, columnId)
 	"index": 2,
 	"symbol": "STAR",
 	"title": "Favorite",
-	"type": "CHECKBOX"
+	"type": "CHECKBOX",
+    "validation": "false"
 }
 ```
 
@@ -4067,7 +4072,8 @@ action = smartsheet.Sheets.update_column(sheetId, columnId, altered_column)
         "index": 0,
         "options" : ["One", "Two"],
         "title": "First Column",
-        "type": "PICKLIST"
+        "type": "PICKLIST",
+        "validation": "false"
     },
     "resultCode": 0
 }
@@ -7681,13 +7687,15 @@ report = smartsheet.Reports.get_report(reportId)
             "primary": true,
             "title": "Sheet Name",
             "type": "TEXT_NUMBER",
+            "validation": "false",
             "sheetNameColumn": true
         },
         {
             "virtualId": 2331373580117892,
             "index": 1,
             "title": "Status",
-            "type": "TEXT_NUMBER"
+            "type": "TEXT_NUMBER",
+            "validation": "false"
         }
     ],
     "rows": [
@@ -11474,7 +11482,8 @@ sheet = smartsheet.Sheets.get_sheet(sheetId)
             "index": 0,
             "primary": true,
             "title": "Primary Column",
-            "type": "TEXT_NUMBER"
+            "type": "TEXT_NUMBER",
+            "validation": false
         },
         {
             "id": 2331373580117892,
@@ -11485,7 +11494,8 @@ sheet = smartsheet.Sheets.get_sheet(sheetId)
                 "completed"
             ],
             "title": "status",
-            "type": "PICKLIST"
+            "type": "PICKLIST",
+            "validation": true
         }
     ],
     "createdAt": "2012-07-24T18:22:29-07:00",
