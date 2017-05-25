@@ -42,7 +42,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-23
+Updated 2017-05-25
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sample-code-and-sdks))
@@ -127,7 +127,7 @@ The following HTTP request headers may be required, depending on the operation a
 
 Header | Definition | Example |
 -----|-----|-----|
-*Authorization* | Required for all endpoints. The access token. | Bearer ll352u9jujauoqz4gstvsae05
+*Authorization* | Required for all endpoints, except for POST /token. The access token. | Bearer ll352u9jujauoqz4gstvsae05
 *Content-Type* | Required for POST and PUT requests. Defines the structure for the response. | application/json
 *Assume-User* | Optional. Allows an admin to act on behalf of the user to make API calls. NOTE: The email address used to identify the user must be URI-encoded. | jane.doe%40smartsheet.com
 
@@ -211,8 +211,6 @@ The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP 
 
 If you want to get started quickly, or are developing a standalone application that can run with your credentials, follow these instructions:
 
-**Generate an Access Token Through the UI**
-
 1. Open the Account/Personal Settings form and click the "API Access" tab.
 2. Click the "Generate new access token" button to obtain an access token.
 
@@ -239,9 +237,9 @@ Sheets are composed of rows, columns, and cells. A cell is identified by the Id 
 UI Element | Description | More Info
 -----|-----|-----|
 Sheet | A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#folders), or in a [Workspace](#workspaces). It is comprised of Columns, Rows, and Cells, and may optionally contain Attachments and/or Discussions. | [Sheet Object](#sheet-object)
-Column | A Column object *defines* the type of the column, but not actually contain cells. The Column Id is needed to identify the cells in a row. | [Column Object,](#column-object) [Column types](#column-types)
-Row | A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Discussions and/or Attachments. | [Row Object](#row-object)
-Cell | A collection of Cells comprises each Row in a Sheet. | [Cell Object,](#cell-object) [Cell reference](#cell-reference)
+Column | A Column Object *defines* the type of the column, but does not actually contain cells. The Column Id is needed to identify the cells in a row. | [Column Object,](#column-object) [Column types](#column-types)
+Row | A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Attachments and/or Discussions. | [Row Object](#row-object)
+Cell | A Cell is a location within a Sheet that may contain a value. A collection of Cells comprises each Row in a Sheet. | [Cell Object,](#cell-object) [Cell reference](#cell-reference)
 
 ## Versioning and Changes
 
@@ -262,32 +260,32 @@ To get a list of all your sheets, try the following command:
 
 In Postman, it would look like this:
 
-<img src="images/postman-sample.png" alt="Postman screen shot">
+<img src="images/postman-sampleb.png" alt="Postman screen shot">
 
 The JSON result should look something like this (after formatting):
 <pre class="center-column">
 {
-    "pageNumber": 1,
-    "pageSize": 100,
-    "totalPages": 1,
-    "totalCount": 2,
-    "data": [{
-            "id": 6141831453927300,
-            "name": "My first sheet",
-            "accessLevel": "ADMIN",
-            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
-            "createdAt": "2016-01-28T22:02:35Z",
-            "modifiedAt": "2016-08-09T17:50:06Z"
-    },
-        {
-            "id": 6141831453927300,
-            "name": "Sheet shared to me",
-            "accessLevel": "VIEWER",
-            "permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
-            "createdAt": "2016-01-28T22:02:35Z",
-            "modifiedAt": "2016-08-09T17:50:06Z"
-        }
-    ]
+	"pageNumber": 1,
+	"pageSize": 100,
+	"totalPages": 1,
+	"totalCount": 2,
+	"data": [{
+			"id": 6141831453927300,
+			"name": "My first sheet",
+			"accessLevel": "ADMIN",
+			"permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
+			"createdAt": "2016-01-28T22:02:35Z",
+			"modifiedAt": "2016-08-09T17:50:06Z"
+		},
+		{
+			"id": 6141831453927300,
+			"name": "Sheet shared to me",
+			"accessLevel": "VIEWER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=8enlO7GkdYSz-cHHVus33A",
+			"createdAt": "2016-01-28T22:02:35Z",
+			"modifiedAt": "2016-08-09T17:50:06Z"
+		}
+	]
 }
 </pre>
 
@@ -336,11 +334,11 @@ Before you begin, you should already have an access token, which you used in the
 					"columnId": 2517104256673668,   // The column Id can be interpreted by looking at the array of
                                                     // column definitions above. That tells us this is the "Name" column
 					"value": "John Doe",            // Actual cell value
-					"displayValue": "John Doe"
+					"displayValue": "John Doe"      // How the cell value is displayed in the UI
 				},
 				{
 					"columnId": 7020703884044164,
-					"value": 12345,
+					"value": 12345,                 
 					"displayValue": "12345"
 				}
 			]
@@ -433,14 +431,14 @@ To build a third-party app, you must first register it with Smartsheet using Dev
 To access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
 The Access Scopes enable your app to communicate to the end users what type of operations it is performing. 
 Access Scopes do not override existing Access Level restrictions. 
-For example, having the Access Scope of WRITE_SHEETS does not allow your app to update a sheet on which the end user has read-only permission.
+For example, having the Access Scope of WRITE_SHEETS does not allow your app to update a sheet on which the end user has VIEWER access level.
  
 The Access Scopes are as follows:
 
 Access Scope | Description |
 -----|-----|
-READ_SHEETS | Read all sheet data, including comments, attachments and cell data.
-WRITE_SHEETS | Insert and modify sheet data, including comments, attachments and cell data.
+READ_SHEETS | Read all sheet data, including attachments, discussions, and cell data.
+WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
 SHARE_SHEETS | Share sheets, including sending sheets as attachments.
 DELETE_SHEETS | Delete sheets.
 CREATE_SHEETS | Create new sheets.
@@ -472,7 +470,7 @@ response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
 redirect_uri<br/>(optional) | Redirect URL you [registered](#registering-your-app) for your app (including protocol, for example, "http://"); if not provided, the redirect URL set during registration is used.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
-state | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
+state<br/>(required) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 
 Here is an example of a URL to which you would send your user as a `GET` request:
  
@@ -561,7 +559,7 @@ grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app.
 code<br/>(required) | Authorization code returned in the [previous step](#obtaining-the-authorization-code).
 redirect_uri<br/>(optional) | Redirect URL [registered](#registering-your-app) for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
-hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
+hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Registering Your App](#registering-your-app).
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -612,7 +610,7 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 An access token is valid for one week but you can use the refresh token to obtain a new access token. 
-Once you obtain the new access token, you can use it in place of the old one, which is no longer valid.
+Once you obtain the new access token, you must use it in place of the old one, which is no longer valid.
  
 To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
@@ -622,7 +620,7 @@ grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
 redirect_uri<br/>(optional)| Redirect URL [registered](#registering-your-app) for your app, including the protocol (for example, "http://").
-hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value.
+hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Registering Your App](#registering-your-app).
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
