@@ -28,6 +28,7 @@ search: false
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
 <% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response will only include the objects that are modified on or after the date and time specified." %>
+<% PARAMETER_OVERRIDE_VALIDATION = "**overrideValidation** (optional): You may use the query string parameter <b>overrideValidation</b> with a value of <code>true</code> to allow a cell value outside of the validation limits."  %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
 <% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
@@ -3446,7 +3447,7 @@ Uploads an image to the specified Cell within a Sheet.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | See [Simple Uploads](#simple-uploads) for information about required headers.
-<%= PARAMETERS %> | **altText** (optional): url-encoded alternate text for the image
+<%= PARAMETERS %> | **altText** (optional): url-encoded alternate text for the image<BR><%= PARAMETER_OVERRIDE_VALIDATION %>
 <%= REQUEST %> | Binary content for the file
 <%= RETURNS %> | [Result object](#result-object)
 
@@ -8391,7 +8392,7 @@ Inserts one or more rows into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
+<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %><BR><%= PARAMETER_OVERRIDE_VALIDATION %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><%= partial "snippets/addRowUpdateRow.md.erb" %></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the newly created rows -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
 <%= ERRORS %> | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request will fail (no rows will be added), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
@@ -8960,7 +8961,7 @@ Updates cell values in the specified rows, expands/collapses the specified rows,
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %>
+<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %><BR><%= PARAMETER_OVERRIDE_VALIDATION %>
 <%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><%= partial "snippets/addRowUpdateRow.md.erb" %></ul>
 <%= RETURNS %> | [Result object](#result-object) containing an array of the updated rows. 
 <%= ERRORS %>  | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#errors) returned will contain a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request will fail (no rows will be updated), and the Error response returned will describe the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
