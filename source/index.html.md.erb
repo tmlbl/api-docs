@@ -86,7 +86,25 @@ This documentation provides two [Getting Started](#getting-started) tutorials th
 * Additional [Getting Started documentation on GitHub](https://github.com/smartsheet-platform/getting-started)
 * Contact us at [api@smartsheet.com](mailto:api@smartsheet.com)
 
-## HTTP Verbs, REST, and Status Codes
+## HTTP and REST
+
+### RESTful Architecture
+
+The REST URL structure follows typical resource-oriented conventions.
+
+To get a list of sheets, use the following:
+
+ `GET https://api.smartsheet.com/2.0/sheets`
+ 
+This returns a list of Sheet Objects, where each Sheet has an “id” attribute.
+
+To get details on the sheet with id 123456, use the following:
+ 
+ `GET https://api.smartsheet.com/2.0/sheets/123456`
+
+This Id pattern is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
+
+If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
 
 ### HTTP Verbs
 
@@ -97,29 +115,13 @@ Call the API using the following [standard HTTP methods](https://www.w3.org/Prot
 * PUT (to modify)
 * DELETE
 
-### RESTful Architecture
-
-The REST URL structure follows typical resource-oriented conventions. For example, to get a list of sheets, use:
-
- `GET https://api.smartsheet.com/2.0/sheets`
- 
-This returns a list of Sheet Objects, where each Sheet has an “id” attribute. To get details on the sheet with id 123456, use:
- 
- `GET https://api.smartsheet.com/2.0/sheets/123456`
-
-This Id pattern is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
-
-If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
-
-### Status Codes
+### HTTP Status Codes
 
 <%= partial "snippets/errorHandling.md.erb" %>
 
 <aside class="notice">Smartsheet has custom error codes to help you troubleshoot issues. See the <a href="#complete-error-code-list">Complete Error Code List.</a></aside>
 
-## Global Considerations
-
-### Headers
+### HTTP Headers
 
 Unless otherwise specified, all API endpoints expect request body data to be in [JSON](https://en.wikipedia.org/wiki/JSON), and the response body data is returned as JSON.
 
@@ -129,7 +131,7 @@ Header | Definition | Example |
 -----|-----|-----|
 *Authorization* | Required for all endpoints, except for POST /token. The access token. | Bearer ll352u9jujauoqz4gstvsae05
 *Content-Type* | Required for POST and PUT requests. Defines the structure for the response. | application/json
-*Assume-User* | Optional. Allows an admin to act on behalf of the user to make API calls. NOTE: The email address used to identify the user must be URI-encoded. | jane.doe%40smartsheet.com
+*Assume-User* | Optional. Allows an admin to act on behalf of the user to make API calls. The email address used to identify the user must be URI-encoded. | jane.doe%40smartsheet.com
 
 ### Query Strings
 
@@ -144,7 +146,7 @@ allowPartialSuccess | Boolean | If true, allows bulk operations to process even 
 numericDates | Boolean | If true, allows you to input or receive dates in numeric format, for example, numericDates=true. | [Dates and Times](#dates-and-times)
 include/exclude | String | When applicable for a specific object, various include or exclude parameters are available, for example, include=formatting. | Object reference or [Formatting](#formatting)
 
-## Authentication, Access Tokens, and OAUTH
+## Authentication and Access Tokens
 
 > Example Request:
 
@@ -214,13 +216,15 @@ If you want to get started quickly, or are developing a standalone application t
 1. Open the Account/Personal Settings form and click the "API Access" tab.
 2. Click the "Generate new access token" button to obtain an access token.
 
-If your application requires users to be able to login with their own account, you must implement the full OAuth flow. See the documentation for [Third-party App Development](#third-party-app-development) and [Developer Registration](https://www.smartsheet.com/developers/register).
-
 The access token must be sent with every API call in an HTTP authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
 
 `Authorization: Bearer ll352u9jujauoqz4gstvsae05`
 
 The header name is <b>Authorization</b> and the value of the header is <b>Bearer ll352u9jujauoqz4gstvsae05</b>. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
+
+<aside class="warning">The token generated runs with your credentials. Be sure to secure your tokens and do not share tokens with anyone.</aside>
+
+<aside class="notice">If your application requires users to be able to login with their own account, you must implement the full OAuth flow. See the documentation for <a href="#third-party-app-development">Third-party App Development</a> and <a href="https://www.smartsheet.com/developers/register">Developer Registration</a>.</aside>
 
 ## Dates and Times
 
@@ -252,7 +256,7 @@ Also, make sure your code does not depend on the order in which JSON objects are
 
 Before you write any code, try executing API requests using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request and Response.
 
-You must use an access token. See instructions at [Authentication, Access Tokens, and OAUTH](#authentication-access-tokens-and-oauth). In the examples below, replace this sample token, "ll352u9jujauoqz4gstvsae05", with your actual token value.
+You must use an access token. See instructions at [Authentication and Access Tokens](#authentication-and-access-tokens). In the examples below, replace this sample token, "ll352u9jujauoqz4gstvsae05", with your actual token value.
 
 To get a list of all your sheets, try the following command:
 
@@ -297,8 +301,11 @@ Many Smartsheet API operations handle sheets, rows, columns, and cells. Each is 
 
 Before you begin, you should already have an access token, which you used in the exercise above. Use the same access token for this walkthrough.
 
-1. The first thing you need is a sheetId. You can get this through the UI (Title tab for sheet > dropdown arrow > Properties > Sheet ID). Note: use [GET All Sheets](#get-all-sheets) if you want to do this programmatically.
-2. Copy that sheetId into the API call, GET Sheets, as below:
+1. The first thing you need is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [GET All Sheets](#get-all-sheets) if you want to do this programmatically.
+
+    <img src="images/sheet-properties.png" alt="Image of the Sheet Properties window" />
+
+2. Copy the sheetId into the API call, GET Sheets, as below:
 
     `curl -X GET -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" "https://api.smartsheet.com/2.0/sheets/6141831453927300"`
 
@@ -392,11 +399,11 @@ The **accessLevel** attribute has one of the following values:
 
 Value | Description |
 -----|-----|
-VIEWER | The user has read-only access to the resource.
+ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
 EDITOR | The user can edit the resource, but cannot alter the structure of, delete or share the resource.
 EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
-ADMIN | The user can edit and share the resource, and can alter the structure of the resource as well.
 OWNER | The user has complete control over the resource.
+VIEWER | The user has read-only access to the resource.
 
 # Third-party App Development
 
@@ -437,21 +444,22 @@ The Access Scopes are as follows:
 
 Access Scope | Description |
 -----|-----|
-READ_SHEETS | Read all sheet data, including attachments, discussions, and cell data.
-WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
-SHARE_SHEETS | Share sheets, including sending sheets as attachments.
-DELETE_SHEETS | Delete sheets.
-CREATE_SHEETS | Create new sheets.
-CREATE_SIGHTS | Create new Sights.
-READ_SIGHTS | Read all Sight data.
-DELETE_SIGHTS | Delete Sight.
-SHARE_SIGHTS | Share Sight.
-READ_USERS | Retrieve users and groups for your Smartsheet organization.
-READ_CONTACTS | Retrieve contacts.
-ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership.
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
 ADMIN_SIGHTS | Modify Sight structure.
+ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership.
+ADMIN_WEBHOOKS | Create, delete. and update webhooks; get all webhooks; reset shared secret. 
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing.
+CREATE_SHEETS | Create new sheets.
+CREATE_SIGHTS | Create new Sights.
+DELETE_SHEETS | Delete sheets.
+DELETE_SIGHTS | Delete Sight.
+READ_CONTACTS | Retrieve contacts.
+READ_SHEETS | Read all sheet data, including attachments, discussions, and cell data.
+READ_SIGHTS | Read all Sight data.
+READ_USERS | Retrieve users and groups for your Smartsheet organization.
+SHARE_SHEETS | Share sheets, including sending sheets as attachments.
+SHARE_SIGHTS | Share Sight.
+WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
 
 <aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
@@ -12177,7 +12185,7 @@ Gets the list of user-created Templates to which the user has access.
 
 # Token
 
-The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-access-tokens-and-oauth).
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
 
 ## Get Access Token
 
@@ -13772,7 +13780,7 @@ Object that contains information about an item that failed to be added or update
 
 # Complete Error Code List
 
-For an explanation of the logic behind Smartsheet error codes and error handling, see the [HTTP Verbs, REST, and Status Codes](#http-verbs-rest-and-status-codes) portion of the Introduction. 
+For an explanation of the logic behind Smartsheet error codes and error handling, see the [HTTP and REST](#http-and-rest) portion of the Introduction. 
 
 ## 400-Level Error Codes
 
