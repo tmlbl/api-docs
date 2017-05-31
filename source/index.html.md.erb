@@ -2725,6 +2725,8 @@ A Column is a component of a Sheet or Report.
 **locked** | Boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
 **lockedForUser** | Boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
 
+
+
 ### ContactOption Object
 
      |     |     |
@@ -2753,6 +2755,7 @@ Smartsheet users can define and save personal column filters on sheets they can 
 **values** | object[] containing strings, numbers, and Booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter matches against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.
 **criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.
 
+
 ## Add Columns
 
 > Example Request:
@@ -2762,6 +2765,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
+-d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "validation":true, index":4}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 4}]'
 ```
 
 ```javascript
@@ -2780,6 +2784,7 @@ var column = [
     {
         "title": "New Date Column",
         "type": "DATE",
+        "validation": true,
         "index": 5
     },
     {
@@ -2852,6 +2857,7 @@ column1 = smartsheet.models.Column({
 column2 = smartsheet.models.Column({
     'title': 'New Date Column',
     'type': 'DATE',
+    'validation': 'true',
     'index': 4
 })
 
@@ -2882,6 +2888,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
                 "Second",
                 "Third"
             ],
+            "validation": false,
             "width": 150
         },
         {
@@ -2889,6 +2896,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
             "index": 4,
             "title": "New Date Column",
             "type": "DATE",
+            "validation": true,
             "width": 150
         },
         {
@@ -2901,6 +2909,7 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
                 "2",
                 "3"
             ],
+            "validation": false,
             "width": 150
         }
     ],
@@ -2920,6 +2929,8 @@ Inserts one or more columns into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Column object](#column-object) or an array of Column objects, with the following attributes:<ul><li>title</li><li>type</li><li>symbol (optional)</li><li>options (optional)</li><li>index (zero-based)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>locked (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the the newly created columns -- either a single [Column object](#column-object) or an array of Column objects, corresponding to what was specified in the request.
 
 ## Delete Column
 
@@ -3037,6 +3048,8 @@ column = smartsheet.Sheets.get_column(sheetId, columnId)
 	"index": 2,
 	"symbol": "STAR",
 	"title": "Favorite",
+	"type": "CHECKBOX",
+    "validation": false
 }
 ```
 
@@ -3120,17 +3133,23 @@ columns = action.data
 			"index": 0,
 			"symbol": "STAR",
 			"title": "Favorite",
+			"type": "CHECKBOX",
+            "validation": false
 		},
 		{
 			"id": 642523719853956,
 			"index": 1,
 			"primary": true,
 			"title": "Primary Column",
+			"type": "TEXT_NUMBER",
+            "validation": false
 		},
 		{
 			"id": 5146123347224452,
 			"index": 2,
 			"title": "Status",
+			"type": "PICKLIST",
+            "validation": false
 		}
 	]
 }
@@ -3226,6 +3245,8 @@ action = smartsheet.Sheets.update_column(sheetId, columnId, altered_column)
         "index": 0,
         "options" : ["One", "Two"],
         "title": "First Column",
+        "type": "PICKLIST",
+        "validation": false
     },
     "resultCode": 0
 }
@@ -3239,12 +3260,15 @@ Updates properties of the column, moves the column, and/or renames the column.
 
 * You cannot change the type of a Primary column.
 * While dependencies are enabled on a sheet, you can't change the type of any special calendar/Gantt columns.
+* If the column type is changed, all cells in the column are converted to the new column type and column validation is cleared.
 * Type is optional when moving or renaming, but required when changing type or dropdown values.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
 ## <%= RELATED %>
 
 ### Column Types
@@ -3320,6 +3344,8 @@ MODIFIED_BY | CONTACT_LIST
 CREATED_DATE | DATETIME
 CREATED_BY  | CONTACT_LIST
 AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type include an [AutoNumberFormat Object](#autonumberformat-object) that describes the mask used to generate the value.
+
+
 
 # Comments
 
@@ -6911,12 +6937,15 @@ report = smartsheet.Reports.get_report(reportId)
             "primary": true,
             "title": "Sheet Name",
             "type": "TEXT_NUMBER",
+            "validation": false,
             "sheetNameColumn": true
         },
         {
             "virtualId": 2331373580117892,
             "index": 1,
             "title": "Status",
+            "type": "TEXT_NUMBER",
+            "validation": false
         }
     ],
     "rows": [
@@ -7604,6 +7633,10 @@ Inserts one or more rows into the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %><BR><%= PARAMETER_OVERRIDE_VALIDATION %>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><%= partial "snippets/addRowUpdateRow.md.erb" %></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the newly created rows -- either a single [Row object](#row-object) or array of Row objects, corresponding to what was specified in the request, as well as the new version of the Sheet. 
+<%= ERRORS %> | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error object](#complete-error-code-list) returned contains a **detail** attribute set to an object with the following attribute:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li></ul>If any error occurs, the entire request fails (no rows are added), and the Error response returned describes the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
 
 ## Copy Rows to Another Sheet
 
@@ -8169,6 +8202,9 @@ Updates cell values in the specified rows, expands/collapses the specified rows,
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | <%= PARAMETER_ALLOW_PARTIAL_SUCCESS %><BR><%= PARAMETER_OVERRIDE_VALIDATION %>
+<%= REQUEST %> | [Row object](#row-object) or an array of Row objects, with the following attributes:<ul><li>**id** (required)</li><%= partial "snippets/addRowUpdateRow.md.erb" %></ul>
+<%= RETURNS %> | [Result object](#result-object) containing an array of the updated rows. 
 <%= ERRORS %>  | <u><b>When <code>allowPartialSuccess=false</code> (or not specified):</b></u><br/><br/>If an error occurs, the [Error Object](#complete-error-code-list) returned contains a **detail** attribute set to an object with the following attributes:<ul><li>**index**: the array index of the row that caused the error (0 if a single Row was passed in)</li><li>**rowId**: the id of the row that caused the error (omitted if the row was missing an id)</li></ul>If any error occurs, the entire request fails (no rows are updated), and the Error response returned describes the first problem that was encountered. For example:<br/>{<br/>&#160;&#160;"errorCode": 1042,<br/>&#160;&#160;"message": "The cell value in column 5504245941200772 did not conform to the strict requirements for type CHECKBOX."<br/>&#160;&#160;"detail": {<br/>&#160;&#160;&#160;&#160;"index": 4<br/>&#160;&#160;&#160;&#160;"rowId": 6572427401553796<br/>&#160;&#160;}<br/>}<br/><br/><br/><u><b>When <code>allowPartialSuccess=true</code>:</b></u><br/><br/><%= PARTIAL_SUCCESS %>
 
 ## <%= RELATED %>
@@ -10696,6 +10732,8 @@ sheet = smartsheet.Sheets.get_sheet(sheetId)
             "index": 0,
             "primary": true,
             "title": "Primary Column",
+            "type": "TEXT_NUMBER",
+            "validation": false
         },
         {
             "id": 2331373580117892,
@@ -10706,6 +10744,8 @@ sheet = smartsheet.Sheets.get_sheet(sheetId)
                 "completed"
             ],
             "title": "status",
+            "type": "PICKLIST",
+            "validation": true
         }
     ],
     "createdAt": "2012-07-24T18:22:29-07:00",
