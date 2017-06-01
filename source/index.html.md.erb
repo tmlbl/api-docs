@@ -2100,8 +2100,8 @@ A collection of Cells comprises each Row in a Sheet.
 -----|-----|-----|
 **columnId** | number | The Id of the column that the cell is located in
 **columnType** | string | See type definition on the [Column Object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
-**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  See [Cell Values](#cell-values).
-**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Values](#cell-values).
+**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  See [Cell Reference](#cell-reference).
+**displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Reference](#cell-reference).
 **objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
@@ -2689,12 +2689,6 @@ A cell image can be updated as follows:
 * To change the alternate text of an image, use the [Update Rows](#update-rows) operation.
 * To replace an existing image with a new image, use the [Add Image to Cell](#add-image-to-cell) operation.
 * To add an image to a cell that previously contained another type of data, use the [Add Image to Cell](#add-image-to-cell) operation.
-
-## <%= RELATED %>
-
-### Cells
-
-For details about working with the cells within a Sheet, see [Cells](#cells).
 
 # Columns
 
@@ -3285,7 +3279,7 @@ Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>
 Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
 Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
 
-<aside class="notice">See the <a href="#cell-values">Cell Values</a> section for information on getting and setting cell values for the different column types.</aside>
+<aside class="notice">See the <a href="#cell-reference">Cell Reference</a> section for information on getting and setting cell values for the different column types.</aside>
 
 #### Symbol Columns
 
@@ -4537,7 +4531,7 @@ Adds one or more items to the user's list of Favorite items.
 
 <aside class="notice"><%= SUPPORTS_OPTIONAL_BULK %></aside>
 
-If called with a single [Favorite object](#favorite-Object), and that favorite already exists, [error code](#complete-error-code-list) **1129** is returned.  If called with an array of [Favorite Objects](#favorite-object), any objects specified in the array that are already marked as favorites are ignored and omitted from the response.
+If called with a single [Favorite Object](#favorite-object), and that favorite already exists, [error code](#complete-error-code-list) **1129** is returned.  If called with an array of [Favorite Objects](#favorite-object), any objects specified in the array that are already marked as favorites are ignored and omitted from the response.
 
      |     |
 -----|-----|
@@ -8241,7 +8235,7 @@ Include Flag | Notes |
 **columnType**	| Includes **columnType** attribute in the row's [cells](#cell-object) indicating the type of the column the cell resides in.
 **rowPermalink** | Includes **permalink** attribute that represents a direct link to the [row](#row-object) in the Smartsheet application.
 **rowWriterInfo** | Includes **createdBy** and **modifiedBy** attributes on the row, indicating the row's creator, and last modifier.
-**objectValue** | Includes **objectValue** attribute on cells containing values. For more information see [Cell Values](#cell-values).
+**objectValue** | Includes **objectValue** attribute on cells containing values. For more information see [Cell Reference](#cell-reference).
 
 ### Row Location
 
@@ -9930,7 +9924,7 @@ Creates a copy of the specified Sheet.
 
 To create a Sheet from scratch, use one of the following operations (according to where you want to create the Sheet):
 <ul>
-<li>[Create Sheet](#create-sheet-in-"sheets"-folder)</li>
+<li>[Create Sheet](#create-sheet-in-quot-sheets-quot-folder)</li>
 <li>[Create Sheet in Folder](#create-sheet-in-folder)</li>
 <li>[Create Sheet in Workspace](#create-sheet-in-workspace)</li>
 </ul>
@@ -10305,7 +10299,7 @@ Creates a Sheet from scratch at the top-level of the specified Workspace. To cre
 
 To create a Sheet from a Template, use one of the following operations (according to where you want to create the Sheet):
 <ul>
-<li>[Create Sheet in "Sheets" folder from Template](#create-sheet-in-"sheets"-folder-from-template)</li>
+<li>[Create Sheet in "Sheets" folder from Template](#create-sheet-in-quot-sheets-quot-folder-from-template)</li>
 <li>[Create Sheet in Folder from Template](#create-sheet-in-folder-from-template)</li>
 <li>[Create Sheet in Workspace from Template](#create-sheet-in-workspace-from-template)</li>
 </ul>
@@ -12558,7 +12552,7 @@ Adds a User to the organization.
 
 A [User](#user-object) in Smartsheet must have a *primary* email address associated with their account (**User.email**) and may optionally have one or more *alternate* email addresses associated with their account (**User.alternateEmails**). 
 
-<aside class="notice">The following operations must be performed using an User's <i>primary</i> email address:<ul><li><a href="#add-group-members">Add Group Members</a></li><li><a href="#add-user">Add User</a></li><li><a href="#create-update-request">Create Update Request</a></li><li><a href="#share-report">Share Report</a></li><li><a href="#share-sheet">Share Sheet</a></li><li><a href="#share-workspace">Share Workspace</a></li></ul>Attempting to specify a User's <i>alternate</i> email address for any of the above operations results in an error.</aside>
+<aside class="notice">The following operations must be performed using an User's <i>primary</i> email address:<ul><li><a href="#add-group-members">Add Group Members</a></li><li><a href="#add-user">Add User</a></li><li><a href="#create-update-request">Create Update Request</a></li><li><a href="#share-report256">Share Report</a></li><li><a href="#share-sheet">Share Sheet</a></li><li><a href="#share-workspace384">Share Workspace</a></li></ul>Attempting to specify a User's <i>alternate</i> email address for any of the above operations results in an error.</aside>
 
 ### Add Alternate Emails
 
@@ -12634,7 +12628,7 @@ Adds one or more alternate email addresses for the specified User.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | Array of [AlternateEmail Objects](#alternateemail-object), each limited to only the **email** attribute
 <%= RETURNS %> | [Result Object](#result-object) containing an array of the newly created [AlternateEmail Objects](#alternateemail-object).
-<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response contains the typical [Error Object](#complete-error-code-list).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the [Error Object](#complete-error-code-list) returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#error-handling)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response contains the typical [Error Object](#complete-error-code-list).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the [Error Object](#complete-error-code-list) returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#complete-error-code-list)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Make Alternate Email Primary
 
@@ -13083,7 +13077,7 @@ Gets the list of Users in the organization. To filter by email, use the optional
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results.
- | **include** (optional): When specified with a value of "lastLogin", response includes the **lastLogin** attribute for each [user](#user-object) if:<br/><ul><li>the request is submitted by a system administrator, and</li><li>the returned [IndexResult object](#indexresult-Object) that contains a maximum of 100 [User Objects](#user-Object).</li></ul>
+ | **include** (optional): When specified with a value of "lastLogin", response includes the **lastLogin** attribute for each [user](#user-object) if:<br/><ul><li>the request is submitted by a system administrator, and</li><li>the returned [IndexResult object](#indexresult-object) that contains a maximum of 100 [User Objects](#user-object).</li></ul>
  | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [User Objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes are included in the response (else, they are omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (omitted if the user has never logged in before)</li><li>sheetCount (omitted if the status attribute is not ACTIVE)</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, and [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) is enabled, the following User attributes are included in the response (else, they are omitted from the response):<ul><li>customWelcomeScreenViewed (omitted if the user has never viewed the Custom Welcome Screen)</li></ul>
 
@@ -14098,7 +14092,7 @@ The following endpoints have been deprecated in version 2.0 of the Smartsheet AP
 Operation | Deprecated Endpoint | Replaced by 
 -------- | -------- | ----- | -----------------
  Delete Row (singular) | DELETE /sheets/{sheetId}/rows/{rowId} | new endpoint for [Delete Rows](#delete-rows)
- Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Rows](#send-rows)
+ Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Rows](#send-rows-via-email)
  
 ## Deprecated Parameters
 
@@ -14179,7 +14173,7 @@ Webhooks are created and managed by using the Smartsheet API. See [Webhooks API 
 
 ## Webhook Ownership & Access
 
-Webhooks can be created and managed via [Direct API Access](http://smartsheet-platform.github.io/api-docs/#direct-api-access) or by a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development). 
+Webhooks can be created and managed via [Direct API Access](#webhooks-reference) or by a [third-party app](#third-party-app-development). 
 
 A webhook that is created via Direct API Access:
 
@@ -14187,7 +14181,7 @@ A webhook that is created via Direct API Access:
 * can be managed only by the User who created it
 * is not affected if the access token that was used to create it is revoked, as long as the User remains active
 
-A webhook that is created by a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development):
+A webhook that is created by a [third-party app](#third-party-app-development):
 
 * is owned by the User who authorized the third-party app (and is associated with the third-party app)
 * can be managed by the third-party app (as long as it maintains authorization) OR by the User who owns it
@@ -14303,7 +14297,7 @@ A "callback" is the notification that Smartsheet sends to a webhook's **callback
 * [**Status Change** callback](#status-change-callbacks): Alerts the subscriber that a webhook has been automatically disabled due to loss of access or automatically re-enabled due to restoration of access.
 
 A Subscriber has the ability to verify the integrity of a callback payload (that is, ensure that the message was not tampered with en route) and authenticate the identity of its sender (that is, ensure that the callback did indeed originate from Smartsheet). 
-For more information, see [Authenticating Callbacks](#authenticating-callbacks-(optional)).
+For more information, see [Authenticating Callbacks](#authenticating-callbacks-optional).
 
 ## Event Callbacks
 
@@ -14488,7 +14482,7 @@ HTTP status code | Smartsheet errorCode | Smartsheet message | Recommended Actio
 
 <%= WEBHOOKS_INTRO %>
 
-For more information, see [Webhooks Overview](#webhooks-overview).
+For more information, see [Intro to Webhooks](#intro-to-webhooks).
 
 # <%= OBJECTS %>
 
@@ -14535,7 +14529,7 @@ For more information, see [Webhooks Overview](#webhooks-overview).
 **scopeObjectId** | number | Id of the object that is subscribed to. Specified when a webhook is created and cannot be changed.
 **events** | string[] | Array of the events that are subscribed to. Currently, must be an array of size 1 that contains the string value "&#42;.&#42;", which means "all objects" and "all events".
 **callbackUrl** | string | HTTPS URL where callbacks are sent.<br/><br/>**Note:** Smartsheet webhooks do not support callbacks to servers using self-signed certificates. The callback server must be using a signed certificate from a certificate authority.
-**sharedSecret** | string | Shared secret for this webhook, randomly generated by Smartsheet. Read-only. See [Authenticating Callbacks](#authenticating-callbacks-(optional)) for details about how this value can be used.
+**sharedSecret** | string | Shared secret for this webhook, randomly generated by Smartsheet. Read-only. See [Authenticating Callbacks](#authenticating-callbacks-optional) for details about how this value can be used.
 **enabled** | Boolean | Flag indicating whether the Webhook is on (`true`) or off (`false`)
 **status** | string | Webhook status. Read-only. See [Webhook Status](#webhook-status) for list of possible values.
 **disabledDetails** | string | Details about the reason the Webhook was disabled. Read-only. Only present when **enabled**=`false`.
@@ -14604,7 +14598,7 @@ Creates a new Webhook.
 <%= SCOPE %> | ADMIN_WEBHOOKS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Webhook Object](#webhook-object), limited to the following attributes:<ul><li>name (required)</li><li>callbackUrl (required)</li><li>scope (required)</li><li>scopeObjectId (required)</li><li>events (required)</li><li>version (required)</li></ul>
-<%= RETURNS %> | [Result Object](http://smartsheet-platform.github.io/api-docs/#result-object), containing a [Webhook Object](#webhook-object) for the newly created Webhook
+<%= RETURNS %> | [Result Object](#result-object), containing a [Webhook Object](#webhook-object) for the newly created Webhook
 
 # Delete Webhook
 
@@ -14639,7 +14633,7 @@ Deletes the Webhook specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_WEBHOOKS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [Result Object](http://smartsheet-platform.github.io/api-docs/#result-object)
+<%= RETURNS %> | [Result Object](#result-object)
 
 # Get Webhook
 
@@ -14730,15 +14724,15 @@ curl https://api.smartsheet.com/2.0/webhooks \
 
 `GET /webhooks`
 
-Gets the list of all Webhooks that the user owns (if a [user generated token](http://smartsheet-platform.github.io/api-docs/#generating-access-token) was used to make the request) 
-or the list of all Webhooks associated with the third-party app (if a [third-party app](http://smartsheet-platform.github.io/api-docs/#third-party-app-development) made the request). 
+Gets the list of all Webhooks that the user owns (if a [user-generated token](#authentication-and-access-tokens) was used to make the request) 
+or the list of all Webhooks associated with the third-party app (if a [third-party app](#third-party-app-development) made the request). 
 Items in the response are ordered by API Client name > Webhook name > creation date.
 
      |     |
 -----|-----|
 <%= SCOPE %> | ADMIN_WEBHOOKS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= RETURNS %> | [IndexResult Object](http://smartsheet-platform.github.io/api-docs/#indexresult-object) containing an array of [Webhook Objects](#webhook-object)
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Webhook Objects](#webhook-object)
 
 # Reset Shared Secret
 
@@ -14767,7 +14761,7 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
 
 `POST /webhooks/{webhookId}/resetsharedsecret`
 
-Resets the shared secret for the specified Webhook. For more information about how a shared secret is used, see [Authenticating Callbacks](#authenticating-callbacks-(optional)).
+Resets the shared secret for the specified Webhook. For more information about how a shared secret is used, see [Authenticating Callbacks](#authenticating-callbacks-optional).
 
 This operation can be used to rotate an API client's webhooks' shared secrets at periodic intervals to provide additional security.
 
@@ -14776,7 +14770,7 @@ This operation can be used to rotate an API client's webhooks' shared secrets at
 <%= SCOPE %> | ADMIN_WEBHOOKS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>  
 <%= REQUEST %> | The request body should be empty.
-<%= RETURNS %> | [Result Object](http://smartsheet-platform.github.io/api-docs/#result-object) containing the [SharedSecret Object](#sharedsecret-object)
+<%= RETURNS %> | [Result Object](#result-object) containing the [SharedSecret Object](#sharedsecret-object)
 
 # Update Webhook
 
@@ -14832,4 +14826,4 @@ Updates the Webhook specified in the URL.
 <%= SCOPE %> | ADMIN_WEBHOOKS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | [Webhook Object](#webhook-object), limited to the following attributes:<ul><li>name (optional)</li><li>events (optional)</li><li>callbackUrl (optional)</li><li>enabled (optional)</li><li>version (optional)</li></ul>
-<%= RETURNS %> | [Result Object](http://smartsheet-platform.github.io/api-docs/#result-object) containing the [Webhook Object](#webhook-object) for the updated webhook
+<%= RETURNS %> | [Result Object](#result-object) containing the [Webhook Object](#webhook-object) for the updated webhook
