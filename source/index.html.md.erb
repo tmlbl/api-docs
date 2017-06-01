@@ -28,7 +28,7 @@ search: false
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
 <% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response only includes the objects that are modified on or after the date and time specified." %>
-<% PARAMETER_OVERRIDE_VALIDATION = "**overrideValidation** (optional): You may use the query string parameter <b>overrideValidation</b> with a value of <code>true</code> to allow a cell value outside of the validation limits."  %>
+<% PARAMETER_OVERRIDE_VALIDATION = "**overrideValidation** (optional): You may use the query string parameter <b>overrideValidation</b> with a value of <code>true</code> to allow a cell value outside of the validation limits. You must specify **strict** with a value of `false` to bypass free value checking from the API."  %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
 <% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-05-31
+Updated 2017-06-01
 # Overview
 ## Introduction
 > Sample Code (more information [here](#sample-code-and-sdks))
@@ -2107,7 +2107,7 @@ A collection of Cells comprises each Row in a Sheet.
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
 **linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
-**overrideValidation** | Boolean | (Admin only) Flag indicating whether the cell value can contain a value outside of the validation limits (value = `true`). This property is honored for POST or PUT actions that update rows.
+**overrideValidation** | Boolean | (Admin only) Flag indicating whether the cell value can contain a value outside of the validation limits (value = `true`). When using this parameter, you must also set **strict** to `false` to bypass free value checking from the API. This property is honored for POST or PUT actions that update rows.
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a non-default format applied.
 **conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a conditional format applied.
 **strict** | Boolean | Set to **false** to enable lenient parsing. Defaults to **true**. <%= REQUEST_ONLY_ATTRIBUTE %> See [Cell Value Parsing](#cell-value-parsing) for more information about using this attribute. 
