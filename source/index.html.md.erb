@@ -14231,7 +14231,7 @@ The process occurs synchronously:
 3. To initiate the verification process, the API Client submits an [Update Webhook](#update-webhook) request to specify `enabled: true`. (*Note*: The API Client does not receive a response to this request until the Verification process (steps 4 and 5) has completed.)
 
 4. When Smartsheet receives the request to enable the webhook, it sends a [Verification Request](#webhook-verification) to the Subscriber (that is, to the `callbackUrl` that the API Client specified in the **Create Webhook** request). 
-The request specifies a unique random value in the **Smartsheet-Hook-Challenge** header and contains only `webhookId` in the request body.
+The request specifies a unique random value in the **Smartsheet-Hook-Challenge** header and contains only `challenge` and `webhookId` in the request body. The `challenge` value is a repeat of the header value for API clients that don't interpret header values.
 
 5. The Subscriber responds to the Verification Request by echoing back the same unique random value in the **Smartsheet-Hook-Response** header of the response.
 
@@ -14245,6 +14245,7 @@ The request specifies a unique random value in the **Smartsheet-Hook-Challenge**
 POST [callbackUrl]
 Smartsheet-Hook-Challenge: d78dd1d3-01ce-4481-81de-92b4f3aa5ab1 
 { 
+    "challenge": "d78dd1d3-01ce-4481-81de-92b4f3aa5ab1",
     "webhookId": 2674017481058180
 }
 ```
@@ -14257,7 +14258,7 @@ Smartsheet-Hook-Response: d78dd1d3-01ce-4481-81de-92b4f3aa5ab1
 ```
 
 When an API Client attempts to enable a webhook, Smartsheet sends a verification request to the webhook's **callbackUrl** to verify that the Subscriber expects and is able to successfully receive callbacks. 
-The request specifies a unique random value in the **Smartsheet-Hook-Challenge** header and contains a JSON object in the request body with only a `webhookId` attribute.
+The request specifies a unique random value in the **Smartsheet-Hook-Challenge** header and contains a JSON object in the request body with only `challenge` and `webhookId` attributes in the request body. The `challenge` attribute is a repeat of the header value for API clients that don't interpret header values.
 
 * To verify the webhook, the Subscriber's response to the Verification Request must return a 200 HTTP status code and must echo back the same unique random value in the **Smartsheet-Hook-Response** header of the response. Once Smartsheet receives this verification response, the webhook is enabled (`enabled: true` and `status: "ENABLED"`).
 
