@@ -713,27 +713,29 @@ Attachments can exist on a [Comment](#comments) (that is, within a Discussion), 
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListAttachments(
-    sheetId,    // long 9283173393803140
-    null        // long discussionId or similar
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+    "pageNumber": 1,
+    "pageSize": 100,
+    "totalPages": 1,
+    "totalCount": 2,
+	"data": [
+		{
+			"id": 4583173393803140,
+			"name": "at3.png",
+			"attachmentType": "file",
+			"mimeType": "image/png",
+			"createdAt": "2014-03-28T18:13:20-07:00"
+		},
+		{
+			"id": 642523719853956,
+			"name": "at3.png",
+			"attachmentType": "file",
+			"mimeType": "image/png",
+			"createdAt": "2014-03-27T18:11:11-07:00"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -1545,10 +1547,16 @@ smartsheet.sheets.listAttachments(options)
 
 ```csharp
 // Get all attachments (omit pagination parameters).
-smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, null);
+smartsheet.SheetResources.AttachmentResources.ListAttachments(
+    9283173393803140,               // long sheetId
+    null);                          // long discussionId or similar
 
 // Get all attachments (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.AttachmentResources.ListAttachments(sheetId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.AttachmentResources.ListAttachments(
+    9283173393803140,               // long sheetId
+    new PaginationParameters(true,
+    null,                           // int pageSize
+    null));                         // int page     
 ```
 
 ```java
@@ -2130,6 +2138,26 @@ A collection of Cells comprises each Row in a Sheet.
 
 ### Cell Object
 
+> Example Object:
+
+```json
+{
+	"cells": [{
+			"columnId": 7518312134403972,
+			"type": "TEXT_NUMBER",
+			"value": "desc_updated",
+			"displayValue": "desc_updated"
+		},
+		{
+			"columnId": 6392412227561348,
+			"type": "TEXT_NUMBER",
+			"value": 1,
+			"displayValue": "1"
+		}
+	]
+}
+```
+
      |     |     |
 -----|-----|-----|
 **columnId** | number | The Id of the column that the cell is located in
@@ -2580,26 +2608,21 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-GetImageUrls(
-	null    // IEnumerable<ImageUrl> requestUrls
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"imageUrls": [{
+			"imageId": "e1znCxhuZo_soEJtUmmX_A",
+			"url": "https://urltoimage1.com?qs1=foo"
+		},
+		{
+			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
+			"error": {
+				"errorCode": 5001,
+				"message": "localized_error_message"
+			}
+		}
+	]
+}
 ```
 
      |     |     |
@@ -2758,28 +2781,33 @@ A Column is a component of a Sheet or Report.
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListColumns(
-    sheetId,    // long 9283173393803140
-    null,       // IEnumerable<ColumnInclusion> include
-    null        // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": 7960873114331012,
+			"index": 0,
+			"symbol": "STAR",
+			"title": "Favorite",
+			"type": "CHECKBOX",
+			"validation": false
+		},
+		{
+			"id": 642523719853956,
+			"index": 1,
+			"primary": true,
+			"title": "Primary Column",
+			"type": "TEXT_NUMBER",
+			"validation": false
+		},
+		{
+			"id": 5146123347224452,
+			"index": 2,
+			"title": "Status",
+			"type": "PICKLIST",
+			"validation": false
+		}
+	]
+}
 ```
 
      |     |     |
@@ -3166,10 +3194,20 @@ smartsheet.sheets.getColumns(options)
 
 ```csharp
 // Get all columns (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, null, null);
+smartsheet.SheetResources.ColumnResources.ListColumns(
+    9283173393803140,                   // long sheetId
+    null,                               // IEnumerable<ColumnInclusion> include
+    null);                              // PaginationParameters paging
 
 // Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new ColumnInclusion[] { ColumnInclusion.FILTERS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ColumnResources.ListColumns(
+    9283173393803140,                   // long sheetId
+    new ColumnInclusion[]
+        { ColumnInclusion.FILTERS },
+    new PaginationParameters(true,
+        null,                           // int pageSize
+        null)                           // int page
+    );
 ```
 
 ```java
@@ -3431,29 +3469,20 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 
 ### Comment Object
 
-> Example Object:
-
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-GetComment(
-    sheetId,    // long 9283173393803140
-    commentId   // long commentId
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": "AAAAATYU54QAD7_fNhTnhA",
+			"name": "David Davidson",
+			"email": "dd@example.com"
+		},
+		{
+			"id": "AAAAATYU54QAH7_fNhTnhA",
+			"name": "Ed Edwin",
+			"email": "ee@example.com"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -3810,26 +3839,20 @@ A Contact is a user's personal contact in Smartsheet (as described [here](https:
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListContacts(
-    null    // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": "AAAAATYU54QAD7_fNhTnhA",
+			"name": "David Davidson",
+			"email": "dd@example.com"
+		},
+		{
+			"id": "AAAAATYU54QAH7_fNhTnhA",
+			"name": "Ed Edwin",
+			"email": "ee@example.com"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -3893,10 +3916,14 @@ curl https://api.smartsheet.com/2.0/contacts \
 
 ```csharp
 // Get all contacts (omit pagination parameters).
-smartsheet.ContactResources.ListContacts(null);
+smartsheet.ContactResources.ListContacts(
+    null);      // Pagination Parameters paging
 
 // Get all contacts (specify 'includeAll' parameter with value of "true").
-smartsheet.ContactResources.ListContacts(new PaginationParameters(true, null, null));
+smartsheet.ContactResources.ListContacts(new PaginationParameters(true,
+        null,   // int pageSize
+        null)   // int page
+    );
 ```
 
 ```java
@@ -3967,28 +3994,49 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListDiscussions(
-    sheetId,    // long 9283173393803140
-    null,       // long discussionId,
-    null        // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+		"id": 3138415114905476,
+		"title": "Lincoln",
+		"comments": [{
+			"id": 7320407591151492,
+			"text": "16th President",
+			"createdBy": {
+				"name": "Test User",
+				"email": "tester@smartsheet.com"
+			},
+			"attachments": [{
+				"id": 1055252897130372,
+				"name": "test.html",
+				"attachmentType": "FILE",
+				"mimeType": "text/html",
+				"sizeInKb": 13,
+				"createdBy": {
+					"name": "Test User",
+					"email": "tester@smartsheet.com"
+				},
+				"createdAt": "2015-01-12T18:23:02-08:00"
+			}],
+			"createdAt": "2015-01-12T18:23:02-08:00",
+			"modifiedAt": "2015-01-12T18:23:02-08:00"
+		}],
+		"commentCount": 1,
+		"accessLevel": "OWNER",
+		"parentType": "ROW",
+		"parentId": 4508369022150532,
+		"lastCommentedUser": {
+			"name": "Test User",
+			"email": "tester@smartsheet.com"
+		},
+		"createdBy": {
+			"name": "Test User",
+			"email": "tester@smartsheet.com"
+		},
+		"readOnly": false,
+		"lastCommentedAt": "2015-01-12T18:23:02-08:00"
+	}]
+}
 ```
 
      |     |     |
@@ -4402,10 +4450,20 @@ smartsheet.sheets.getDiscussions(options)
 
 ```csharp
 // Get all discussions (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, null, null);
+smartsheet.SheetResources.DiscussionResources.ListDiscussions(
+    9283173393803140,   // long sheetId
+    null,               // long discussionId
+    null);              // PaginationParameters paging
 
 // Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.DiscussionResources.ListDiscussions(
+    9283173393803140,   // long sheetId
+    new DiscussionInclusion[]
+        { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS },
+    new PaginationParameters(true,
+        null,           // int pageSize
+        null)           // int page
+    );
 ```
 
 ```java
@@ -4604,26 +4662,18 @@ These API operations allow you to access the user's favorite API-supported objec
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListFavorites(
-    null        // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"type": "sheet",
+			"objectId": 5897312590423940
+		},
+		{
+			"type": "folder",
+			"objectId": 1493728255862660
+		}
+	]
+}
 ```
 
      |     |     |
@@ -4745,10 +4795,14 @@ smartsheet.favorites.listFavorites()
 
 ```csharp
 // Get all favorites (omit pagination parameters).
-smartsheet.FavoriteResources.ListFavorites(null);
+smartsheet.FavoriteResources.ListFavorites(
+    null);      // PaginationParameters paging
 
 // Get all favorites (specify 'includeAll' parameter with value of "true").
-smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true, null, null));
+smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true,
+        null,   // int pageSize
+        null)   // int page
+);
 ```
 
 ```java
@@ -5452,26 +5506,20 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListFolders(
-    null    // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": 7116448184199044,
+			"name": "Folder 1",
+			"permalink": "https://app.smartsheet.com/b/home?lx=9sljohj8jEXqvJIbTrK2Hb"
+		},
+		{
+			"id": 7116448184188022,
+			"name": "Folder 2",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xgDVrNNbi-O9XwINEpT5Er"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -5935,10 +5983,14 @@ smartsheet.home.listFolders()
 
 ```csharp
 // Get all folders in "Sheets" folder (omit pagination parameters).
-smartsheet.HomeResources.FolderResources.ListFolders(null);
+smartsheet.HomeResources.FolderResources.ListFolders(
+    null);          // PaginationParameters paging
 
 // Get all folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
-smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(true, null, null));
+smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(true,
+        null,       // int pageSize
+        null)       // int page
+);
 ```
 
 ```java
@@ -6003,10 +6055,17 @@ smartsheet.folders.listChildFolders(options)
 
 ```csharp
 // Get all folders in another folder (omit pagination parameters).
-smartsheet.FolderResources.ListFolders(folderId, null);
+smartsheet.FolderResources.ListFolders(
+    7116448184199044,               // long folderId
+    null);                          // PaginationParameters paging
 
 // Get all folders in another folder (specify 'includeAll' parameter with value of "true").
-smartsheet.FolderResources.ListFolders(folderId, new PaginationParameters(true, null, null));
+smartsheet.FolderResources.ListFolders(
+    7116448184199044,               // long folderId
+    new PaginationParameters(true,
+        null,                       // int pageSize
+        null)                       // int page
+);
 ```
 
 ```java
@@ -6071,10 +6130,17 @@ smartsheet.workspaces.listWorkspaceFolders(options)
 
 ```csharp
 // Get all folders in workspace (omit pagination parameters).
-smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, null);
+smartsheet.WorkspaceResources.FolderResources.ListFolders(
+    7116448184199044,                   // long workspaceId
+    null);                              // PaginationParameters paging
 
 // Get all folders in workspace (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources.FolderResources.ListFolders(workspaceId, new PaginationParameters(true, null, null));
+smartsheet.WorkspaceResources.FolderResources.ListFolders(
+    7116448184199044,                   // long workspaceId
+    new PaginationParameters(true,
+        null,                           // int pageSize
+        null)                           // int page
+);
 ```
 
 ```java
@@ -6276,26 +6342,18 @@ A Group is a collection of [Group Members](#group-members).
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListGroups(
-    null    // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+		"id": 4583173393803140,
+		"name": "Group 1",
+		"description": "My group",
+		"owner": "john.doe@smartsheet.com",
+		"ownerId": 2331373580117892,
+		"createdAt": "2014-05-29T14:41:35-07:00",
+		"modifiedAt": "2014-05-29T14:41:35-07:00"
+	}]
+}
 ```
 
      |     |     |
@@ -6583,10 +6641,14 @@ smartsheet.groups.listGroups()
 
 ```csharp
 // Get all org groups (omit pagination parameters).
-smartsheet.GroupResources.ListGroups(null);
+smartsheet.GroupResources.ListGroups(
+    null);      // PaginationParameters paging
 
 // Get all org groups (specify 'includeAll' parameter with value of "true").
-smartsheet.GroupResources.ListGroups(new PaginationParameters(true, null, null));
+smartsheet.GroupResources.ListGroups(new PaginationParameters(true,
+        null,   // int pageSize
+        null)   // int page
+);
 ```
 
 ```java
@@ -6933,26 +6995,15 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-GetHome(
-    null    // IEnumerable<HomeInclusion> includes
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+    "folders": [],
+    "sheets": [],
+    "reports": [],
+    "templates": [],
+    "workspaces": [],
+	"sights": []
+}
 ```
 
      |     |     |
@@ -6986,7 +7037,8 @@ smartsheet.home.listContents()
 
 ```csharp
 // Get all contents (omit 'include' parameter).
-smartsheet.HomeResources.GetHome(null);
+smartsheet.HomeResources.GetHome(
+    null);      // IEnumerable<HomeInclusion> includes 
 
 // Get all contents (specify 'include' parameter with value of "source").
 smartsheet.HomeResources.GetHome(new HomeInclusion[] { HomeInclusion.SOURCE });
@@ -7076,27 +7128,22 @@ A Report is a filtered view of the data from one or more Sheets. Like a Sheet, a
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListReports(
-    null,    // PaginationParameters paging
-    null     // Nullable<DateTime> modifiedSince = null
-); 
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": 6761305928427396,
+			"name": "r1",
+			"accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=zWThapjNSR8LxW_kTdxPhQ"
+		},
+		{
+			"id": 4508956358928260,
+			"name": "r2",
+			"accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=33-Y5QkQw6ZNSoApMKntbw"
+		}
+	]
+}
 ```
 
 Extends the [Sheet Object](#sheet-object), adding the following:
@@ -7442,10 +7489,15 @@ smartsheet.reports.listReports()
 
 ```csharp
 // Get all reports (omit pagination parameters).
-smartsheet.ReportResources.ListReports(null);
+smartsheet.ReportResources.ListReports(
+    null,           // PaginationParameters paging
+    null);          // Nullable<DateTime> modifiedSince = null
 
 // Get all reports (specify 'includeAll' parameter with value of "true").
-smartsheet.ReportResources.ListReports(new PaginationParameters(true, null, null));
+smartsheet.ReportResources.ListReports(new PaginationParameters(true,
+        null,       // int pageSize
+        null)       // int page
+);
 ```
 
 ```java
@@ -7654,27 +7706,29 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListSheets(
-    null,   // IEnumerable<RowInclusion> include
-    null    // IEnumerable<RowExclusion> exclude
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+    "id": 2361756178769796,
+    "sheetId": 4583173393803140,
+    "rowNumber": 1,
+    "expanded": true,
+    "cells": [
+        {
+            "columnType": "TEXT_NUMBER",
+            "value": "Revision 1",
+            "displayValue": "Revision 1",
+            "columnId": 4583173393803140
+        },
+        {
+            "columnType": "PICKLIST",
+            "value": "completed",
+            "displayValue": "completed",
+            "columnId": 2331373580117892
+        }
+    ],
+    "createdAt": "2012-07-24T23:10:55-07:00",
+    "modifiedAt": "2012-07-24T23:14:27-07:00"
+}
 ```
 
      |     |     |
@@ -8128,10 +8182,21 @@ smartsheet.sheets.getRow(options)
 
 ```csharp
 // Get row (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, null, null);
+smartsheet.SheetResources.RowResources.GetRow(
+    4583173393803140,       // long sheetId
+    2361756178769796,       // long rowId
+    null,                   // IEnumerable<RowInclusion> include
+    null);                  // IEnumerable<RowExclusion> exclude
 
 // Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
-smartsheet.SheetResources.RowResources.GetRow(sheetId, rowId, new RowInclusion[] { RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE }, new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS });
+smartsheet.SheetResources.RowResources.GetRow(
+    4583173393803140,       // long sheetId
+    2361756178769796,       // long rowId
+    new RowInclusion[]
+        { RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE },
+    new ObjectExclusion[]
+        { ObjectExclusion.NONEXISTENT_CELLS }
+);
 ```
 
 ```java
@@ -8580,27 +8645,34 @@ Use the *Search* operations to search a specific Sheet or to search across all S
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-SearchSheet(
-	null,   // long sheetId
-	null    // string query
-) 
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+    "results": [
+        {
+            "contextData": [
+                "Discussion 1"
+            ],
+            "objectId": 1888207043356548,
+            "objectType": "discussion",
+            "parentObjectId": 7141187195824004,
+            "parentObjectName": "Sheet 1",
+            "parentObjectType": "sheet",
+            "text": "discussion stuff goes here"
+        },
+        {
+            "contextData": [
+                "Row 1"
+            ],
+            "objectId": 2711817823774596,
+            "objectType": "row",
+            "parentObjectId": 2583735121012612,
+            "parentObjectName": "Sheet 2",
+            "parentObjectType": "sheet",
+            "text": "row stuff goes here"
+        }
+    ],
+    "totalCount": 2
+}
 ```
 
      |     |     |
@@ -8727,28 +8799,6 @@ Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
 ### Email Object
 
-> Example Object:
-
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-// [todo]
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
-```
-
      |     |     |
 -----|-----|-----|
 **sendTo**  | [Recipient](#recipient-object)[]  | Array of Recipient Objects. Required.
@@ -8826,24 +8876,35 @@ For developer convenience, the Smartsheet API provides access to application con
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-GetServerInfo()
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"supportedLocales": [],
+	"featureInfo": {
+		"symbolsVersion": 2
+	},
+	"formats": {
+		"defaults": "0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+		"fontFamily": [],
+		"fontSize": [],
+		"bold": [],
+		"italic": [],
+		"underline": [],
+		"strikethrough": [],
+		"horizontalAlign": [],
+		"verticalAlign": [],
+		"color": [],
+		"currency": [],
+		"decimalCount": [],
+		"thousandsSeparator": [],
+		"numberFormat": [],
+		"textWrap": []
+	},
+	"azureAuthInfo": {
+		"clientId": "2029d2eb-e902-43ed-bbe8-a3a102490fba",
+		"resource": "00000002-0000-0000-c000-000000000000",
+		"authority": "https://login.microsoftonline.com/common"
+	}
+}
 ```
 
      |     |     |
@@ -8914,27 +8975,31 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListShares(
-	sheetId,   // long objectId
-	null      // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": "AAAQSF82FOeE",
+			"type": "USER",
+			"userId": 4583173393803140,
+			"email": "john.doe@smartsheet.com",
+			"name": "John Doe",
+			"accessLevel": "OWNER",
+			"scope": "ITEM",
+			"createdAt": "2016-02-17T22:24:09Z",
+			"modifiedAt": "2016-02-17T22:24:09Z"
+		},
+		{
+			"id": "AQAISF82FOeE",
+			"type": "GROUP",
+			"groupId": 2331373580117892,
+			"name": "Group 1",
+			"accessLevel": "ADMIN",
+			"scope": "ITEM",
+			"createdAt": "2016-02-17T22:24:09Z",
+			"modifiedAt": "2016-02-17T22:25:08Z"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -10166,33 +10231,26 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-GetSheet(
-    sheetId,    // long 9283173393803140
-    null,       // IEnumerable<SheetLevelInclusion> includes
-    null,       // IEnumerable<SheetLevelExclusion> excludes
-    null,       // IEnumerable<long> rowIds
-    null,       // IEnumerable<int> rowNumbers
-    null,       // IEnumerable<long> columnIds
-    null,       // Nullable<long> pageSize
-    null        // Nullable<long> page
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"accessLevel": "OWNER",
+			"id": 4583173393803140,
+			"name": "sheet 1",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
+			"createdAt": "2015-06-05T20:05:29Z",
+			"modifiedAt": "2015-06-05T20:05:43Z"
+		},
+		{
+			"accessLevel": "OWNER",
+			"id": 2331373580117892,
+			"name": "sheet 2",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
+			"createdAt": "2015-06-05T20:05:29Z",
+			"modifiedAt": "2015-06-05T20:05:43Z"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -11123,7 +11181,16 @@ smartsheet.sheets.getSheet(options)
 
 ```csharp
 // Get sheet (omit all parameters).
-smartsheet.SheetResources.GetSheet(sheetId, null, null, null, null, null, null, null);
+smartsheet.SheetResources.GetSheet(
+    9283173393803140,    // long sheetId
+    null,       // IEnumerable<SheetLevelInclusion> includes
+    null,       // IEnumerable<SheetLevelExclusion> excludes
+    null,       // IEnumerable<long> rowIds
+    null,       // IEnumerable<int> rowNumbers
+    null,       // IEnumerable<long> columnIds
+    null,       // Nullable<long> pageSize
+    null        // Nullable<long> page
+);
 ```
 
 ```java
@@ -11428,10 +11495,20 @@ smartsheet.sheets.listSheets()
 
 ```csharp
 // Get all sheets (omit 'include' parameter and pagination parameters).
-smartsheet.SheetResources.ListSheets(null, null);
+smartsheet.SheetResources.ListSheets(
+    null,       // IEnumerable<SheetInclusion> includes
+    null,       // PaginationParameters paging
+    null        // Nullable<DateTime> modifiedSince = null
+);
 
 // Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.ListSheets(new SheetInclusion[] { SheetInclusion.SOURCE }, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.ListSheets(
+    new SheetInclusion[]
+        { SheetInclusion.SOURCE },
+    new PaginationParameters(true,
+        null,   // int pageSize
+        null)   // int page
+);
 ```
 
 ```java
@@ -11910,27 +11987,26 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListSights(
-	null,    // PaginationParameters paging
-    null     //	Nullable<DateTime> modifiedSince
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": 2331373580117892,
+			"name": "Sales Sight",
+			"accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
+			"createdAt": "2016-01-28T00:24:41Z",
+			"modifiedAt": "2016-01-28T20:32:33Z"
+		},
+		{
+			"id": 7397923160909700,
+			"name": "Sight #2",
+			"accessLevel": "OWNER",
+			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
+			"createdAt": "2016-01-28T01:17:51Z",
+			"modifiedAt": "2016-01-28T20:32:27Z"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -12526,26 +12602,22 @@ A Template can be used to create a Sheet, as described in [Create Sheet from Tem
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListPublicTemplates(
-	null    // PaginationParameters paging
-)
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"id": 3457273486960516,
+			"name": "template 1",
+			"accessLevel": "OWNER",
+			"description": "This is template 1"
+		},
+		{
+			"id": 34572734869609346,
+			"name": "template 2",
+			"accessLevel": "VIEWER",
+			"description": "This is template 2"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -12585,10 +12657,14 @@ smartsheet.templates.listPublicTemplates()
 
 ```csharp
 // Get all public templates (omit pagination parameters).
-smartsheet.TemplateResources.ListPublicTemplates(null);
+smartsheet.TemplateResources.ListPublicTemplates(
+    null);      // PaginationParameters paging
 
 // Get all public templates (specify 'includeAll' parameter with value of "true").
-smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true, null, null));
+smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true,
+        null,   // int pageSize
+        null)   // int page
+);
 ```
 
 ```java
@@ -12877,27 +12953,22 @@ Revokes the access token used to make this request.  The access token is no long
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListUsers(
-    null,   // IEnumerable<string> emails
-    null    // PaginationParameters paging
-);
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+		"id": 94094820842,
+		"email": "john.doe@smartsheet.com",
+		"name": "John Doe",
+		"status": "ACTIVE",
+		"admin": true,
+		"licensedSheetCreator": true,
+		"groupAdmin": true,
+		"resourceViewer": true,
+		"sheetCount": 3,
+		"lastLogin": "2016-08-15T18:32:47Z",
+		"customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+	}]
+}
 ```
 
      |     |     |
@@ -13515,10 +13586,16 @@ smartsheet.users.listAllUsers()
 
 ```csharp
 // Get all users (omit 'email' parameter and pagination parameters).
-smartsheet.UserResources.ListUsers(null, null);
+smartsheet.UserResources.ListUsers(
+    null,       // IEnumerable<string> emails
+    null        // PaginationParameters paging
+);
 
 // Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
-smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true, null, null));
+smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true,
+        null,   // int pageSize
+        null)   // int page
+);
 ```
 
 ```java
@@ -13749,26 +13826,22 @@ Updates the User specified in the URL.
 
 > Example Object:
 
-```shell
-# [todo]
-```
-
-```javascript
-// [todo]
-```
-
-```csharp
-ListWorkspaces(
-	null    // PaginationParameters paging
-)
-```
-
-```java
-// [todo]
-```
-
-```python
-# [todo]
+```json
+{
+	"data": [{
+			"accessLevel": "OWNER",
+			"id": 3457273486960516,
+			"name": "workspace 1",
+			"permalink": "https://app.smartsheet.com/b/home?lx=JNL0bgXtXc0pzni9tzAc4g"
+		},
+		{
+			"accessLevel": "OWNER",
+			"id": 7960873114331012,
+			"name": "workspace 2",
+			"permalink": "https://app.smartsheet.com/b/home?lx=JLiJbgXtXc0pzni9tzAKiR"
+		}
+	]
+}
 ```
 
      |     |     |
@@ -14106,10 +14179,14 @@ smartsheet.workspaces.listWorkspaces()
 
 ```csharp
 // Get all workspaces (omit pagination parameters).
-smartsheet.WorkspaceResources.ListWorkspaces(null);
+smartsheet.WorkspaceResources.ListWorkspaces(
+    null);          // PaginationParameters paging
 
 // Get all workspaces (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true, null, null)););
+smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true,
+        null,       // int pageSize
+        null)       // int page
+);
 ```
 
 ```java
