@@ -1560,14 +1560,14 @@ smartsheet.SheetResources.AttachmentResources.ListAttachments(
 ```
 
 ```java
+// Get all attachments without pagination.
+PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, null);
+
 // Specify pagination parameter 'includeAll'.
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all attachments with pagination.
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, parameters);
-
-// Get all attachments without pagination.
-PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(sheetId, null);
 ```
 
 ```python
@@ -1654,10 +1654,20 @@ smartsheet.sheets.listDiscussionAttachments(options)
 
 ```csharp
 // Get all discussion attachments (omit pagination parameters).
-smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, null);
+smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(
+    9283173393803140,       // long sheetId
+    1234567890123456,       // long discussionId
+    null                    // PaginationParameters paging
+);
 
 // Get all discussion attachments (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(sheetId, discussionId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(
+    9283173393803140,       // long sheetId
+    1234567890123456,       // long discussionId
+    new PaginationParameters(true,
+        null,               // int pageSize
+        null)               // int page
+);
 ```
 
 ```java
@@ -1759,10 +1769,20 @@ smartsheet.sheets.getRowAttachments(options)
 
 ```csharp
 // Get all row attachments (omit pagination parameters).
-smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, null);
+smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
+    2252168947361668,       // long sheetId
+    4293147074291588,       // long rowId
+    null                    // PaginationParameters paging
+);
 
 // Get all row attachments (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(sheetId, rowId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
+    2252168947361668,       // long sheetId
+    4293147074291588,       // long rowId
+    new PaginationParameters(true,
+        null,               // int pageSize
+        null)               // int page
+);
 ```
 
 ```java
@@ -2053,10 +2073,20 @@ smartsheet.sheets.listAttachmentVersions(options)
 
 ```csharp
 // Get all versions of the attachment (omit pagination parameters).
-smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, null);
+smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
+    2252168947361668,       // long sheetId
+    5510069950408580,       // long attachmentId
+    null                    // PaginationParameters paging
+);
 
 // Get all versions of the attachment (specify 'includeAll' parameter with value of "true").
-smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(sheetId, attachmentId, new PaginationParameters(true, null, null));
+smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
+    2252168947361668,       // long sheetId
+    5510069950408580,       // long attachmentId
+    new PaginationParameters(true,
+        null,               // int pageSize
+        null)               // int page
+);
 ```
 
 ```java
