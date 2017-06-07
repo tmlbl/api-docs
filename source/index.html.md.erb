@@ -1645,9 +1645,10 @@ smartsheet.SheetResources.AttachmentResources.ListAttachments(
 // Get all attachments (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.AttachmentResources.ListAttachments(
     9283173393803140,               // long sheetId
-    new PaginationParameters(true,
-    null,                           // int pageSize
-    null)                           // int page     
+    new PaginationParameters(
+        true,                       // includeAll
+        null,                       // int pageSize
+        null)                       // int page     
 );
 ```
 
@@ -1762,7 +1763,8 @@ smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachment
 smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(
     9283173393803140,       // long sheetId
     1234567890123456,       // long discussionId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -1885,7 +1887,8 @@ smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
 smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
     2252168947361668,       // long sheetId
     4293147074291588,       // long rowId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -2223,7 +2226,8 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
 smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
     2252168947361668,       // long sheetId
     5510069950408580,       // long attachmentId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -3438,7 +3442,8 @@ smartsheet.SheetResources.ColumnResources.ListColumns(
     9283173393803140,                   // long sheetId
     new ColumnInclusion[]
         { ColumnInclusion.FILTERS },
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,                           // includeAll
         null,                           // int pageSize
         null)                           // int page
 );
@@ -4213,7 +4218,8 @@ smartsheet.ContactResources.ListContacts(
 );
 
 // Get all contacts (specify 'includeAll' parameter with value of "true").
-smartsheet.ContactResources.ListContacts(new PaginationParameters(true,
+smartsheet.ContactResources.ListContacts(new PaginationParameters(
+        true,   // includeAll
         null,   // int pageSize
         null)   // int page
 );
@@ -4653,7 +4659,12 @@ Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This 
 File file = new File(filePath);
 
 // Add discussion (including comment with attachment) to sheet.
-smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(sheetId, discussion, file, "application/octet-stream");
+smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(
+    9283173393803140,       // long sheetId
+    discussion,
+    file,
+    "application/octet-stream"
+);
 ```
 
 ```python
@@ -4725,7 +4736,10 @@ smartsheet.SheetResources.DiscussionResources.DeleteDiscussion(
 
 ```java
 // Delete discussion.
-smartsheet.sheetResources().discussionResources().deleteDiscussion(sheetId, discussionId);
+smartsheet.sheetResources().discussionResources().deleteDiscussion(
+    9283173393803140,       // long sheetId
+    0123456789012345        // long discussionId
+);
 ```
 
 ```python
@@ -4781,7 +4795,7 @@ smartsheet.sheets.getDiscussions(options)
 // Get all discussions (omit 'include' parameter and pagination parameters).
 smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     9283173393803140,   // long sheetId
-    null,               // long discussionId
+    null,               // IEnumerable<DiscussionInclusion> include
     null                // PaginationParameters paging
 );
 
@@ -4790,21 +4804,30 @@ smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     9283173393803140,   // long sheetId
     new DiscussionInclusion[]
         { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS },
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,           // includeAll
         null,           // int pageSize
         null)           // int page
 );
 ```
 
 ```java
+// Get all discussions (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().discussionResources().listDiscussions(
+    9283173393803140,   // long sheetId
+    null,               // PaginationParameters parameters
+    null                // EnumSet<DiscussionInclusion> includes
+);
+
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
-smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
-
-// Get all discussions (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().discussionResources().listDiscussions(sheetId, null, null);
+smartsheet.sheetResources().discussionResources().listDiscussions(
+    9283173393803140,   // long sheetId
+    parameters,
+    EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS)
+);
 ```
 
 ```python
@@ -4865,7 +4888,10 @@ smartsheet.SheetResources.DiscussionResources.GetDiscussion(
 
 ```java
 // Get discussion.
-smartsheet.sheetResources().discussionResources().getDiscussion(sheetId, discussionId);
+smartsheet.sheetResources().discussionResources().getDiscussion(
+    9283173393803140,       // long sheetId
+    0123456789012345        // long discussionId
+);
 ```
 
 ```python
@@ -4945,21 +4971,32 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
     4293147074291588,       // long rowId
     new DiscussionInclusion[]
         { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS },
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null)               // int page
 );
 ```
 
 ```java
+// Get all row discussions (omit 'include' parameter and pagination parameters).
+smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
+    2252168947361668,       // long sheetId
+    4293147074291588,       // long rowId
+    null,                   // PaginationParameters parameters
+    null                    // EnumSet<DiscussionInclusion> includes
+);
+
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
-smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, parameters, EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS));
-
-// Get all row discussions (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(sheetId, rowId, null, null);
+smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
+    2252168947361668,       // long sheetId
+    4293147074291588,       // long rowId
+    parameters,
+    EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS)
+);
 ```
 
 ```python
@@ -5146,21 +5183,24 @@ smartsheet.FavoriteResources.ListFavorites(
 );
 
 // Get all favorites (specify 'includeAll' parameter with value of "true").
-smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(true,
+smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(
+        true,   // includeAll 
         null,   // int pageSize
         null)   // int page
 );
 ```
 
 ```java
+// Get all favorites (omit pagination parameters).
+smartsheet.favoriteResources().listFavorites(
+    null        // PaginationParameters parameters
+);
+
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all favorites (specify 'includeAll' parameter with value of "true").
 smartsheet.favoriteResources().listFavorites(parameters);
-
-// Get all favorites (omit pagination parameters).
-smartsheet.favoriteResources().listFavorites(null);
 ```
 
 ```python
@@ -5290,7 +5330,9 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] {
 
 ```java
 // Remove folder from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(folderId)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(
+    2252168947361668))      // long folderId
+);
 ```
 
 ```python
@@ -5346,7 +5388,9 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] {
 
 ```java
 // Remove report from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(reportId)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(
+    2252168947361668 ))         // long reportId
+);
 ```
 
 ```python
@@ -5401,7 +5445,9 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] {
 
 ```java
 // Remove sheet from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(sheetId)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(
+    2252168947361668 ))         // long sheetId
+);
 ```
 
 ```python
@@ -5457,7 +5503,9 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] {
 
 ```java
 // Remove template from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(templateId)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(
+    2252168947361668 ))         // long templateId
+);
 ```
 
 ```python
@@ -5513,7 +5561,9 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] {
 
 ```java
 // Remove workspace from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(workspaceId)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(
+    2252168947361668 ))         // long workspaceId
+);
 ```
 
 ```python
@@ -5575,7 +5625,10 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.FOLDER, new long[] {
 
 ```java
 // Remove folders from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(folderId1, folderId2)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(
+    2252168947361668,       // long folderId
+    2252168947361669 ))     // long additional folderId
+);
 ```
 
 ```python
@@ -5634,7 +5687,10 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.REPORT, new long[] {
 
 ```java
 // Remove reports from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(reportId1, reportId2)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(
+    2252168947361668,       // long reportId
+    2252168947361669 ))     // long additional reportId
+);
 ```
 
 ```python
@@ -5693,7 +5749,10 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.SHEET, new long[] {
 
 ```java
 // Remove sheets from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(sheetId1, sheetId2)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(
+    2252168947361668,       // long sheetId
+    2252168947361669 ))     // long additional sheetId
+);
 ```
 
 ```python
@@ -5788,7 +5847,10 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.TEMPLATE, new long[] {
 
 ```java
 // Remove templates from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(templateId1, templateId2)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(
+    2252168947361668,       // long templateId
+    2252168947361669 ))     // long additional templateId
+);
 ```
 
 ```python
@@ -5847,7 +5909,10 @@ smartsheet.FavoriteResources.RemoveFavorites(ObjectType.WORKSPACE, new long[] {
 
 ```java
 // Remove workspaces from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(workspaceId1, workspaceId2)));
+smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(
+    2252168947361668,       // long workspaceId
+    2252168947361669 ))     // long additional workspaceId
+);
 ```
 
 ```python
@@ -5959,10 +6024,20 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
 		.build();
 
 // Copy folder (omit 'include' and 'skipRemap' parameters).
-smartsheet.folderResources().copyFolder(folderId, destination, null, null);
+smartsheet.folderResources().copyFolder(
+    2252168947361668,       // long folderId
+    destination,
+    null,                   // EnumSet<FolderCopyInclusion> includes
+    null                    // EnumSet<FolderRemapExclusion> skipRemap
+);
 
 // Copy folder (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
-smartsheet.folderResources().copyFolder(folderId, destination, EnumSet.of(FolderCopyInclusion.ALL), EnumSet.of(FolderRemapExclusion.CELLLINKS));
+smartsheet.folderResources().copyFolder(
+    2252168947361668,       // long folderId
+    destination,
+    EnumSet.of(FolderCopyInclusion.ALL),
+    EnumSet.of(FolderRemapExclusion.CELLLINKS)
+);
 ```
 
 ```python
@@ -6122,7 +6197,10 @@ smartsheet.FolderResources.CreateFolder(
 Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
 // Create folder in another folder.
-smartsheet.folderResources().createFolder(destinationFolderId, folder);
+smartsheet.folderResources().createFolder(
+    7960873114331012,       // long destinationFolderId
+    folder
+);
 ```
 
 ```python
@@ -6190,7 +6268,10 @@ smartsheet.WorkspaceResources.FolderResources.CreateFolder(
 Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
 // Create folder in a workspace.
-smartsheet.workspaceResources().folderResources().createFolder(workspaceId, folder);
+smartsheet.workspaceResources().folderResources().createFolder(
+    1656220827314052,       // long workspaceId
+    folder
+);
 ```
 
 ```python
@@ -6243,7 +6324,9 @@ smartsheet.FolderResources.DeleteFolder(
 
 ```java
 // Delete folder.
-smartsheet.folderResources().deleteFolder(folderId);
+smartsheet.folderResources().deleteFolder(
+    965780272637828     // long folderId
+);
 ```
 
 ```python
@@ -6312,10 +6395,16 @@ smartsheet.FolderResources.GetFolder(
 
 ```java
 // Get folder (omit 'include' parameter).
-smartsheet.folderResources().getFolder(folderId, null)
+smartsheet.folderResources().getFolder(
+    7116448184199044,       // long folderId
+    null)                   // EnumSet<SourceInclusion> includes
+);
 
 // Get folder (specify 'include' parameter with value of "source").
-smartsheet.folderResources().getFolder(folderId, EnumSet.of(SourceInclusion.SOURCE))
+smartsheet.folderResources().getFolder(
+    7116448184199044,       // long folderId
+    EnumSet.of(SourceInclusion.SOURCE))
+);
 ```
 
 ```python
@@ -6387,21 +6476,24 @@ smartsheet.HomeResources.FolderResources.ListFolders(
 );
 
 // Get all folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
-smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(true,
+smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(
+        true,       // includeAll
         null,       // int pageSize
         null)       // int page
 );
 ```
 
 ```java
+// Get all folders (omit pagination parameters).
+smartsheet.homeResources().folderResources().listFolders(
+    null            // PaginationParameters parameters
+);
+
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all folders (specify 'includeAll' parameter with value of "true").
 smartsheet.homeResources().folderResources().listFolders(parameters);
-
-// Get all folders (omit pagination parameters).
-smartsheet.homeResources().folderResources().listFolders(null);
 ```
 
 ```python
@@ -6463,21 +6555,25 @@ smartsheet.FolderResources.ListFolders(
 // Get all folders in another folder (specify 'includeAll' parameter with value of "true").
 smartsheet.FolderResources.ListFolders(
     7116448184199044,               // long folderId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,                       // includeAll
         null,                       // int pageSize
         null)                       // int page
 );
 ```
 
 ```java
+// Get all folders in another folder (omit pagination parameters).
+smartsheet.folderResources().listFolders(
+    7116448184199044,               // long parentFolderId
+    null                            // PaginationParameters parameters
+);
+
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all folders in another folder (specify 'includeAll' parameter with value of "true").
 smartsheet.folderResources().listFolders(parameters);
-
-// Get all folders in another folder (omit pagination parameters).
-smartsheet.folderResources().listFolders(null);
 ```
 
 ```python
@@ -6539,21 +6635,28 @@ smartsheet.WorkspaceResources.FolderResources.ListFolders(
 // Get all folders in workspace (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.FolderResources.ListFolders(
     7116448184199044,                   // long workspaceId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,                           // includeAll
         null,                           // int pageSize
         null)                           // int page
 );
 ```
 
 ```java
+// Get all folders in workspace (omit pagination parameters).
+smartsheet.workspaceResources().folderResources().listFolders(
+    7116448184199044,                   // long workspaceId
+    null                                // PaginationParameters parameters
+);
+
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all folders in workspace (specify 'includeAll' parameter with value of "true").
-smartsheet.workspaceResources().folderResources().listFolders(parameters);
-
-// Get all folders in workspace (omit pagination parameters).
-smartsheet.workspaceResources().folderResources().listFolders(null);
+smartsheet.workspaceResources().folderResources().listFolders(
+    7116448184199044,                   // long workspaceId  
+    parameters
+);
 ```
 
 ```python
@@ -6618,7 +6721,10 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
 		.build();
 
 // Move folder.
-smartsheet.folderResources().moveFolder(folderId, destination);
+smartsheet.folderResources().moveFolder(
+    7960873114331012,       // long folderId
+    destination
+);
 ```
 
 ```python
@@ -6705,7 +6811,10 @@ smartsheet.FolderResources.UpdateFolder(folder);
 
 ```java
 // Set folder name and id of the folder to be updated.
-Folder folder = new Folder.UpdateFolderBuilder().setName("New name for folder").setId(folderId).build();
+Folder folder = new Folder.UpdateFolderBuilder().setName("New name for folder").setId(
+    7960873114331012).      // long folderId
+    build(
+);
 
 // Update folder.
 smartsheet.folderResources().updateFolder(folder);
@@ -6924,7 +7033,9 @@ smartsheet.GroupResources.DeleteGroup(
 
 ```java
 // Delete group.
-smartsheet.groupResources().deleteGroup(groupId);
+smartsheet.groupResources().deleteGroup(
+    6932724448552836        // long groupId
+);
 ```
 
 ```python
@@ -6989,7 +7100,9 @@ smartsheet.GroupResources.GetGroup(
 
 ```java
 // Get group.
-smartsheet.groupResources().getGroup(groupId);
+smartsheet.groupResources().getGroup(
+    6932724448552836        // long groupId
+);
 ```
 
 ```python
@@ -7058,21 +7171,24 @@ smartsheet.GroupResources.ListGroups(
 );
 
 // Get all org groups (specify 'includeAll' parameter with value of "true").
-smartsheet.GroupResources.ListGroups(new PaginationParameters(true,
+smartsheet.GroupResources.ListGroups(new PaginationParameters(
+        true,   // includeAll
         null,   // int pageSize
         null)   // int page
 );
 ```
 
 ```java
+// Get all org groups (omit pagination parameters).
+smartsheet.groupResources().listGroups(
+    null        // PaginationParameters parameters
+);
+
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all org groups (specify 'includeAll' parameter with value of "true").
 smartsheet.groupResources().listGroups(parameters);
-
-// Get all org groups (omit pagination parameters).
-smartsheet.groupResources().listGroups(null);
 ```
 
 ```python
@@ -7171,7 +7287,12 @@ smartsheet.GroupResources.UpdateGroup(group);
 
 ```java
 // Specify the name and description of the group.
-Group group = new Group.UpdateGroupBuilder().setId(groupId).setName("Renamed Group").setDescription("Some new description").build();
+Group group = new Group.UpdateGroupBuilder().setId(
+    6932724448552836).          // long groupId
+    setName("Renamed Group").
+    setDescription("Some new description").
+    build(
+);
 
 // Update group.
 smartsheet.groupResources().updateGroup(group);
@@ -7292,7 +7413,10 @@ smartsheet.GroupResources.AddGroupMembers(
 GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
 
 // Add members to group.
-smartsheet.groupResources().memberResources().addGroupMembers(groupId, Arrays.asList(member));
+smartsheet.groupResources().memberResources().addGroupMembers(
+    7917992160847748,       // long groupId
+    Arrays.asList(member)
+);
 ```
 
 ```python
@@ -7379,7 +7503,10 @@ smartsheet.GroupResources.RemoveGroupMember(
 
 ```java
 // Remove member from group.
-smartsheet.groupResources().memberResources().deleteGroupMember(groupId, userId)
+smartsheet.groupResources().memberResources().deleteGroupMember(
+    7917992160847748,       // long groupId
+    1539725208119172 )      // long userId
+);
 ```
 
 ```python
@@ -7474,7 +7601,9 @@ smartsheet.HomeResources.GetHome(
 
 ```java
 // Get all contents (omit 'include' parameter).
-smartsheet.homeResources().getHome(null);
+smartsheet.homeResources().getHome(
+    null            // EnumSet<SourceInclusion> includes
+);
 
 // Get all contents (specify 'include' parameter with value of "source").
 smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
@@ -7663,10 +7792,20 @@ smartsheet.ReportResources.GetReport(
 
 ```java
 // Get report (omit 'include', 'pageSize', and 'page' parameters).
-smartsheet.reportResources().getReport(reportId, null, null, null);
+smartsheet.reportResources().getReport(
+    4583173393803140,       // long reportId
+    null,                   // EnumSet<ReportInclusion> includes
+    null,                   // int pageSize
+    null                    // int page
+);
 
 // Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
-smartsheet.reportResources().getReport(reportId, EnumSet.of(ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS), 500, 2)
+smartsheet.reportResources().getReport(
+    4583173393803140,       // long reportId
+    EnumSet.of(ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS),
+    500,                    // int pageSize
+    2                       // int page
+);
 ```
 
 ```python
@@ -7784,7 +7923,10 @@ smartsheet.ReportResources.GetReportAsExcel(
 
 ```java
 // Get report as Excel.
-smartsheet.reportResources().getReportAsExcel(reportId, outputStream);
+smartsheet.reportResources().getReportAsExcel(
+    3882962191181700,       // long reportId
+    outputStream
+);
 ```
 
 ```python
@@ -7859,7 +8001,10 @@ smartsheet.ReportResources.GetReportAsCSV(
 
 ```java
 // Get report as CSV.
-smartsheet.reportResources().getReportAsCsv(reportId, outputStream);
+smartsheet.reportResources().getReportAsCsv(
+    3882962191181700,       // long reportId
+    outputStream
+);
 ```
 
 ```python
@@ -7940,21 +8085,25 @@ smartsheet.ReportResources.ListReports(
 );
 
 // Get all reports (specify 'includeAll' parameter with value of "true").
-smartsheet.ReportResources.ListReports(new PaginationParameters(true,
+smartsheet.ReportResources.ListReports(new PaginationParameters(
+        true,       // includeAll
         null,       // int pageSize
         null)       // int page
 );
 ```
 
 ```java
+// Get all reports (omit pagination parameters).
+smartsheet.reportResources().listReports(
+    null,               // PaginationParameters parameters
+    null                // Date modifiedSince
+);
+
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all reports (specify 'includeAll' parameter with value of "true").
-smartsheet.reportResources().listReports(parameters);
-
-// Get all reports (omit pagination parameters).
-smartsheet.reportResources().listReports(null);
+smartsheet.reportResources().listReports(parameters, modifiedSince);
 ```
 
 ```python
@@ -8514,10 +8663,20 @@ CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOr
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972, 8026717110462340)).setTo(destination).build();
 
 // Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
-smartsheet.sheetResources().rowResources().copyRows(sheetId, null, null, directive);
+smartsheet.sheetResources().rowResources().copyRows(
+    2258256056870788,       // long sheetId
+    null,                   // EnumSet<RowCopyInclusion> includes
+    true,                   // Boolean ignoreRowsNotFound
+    directive
+);
 
 // Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
-smartsheet.sheetResources().rowResources().copyRows(sheetId, EnumSet.of(RowCopyInclusion.CHILDREN), true, directive);
+smartsheet.sheetResources().rowResources().copyRows(
+    2258256056870788,       // long sheetId
+    EnumSet.of(RowCopyInclusion.CHILDREN),
+    true,
+    directive
+);
 ```
 
 ```python
@@ -8583,13 +8742,20 @@ smartsheet.SheetResources.RowResources.DeleteRows(
         207098194749316,    // long rowId,
         207098194749317,    // long additional rowId
         207098194749318, }  // long additional rowId
-    true
+    true                    // Boolean ignoreRowsNotFound
 );
 ```
 
 ```java
 // Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
-smartsheet.sheetResources().rowResources().deleteRows(sheetId, new HashSet(Arrays.asList(rowId1, rowId2, rowId3), true);
+smartsheet.sheetResources().rowResources().deleteRows(
+    2252168947361668,       // long sheetId
+    new HashSet(Arrays.asList(
+        207098194749316,    // long rowId,
+        207098194749317,    // long additional rowId
+        207098194749318, )  // long additional rowId
+    true                    // Boolean ignoreRowsNotFound
+);
 ```
 
 ```python
@@ -8674,10 +8840,20 @@ smartsheet.SheetResources.RowResources.GetRow(
 
 ```java
 // Get row (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, null, null);
+smartsheet.sheetResources().rowResources().getRow(
+    4583173393803140,       // long sheetId
+    2361756178769796,       // long rowId
+    null,                   // EnumSet<RowInclusion> includes
+    null                    // EnumSet<ObjectExclusion> excludes
+);
 
 // Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
-smartsheet.sheetResources().rowResources().getRow(sheetId, rowId, EnumSet.of(RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE), EnumSet.of(ObjectExclusion.NONEXISTENT_CELLS));
+smartsheet.sheetResources().rowResources().getRow(
+    4583173393803140,       // long sheetId
+    2361756178769796,       // long rowId
+    EnumSet.of(RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE),
+    EnumSet.of(ObjectExclusion.NONEXISTENT_CELLS)
+);
 ```
 
 ```python
@@ -8802,10 +8978,20 @@ CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOr
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972, 8026717110462340)).setTo(destination).build();
 
 // Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
-smartsheet.sheetResources().rowResources().moveRows(sheetId, null, null, directive);
+smartsheet.sheetResources().rowResources().moveRows(
+    2258256056870788,       // long sheetId
+    null,                   // EnumSet<RowMoveInclusion> includes
+    true,                   // Boolean ignoreRowsNotFound
+    directive
+);
 
 // Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
-smartsheet.sheetResources().rowResources().moveRows(sheetId, EnumSet.of(EnumSet.of(RowMoveInclusion.ATTACHMENTS, RowMoveInclusion.DISCUSSIONS)), true, directive);
+smartsheet.sheetResources().rowResources().moveRows(
+    2258256056870788,       // long sheetId
+    EnumSet.of(EnumSet.of(RowMoveInclusion.ATTACHMENTS, RowMoveInclusion.DISCUSSIONS)),
+    true,                   // Boolean ignoreRowsNotFound
+    directive
+);
 ```
 
 ```python
@@ -8938,7 +9124,10 @@ List<Cell> cellsB = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972, "
 Row rowB = new Row.UpdateRowBuilder().setCells(cellsB).setRowId(2068827774183300).build();
 
 // Update rows in sheet.
-smartsheet.sheetResources().rowResources().updateRows(sheetId, Arrays.asList(rowA, rowB));
+smartsheet.sheetResources().rowResources().updateRows(
+    2068827774183300,       // long sheetId
+    Arrays.asList(rowA, rowB)
+);
 ```
 
 ```python
@@ -9544,7 +9733,10 @@ smartsheet.ReportResources.ShareResources.DeleteShare(
 
 ```java
 // Delete report share.
-smartsheet.reportResources().shareResources().deleteShare(reportId, shareId);
+smartsheet.reportResources().shareResources().deleteShare(
+    665829219035012,        // long reportId
+    AAAQSF82F1eE            // string shareId
+);
 ```
 
 ```python
@@ -9598,7 +9790,10 @@ smartsheet.ReportResources.ShareResources.GetShare(
 
 ```java
 // Get report share.
-smartsheet.reportResources().shareResources().getShare(reportId, shareId);
+smartsheet.reportResources().shareResources().getShare(
+    665829219035012,        // long reportId
+    AAAQSF82F1eE            // string shareId
+);
 ```
 
 ```python
@@ -9652,22 +9847,23 @@ smartsheet.ReportResources.ShareResources.ListShares(
 // Get all report shares (specify 'includeAll' parameter with value of "true").
 smartsheet.ReportResources.ShareResources.ListShares(
     665829219035012,        // long reportId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null),              // int page
-        null                // ShareScope shareScope
+    null                    // ShareScope shareScope
 );
 ```
 
 ```java
+// Get all report shares (omit pagination parameters).
+smartsheet.reportResources().shareResources().listShares(reportId, null, true);
+
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all report shares (specify 'includeAll' parameter with value of "true").
-smartsheet.reportResources().shareResources().listShares(reportId, parameters);
-
-// Get all report shares (omit pagination parameters).
-smartsheet.reportResources().shareResources().listShares(reportId, null);
+smartsheet.reportResources().shareResources().listShares(reportId, parameters, true);
 ```
 
 ```python
@@ -9996,7 +10192,8 @@ smartsheet.SheetResources.ShareResources.ListShares(
 // Get all sheet shares (specify 'includeAll' parameter with value of "true").
 smartsheet.SheetResources.ShareResources.ListShares(
     4583614634583940,       // long sheetId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -10561,7 +10758,8 @@ smartsheet.WorkspaceResources.ShareResources.ListShares(
 // Get all workspace shares (specify 'includeAll' parameter with value of "true").
 smartsheet.WorkspaceResources.ShareResources.ListShares(
     1656220827314052,       // long workspaceId
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -12133,7 +12331,8 @@ smartsheet.SheetResources.ListSheets(
 smartsheet.SheetResources.ListSheets(
     new SheetInclusion[]
         { SheetInclusion.SOURCE },
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,   // includeAll
         null,   // int pageSize
         null)   // int page
 );
@@ -13304,7 +13503,8 @@ smartsheet.TemplateResources.ListPublicTemplates(
 );
 
 // Get all public templates (specify 'includeAll' parameter with value of "true").
-smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(true,
+smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(
+        true,   // includeAll
         null,   // int pageSize
         null)   // int page
 );
@@ -13367,9 +13567,10 @@ smartsheet.TemplateResources.ListUserCreatedTemplates(
 );
 
 // Get all user-created templates (specify 'includeAll' parameter with value of "true").
-smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(true,
-    null,        // int pageSize
-    null)        // int page
+smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(
+    true,       // includeAll
+    null,       // int pageSize
+    null)       // int page
 );
 ```
 
@@ -14253,7 +14454,8 @@ smartsheet.UserResources.ListUsers(
 );
 
 // Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
-smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(true,
+smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(
+        true,   // includeAll
         null,   // int pageSize
         null)   // int page
 );
@@ -14881,7 +15083,8 @@ smartsheet.WorkspaceResources.ListWorkspaces(
 );
 
 // Get all workspaces (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(true,
+smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(
+        true,       // includeAll
         null,       // int pageSize
         null)       // int page
 );
