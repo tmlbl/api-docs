@@ -2535,7 +2535,8 @@ smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     4567890123456789,       // long columnId
     new CellInclusion[]
         { CellInclusion.COLUMN_TYPE },
-    new PaginationParameters(true,
+    new PaginationParameters(
+        true,               // bool includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -3075,7 +3076,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "validation":true, index":4}, {"title": "New Picklist Column 2", "type": "PICKLIST", "options": ["1", "2", "3"], "index": 4}]'
+-d '[{"title": "New Picklist Column 1", "type": "PICKLIST", "options": ["First", "Second", "Third"], "index": 4} , {"title":"New Date Column", "type":"DATE", "validation":"true", "index":4},]'
 ```
 
 ```javascript
@@ -3096,16 +3097,6 @@ var column = [
         "type": "DATE",
         "validation": true,
         "index": 5
-    },
-    {
-        "title": "New Picklist Column 2",
-        "type": "PICKLIST",
-        "options":[
-            "1",
-            "2",
-            "3"
-        ],
-        "index": 6
     }
 ];
 
@@ -3132,14 +3123,11 @@ Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnT
 // Create another column.
 Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
 
-// Create a third column.
-Column columnC = new Column.AddColumnBuilder("New Picklist Column 2", 4, ColumnType.PICKLIST).SetOptions(new string[] { "1", "2", "3" }).Build();
-
 // Add columns to the sheet.
 smartsheet.SheetResources.ColumnResources.AddColumns(
     9283173393803140,       // long sheetId
     new Column[]
-        { columnA, columnB, columnC }
+        { columnA, columnB }
 );
 ```
 
@@ -3149,12 +3137,10 @@ Column column1 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Col
 
 Column column2 = new Column.AddColumnToSheetBuilder().setTitle("New Date Column").setType(ColumnType.DATE).setIndex(4).build();
 
-Column column3 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 2").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("1", "2", "3")).build();
-
 // Add columns to the sheet.
 smartsheet.sheetResources().columnResources().addColumns(
     9283173393803140,       // long sheetId
-    Arrays.asList(column1, column2, column3)
+    Arrays.asList(column1, column2)
 );
 ```
 
@@ -3178,15 +3164,8 @@ column2 = smartsheet.models.Column({
     'index': 4
 })
 
-column3 = smartsheet.models.Column({
-    'title': 'New Picklist Column 2',
-    'type': 'PICKLIST',
-    'options': ['1', '2', '3'],
-    'index': 4
-})
-
 # Add columns to the sheet.
-smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
+smartsheet.Sheets.add_columns(sheetId, [column1, column2])
 ```
 
 > Example Response:
@@ -3214,19 +3193,6 @@ smartsheet.Sheets.add_columns(sheetId, [column1, column2, column3])
             "title": "New Date Column",
             "type": "DATE",
             "validation": true,
-            "width": 150
-        },
-        {
-            "id": 6755394238748795,
-            "index": 4,
-            "title": "New Picklist Column 2",
-            "type": "PICKLIST",
-            "options": [
-                "1",
-                "2",
-                "3"
-            ],
-            "validation": false,
             "width": 150
         }
     ],
@@ -9403,7 +9369,7 @@ smartsheet.SearchResources.Search(query);
 
 ```java
 // Set search criteria.
-string query = "stuff";
+String query = "stuff";
 
 // Search everything.
 smartsheet.searchResources().search(query);
@@ -11169,7 +11135,8 @@ smartsheet.SheetResources.CopySheet(
 smartsheet.SheetResources.CopySheet(
     9283173393803140,       // long sheetId
     destination,
-    new SheetCopyInclusion[] { SheetCopyInclusion.ALL });
+    new SheetCopyInclusion[] { SheetCopyInclusion.ALL }
+);
 ```
 
 ```java
@@ -11178,7 +11145,8 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
 		.setDestinationType(DestinationType.FOLDER)
 		.setDestinationId(destinationFolderId)
 		.setNewName("newSheetName")
-		.build();
+		.build(
+);
 
 // Copy sheet (omit 'include' parameter).
 smartsheet.sheetResources().copySheet(
@@ -11253,7 +11221,7 @@ curl https://api.smartsheet.com/2.0/sheets \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+-d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}]}'
 ```
 
 ```javascript
@@ -11270,15 +11238,6 @@ var sheet = {
             "title": "Primary Column",
             "primary": true,
             "type": "TEXT_NUMBER"
-        },
-        {
-            "title": "Status",
-            "type": "PICKLIST",
-            "options": [
-                "Not Started",
-                "Started",
-                "Completed"
-            ]
         }
     ]
 };
@@ -11312,11 +11271,8 @@ Column columnA = new Column.CreateSheetColumnBuilder("Favorite",
 // Specify properties of the second column.
 Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), 
 
-// Specify properties of the third column.
-Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
-	
-// Create sheet in "Sheets" folder (specifying the 3 columns to include in the sheet).
-smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet).
+smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB }).Build());
 ```
 
 ```java
@@ -11326,11 +11282,8 @@ Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setTy
 // Specify properties of the second column.
 Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
 
-// Specify properties of the third column.
-Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
-
-// Create sheet in "Sheets" folder (specifying the 3 columns to include in the sheet).
-Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB)).build();
 smartsheet.sheetResources().createSheet(sheet);
 ```
 
@@ -11346,14 +11299,6 @@ sheet = smartsheet.models.Sheet({
             'title': 'Primary Column',
             'primary': True,
             'type': 'TEXT_NUMBER'
-        }, {
-            'title': 'Status',
-            'type': 'PICKLIST',
-            'options': [
-                'Not Started',
-                'Started',
-                'Completed'
-            ]
         }
     ]
 })
@@ -11380,7 +11325,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+-d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}]}'
 ```
 
 ```javascript
@@ -11397,15 +11342,6 @@ var sheet = {
             "title": "Primary Column",
             "primary": true,
             "type": "TEXT_NUMBER"
-        },
-        {
-            "title": "Status",
-            "type": "PICKLIST",
-            "options": [
-                "Not Started",
-                "Started",
-                "Completed"
-            ]
         }
     ]
 };
@@ -11440,11 +11376,8 @@ Column columnA = new Column.CreateSheetColumnBuilder("Favorite",
 // Specify properties of the second column.
 Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), 
 
-// Specify properties of the third column.
-Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
-	
-// Create sheet in folder (specifying the 3 columns to include in the sheet).
-smartsheet.FolderResources.SheetResources.CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+// Create sheet in folder (specifying the 2 columns to include in the sheet).
+smartsheet.FolderResources.SheetResources.CreateSheet(folderId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB }).Build());
 ```
 
 ```java
@@ -11454,11 +11387,8 @@ Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setTy
 // Specify properties of the second column.
 Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
 
-// Specify properties of the third column.
-Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
-
-// Create sheet in folder (specifying the 3 columns to include in the sheet).
-Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+// Create sheet in folder (specifying the 2 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB)).build();
 
 smartsheet.sheetResources().createSheetInFolder(folderId, sheet);
 ```
@@ -11475,14 +11405,6 @@ sheet = smartsheet.models.Sheet({
             'title': 'Primary Column',
             'primary': True,
             'type': 'TEXT_NUMBER'
-        }, {
-            'title': 'Status',
-            'type': 'PICKLIST',
-            'options': [
-                'Not Started',
-                'Started',
-                'Completed'
-            ]
         }
     ]
 })
@@ -11509,7 +11431,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}, {"title":"Status", "type":"PICKLIST", "options":["Not Started","Started","Completed"]}]}'
+-d '{"name":"newsheet","columns":[{"title":"Favorite","type":"CHECKBOX","symbol":"STAR"}, {"title":"Primary Column", "primary":true,"type":"TEXT_NUMBER"}]}'
 ```
 
 ```javascript
@@ -11526,15 +11448,6 @@ var sheet = {
             "title": "Primary Column",
             "primary": true,
             "type": "TEXT_NUMBER"
-        },
-        {
-            "title": "Status",
-            "type": "PICKLIST",
-            "options": [
-                "Not Started",
-                "Started",
-                "Completed"
-            ]
         }
     ]
 };
@@ -11568,12 +11481,9 @@ Column columnA = new Column.CreateSheetColumnBuilder("Favorite",
 
 // Specify properties of the second column.
 Column columnB = new Column.CreateSheetColumnBuilder("Primary Column", true, ColumnType.TEXT_NUMBER).Build(), 
-
-// Specify properties of the third column.
-Column columnC = new Column.CreateSheetColumnBuilder("col 3", false, ColumnType.PICKLIST).SetOptions(new string[] { "Not Started", "Started", "Completed" }).Build() };
 	
-// Create sheet in workspace (specifying the 3 columns to include in the sheet).
-smartsheet.WorkspaceResources.SheetResources.CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB, columnC }).Build());
+// Create sheet in workspace (specifying the 2 columns to include in the sheet).
+smartsheet.WorkspaceResources.SheetResources.CreateSheet(workspaceId, new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB }).Build());
 ```
 
 ```java
@@ -11583,11 +11493,8 @@ Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setTy
 // Specify properties of the second column.
 Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
 
-// Specify properties of the third column.
-Column columnC = new Column.AddColumnToSheetBuilder().setTitle("col 3").setType(ColumnType.PICKLIST).setOptions(Arrays.asList("Not Started", "Started", "Completed")).setPrimary(false).build();
-
-// Create sheet in workspace (specifying the 3 columns to include in the sheet).
-Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB, columnC)).build();
+// Create sheet in workspace (specifying the 2 columns to include in the sheet).
+Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB)).build();
 
 smartsheet.sheetResources().createSheetInWorkspace(workspaceId, sheet);
 ```
@@ -11604,14 +11511,6 @@ sheet = smartsheet.models.Sheet({
             'title': 'Primary Column',
             'primary': True,
             'type': 'TEXT_NUMBER'
-        }, {
-            'title': 'Status',
-            'type': 'PICKLIST',
-            'options': [
-                'Not Started',
-                'Started',
-                'Completed'
-            ]
         }
     ]
 })
@@ -11699,15 +11598,12 @@ Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(
 );
 
 // Create sheet from template (omit 'include' parameter).
-smartsheet.sheetResources().createSheetFromTemplate(
-    sheet,
+smartsheet.sheetResources().createSheetFromTemplate(sheet,
     null            // EnumSet<SheetTemplateInclusion> includes
 );
 
 // Create sheet from template (including data, attachments, and discussions).
-smartsheet.sheetResources().createSheetFromTemplate(
-    sheet,
-    EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS)
+smartsheet.sheetResources().createSheetFromTemplate(sheet,EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS)
 );
 ```
 
@@ -15168,7 +15064,11 @@ smartsheet.workspaceResources().getWorkspace(
 );
 
 // Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
-smartsheet.workspaceResources().getWorkspace(workspaceId, false, EnumSet.of(SourceInclusion.SOURCE));
+smartsheet.workspaceResources().getWorkspace(
+    6621332407379844,       // long workspaceId
+    false,                  // Boolean loadAll
+    EnumSet.of(SourceInclusion.SOURCE)
+);
 ```
 
 ```python
@@ -15248,14 +15148,16 @@ smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(
 ```
 
 ```java
+// Get all workspaces (omit pagination parameters).
+smartsheet.workspaceResources().listWorkspaces(
+    null        // PaginationParameters parameters
+);
+
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all workspaces (specify 'includeAll' parameter with value of "true").
 smartsheet.workspaceResources().listWorkspaces(parameters);
-
-// Get all workspaces (omit pagination parameters).
-smartsheet.workspaceResources().listWorkspaces(null);
 ```
 
 ```python
@@ -15357,7 +15259,10 @@ smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
 
 ```java
 // Specify updated workspace properties.
-Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(workspaceId).build();
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(
+    7960873114331012).      // long workspaceId
+    build(
+);
 
 // Update workspace.
 smartsheet.workspaceResources().updateWorkspace(workspace);
