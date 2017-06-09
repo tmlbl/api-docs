@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-06-06
+Updated 2017-06-09
 
 # Overview
 ## Introduction
@@ -3825,7 +3825,6 @@ Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment
 
 // Add comment (with attachment) to discussion.
 File file = new File(filePath);
-
 smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(
     2252168947361668,       // long sheetId
     3962273862576004,       // long discussionId
@@ -7747,7 +7746,7 @@ smartsheet.ReportResources.GetReport(
     null                    // int page
 );
 
-// Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
+// Get report (specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2").
 smartsheet.ReportResources.GetReport(
     4583173393803140,       // long reportId
     new ReportInclusion[] {
@@ -7767,7 +7766,7 @@ smartsheet.reportResources().getReport(
     null                    // int page
 );
 
-// Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
+// Get report (specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2").
 smartsheet.reportResources().getReport(
     4583173393803140,       // long reportId
     EnumSet.of(
@@ -11402,7 +11401,6 @@ Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column")
 
 // Create sheet in folder (specifying the 2 columns to include in the sheet).
 Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB)).build();
-
 smartsheet.sheetResources().createSheetInFolder(folderId, sheet);
 ```
 
@@ -11508,7 +11506,6 @@ Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column")
 
 // Create sheet in workspace (specifying the 2 columns to include in the sheet).
 Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA, columnB)).build();
-
 smartsheet.sheetResources().createSheetInWorkspace(workspaceId, sheet);
 ```
 
@@ -11690,12 +11687,14 @@ smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
     null                    // IEnumerable<TemplateInclusion> include
 );
 
-// Create sheet from template in the specified folder (including data, attachments, and discussions).
+// Create sheet from template in the specified folder (including ATTACHMENTS, DATA, and DISCUSSIONS).
 smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
     3734419270854532,       // long folderId
     sheet,
     new TemplateInclusion[]
-        { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS }
+        { TemplateInclusion.ATTACHMENTS,
+          TemplateInclusion.DATA,
+          TemplateInclusion.DISCUSSIONS }
 );
 ```
 
@@ -11710,11 +11709,14 @@ smartsheet.sheetResources().createSheetInFolderFromTemplate(
     null                    // EnumSet<SheetTemplateInclusion> includes
 );
 
-// Create sheet from template (including data, attachments, and discussions).
+// Create sheet from template (including ATTACHMENTS, DATA, and DISCUSSIONS).
 smartsheet.sheetResources().createSheetInFolderFromTemplate(
     3734419270854532,       // long folderId
     sheet,
-    EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS)
+    EnumSet.of(
+        SheetTemplateInclusion.ATTACHMENTS,
+        SheetTemplateInclusion.DATA,
+        SheetTemplateInclusion.DISCUSSIONS)
 );	
 ```
 
@@ -12354,7 +12356,7 @@ smartsheet.SheetResources.ListSheets(
     null        // Nullable<DateTime> modifiedSince = null
 );
 
-// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of 'true').
+// Get all sheets (specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.ListSheets(
     new SheetInclusion[]
         { SheetInclusion.SOURCE },
@@ -12376,7 +12378,7 @@ smartsheet.sheetResources().listSheets(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of 'true').
+// Get all sheets (specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true').
 smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
 ```
 
@@ -13609,10 +13611,11 @@ smartsheet.TemplateResources.ListUserCreatedTemplates(
 );
 
 // Get all user-created templates (specify 'includeAll' parameter with value of 'true').
-smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(
-    true,       // includeAll
-    null,       // int pageSize
-    null)       // int page
+smartsheet.TemplateResources.ListUserCreatedTemplates(
+    new PaginationParameters(
+        true,       // includeAll
+        null,       // int pageSize
+        null)       // int page
 );
 ```
 
