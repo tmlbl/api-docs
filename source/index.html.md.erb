@@ -1642,7 +1642,7 @@ smartsheet.SheetResources.AttachmentResources.ListAttachments(
     null                            // PaginationParameters paging
 );
 
-// Get all attachments (specify 'includeAll' parameter with value of "true").
+// Get all attachments (specify 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.AttachmentResources.ListAttachments(
     9283173393803140,               // long sheetId
     new PaginationParameters(
@@ -1759,7 +1759,7 @@ smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachment
     null                    // PaginationParameters paging
 );
 
-// Get all discussion attachments (specify 'includeAll' parameter with value of "true").
+// Get all discussion attachments (specify 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(
     9283173393803140,       // long sheetId
     1234567890123456,       // long discussionId
@@ -1883,7 +1883,7 @@ smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
     null                    // PaginationParameters paging
 );
 
-// Get all row attachments (specify 'includeAll' parameter with value of "true").
+// Get all row attachments (specify 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
     2252168947361668,       // long sheetId
     4293147074291588,       // long rowId
@@ -2222,7 +2222,7 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
     null                    // PaginationParameters paging
 );
 
-// Get all versions of the attachment (specify 'includeAll' parameter with value of "true").
+// Get all versions of the attachment (specify 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
     2252168947361668,       // long sheetId
     5510069950408580,       // long attachmentId
@@ -2528,7 +2528,7 @@ smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     null                    // PaginationParameters paging
 );
 
-// Get cell history (specify 'include' parameter with value of "columnType" and 'includeAll' parameter with value of "true").
+// Get cell history (specify 'include' parameter with value of "COLUMN_TYPE" and 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     9283173393803140,       // long sheetId
     0123456789012345,       // long rowId
@@ -2750,7 +2750,7 @@ The parsing rules for the various column types are as follows:
      |     |
 -----|-----|
 *Strict* | Only Boolean values (true or false) are valid.
-*Lenient* | Boolean values and string values of "true" and "false" are handled the same as Strict. All other values are saved as text values.
+*Lenient* | Boolean values and string values of 'true' and "false" are handled the same as Strict. All other values are saved as text values.
 
 **DURATION**:
 
@@ -3316,7 +3316,7 @@ smartsheet.SheetResources.ColumnResources.GetColumn(
     null                    // IEnumerable<ColumnInclusion> includes
 );
 
-// Get column (specify 'include' parameter with value of "filters").
+// Get column (specify 'include' parameter with value of "FILTERS").
 smartsheet.SheetResources.ColumnResources.GetColumn(
     9283173393803140,       // long sheetId
     0123456789012345,       // long columnId
@@ -3403,7 +3403,7 @@ smartsheet.SheetResources.ColumnResources.ListColumns(
     null                                // PaginationParameters paging
 );
 
-// Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
+// Get all columns (specify 'include' parameter with value of "FILTERS" and 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.ColumnResources.ListColumns(
     9283173393803140,                   // long sheetId
     new ColumnInclusion[]
@@ -3426,7 +3426,7 @@ smartsheet.sheetResources().columnResources().listColumns(
 // Specify pagination parameter 'includeAll'.
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all columns (specify 'include' parameter with value of "filters" and 'includeAll' parameter with value of "true").
+// Get all columns (specify 'include' parameter with value of "FILTERS" and 'includeAll' parameter with value of 'true').
 smartsheet.sheetResources().columnResources().listColumns(
     9283173393803140,                   // long sheetId
     EnumSet.of(ColumnInclusion.FILTERS),
@@ -3534,20 +3534,17 @@ smartsheet.sheets.updateColumn(options)
 ```csharp
 // Specify column properties.
 Column column = new Column.UpdateColumnBuilder(
-    5005385858869124,       // long columnId
+    5005385858869124,
     "First Column",
-    0).
-    SetType(ColumnType.PICKLIST).
-    SetOptions(new string[]
-        { "One", "Two" }).
-    Build(
+    0)              // column index
+        .SetType(ColumnType.PICKLIST)
+        .SetOptions(new string[]
+            { "One", "Two" })
+        .Build(
 );
 
 // Update column.
-smartsheet.SheetResources.ColumnResources.UpdateColumn(
-    2252168947361668,   // long sheetId
-    5005385858869124    // long columnId
-);
+smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, column);
 ```
 
 ```java
@@ -3555,10 +3552,7 @@ smartsheet.SheetResources.ColumnResources.UpdateColumn(
 Column column = new Column.UpdateColumnBuilder().setColumnId(columnId).setTitle("First Column").setIndex(0).setType(ColumnType.PICKLIST).setOptions(Arrays.asList("One", "Two")).build();
 
 // Update column.
-smartsheet.sheetResources().columnResources().updateColumn(
-    2252168947361668,   // long sheetId
-    5005385858869124    // long columnId
-);
+smartsheet.sheetResources().columnResources().updateColumn(2252168947361668, column);
 ```
 
 ```python
@@ -4183,8 +4177,9 @@ smartsheet.ContactResources.ListContacts(
     null        // Pagination Parameters paging
 );
 
-// Get all contacts (specify 'includeAll' parameter with value of "true").
-smartsheet.ContactResources.ListContacts(new PaginationParameters(
+// Get all contacts (specify 'includeAll' parameter with value of 'true').
+smartsheet.ContactResources.ListContacts(
+    new PaginationParameters(
         true,   // includeAll
         null,   // int pageSize
         null)   // int page
@@ -4200,7 +4195,7 @@ smartsheet.contactResources().listContacts(
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all contacts (specify 'includeAll' parameter with value of "true").
+// Get all contacts (specify 'includeAll' parameter with value of 'true').
 smartsheet.contactResources().listContacts(parameters);
 ```
 
@@ -4765,7 +4760,7 @@ smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     null                // PaginationParameters paging
 );
 
-// Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+// Get all discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     9283173393803140,   // long sheetId
     new DiscussionInclusion[]
@@ -4788,7 +4783,7 @@ smartsheet.sheetResources().discussionResources().listDiscussions(
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+// Get all discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
 smartsheet.sheetResources().discussionResources().listDiscussions(
     9283173393803140,   // long sheetId
     parameters,
@@ -4931,7 +4926,7 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
     null                    // PaginationParameters paging
 );
 
-// Get all row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+// Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
     2252168947361668,       // long sheetId
     4293147074291588,       // long rowId
@@ -4956,7 +4951,7 @@ smartsheet.sheetResources().rowResources().discussionResources().listDiscussions
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all row discussions (specify 'include' parameter with values of 'comments' and 'attachments', and 'includeAll' parameter with value of "true").
+// Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
 smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
     2252168947361668,       // long sheetId
     4293147074291588,       // long rowId
@@ -5148,8 +5143,9 @@ smartsheet.FavoriteResources.ListFavorites(
     null        // PaginationParameters paging
 );
 
-// Get all favorites (specify 'includeAll' parameter with value of "true").
-smartsheet.FavoriteResources.ListFavorites(new PaginationParameters(
+// Get all favorites (specify 'includeAll' parameter with value of 'true').
+smartsheet.FavoriteResources.ListFavorites(
+    new PaginationParameters(
         true,   // includeAll 
         null,   // int pageSize
         null)   // int page
@@ -5165,7 +5161,7 @@ smartsheet.favoriteResources().listFavorites(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all favorites (specify 'includeAll' parameter with value of "true").
+// Get all favorites (specify 'includeAll' parameter with value of 'true').
 smartsheet.favoriteResources().listFavorites(parameters);
 ```
 
@@ -5929,7 +5925,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 -----|-----|-----|
 **id** | number | Folder Id
 **name** | string | Folder name
-**favorite** | Boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = "true")
+**favorite** | Boolean | Returned only if the user has marked the Folder as a Favorite in their Home tab (value = 'true')
 **permalink** | string | URL that represents a direct link to the Folder in Smartsheet
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet Objects
 **folders** | [Folder](#folder-object)[] | Array of Folder Objects
@@ -5969,7 +5965,7 @@ smartsheet.FolderResources.CopyFolder(
     null                    // IEnumerable<FolderRemapExclusion> skipRemap
 );
 
-// Copy folder (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+// Copy folder (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS").
 smartsheet.FolderResources.CopyFolder(
     2252168947361668,       // long folderId
     destination,
@@ -5997,7 +5993,7 @@ smartsheet.folderResources().copyFolder(
     null                    // EnumSet<FolderRemapExclusion> skipRemap
 );
 
-// Copy folder (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+// Copy folder (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS").
 smartsheet.folderResources().copyFolder(
     2252168947361668,       // long folderId
     destination,
@@ -6351,7 +6347,7 @@ smartsheet.FolderResources.GetFolder(
     null                    // IEnumerable<FolderInclusion> include
 );
 
-// Get folder (specify 'include' parameter with value of "source").
+// Get folder (specify 'include' parameter with value of "SOURCE").
 smartsheet.FolderResources.GetFolder(
     7116448184199044,       // long folderId
     new FolderInclusion[] {
@@ -6366,7 +6362,7 @@ smartsheet.folderResources().getFolder(
     null)                   // EnumSet<SourceInclusion> includes
 );
 
-// Get folder (specify 'include' parameter with value of "source").
+// Get folder (specify 'include' parameter with value of "SOURCE").
 smartsheet.folderResources().getFolder(
     7116448184199044,       // long folderId
     EnumSet.of(SourceInclusion.SOURCE))
@@ -6441,8 +6437,9 @@ smartsheet.HomeResources.FolderResources.ListFolders(
     null            // PaginationParameters paging
 );
 
-// Get all folders in "Sheets" folder (specify 'includeAll' parameter with value of "true").
-smartsheet.HomeResources.FolderResources.ListFolders(new PaginationParameters(
+// Get all folders in "Sheets" folder (specify 'includeAll' parameter with value of 'true').
+smartsheet.HomeResources.FolderResources.ListFolders(
+    new PaginationParameters(
         true,       // includeAll
         null,       // int pageSize
         null)       // int page
@@ -6458,7 +6455,7 @@ smartsheet.homeResources().folderResources().listFolders(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all folders (specify 'includeAll' parameter with value of "true").
+// Get all folders (specify 'includeAll' parameter with value of 'true').
 smartsheet.homeResources().folderResources().listFolders(parameters);
 ```
 
@@ -6518,7 +6515,7 @@ smartsheet.FolderResources.ListFolders(
     null                            // PaginationParameters paging
 );
 
-// Get all folders in another folder (specify 'includeAll' parameter with value of "true").
+// Get all folders in another folder (specify 'includeAll' parameter with value of 'true').
 smartsheet.FolderResources.ListFolders(
     7116448184199044,               // long folderId
     new PaginationParameters(
@@ -6538,7 +6535,7 @@ smartsheet.folderResources().listFolders(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all folders in another folder (specify 'includeAll' parameter with value of "true").
+// Get all folders in another folder (specify 'includeAll' parameter with value of 'true').
 smartsheet.folderResources().listFolders(parameters);
 ```
 
@@ -6598,7 +6595,7 @@ smartsheet.WorkspaceResources.FolderResources.ListFolders(
     null                                // PaginationParameters paging
 );
 
-// Get all folders in workspace (specify 'includeAll' parameter with value of "true").
+// Get all folders in workspace (specify 'includeAll' parameter with value of 'true').
 smartsheet.WorkspaceResources.FolderResources.ListFolders(
     7116448184199044,                   // long workspaceId
     new PaginationParameters(
@@ -6618,7 +6615,7 @@ smartsheet.workspaceResources().folderResources().listFolders(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all folders in workspace (specify 'includeAll' parameter with value of "true").
+// Get all folders in workspace (specify 'includeAll' parameter with value of 'true').
 smartsheet.workspaceResources().folderResources().listFolders(
     7116448184199044,                   // long workspaceId  
     parameters
@@ -6768,7 +6765,8 @@ smartsheet.folders.updateFolder(options)
 // Set folder name.
 Folder folder = new Folder.UpdateFolderBuilder(
     7960873114331012,       // long folderId
-    "New name for folder").Build(
+    "New name for folder")
+    .Build(
 );
 
 // Update folder.
@@ -7136,8 +7134,9 @@ smartsheet.GroupResources.ListGroups(
     null        // PaginationParameters paging
 );
 
-// Get all org groups (specify 'includeAll' parameter with value of "true").
-smartsheet.GroupResources.ListGroups(new PaginationParameters(
+// Get all org groups (specify 'includeAll' parameter with value of 'true').
+smartsheet.GroupResources.ListGroups(
+    new PaginationParameters(
         true,   // includeAll
         null,   // int pageSize
         null)   // int page
@@ -7153,7 +7152,7 @@ smartsheet.groupResources().listGroups(
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all org groups (specify 'includeAll' parameter with value of "true").
+// Get all org groups (specify 'includeAll' parameter with value of 'true').
 smartsheet.groupResources().listGroups(parameters);
 ```
 
@@ -7241,10 +7240,10 @@ smartsheet.groups.updateGroup(options)
 ```csharp
 // Specify the name and description of the group.
 Group group = new Group.UpdateGroupBuilder(
-        6932724448552836).       // long groupId
-        SetName("Renamed Group").
-        SetDescription("Some new description").
-        Build(
+        6932724448552836)       // long groupId
+            .SetName("Renamed Group")
+            .SetDescription("Some new description")
+            .Build(
 );
 
 // Update group.
@@ -7254,10 +7253,10 @@ smartsheet.GroupResources.UpdateGroup(group);
 ```java
 // Specify the name and description of the group.
 Group group = new Group.UpdateGroupBuilder().setId(
-    6932724448552836).          // long groupId
-    setName("Renamed Group").
-    setDescription("Some new description").
-    build(
+    6932724448552836)          // long groupId
+        .setName("Renamed Group")
+        .setDescription("Some new description")
+        .build(
 );
 
 // Update group.
@@ -7381,7 +7380,8 @@ GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@
 // Add members to group.
 smartsheet.groupResources().memberResources().addGroupMembers(
     7917992160847748,       // long groupId
-    Arrays.asList(member)
+    Arrays
+        .asList(member)
 );
 ```
 
@@ -7556,9 +7556,10 @@ smartsheet.home.listContents()
 ```csharp
 // Get all contents (omit 'include' parameter).
 smartsheet.HomeResources.GetHome(
-    null);      // IEnumerable<HomeInclusion> includes 
+    null        // IEnumerable<HomeInclusion> includes
+);
 
-// Get all contents (specify 'include' parameter with value of "source").
+// Get all contents (specify 'include' parameter with value of "SOURCE").
 smartsheet.HomeResources.GetHome(
     new HomeInclusion[]
         { HomeInclusion.SOURCE }
@@ -7571,7 +7572,7 @@ smartsheet.homeResources().getHome(
     null            // EnumSet<SourceInclusion> includes
 );
 
-// Get all contents (specify 'include' parameter with value of "source").
+// Get all contents (specify 'include' parameter with value of "SOURCE").
 smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
 ```
 
@@ -7691,7 +7692,7 @@ Extends the [Column Object](#column-object), adding the following:
      |     |     |
 -----|-----|-----|
 **virtualId** | number | The virtual Id of this report column
-**sheetNameColumn** | Boolean | Returned only for the special "Sheet Name" report column (value = "true")
+**sheetNameColumn** | Boolean | Returned only for the special "Sheet Name" report column (value = 'true')
 
 A report column is a "virtual" column, in that it appears identical to source sheet columns, but is in fact a different column belonging to the report. 
 [Cells](#reportcell-object) in the report refer to this column via their **virtualColumnId** attribute, and to their actual column from their source sheet via their **columnId** attribute.
@@ -7750,7 +7751,8 @@ smartsheet.ReportResources.GetReport(
 smartsheet.ReportResources.GetReport(
     4583173393803140,       // long reportId
     new ReportInclusion[] {
-        ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS },
+        ReportInclusion.ATTACHMENTS,
+        ReportInclusion.DISCUSSIONS },
     500,                    // int pageSize
     2                       // int page
 );
@@ -7768,7 +7770,9 @@ smartsheet.reportResources().getReport(
 // Get report (specify 'include' parameter with value of "attachments" and "discussions", 'pageSize' parameter with value of "500", and 'page' of value "2").
 smartsheet.reportResources().getReport(
     4583173393803140,       // long reportId
-    EnumSet.of(ReportInclusion.ATTACHMENTS, ReportInclusion.DISCUSSIONS),
+    EnumSet.of(
+        ReportInclusion.ATTACHMENTS,
+        ReportInclusion.DISCUSSIONS),
     500,                    // int pageSize
     2                       // int page
 );
@@ -8050,8 +8054,9 @@ smartsheet.ReportResources.ListReports(
     null            // Nullable<DateTime> modifiedSince = null
 );
 
-// Get all reports (specify 'includeAll' parameter with value of "true").
-smartsheet.ReportResources.ListReports(new PaginationParameters(
+// Get all reports (specify 'includeAll' parameter with value of 'true').
+smartsheet.ReportResources.ListReports(
+    new PaginationParameters(
         true,       // includeAll
         null,       // int pageSize
         null)       // int page
@@ -8068,7 +8073,7 @@ smartsheet.reportResources().listReports(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all reports (specify 'includeAll' parameter with value of "true").
+// Get all reports (specify 'includeAll' parameter with value of 'true').
 smartsheet.reportResources().listReports(parameters, modifiedSince);
 ```
 
@@ -8420,8 +8425,8 @@ Row rowA = new Row.AddRowBuilder(
     null,       // Nullable<long> parentId
     null,       // Nullable<long> siblingId
     null).      // Nullable<bool> above
-    SetCells(cellsA).
-    Build(
+    SetCells(cellsA)
+    .Build(
 );
 
 // Specify cell values of second row.
@@ -8611,7 +8616,7 @@ smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     null                    // Nullable<bool> ignoreRowsNotFound
 );
 
-// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
+// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     2258256056870788,       // long sheetId
     directive,
@@ -8636,7 +8641,7 @@ smartsheet.sheetResources().rowResources().copyRows(
     directive
 );
 
-// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of "true").
+// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.sheetResources().rowResources().copyRows(
     2258256056870788,       // long sheetId
     EnumSet.of(RowCopyInclusion.CHILDREN),
@@ -8701,7 +8706,7 @@ smartsheet.sheets.deleteRow(options)
 ```
 
 ```csharp
-// Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
+// Delete rows (specify 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.DeleteRows(
     2252168947361668,       // long sheetId
     new long[] {
@@ -8713,7 +8718,7 @@ smartsheet.SheetResources.RowResources.DeleteRows(
 ```
 
 ```java
-// Delete rows (specify 'ignoreRowsNotFound' parameter with value of "true").
+// Delete rows (specify 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.sheetResources().rowResources().deleteRows(
     2252168947361668,       // long sheetId
     new HashSet(Arrays.asList(
@@ -8793,12 +8798,13 @@ smartsheet.SheetResources.RowResources.GetRow(
     null                    // IEnumerable<RowExclusion> exclude
 );
 
-// Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
+// Get row (specify 'include' parameter with values of "COLUMNS" and "COLUMN_TYPE", and 'exclude' parameter with value of "NONEXISTENT_CELLS").
 smartsheet.SheetResources.RowResources.GetRow(
     4583173393803140,       // long sheetId
     2361756178769796,       // long rowId
     new RowInclusion[]
-        { RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE },
+        { RowInclusion.COLUMNS,
+          RowInclusion.COLUMN_TYPE },
     new ObjectExclusion[]
         { ObjectExclusion.NONEXISTENT_CELLS }
 );
@@ -8813,12 +8819,15 @@ smartsheet.sheetResources().rowResources().getRow(
     null                    // EnumSet<ObjectExclusion> excludes
 );
 
-// Get row (specify 'include' parameter with values of "columns" and "columnType", and 'exclude' parameter with value of "nonexistentCells").
+// Get row (specify 'include' parameter with values of "COLUMNS" and "COLUMN_TYPE", and 'exclude' parameter with value of "NONEXISTENT_CELLS").
 smartsheet.sheetResources().rowResources().getRow(
     4583173393803140,       // long sheetId
     2361756178769796,       // long rowId
-    EnumSet.of(RowInclusion.COLUMNS, RowInclusion.COLUMN_TYPE),
-    EnumSet.of(ObjectExclusion.NONEXISTENT_CELLS)
+    EnumSet.of(
+        RowInclusion.COLUMNS,
+        RowInclusion.COLUMN_TYPE),
+    EnumSet.of(
+        ObjectExclusion.NONEXISTENT_CELLS)
 );
 ```
 
@@ -8926,12 +8935,13 @@ smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
     null                    // Nullable<bool> ignoreRowsNotFound
 );
 
-// Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
+// Move rows (specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
     2258256056870788,       // long sheetId
     directive,
     new MoveRowInclusion[] {
-        MoveRowInclusion.ATTACHMENTS, MoveRowInclusion.DISCUSSIONS },
+        MoveRowInclusion.ATTACHMENTS,
+        MoveRowInclusion.DISCUSSIONS },
     true                    // Nullable<bool> ignoreRowsNotFound
 );
 ```
@@ -8951,10 +8961,13 @@ smartsheet.sheetResources().rowResources().moveRows(
     directive
 );
 
-// Move rows (specify 'include' parameter with value of "attachments" and "discussions", and 'ignoreRowsNotFound' parameter with value of "true").
+// Move rows (specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.sheetResources().rowResources().moveRows(
     2258256056870788,       // long sheetId
-    EnumSet.of(EnumSet.of(RowMoveInclusion.ATTACHMENTS, RowMoveInclusion.DISCUSSIONS)),
+    EnumSet.of(
+        EnumSet.of(
+            RowMoveInclusion.ATTACHMENTS,
+            RowMoveInclusion.DISCUSSIONS)),
     true,                   // Boolean ignoreRowsNotFound
     directive
 );
@@ -9810,7 +9823,7 @@ smartsheet.ReportResources.ShareResources.ListShares(
     null                    // ShareScope shareScope
 );
 
-// Get all report shares (specify 'includeAll' parameter with value of "true").
+// Get all report shares (specify 'includeAll' parameter with value of 'true').
 smartsheet.ReportResources.ShareResources.ListShares(
     665829219035012,        // long reportId
     new PaginationParameters(
@@ -9832,7 +9845,7 @@ smartsheet.reportResources().shareResources().listShares(
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all report shares (specify 'includeAll' parameter with value of "true").
+// Get all report shares (specify 'includeAll' parameter with value of 'true').
 smartsheet.reportResources().shareResources().listShares(
     665829219035012,        // long reportId
     parameters,
@@ -10176,7 +10189,7 @@ smartsheet.SheetResources.ShareResources.ListShares(
     null                    // PaginationParameters paging
 );
 
-// Get all sheet shares (specify 'includeAll' parameter with value of "true").
+// Get all sheet shares (specify 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.ShareResources.ListShares(
     4583614634583940,       // long sheetId
     new PaginationParameters(
@@ -10197,7 +10210,7 @@ smartsheet.sheetResources().shareResources().listShares(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all sheet shares (specify 'includeAll' parameter with value of "true").
+// Get all sheet shares (specify 'includeAll' parameter with value of 'true').
 smartsheet.sheetResources().shareResources().listShares(
     4583614634583940,       // long sheetId
     parameters,
@@ -10763,7 +10776,7 @@ smartsheet.WorkspaceResources.ShareResources.ListShares(
     null                    // PaginationParameters paging
 );
 
-// Get all workspace shares (specify 'includeAll' parameter with value of "true").
+// Get all workspace shares (specify 'includeAll' parameter with value of 'true').
 smartsheet.WorkspaceResources.ShareResources.ListShares(
     1656220827314052,       // long workspaceId
     new PaginationParameters(
@@ -10784,7 +10797,7 @@ smartsheet.workspaceResources().shareResources().listShares(
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all workspace shares (specify 'includeAll' parameter with value of "true").
+// Get all workspace shares (specify 'includeAll' parameter with value of 'true').
 smartsheet.workspaceResources().shareResources().listShares(
     1656220827314052,       // long workspaceId
     parameters
@@ -10949,9 +10962,9 @@ smartsheet.workspaces.updateShare(options)
 // Set access level to Viewer.
 Share share = new Share.UpdateShareBuilder(
     AAAFeF82FOeE,       // string shareId
-    AccessLevel.
-    VIEWER).
-    Build(
+    AccessLevel
+    .VIEWER)
+    .Build(
 );
 
 // Update workspace share.
@@ -11039,12 +11052,12 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **accessLevel** | string | User's permissions on the Sheet
 **projectSettings** | [ProjectSettings](#projectsettings-object) | Sheet's project settings containing the working days, non-working days, and length of day for a project sheet
 **effectiveAttachmentOptions** | array | Array of enum strings (see [Attachment.attachmentType](#attachment-object)) indicating the allowable attachment options for the current User and Sheet
-**readOnly** | Boolean | Returned only if the Sheet belongs to an expired trial (value = "true")
+**readOnly** | Boolean | Returned only if the Sheet belongs to an expired trial (value = 'true')
 **ganttEnabled** | Boolean | Flag to indicate that Gantt is enabled
 **dependenciesEnabled** | Boolean | Flag to indicate that dependencies are enabled
 **resourceManagementEnabled** | Boolean | Flag to indicate that resource management is enabled
-**favorite** | Boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = "true")
-**showParentRowsForFilters** | Boolean | Returned only if there are column filters on the Sheet.  Value = "true" if "show parent rows" is enabled for the filters.
+**favorite** | Boolean | Returned only if the User has marked this sheet as a favorite in their Home tab (value = 'true')
+**showParentRowsForFilters** | Boolean | Returned only if there are column filters on the Sheet.  Value = 'true' if "show parent rows" is enabled for the filters.
 **userSettings** | [SheetUserSettings](#sheetusersettings-object) | A SheetUserSettings Object containing the current user's sheet-specific settings.
 **owner** | string | Email address of the Sheet owner
 **ownerId** | number | User Id of the Sheet owner
@@ -11135,7 +11148,8 @@ smartsheet.SheetResources.CopySheet(
 smartsheet.SheetResources.CopySheet(
     9283173393803140,       // long sheetId
     destination,
-    new SheetCopyInclusion[] { SheetCopyInclusion.ALL }
+    new SheetCopyInclusion[] 
+        { SheetCopyInclusion.ALL }
 );
 ```
 
@@ -11259,13 +11273,13 @@ smartsheet.sheets.createSheet(options)
 
 ```csharp
 // Specify properties of the first column.
-Column columnA = new Column.CreateSheetColumnBuilder("Favorite",
+Column columnA = new Column.CreateSheetColumnBuilder(
+    "Favorite",
     null,       // Nullable(bool) primary
-    ColumnType.
-    CHECKBOX).
-    SetSymbol(Symbol.
-        STAR).
-    Build(
+    ColumnType.CHECKBOX)
+    .SetSymbol(
+        Symbol.STAR)
+    .Build(
 ), 
 
 // Specify properties of the second column.
@@ -11366,11 +11380,10 @@ smartsheet.sheets.createSheetInFolder(options)
 // Specify properties of the first column.
 Column columnA = new Column.CreateSheetColumnBuilder("Favorite",
     null,       // Nullable(bool) primary
-    ColumnType.
-    CHECKBOX).
-    SetSymbol(Symbol.
-        STAR).
-    Build(
+    ColumnType.CHECKBOX)
+    .SetSymbol(
+        Symbol.STAR)
+    .Build(
 ), 
 
 // Specify properties of the second column.
@@ -11470,13 +11483,13 @@ smartsheet.sheets.createSheetInWorkspace(options)
 
 ```csharp
 // Specify properties of the first column.
-Column columnA = new Column.CreateSheetColumnBuilder("Favorite",
+Column columnA = new Column.CreateSheetColumnBuilder(
+    "Favorite",
     null,       // Nullable(bool) primary
-    ColumnType.
-    CHECKBOX).
-    SetSymbol(Symbol.
-        STAR).
-    Build(
+    ColumnType.CHECKBOX)
+    .SetSymbol(
+        Symbol.STAR)
+    .Build(
 ), 
 
 // Specify properties of the second column.
@@ -11593,8 +11606,8 @@ smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[]
 // Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(
     7679398137620356).          // long templateId
-    setName("newsheet").
-    build(
+    setName("newsheet")
+    .build(
 );
 
 // Create sheet from template (omit 'include' parameter).
@@ -11764,8 +11777,8 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```csharp
 // Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet",
-    7679398137620356).      // long templateId
-    Build(
+    7679398137620356)      // long templateId
+    .Build(
 );
 
 // Create sheet from template in the specified workspace (omit 'include' parameter).
@@ -11775,12 +11788,14 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
     null                    // IEnumerable<TemplateInclusion> include
 );
 
-// Create sheet from template in the specified workspace (including data, attachments, and discussions).
+// Create sheet from template in the specified workspace (including ATTACHMENTS, DATA, and DISCUSSIONS).
 smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
     1656220827314052,       // long workspaceId
     sheet,
     new TemplateInclusion[]
-        { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS }
+        { TemplateInclusion.ATTACHMENTS,
+          TemplateInclusion.DATA,
+          TemplateInclusion.DISCUSSIONS }
 );
 ```
 
@@ -11795,11 +11810,14 @@ smartsheet.sheetResources().createSheetInFolderFromTemplate(
     null                    // EnumSet<SheetTemplateInclusion> includes
 );
 
-// Create sheet from template in the specified workspace (including data, attachments, and discussions).
+// Create sheet from template in the specified workspace (including ATTACHMENTS, DATA, and DISCUSSIONS).
 smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
     1656220827314052,       // long folderId
     sheet,
-    EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS)
+    EnumSet.of(
+        SheetTemplateInclusion.ATTACHMENTS,
+        SheetTemplateInclusion.DATA,
+        SheetTemplateInclusion.DISCUSSIONS)
 );	
 ```
 
@@ -12336,7 +12354,7 @@ smartsheet.SheetResources.ListSheets(
     null        // Nullable<DateTime> modifiedSince = null
 );
 
-// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of 'true').
 smartsheet.SheetResources.ListSheets(
     new SheetInclusion[]
         { SheetInclusion.SOURCE },
@@ -12358,7 +12376,7 @@ smartsheet.sheetResources().listSheets(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of "true").
+// Get all sheets (specify 'include' parameter with value of "source", and 'includeAll' parameter with value of 'true').
 smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
 ```
 
@@ -12611,8 +12629,8 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(
     true,       // Nullable<bool> readOnlyLiteEnabled
     false,      // Nullable<bool> readOnlyFullEnabled
     false,      // Nullable<bool> readWriteEnabled
-    false).     // Nullable<bool> icalEnabled
-    Build(
+    false)      // Nullable<bool> icalEnabled
+    .Build(
 );
 
 // Set sheet publish status.
@@ -13523,8 +13541,9 @@ smartsheet.TemplateResources.ListPublicTemplates(
     null       // PaginationParameters paging
 );
 
-// Get all public templates (specify 'includeAll' parameter with value of "true").
-smartsheet.TemplateResources.ListPublicTemplates(new PaginationParameters(
+// Get all public templates (specify 'includeAll' parameter with value of 'true').
+smartsheet.TemplateResources.ListPublicTemplates(
+    new PaginationParameters(
         true,   // includeAll
         null,   // int pageSize
         null)   // int page
@@ -13540,7 +13559,7 @@ smartsheet.templateResources().listPublicTemplates(
 // Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all public templates (specify 'includeAll' parameter with value of "true").
+// Get all public templates (specify 'includeAll' parameter with value of 'true').
 smartsheet.templateResources().listPublicTemplates(parameters);
 ```
 
@@ -13589,7 +13608,7 @@ smartsheet.TemplateResources.ListUserCreatedTemplates(
     null        // PaginationParameters paging
 );
 
-// Get all user-created templates (specify 'includeAll' parameter with value of "true").
+// Get all user-created templates (specify 'includeAll' parameter with value of 'true').
 smartsheet.TemplateResources.ListUserCreatedTemplates(new PaginationParameters(
     true,       // includeAll
     null,       // int pageSize
@@ -13606,7 +13625,7 @@ smartsheet.templateResources().listUserCreatedTemplates(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all user-created templates (specify 'includeAll' parameter with value of "true").
+// Get all user-created templates (specify 'includeAll' parameter with value of 'true').
 smartsheet.templateResources().listUserCreatedTemplates(parameters);
 ```
 
@@ -13938,10 +13957,10 @@ smartsheet.users.addUser(options)
 User user = new User.AddUserBuilder(
     "john.doe@smartsheet.com",
     false,          // Nullable<bool> admin
-    true).          // Nullable<bool> licensedSheetCreator
-    SetFirstName("John").
-    SetLastName("Doe").
-    Build(
+    true)           // Nullable<bool> licensedSheetCreator
+    .SetFirstName("John")
+    .SetLastName("Doe")
+    .Build(
 );
 
 // Add user.
@@ -14480,8 +14499,9 @@ smartsheet.UserResources.ListUsers(
     null        // PaginationParameters paging
 );
 
-// Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
-smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, new PaginationParameters(
+// Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true').
+smartsheet.UserResources.ListUsers(new string[] { "john.doe@smartsheet.com" }, 
+    new PaginationParameters(
         true,   // includeAll
         null,   // int pageSize
         null)   // int page
@@ -14498,7 +14518,7 @@ smartsheet.userResources().listUsers(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of "true").
+// Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true').
 smartsheet.userResources().listUsers(new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
 ```
 
@@ -14677,8 +14697,8 @@ smartsheet.users.updateUser(options)
 User user = new User.UpdateUserBuilder(
     82349925918590,         // long userId
     true,                   // Nullable<bool> admin
-    true).                  // Nullable<bool> licensedSheetCreator
-    Build(
+    true)                   // Nullable<bool> licensedSheetCreator
+    .Build(
 );
 
 // Update user.
@@ -14761,7 +14781,7 @@ Updates the User specified in the URL.
 -----|-----|-----|
 **id** | number | Workspace Id
 **name** | string | Workspace name
-**favorite** | Boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = "true")
+**favorite** | Boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = 'true')
 **accessLevel** | string | User's permissions on the Workspace
 **permalink** | string | URL that represents a direct link to the Workspace in Smartsheet
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet Objects
@@ -14796,7 +14816,7 @@ smartsheet.WorkspaceResources.CopyWorkspace(
     null                        // IEnumerable<WorkspaceRemapExclusion> skipRemap
 );
 
-// Copy workspace (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+// Copy workspace (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS").
 smartsheet.WorkspaceResources.CopyWorkspace(
     7116448184199044,           // long workspaceId
     destination,
@@ -14819,7 +14839,7 @@ smartsheet.workspaceResources().copyWorkspace(
     null                        // EnumSet<WorkspaceRemapExclusion> skipRemap
 );
 
-// Copy workspace (specify 'include' parameter with value of "all", and 'skipRemap' parameter with value of "cellLinks").
+// Copy workspace (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS").
 smartsheet.workspaceResources().copyWorkspace(
     7116448184199044,           // long workspaceId
     destination,
@@ -15139,8 +15159,9 @@ smartsheet.WorkspaceResources.ListWorkspaces(
     null            // PaginationParameters paging
 );
 
-// Get all workspaces (specify 'includeAll' parameter with value of "true").
-smartsheet.WorkspaceResources.ListWorkspaces(new PaginationParameters(
+// Get all workspaces (specify 'includeAll' parameter with value of 'true').
+smartsheet.WorkspaceResources.ListWorkspaces(
+    new PaginationParameters(
         true,       // includeAll
         null,       // int pageSize
         null)       // int page
@@ -15156,7 +15177,7 @@ smartsheet.workspaceResources().listWorkspaces(
 // Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
-// Get all workspaces (specify 'includeAll' parameter with value of "true").
+// Get all workspaces (specify 'includeAll' parameter with value of 'true').
 smartsheet.workspaceResources().listWorkspaces(parameters);
 ```
 
@@ -15249,8 +15270,8 @@ smartsheet.workspaces.updateWorkspace(options)
 // Specify updated workspace name.
 Workspace workspace = new Workspace.UpdateWorkspaceBuilder(
     7960873114331012,       // long workspaceId
-    "Updated workspace").
-    Build(
+    "Updated workspace")
+    .Build(
 );
 
 // Update workspace.
@@ -15260,8 +15281,8 @@ smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
 ```java
 // Specify updated workspace properties.
 Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(
-    7960873114331012).      // long workspaceId
-    build(
+    7960873114331012)       // long workspaceId
+    .build(
 );
 
 // Update workspace.
