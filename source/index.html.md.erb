@@ -2536,7 +2536,7 @@ smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     new CellInclusion[]
         { CellInclusion.COLUMN_TYPE },
     new PaginationParameters(
-        true,               // bool includeAll
+        true,               // Boolean includeAll
         null,               // int pageSize
         null)               // int page
 );
@@ -3333,7 +3333,7 @@ smartsheet.sheetResources().columnResources().getColumn(
     null                    // EnumSet<ColumnInclusion> includes
 );
 
-// Get column (specify 'include' parameter with value of "filters").
+// Get column (specify 'include' parameter with value of "FILTERS").
 smartsheet.sheetResources().columnResources().getColumn(
     9283173393803140,       // long sheetId
     0123456789012345,       // long columnId
@@ -5062,7 +5062,12 @@ smartsheet.favorites.addItemsToFavorites(options)
 
 ```csharp
 // Specify favorites.
-Favorite[] favorites = new Favorite[] { new Favorite.AddFavoriteBuilder(ObjectType.SHEET, objectId).Build() };
+Favorite[] favorites = new Favorite[]
+     { new Favorite.AddFavoriteBuilder(
+         ObjectType.SHEET,
+         8400677765441412)      // long objectId (in this case, the sheetId)
+         .Build() 
+};
 
 // Add items to favorites.
 smartsheet.FavoriteResources.AddFavorites(favorites);
@@ -5070,7 +5075,12 @@ smartsheet.FavoriteResources.AddFavorites(favorites);
 
 ```java
 // Specify favorites.
-List<Favorite> favorites = new Favorite.AddFavoriteBuilder().addFavorite(sheetId, FavoriteType.SHEET).build();
+List<Favorite> favorites = new Favorite.AddFavoriteBuilder()
+    .addFavorite(
+        8400677765441412,       // long sheetId
+        FavoriteType.SHEET)
+        .build(
+);
 
 // Add items to favorites.
 smartsheet.favoriteResources().addFavorites(favorites);
@@ -5964,7 +5974,7 @@ smartsheet.FolderResources.CopyFolder(
     null                    // IEnumerable<FolderRemapExclusion> skipRemap
 );
 
-// Copy folder (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS").
+// Copy folder (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS").
 smartsheet.FolderResources.CopyFolder(
     2252168947361668,       // long folderId
     destination,
@@ -8415,7 +8425,18 @@ smartsheet.sheets.addRows(options)
 
 ```csharp
 // Specify cell values for first row.
-Cell[] cellsA = new Cell[] { new Cell.AddCellBuilder(7960873114331012, true).Build(), new Cell.AddCellBuilder(642523719853956, "New status").SetStrict(false).Build() };
+Cell[] cellsA = new Cell[] { new Cell.AddCellBuilder(
+        7960873114331012,       // long cellId
+        true)                   // value
+        .Build(
+        ),
+    new Cell.AddCellBuilder(
+        642523719853956,        // long cellId for next column
+        "New status")
+        .SetStrict(false)
+        .Build(   
+        )
+};
 
 // Specify contents of first row.
 Row rowA = new Row.AddRowBuilder(
@@ -8440,7 +8461,14 @@ smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { rowA, rowB }
 
 ```java
 // Specify cell values for first row.
-List<Cell> cellsA = new Cell.AddRowCellsBuilder().addCell(7960873114331012, true).addCell(642523719853956, "New status").build();
+List<Cell> cellsA = new Cell.AddRowCellsBuilder().addCell(
+        7960873114331012,       // long cellId
+        true)                   // value
+    .addCell(
+        642523719853956,        // long cellId for next column
+        "New status")
+        .build(
+);
 
 // Specify contents of first row.
 Row rowA = new Row.AddRowBuilder().setCells(cellsA).setToBottom(true).build();
@@ -8615,7 +8643,7 @@ smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     null                    // Nullable<bool> ignoreRowsNotFound
 );
 
-// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of 'true').
+// Copy rows (specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     2258256056870788,       // long sheetId
     directive,
@@ -8640,7 +8668,7 @@ smartsheet.sheetResources().rowResources().copyRows(
     directive
 );
 
-// Copy rows (specify 'include' parameter with value of "children", and 'ignoreRowsNotFound' parameter with value of 'true').
+// Copy rows (specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.sheetResources().rowResources().copyRows(
     2258256056870788,       // long sheetId
     EnumSet.of(RowCopyInclusion.CHILDREN),
@@ -11591,19 +11619,26 @@ Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet",
 );
 
 // Create sheet from template (omit 'include' parameter).
-smartsheet.SheetResources.CreateSheetFromTemplate(sheet,
+smartsheet.SheetResources.CreateSheetFromTemplate(
+    sheet,
     null                    // IEnumerable<TemplateInclusion> include
 );
 
-// Create sheet from template (including data, attachments, and discussions).
-smartsheet.SheetResources.CreateSheetFromTemplate(sheet, new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.ATTACHMENTS, TemplateInclusion.DISCUSSIONS });
+// Create sheet from template (including ATTACHMENTS, DATA, and DISCUSSIONS).
+smartsheet.SheetResources.CreateSheetFromTemplate(
+    sheet,
+    new TemplateInclusion[]
+         { TemplateInclusion.ATTACHMENTS,
+           TemplateInclusion.DATA,
+           TemplateInclusion.DISCUSSIONS }
+);
 ```
 
 ```java
 // Specify name for the sheet and Id of the template.
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(
-    7679398137620356).          // long templateId
-    setName("newsheet")
+    7679398137620356)          // long templateId
+    .setName("newsheet")
     .build(
 );
 
@@ -11612,8 +11647,13 @@ smartsheet.sheetResources().createSheetFromTemplate(sheet,
     null            // EnumSet<SheetTemplateInclusion> includes
 );
 
-// Create sheet from template (including data, attachments, and discussions).
-smartsheet.sheetResources().createSheetFromTemplate(sheet,EnumSet.of(SheetTemplateInclusion.ATTACHMENTS, SheetTemplateInclusion.DATA, SheetTemplateInclusion.DISCUSSIONS)
+// Create sheet from template (including ATTACHMENTS, DATA, and DISCUSSIONS).
+smartsheet.sheetResources().createSheetFromTemplate(
+    sheet,
+    EnumSet.of(
+        SheetTemplateInclusion.ATTACHMENTS,
+        SheetTemplateInclusion.DATA,
+        SheetTemplateInclusion.DISCUSSIONS)
 );
 ```
 
@@ -11675,7 +11715,8 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template.
-Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet",
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
+    "newsheet",
     7679398137620356).       // long templateId
     Build(
 );
@@ -11778,7 +11819,8 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template.
-Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder("newsheet",
+Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
+    "newsheet",
     7679398137620356)      // long templateId
     .Build(
 );
