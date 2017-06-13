@@ -1275,7 +1275,12 @@ smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
 
 ```java
 // Create attachment.
-Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+Attachment attachment = new Attachment.CreateAttachmentBuilder()
+    .setUrl("http://www.google.com")
+    .setAttachmentType(AttachmentType.LINK)
+    .setName("Search Engine")
+    .setDescription("A popular search engine")
+    .build();
 
 // Attach URL to comment.
 smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
@@ -1362,7 +1367,12 @@ smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
 
 ```java
 // Create attachment.
-Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+Attachment attachment = new Attachment.CreateAttachmentBuilder()
+    .setUrl("http://www.google.com")
+    .setAttachmentType(AttachmentType.LINK)
+    .setName("Search Engine")
+    .setDescription("A popular search engine")
+    .build();
 
 // Attach URL to row.
 smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
@@ -1448,7 +1458,12 @@ smartsheet.SheetResources.AttachmentResources.AttachUrl(
 
 ```java
 // Create attachment.
-Attachment attachment = new Attachment.CreateAttachmentBuilder().setUrl("http://www.google.com").setAttachmentType(AttachmentType.LINK).setName("Search Engine").setDescription("A popular search engine").build();
+Attachment attachment = new Attachment.CreateAttachmentBuilder()
+    .setUrl("http://www.google.com")
+    .setAttachmentType(AttachmentType.LINK)
+    .setName("Search Engine")
+    .setDescription("A popular search engine")
+    .build();
 
 // Attach URL to sheet.
 smartsheet.sheetResources().attachmentResources().attachUrl(
@@ -2480,17 +2495,6 @@ PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources(
     4567890123456789,       // long columnId
     null                    // PaginationParameters parameters
 );
-
-// Specify pagination parameter 'includeAll'.
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
-
-// Get cell history with pagination.
-PagedResult<CellHistory> cellHistory=smartsheet.sheetResources().rowResources().cellResources().getCellHistory(
-    9283173393803140,       // long sheetId
-    0123456789012345,       // long rowId
-    4567890123456789,       // long columnId
-    parameters
-);
 ```
 
 ```python
@@ -3049,7 +3053,7 @@ smartsheet.sheets.addColumn(options)
 ```csharp
 // Create a column.
 Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST)
-    .SetOptions(new string[] { "First", "Second", "Third" })
+    .SetOptions( new string[] { "First", "Second", "Third" })
     .Build();
 
 // Create another column.
@@ -3064,9 +3068,18 @@ smartsheet.SheetResources.ColumnResources.AddColumns(
 
 ```java
 // Create columns.
-Column column1 = new Column.AddColumnToSheetBuilder().setTitle("New Picklist Column 1").setType(ColumnType.PICKLIST).setIndex(4).setOptions(Arrays.asList("First","Second","Third")).build();
+Column column1 = new Column.AddColumnToSheetBuilder()
+    .setTitle("New Picklist Column 1")
+    .setType(ColumnType.PICKLIST)
+    .setIndex(4)
+    .setOptions(Arrays.asList("First","Second","Third"))
+    .build();
 
-Column column2 = new Column.AddColumnToSheetBuilder().setTitle("New Date Column").setType(ColumnType.DATE).setIndex(4).build();
+Column column2 = new Column.AddColumnToSheetBuilder()
+    .setTitle("New Date Column")
+    .setType(ColumnType.DATE)
+    .setIndex(4)
+    .build();
 
 // Add columns to the sheet.
 smartsheet.sheetResources().columnResources().addColumns(
@@ -3447,7 +3460,7 @@ Column column = new Column.UpdateColumnBuilder(
         "First Column",
         0)                  // column index
     .SetType(ColumnType.PICKLIST)
-    .SetOptions(new string[] { "One", "Two" })
+    .SetOptions( new string[] { "One", "Two" })
     .Build();
 
 // Update column.
@@ -3456,7 +3469,13 @@ smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, column)
 
 ```java
 // Specify column properties.
-Column column = new Column.UpdateColumnBuilder().setColumnId(columnId).setTitle("First Column").setIndex(0).setType(ColumnType.PICKLIST).setOptions(Arrays.asList("One","Two")).build();
+Column column = new Column.UpdateColumnBuilder()
+    .setColumnId(columnId)
+    .setTitle("First Column")
+    .setIndex(0)
+    .setType(ColumnType.PICKLIST)
+    .setOptions(Arrays.asList("One","Two"))
+    .build();
 
 // Update column.
 smartsheet.sheetResources().columnResources().updateColumn(2252168947361668,column);
@@ -4966,11 +4985,11 @@ smartsheet.FavoriteResources.AddFavorites(favorites);
 
 ```java
 // Specify favorites.
-List<Favorite> favorites=new Favorite.AddFavoriteBuilder()
-.addFavorite(
-8400677765441412,       // long sheetId
-FavoriteType.SHEET)
-.build();
+List<Favorite> favorites = new Favorite.AddFavoriteBuilder()
+    .addFavorite(
+        8400677765441412,       // long sheetId
+        FavoriteType.SHEET)
+    .build();
 
 // Add items to favorites.
 smartsheet.favoriteResources().addFavorites(favorites);
@@ -5177,7 +5196,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove folder from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(
     2252168947361668))      // long folderId
 );
 ```
@@ -5235,7 +5254,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove report from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(
     2252168947361668))         // long reportId
 );
 ```
@@ -5292,7 +5311,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove sheet from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.SHEET, new HashSet(Arrays.asList(
     2252168947361668))         // long sheetId
 );
 ```
@@ -5350,7 +5369,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove template from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(
     2252168947361668))         // long templateId
 );
 ```
@@ -5408,7 +5427,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove workspace from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.WORKSPACE, new HashSet(Arrays.asList(
     2252168947361668))         // long workspaceId
 );
 ```
@@ -5473,7 +5492,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove folders from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.FOLDER, new HashSet(Arrays.asList(
     2252168947361668,       // long folderId
     2252168947361669))      // long additional folderId
 );
@@ -5536,7 +5555,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove reports from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.REPORT, new HashSet(Arrays.asList(
     2252168947361668,       // long reportId
     2252168947361669))      // long additional reportId
 );
@@ -5698,7 +5717,7 @@ smartsheet.FavoriteResources.RemoveFavorites(
 
 ```java
 // Remove templates from list of favorites.
-smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE,new HashSet(Arrays.asList(
+smartsheet.favoriteResources().removeFavorites(FavoriteType.TEMPLATE, new HashSet(Arrays.asList(
     2252168947361668,       // long templateId
     2252168947361669))      // long additional templateId
 );
@@ -5871,10 +5890,10 @@ smartsheet.FolderResources.CopyFolder(
 ```java
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
-.setDestinationType(DestinationType.FOLDER)
-.setDestinationId(destinationFolderId)
-.setNewName("newFolderName")
-.build();
+    .setDestinationType(DestinationType.FOLDER)
+    .setDestinationId(destinationFolderId)
+    .setNewName("newFolderName")
+    .build();
 
 // Copy folder (omit 'include' and 'skipRemap' parameters).
 smartsheet.folderResources().copyFolder(
@@ -6523,9 +6542,9 @@ smartsheet.FolderResources.MoveFolder(
 ```java
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
-.setDestinationType(DestinationType.FOLDER)
-.setDestinationId(destinationFolderId)
-.build();
+    .setDestinationType(DestinationType.FOLDER)
+    .setDestinationId(destinationFolderId)
+    .build();
 
 // Move folder.
 smartsheet.folderResources().moveFolder(
@@ -6619,8 +6638,8 @@ smartsheet.FolderResources.UpdateFolder(folder);
 ```java
 // Set folder name and id of the folder to be updated.
 Folder folder = new Folder.UpdateFolderBuilder().setName("New name for folder").setId(
-    7960873114331012).      // long folderId
-build();
+        7960873114331012).      // long folderId
+    build();
 
 // Update folder.
 smartsheet.folderResources().updateFolder(folder);
@@ -7081,11 +7100,11 @@ smartsheet.GroupResources.UpdateGroup(group);
 
 ```java
 // Specify the name and description of the group.
-Group group=new Group.UpdateGroupBuilder().setId(
-6932724448552836)               // long groupId
-.setName("Renamed Group")
-.setDescription("Some new description")
-.build();
+Group group = new Group.UpdateGroupBuilder()
+    .setId(6932724448552836)               // long groupId
+    .setName("Renamed Group")
+    .setDescription("Some new description")
+    .build();
 
 // Update group.
 smartsheet.groupResources().updateGroup(group);
@@ -7597,8 +7616,8 @@ smartsheet.reportResources().getReport(
 smartsheet.reportResources().getReport(
     4583173393803140,       // long reportId
     EnumSet.of(
-    ReportInclusion.ATTACHMENTS,
-    ReportInclusion.DISCUSSIONS),
+        ReportInclusion.ATTACHMENTS,
+        ReportInclusion.DISCUSSIONS),
     500,                    // int pageSize
     2                       // int page
 );
@@ -8291,19 +8310,27 @@ smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { rowA, rowB }
 
 ```java
 // Specify cell values for first row.
-List<Cell> cellsA = new Cell.AddRowCellsBuilder().addCell(
-    7960873114331012,       // long cellId
-    true)                   // value
-.addCell(
-    642523719853956,        // long cellId for next column
-    "New status")
-.build();
+List<Cell> cellsA = new Cell.AddRowCellsBuilder()
+    .addCell(
+        7960873114331012,       // long cellId
+        true)                   // value
+    .addCell(
+        642523719853956,        // long cellId for next column
+        "New status")
+    .build();
 
 // Specify contents of first row.
 Row rowA = new Row.AddRowBuilder().setCells(cellsA).setToBottom(true).build();
 
 // Specify cell values for second row.
-List<Cell> cellsB = new Cell.AddRowCellsBuilder().addCell(7960873114331012,true).addCell(642523719853956,"New status").build();
+List<Cell> cellsB = new Cell.AddRowCellsBuilder()
+    .addCell(
+        7960873114331012,
+        true)
+    .addCell(
+        642523719853956,
+        "New status")
+    .build();
 
 // Specify contents of second row.
 Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
@@ -8485,10 +8512,15 @@ smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
 
 ```java
 // Specify destination sheet.
-CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder().setSheetId(2258256056870788).build();
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder()
+    .setSheetId(2258256056870788)
+    .build();
 
 // Specify rows to be copied (and destination sheet).
-CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972,8026717110462340)).setTo(destination).build();
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder()
+    .setRowIds(Arrays.asList(145417762563972,8026717110462340))
+    .setTo(destination)
+    .build();
 
 // Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
 smartsheet.sheetResources().rowResources().copyRows(
@@ -8807,10 +8839,15 @@ smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
 
 ```java
 // Specify destination sheet.
-CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder().setSheetId(2258256056870788).build();
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder()
+    .setSheetId(2258256056870788)
+    .build();
 
 // Specify rows to be moved (and destination sheet).
-CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder().setRowIds(Arrays.asList(145417762563972,8026717110462340)).setTo(destination).build();
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder()
+    .setRowIds(Arrays.asList(145417762563972,8026717110462340))
+    .setTo(destination)
+    .build();
 
 // Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
 smartsheet.sheetResources().rowResources().moveRows(
@@ -8958,16 +8995,28 @@ smartsheet.SheetResources.RowResources.UpdateRows(
 
 ```java
 // Specify updated cell values for first row.
-List<Cell> cellsA = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972,"new value").addCell(1888812600190852,"A").build();
+List<Cell> cellsA = new Cell.UpdateRowCellsBuilder()
+    .addCell(7518312134403972,"new value")
+    .addCell(1888812600190852,"A")
+    .build();
 
 // Specify updated contents of first row.
-Row rowA = new Row.UpdateRowBuilder().setCells(cellsA).setRowId(6572427401553796).build();
+Row rowA = new Row.UpdateRowBuilder()
+    .setCells(cellsA)
+    .setRowId(6572427401553796)
+    .build();
 
 // Specify updated cell values for second row.
-List<Cell> cellsB = new Cell.UpdateRowCellsBuilder().addCell(7518312134403972,"desc_updated").addCell(1888812600190852,"B").build();
+List<Cell> cellsB = new Cell.UpdateRowCellsBuilder()
+    .addCell(7518312134403972,"desc_updated")
+    .addCell(1888812600190852,"B")
+    .build();
 
 // Specify updated contents of second row.
-Row rowB = new Row.UpdateRowBuilder().setCells(cellsB).setRowId(2068827774183300).build();
+Row rowB = new Row.UpdateRowBuilder()
+    .setCells(cellsB)
+    .setRowId(2068827774183300)
+    .build();
 
 // Update rows in sheet.
 smartsheet.sheetResources().rowResources().updateRows(
@@ -9776,7 +9825,10 @@ smartsheet.ReportResources.ShareResources.ShareTo(
 
 ```java
 // Specify share (to one user as Editor).
-List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+    .setEmailAddress("jane.doe@smartsheet.com")
+    .setAccessLevel(AccessLevel.EDITOR)
+    .build());
 
 // Share report.
 smartsheet.reportResources().shareResources().shareTo(
@@ -9857,7 +9909,10 @@ smartsheet.ReportResources.ShareResources.UpdateShare(
 
 ```java
 // Set the access level to Viewer.
-Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+Share share = new Share.UpdateShareBuilder()
+    .setShareId(shareId)
+    .setAccessLevel(AccessLevel.VIEWER)
+    .build();
 
 // Update report share.
 smartsheet.reportResources().shareResources().updateShare(
@@ -10122,7 +10177,10 @@ smartsheet.SheetResources.ShareResources.ShareTo(
 
 ```java
 // Specify share (to one user as Editor).
-List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+    .setEmailAddress("jane.doe@smartsheet.com")
+    .setAccessLevel(AccessLevel.EDITOR)
+    .build());
 
 // Share sheet.
 smartsheet.sheetResources().shareResources().shareTo(
@@ -10693,7 +10751,10 @@ smartsheet.WorkspaceResources.ShareResources.ShareTo(
 
 ```java
 // Specify share (to one user as Editor).
-List<Share> shares = Arrays.asList(new Share.CreateUserShareBuilder().setEmailAddress("jane.doe@smartsheet.com").setAccessLevel(AccessLevel.EDITOR).build());
+List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+    .setEmailAddress("jane.doe@smartsheet.com")
+    .setAccessLevel(AccessLevel.EDITOR)
+    .build());
 
 // Share workspace.
 smartsheet.workspaceResources().shareResources().shareTo(
@@ -10961,11 +11022,11 @@ smartsheet.SheetResources.CopySheet(
 
 ```java
 // Specify destination.
-ContainerDestination destination=new ContainerDestination.AddContainerDestinationBuilder()
-.setDestinationType(DestinationType.FOLDER)
-.setDestinationId(destinationFolderId)
-.setNewName("newSheetName")
-.build();
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
+    .setDestinationType(DestinationType.FOLDER)
+    .setDestinationId(destinationFolderId)
+    .setNewName("newSheetName")
+    .build();
 
 // Copy sheet (omit 'include' parameter).
 smartsheet.sheetResources().copySheet(
@@ -11094,7 +11155,7 @@ Column columnB = new Column.CreateSheetColumnBuilder(
     .Build(),
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet).
-smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder(
+smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
         "newsheet",
         new Column[] { columnA, columnB })
     .Build());
@@ -11102,13 +11163,24 @@ smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder(
 
 ```java
 // Specify properties of the first column.
-Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+Column columnA = new Column.AddColumnToSheetBuilder()
+    .setTitle("Favorite")
+    .setType(ColumnType.CHECKBOX)
+    .setSymbol(Symbol.STAR)
+    .build();
 
 // Specify properties of the second column.
-Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+Column columnB = new Column.AddColumnToSheetBuilder()
+    .setTitle("Primary Column")
+    .setType(ColumnType.TEXT_NUMBER)
+    .setPrimary(true)
+    .build();
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet).
-Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA,columnB)).build();
+Sheet sheet = new Sheet.CreateSheetBuilder()
+    .setName("newsheet")
+    .setColumns(Arrays.asList(columnA,columnB))
+    .build();
 smartsheet.sheetResources().createSheet(sheet);
 ```
 
@@ -11215,13 +11287,24 @@ smartsheet.FolderResources.SheetResources.CreateSheet(
 
 ```java
 // Specify properties of the first column.
-Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+Column columnA = new Column.AddColumnToSheetBuilder()
+    .setTitle("Favorite")
+    .setType(ColumnType.CHECKBOX)
+    .setSymbol(Symbol.STAR)
+    .build();
 
 // Specify properties of the second column.
-Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+Column columnB = new Column.AddColumnToSheetBuilder()
+    .setTitle("Primary Column")
+    .setType(ColumnType.TEXT_NUMBER)
+    .setPrimary(true)
+    .build();
 
 // Create sheet in folder (specifying the 2 columns to include in the sheet).
-Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA,columnB)).build();
+Sheet sheet = new Sheet.CreateSheetBuilder()
+    .setName("newsheet")
+    .setColumns(Arrays.asList(columnA,columnB))
+    .build();
 smartsheet.sheetResources().createSheetInFolder(folderId,sheet);
 ```
 
@@ -11326,13 +11409,24 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheet(
 
 ```java
 // Specify properties of the first column.
-Column columnA = new Column.AddColumnToSheetBuilder().setTitle("Favorite").setType(ColumnType.CHECKBOX).setSymbol(Symbol.STAR).build();
+Column columnA = new Column.AddColumnToSheetBuilder()
+    .setTitle("Favorite")
+    .setType(ColumnType.CHECKBOX)
+    .setSymbol(Symbol.STAR)
+    .build();
 
 // Specify properties of the second column.
-Column columnB = new Column.AddColumnToSheetBuilder().setTitle("Primary Column").setType(ColumnType.TEXT_NUMBER).setPrimary(true).build();
+Column columnB = new Column.AddColumnToSheetBuilder()
+    .setTitle("Primary Column")
+    .setType(ColumnType.TEXT_NUMBER)
+    .setPrimary(true)
+    .build();
 
 // Create sheet in workspace (specifying the 2 columns to include in the sheet).
-Sheet sheet = new Sheet.CreateSheetBuilder().setName("newsheet").setColumns(Arrays.asList(columnA,columnB)).build();
+Sheet sheet = new Sheet.CreateSheetBuilder()
+    .setName("newsheet")
+    .setColumns(Arrays.asList(columnA,columnB))
+    .build();
 smartsheet.sheetResources().createSheetInWorkspace(workspaceId,sheet);
 ```
 
@@ -11436,10 +11530,10 @@ smartsheet.SheetResources.CreateSheetFromTemplate(
 
 ```java
 // Specify name for the sheet and Id of the template.
-Sheet sheet=new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(
-    7679398137620356)           // long templateId
-.setName("newsheet")
-.build();
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
+    .setFromId(7679398137620356)           // long templateId
+    .setName("newsheet")
+    .build();
 
 // Create sheet from template (omit 'include' parameter).
 smartsheet.sheetResources().createSheetFromTemplate(sheet,
@@ -11540,7 +11634,10 @@ smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
 
 ```java
 // Specify name for the sheet and Id of the template.
-Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
+    .setFromId(templateId)
+    .setName("newsheet")
+    .build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
 smartsheet.sheetResources().createSheetInFolderFromTemplate(
@@ -11644,7 +11741,10 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
 
 ```java
 // Specify name for the sheet and Id of the template.
-Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder().setFromId(templateId).setName("newsheet").build();
+Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
+    .setFromId(templateId)
+    .setName("newsheet")
+    .build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
 smartsheet.sheetResources().createSheetInFolderFromTemplate(
@@ -12306,9 +12406,9 @@ smartsheet.SheetResources.MoveSheet(
 ```java
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
-.setDestinationType(DestinationType.FOLDER)
-.setDestinationId(destinationFolderId)
-.build();
+    .setDestinationType(DestinationType.FOLDER)
+    .setDestinationId(destinationFolderId)
+    .build();
 
 // Move sheet.
 smartsheet.sheetResources().moveSheet(
@@ -12482,7 +12582,12 @@ smartsheet.SheetResources.UpdatePublishStatus(
 
 ```java
 // Specify sheet publish status properties.
-SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder().setIcalEnabled(false).setReadOnlyFullEnabled(false).setReadWriteEnabled(false).setReadOnlyLiteEnabled(true).build();
+SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder()
+    .setIcalEnabled(false)
+    .setReadOnlyFullEnabled(false)
+    .setReadWriteEnabled(false)
+    .setReadOnlyLiteEnabled(true)
+    .build();
 
 // Set sheet publish status.
 smartsheet.sheetResources().updatePublishStatus(
@@ -12609,7 +12714,13 @@ smartsheet.SheetResources.UpdateSheet(sheet);
 
 ```java
 // Specify updated sheet properties.
-Sheet sheet = new Sheet.UpdateSheetBuilder().setSheetId(sheetId).setName("New Sheet Name").setUserSettings(new SheetUserSettings.AddUserSettingsBuilder().setCriticalPathEnabled(true).build()).build();
+Sheet sheet = new Sheet.UpdateSheetBuilder()
+    .setSheetId(sheetId)
+    .setName("New Sheet Name")
+    .setUserSettings( new SheetUserSettings.AddUserSettingsBuilder()
+        .setCriticalPathEnabled(true)
+        .build())
+    .build();
 
 // Update sheet.
 smartsheet.sheetResources().updateSheet(sheet);
@@ -13789,7 +13900,12 @@ smartsheet.UserResources.AddUser(
 
 ```java
 // Set user properties.
-User user = new User.AddUserBuilder().setAdmin(false).setEmail("john.doe@smartsheet.com").setFirstName("John").setLastName("Doe").setLicensedSheetCreator(true).build();
+User user = new User.AddUserBuilder().setAdmin(false)
+    .setEmail("john.doe@smartsheet.com")
+    .setFirstName("John")
+    .setLastName("Doe")
+    .setLicensedSheetCreator(true)
+    .build();
 
 // Add user.
 smartsheet.userResources().addUser(user);
@@ -14336,7 +14452,7 @@ smartsheet.userResources().listUsers(
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true').
-smartsheet.userResources().listUsers(new HashSet(Arrays.asList("john.doe@smartsheet.com")),parameters);
+smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")),parameters);
 ```
 
 ```python
@@ -14435,7 +14551,7 @@ DeleteUserParameters parameters = new DeleteUserParameters(
     62123820842,        // long transferToUserId
     true,               // Boolean transferSheets
     true                // Boolean removeFromSharing
-    );
+);
 smartsheet.userResources().deleteUser(
     94094820842,        // long userId
     parameters
@@ -15076,9 +15192,9 @@ smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
 
 ```java
 // Specify updated workspace properties.
-Workspace workspace=new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(
-    7960873114331012)       // long workspaceId
-.build();
+Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("Updated workspace").setId(
+        7960873114331012)       // long workspaceId
+    .build();
 
 // Update workspace.
 smartsheet.workspaceResources().updateWorkspace(workspace);
@@ -15792,10 +15908,10 @@ private static final String HMAC_SHA256_ALGORITHM="HmacSHA256";
 private static final int HMAC_RADIX=16;
 
 private String calculateHmac(String sharedSecret,String callbackBody)throws GeneralSecurityException{
-    Mac mac=Mac.getInstance(HMAC_SHA256_ALGORITHM));
-    mac.init(new SecretKeySpec(sharedSecret.getBytes(),HMAC_SHA256_ALGORITHM));
+    Mac mac = Mac.getInstance(HMAC_SHA256_ALGORITHM));
+    mac.init( new SecretKeySpec(sharedSecret.getBytes(),HMAC_SHA256_ALGORITHM));
 
-    byte[]rawHmac=mac.doFinal(callbackBody.getBytes());
+    byte[]rawHmac = mac.doFinal(callbackBody.getBytes());
     return new BigInteger(1,rawHmac).toString(HMAC_RADIX);
 }
 ```
