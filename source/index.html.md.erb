@@ -8159,16 +8159,12 @@ smartsheet.sheets.addRows(options)
 
 ```csharp
 // Specify cell values for first row.
-Cell[] cellsA = new Cell[] { new Cell.AddCellBuilder(
-        7960873114331012,       // long cellId
-        true)                       // value
-    .Build(),
-    new Cell
-    .AddCellBuilder(
-        642523719853956,            // long cellId for next column
-        "New status")
-    .SetStrict(false)
-    .Build()
+Cell[] cellsA = new Cell[] {
+    new Cell.AddCellBuilder(7960873114331012, true)             // columnId, value
+        .Build(),
+    new Cell.AddCellBuilder(642523719853956, "New status")      // columnId, value
+        .SetStrict(false)
+        .Build()
 };
 
 // Specify contents of first row.
@@ -8182,28 +8178,24 @@ Row rowA = new Row.AddRowBuilder(
     .Build();
 
 // Specify cell values of second row.
-Cell[] cellsB = new Cell[] { new Cell.AddCellBuilder(
-        7960873114331012,
-        true)
-    .Build(),
-    new Cell.AddCellBuilder(
-        642523719853956,
-        "New status")
-    .SetStrict(false)
-    .Build()};
+Cell[] cellsB = new Cell[] {
+    new Cell.AddCellBuilder(7960873114331012, true)
+        .Build(),
+    new Cell.AddCellBuilder(642523719853956, "New status")
+        .SetStrict(false)
+        .Build()
+};
 
 // Specify contents of second row.
-Row rowB = new Row.AddRowBuilder(
-        true,
-        null,
-        null,
-        null,
-        null)
+Row rowB = new Row.AddRowBuilder(true, null, null, null, null)
     .SetCells(cellsB)
     .Build();
 
 // Add rows to sheet.
-smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { rowA, rowB });
+smartsheet.SheetResources.RowResources.AddRows(
+    873476834787,                   // long sheetId
+    new Row[] { rowA, rowB }        // IEnumerable<Row> rowsToAdd
+);
 ```
 
 ```java
@@ -8858,29 +8850,37 @@ smartsheet.sheets.updateRow(options)
 
 ```csharp
 // Specify updated cell values for first row.
-Cell[] cellsA = new Cell[] { new Cell.UpdateCellBuilder(7518312134403972, "new value")
-    .Build(),
-    new Cell
-    .UpdateCellBuilder(1888812600190852, "A")
-    .Build()};
+Cell[] cellsA = new Cell[] {
+    new Cell.UpdateCellBuilder(
+            7518312134403972,           // long columnId
+            "new value")                // value
+        .Build(),
+    new Cell.UpdateCellBuilder(1888812600190852, "A")
+        .Build()
+};
 
 // Specify updated contents of first row.
-Row rowA = new Row.UpdateRowBuilder(6572427401553796).SetCells(cellsA).Build();
+Row rowA = new Row.UpdateRowBuilder(6572427401553796)
+    .SetCells(cellsA)
+    .Build();
 
 // Specify updated cell values for second row.
-Cell[] cellsB = new Cell[] { new Cell.UpdateCellBuilder(7518312134403972, "desc_updated")
-    .Build(),
-    new Cell
-    .UpdateCellBuilder(1888812600190852, "B")
-    .Build()};
+Cell[] cellsB = new Cell[] {
+    new Cell.UpdateCellBuilder(7518312134403972, "desc_updated")
+        .Build(),
+    new Cell.UpdateCellBuilder(1888812600190852, "B")
+        .Build()
+};
 
 // Specify updated contents of second row.
-Row rowB = new Row.UpdateRowBuilder(2068827774183300).SetCells(cellsB).Build();
+Row rowB = new Row.UpdateRowBuilder(2068827774183300)
+    .SetCells(cellsB)
+    .Build();
 
 // Update rows in sheet.
 smartsheet.SheetResources.RowResources.UpdateRows(
     2068827774183300,               // long sheetId
-    new Row[] { rowA, rowB }
+    new Row[] { rowA, rowB }        // IEnumerable<Row> rowsToUpdate
 );
 ```
 
@@ -10881,21 +10881,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 ```csharp
 // Specify destination.
 ContainerDestination destination = new ContainerDestination {
-    DestinationId = destinationFolderId,
+    DestinationId = 3791509922310020,               // long destinationFolderId
     DestinationType = DestinationType.FOLDER,
     NewName = "newSheetName"
 };
 
 // Copy sheet (omit 'include' parameter).
 smartsheet.SheetResources.CopySheet(
-    9283173393803140,       // long sheetId
+    9283173393803140,                               // long sheetId
     destination,
-    null                    // IEnumerable<SheetCopyInclusion> include
+    null                                            // IEnumerable<SheetCopyInclusion> include
 );
 
 // Copy sheet (specify 'include' parameter with value of "all").
 smartsheet.SheetResources.CopySheet(
-    9283173393803140,       // long sheetId
+    9283173393803140,                               // long sheetId
     destination,
     new SheetCopyInclusion[] { SheetCopyInclusion.ALL }
 );
@@ -11021,8 +11021,8 @@ smartsheet.sheets.createSheet(options)
 ```csharp
 // Specify properties of the first column.
 Column columnA = new Column.CreateSheetColumnBuilder(
-        "Favorite",
-        null,               // Nullable(bool) primary
+        "Favorite",             // column title
+        null,                   // Nullable(bool) isPrimary
         ColumnType.CHECKBOX)
     .SetSymbol(
         Symbol.STAR)
