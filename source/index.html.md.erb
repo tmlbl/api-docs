@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-06-13
+Updated 2017-06-14
 
 # Overview
 ## Introduction
@@ -711,15 +711,22 @@ Attachments can exist on a [Comment](#comments) (that is, within a Discussion), 
 
 ### Attachment Object
 
-> Example Object:
+> Example Attachment Object:
 
 ```json
 {
-	"id": 4583173393803140,
-	"name": "at3.png",
-	"attachmentType": "file",
-	"mimeType": "image/png",
-	"createdAt": "2014-03-28T18:13:20-07:00"
+    "id": 4539352454850436,
+    "name": "at3.pdf",
+    "url": "https://www.example.com",
+    "attachmentType": "FILE",
+    "mimeType": "application/pdf",
+    "urlExpiresInMillis": 120000,
+    "sizeInKb": 56,
+    "createdBy": {
+        "name": "Jane Roe",
+        "email": "jane.roe@company.com"
+    },
+    "createdAt": "2017-06-09T17:41:05Z"
 }
 ```
 
@@ -1245,7 +1252,7 @@ smartsheet.sheets.addCommentAttachment(options)
 	
 ```csharp
 // Create attachment.
-Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com",AttachmentType.LINK)
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
@@ -1429,7 +1436,7 @@ smartsheet.sheets.addAttachment(options)
 
 ```csharp
 // Create attachment.
-Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com",AttachmentType.LINK)
+Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
@@ -1648,7 +1655,7 @@ smartsheet.sheets.listAttachments(options)
 // Get all attachments (omit pagination parameters).
 smartsheet.SheetResources.AttachmentResources.ListAttachments(
     9283173393803140,           // long sheetId
-    null                        // PaginationParameters paging
+    null                        // PaginationParameters
 );
 ```
 
@@ -1656,7 +1663,7 @@ smartsheet.SheetResources.AttachmentResources.ListAttachments(
 // Get all attachments without pagination.
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().listAttachments(
     9283173393803140,               // long sheetId
-    null                            // PaginationParameters parameters
+    null                            // PaginationParameters
 );
 ```
 
@@ -1747,7 +1754,7 @@ smartsheet.sheets.listDiscussionAttachments(options)
 smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachments(
     9283173393803140,               // long sheetId
     1234567890123456,               // long discussionId
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -1756,7 +1763,7 @@ smartsheet.SheetResources.DiscussionResources.AttachmentResources.ListAttachment
 PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionResources().attachmentResources().getAttachments(
     9283173393803140,       // long sheetId
     1234567890123456,       // long discussionId
-    null                    // PaginationParameters parameters
+    null                    // PaginationParameters
 );
 ```
 
@@ -1851,7 +1858,7 @@ smartsheet.sheets.getRowAttachments(options)
 smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
     2252168947361668,               // long sheetId
     4293147074291588,               // long rowId
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -1860,7 +1867,7 @@ smartsheet.SheetResources.RowResources.AttachmentResources.ListAttachments(
 PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources().attachmentResources().getAttachments(
     2252168947361668,       // long sheetId
     4293147074291588,       // long rowId
-    null                    // PaginationParameters parameters
+    null                    // PaginationParameters
 );
 ```
 
@@ -2170,7 +2177,7 @@ smartsheet.sheets.listAttachmentVersions(options)
 smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
     2252168947361668,               // long sheetId
     5510069950408580,               // long attachmentId
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -2179,7 +2186,7 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.ListVersions(
 PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentResources().versioningResources().listAllVersions(
     2252168947361668,       // long sheetId
     5510069950408580,       // long attachmentId
-    null                    // PaginationParameters parameters
+    null                    // PaginationParameters
 );
 ```
 
@@ -2251,14 +2258,14 @@ A collection of Cells comprises each Row in a Sheet.
 
 ### Cell Object
 
-> Example Object:
+> Example Cell Object:
 
 ```json
 {
-	"columnId": 7518312134403972,
-	"type": "TEXT_NUMBER",
-	"value": "desc_updated",
-	"displayValue": "desc_updated"
+    "columnType": "TEXT_NUMBER",
+    "value": "Revision 1",
+    "displayValue": "Revision 1",
+    "columnId": 4583173393803140
 }
 ```
 
@@ -2447,7 +2454,7 @@ smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     0123456789012345,               // long rowId
     4567890123456789,               // long columnId
     null,                           // IEnumerable<CellInclusion> includes
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 
 // Get cell history (specify 'include' parameter with value of "COLUMN_TYPE" and 'includeAll' parameter with value of 'true').
@@ -2469,7 +2476,7 @@ PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources(
     9283173393803140,       // long sheetId
     0123456789012345,       // long rowId
     4567890123456789,       // long columnId
-    null                    // PaginationParameters parameters
+    null                    // PaginationParameters
 );
 ```
 
@@ -2724,22 +2731,12 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 
 ### ImageUrl Object
 
-> Example Object:
+> Example ImageUrl Object:
 
 ```json
 {
-	"imageUrls": [{
-			"imageId": "e1znCxhuZo_soEJtUmmX_A",
-			"url": "https://urltoimage1.com?qs1=foo"
-		},
-		{
-			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
-			"error": {
-				"errorCode": 5001,
-				"message": "localized_error_message"
-			}
-		}
-	]
+	"imageId": "e1znCxhuZo_soEJtUmmX_A",
+	"url": "https://urltoimage1.com?qs1=foo"
 }
 ```
 
@@ -2897,7 +2894,7 @@ A Column is a component of a Sheet or Report.
 
 ### Column Object
 
-> Example Object:
+> Example Column Object:
 
 ```json
 {
@@ -3301,7 +3298,7 @@ smartsheet.sheets.getColumns(options)
 smartsheet.SheetResources.ColumnResources.ListColumns(
     9283173393803140,               // long sheetId
     null,                           // IEnumerable<ColumnInclusion> include
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -3310,7 +3307,7 @@ smartsheet.SheetResources.ColumnResources.ListColumns(
 smartsheet.sheetResources().columnResources().listColumns(
     9283173393803140,                   // long sheetId
     null,                               // EnumSet<ColumnInclusion> includes
-    null                                // PaginationParameters parameters
+    null                                // PaginationParameters
 );
 ```
 
@@ -3574,11 +3571,16 @@ A Comment is a component of a [Discussion](#discussions).  Each Discussion is co
 
 ### Comment Object
 
+> Example Comment Object
+
 ```json
 {
-	"id": "AAAAATYU54QAD7_fNhTnhA",
-	"name": "David Davidson",
-	"email": "dd@example.com"
+    "text": "This is a comment",
+    "createdBy" : {"name": "John Doe", "email" : "john.doe@smartsheet.com"},
+    "createdAt" : "2013-06-24T21:07:45Z",
+    "modifiedAt" : "2013-06-24T21:07:45Z",
+    "discussionId" : 48569348493469348,
+    "id": 48569348493401200
 }
 ```
 
@@ -3965,7 +3967,7 @@ A Contact is a user's personal contact in Smartsheet (as described [here](https:
 
 ### Contact Object
 
-> Example Object:
+> Example Contact Object:
 
 ```json
 {
@@ -3993,14 +3995,14 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 ```csharp
 // Get contact.
 smartsheet.ContactResources.GetContact(
-    AAAAATYU54QAD7_fNhTnhA          // string contactId
+    "AAAAATYU54QAD7_fNhTnhA"      // string contactId
 );
 ```
 
 ```java
 // Get contact.
 smartsheet.contactResources().getContact(
-    AAAAATYU54QAD7_fNhTnhA      // string contactId
+    "AAAAATYU54QAD7_fNhTnhA"      // string contactId
 );
 ```
 
@@ -4041,14 +4043,14 @@ curl https://api.smartsheet.com/2.0/contacts \
 ```csharp
 // Get all contacts (omit pagination parameters).
 smartsheet.ContactResources.ListContacts(
-    null                // Pagination Parameters paging
+    null                // PaginationParameters
 );
 ```
 
 ```java
 // Get all contacts (omit pagination parameters).
 smartsheet.contactResources().listContacts(
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 ```
 
@@ -4107,17 +4109,19 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 
 ### Discussion Object
 
-> Example Object:
+> Example Discussion Object:
 
 ```json
 {
-    "id": 3138415114905476,
+    "id": 1848321770841988,
     "title": "Lincoln",
     "comments": [],
     "commentCount": 1,
     "accessLevel": "OWNER",
     "parentType": "ROW",
-    "parentId": 4508369022150532,
+    "parentId": 3344087179913092,
+    "readOnly": false,
+    "lastCommentedAt": "2017-06-09T17:04:08Z",
     "lastCommentedUser": {
         "name": "Test User",
         "email": "tester@smartsheet.com"
@@ -4125,9 +4129,7 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
     "createdBy": {
         "name": "Test User",
         "email": "tester@smartsheet.com"
-    },
-    "readOnly": false,
-    "lastCommentedAt": "2015-01-12T18:23:02-08:00"
+    }
 }
 ```
 
@@ -4587,7 +4589,7 @@ smartsheet.sheets.getDiscussions(options)
 smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     9283173393803140,               // long sheetId
     null,                           // IEnumerable<DiscussionInclusion> include
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 
 // Get all discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
@@ -4605,7 +4607,7 @@ smartsheet.SheetResources.DiscussionResources.ListDiscussions(
 // Get all discussions (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().discussionResources().listDiscussions(
     9283173393803140,   // long sheetId
-    null,               // PaginationParameters parameters
+    null,               // PaginationParameters
     null                // EnumSet<DiscussionInclusion> includes
 );
 
@@ -4752,7 +4754,7 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
     2252168947361668,                   // long sheetId
     4293147074291588,                   // long rowId
     null,                               // IEnumerable<DiscussionInclusion> include
-    null                                // PaginationParameters paging
+    null                                // PaginationParameters
 );
 
 // Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
@@ -4772,7 +4774,7 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
 smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
     2252168947361668,       // long sheetId
     4293147074291588,       // long rowId
-    null,                   // PaginationParameters parameters
+    null,                   // PaginationParameters
     null                    // EnumSet<DiscussionInclusion> includes
 );
 
@@ -4832,7 +4834,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
 ### Favorite Object
 
-> Example Object:
+> Example Favorite Object:
 
 ```json
 {
@@ -4970,14 +4972,14 @@ smartsheet.favorites.listFavorites()
 ```csharp
 // Get all favorites (omit pagination parameters).
 smartsheet.FavoriteResources.ListFavorites(
-    null                // PaginationParameters paging
+    null                // PaginationParameters
 );
 ```
 
 ```java
 // Get all favorites (omit pagination parameters).
 smartsheet.favoriteResources().listFavorites(
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 ```
 
@@ -5102,8 +5104,9 @@ smartsheet.favorites.removeFolderFromFavorites(options)
 ```csharp
 // Remove folder from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.FOLDER, new long[] { 2252168947361668    // long folderId
-});
+    ObjectType.FOLDER,
+    new long[] { 2252168947361668 }   // long folderId
+);
 ```
 
 ```java
@@ -5160,8 +5163,9 @@ smartsheet.favorites.removeReportFromFavorites(options)
 ```csharp
 // Remove report from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.REPORT, new long[] { 2252168947361668        // long reportId
-});
+    ObjectType.REPORT,
+    new long[] { 2252168947361668 }       // long reportId
+);
 ```
 
 ```java
@@ -5217,8 +5221,9 @@ smartsheet.favorites.removeSheetFromFavorites(options)
 ```csharp
 // Remove sheet from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.SHEET, new long[] { 2252168947361668    // long sheetId
-});
+    ObjectType.SHEET,
+    new long[] { 2252168947361668 }   // long sheetId
+);
 ```
 
 ```java
@@ -5275,8 +5280,9 @@ smartsheet.favorites.removeTemplateFromFavorites(options)
 ```csharp
 // Remove template from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.TEMPLATE, new long[] { 2252168947361668      // long templateId
-});
+    ObjectType.TEMPLATE,
+    new long[] { 2252168947361668 }     // long templateId
+);
 ```
 
 ```java
@@ -5333,8 +5339,9 @@ smartsheet.favorites.removeWorkspaceFromFavorites(options)
 ```csharp
 // Remove workspace from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.WORKSPACE, new long[] { 2252168947361668    // long workspaceId
-});
+    ObjectType.WORKSPACE,
+    new long[] { 2252168947361668 }   // long workspaceId
+);
 ```
 
 ```java
@@ -5363,9 +5370,9 @@ Removes a single Workspace from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorite_table.md.erb" %>
 
-## Remove All Favorites
+## Remove Multiple Favorites
 
-### Remove All Favorite Folders
+### Remove Multiple Favorite Folders
 
 > Example Request:
 
@@ -5396,10 +5403,9 @@ smartsheet.favorites.removeFoldersFromFavorites(options)
 ```csharp
 // Remove folders from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.FOLDER, new long[] {
-        2252168947361668,                   // long folderId
-        2252168947361669                    // long additional folderId
-});
+    ObjectType.FOLDER,
+    new long[] { 2252168947361668, 2252168947361669 }     // folderIds
+);
 ```
 
 ```java
@@ -5428,7 +5434,7 @@ Removes multiple Folders from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove All Favorite Reports
+### Remove Multiple Favorite Reports
 
 > Example Request:
 
@@ -5459,10 +5465,9 @@ smartsheet.favorites.removeReportsFromFavorites(options)
 ```csharp
 // Remove reports from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.REPORT, new long[] {
-        2252168947361668,                   // long reportId
-        2252168947361669                    // long additional reportId
-});
+    ObjectType.REPORT,
+    new long[] { 2252168947361668, 2252168947361669 }    // reportIds
+);
 ```
 
 ```java
@@ -5491,7 +5496,7 @@ Removes multiple Reports from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove All Favorite Sheets
+### Remove Multiple Favorite Sheets
 
 > Example Request:
 
@@ -5522,10 +5527,9 @@ smartsheet.favorites.removeSheetsFromFavorites(options)
 ```csharp
 // Remove sheets from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.SHEET, new long[] {
-        2252168947361668,                   // long sheetId
-        2252168947361669                    // long additional sheetId
-});
+    ObjectType.SHEET,
+    new long[] { 2252168947361668, 2252168947361669 }    // sheetIds
+);
 ```
 
 ```java
@@ -5554,7 +5558,7 @@ Removes multiple Sheets from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove All Favorite Sights
+### Remove Multiple Favorite Sights
 
 > Example Request:
 
@@ -5590,7 +5594,7 @@ Removes multiple Sights from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove All Favorite Templates
+### Remove Multiple Favorite Templates
 
 > Example Request:
 
@@ -5621,10 +5625,9 @@ smartsheet.favorites.removeTemplatesFromFavorites(options)
 ```csharp
 // Remove templates from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.TEMPLATE, new long[] {
-        2252168947361668,                   // long templateId
-        2252168947361669                    // long additional templateId
-});
+    ObjectType.TEMPLATE,
+    new long[] { 2252168947361668, 2252168947361669 }     // templateIds
+);
 ```
 
 ```java
@@ -5653,7 +5656,7 @@ Removes multiple Templates from the user's list of Favorite items.
 
 <%= partial "snippets/removeFavorites_table.md.erb" %>
 
-### Remove All Favorite Workspaces
+### Remove Multiple Favorite Workspaces
 
 > Example Request:
 
@@ -5684,10 +5687,9 @@ smartsheet.favorites.removeWorkspacesFromFavorites(options)
 ```csharp
 // Remove workspaces from list of favorites.
 smartsheet.FavoriteResources.RemoveFavorites(
-    ObjectType.WORKSPACE, new long[] {
-        2252168947361668,                   // long workspaceId
-        2252168947361669                    // long additional workspaceId
-});
+    ObjectType.WORKSPACE,
+    new long[] { 2252168947361668, 2252168947361669 }    // workspaceIds
+);
 ```
 
 ```java
@@ -5724,13 +5726,14 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 
 ### Folder Object
 
-> Example Object:
+> Example Folder Object:
 
 ```json
 {
-	"id": 7116448184199044,
-	"name": "Folder 1",
-	"permalink": "https://app.smartsheet.com/b/home?lx=9sljohj8jEXqvJIbTrK2Hb"
+    "id": 7116448184199044,
+    "name": "Projects",
+    "permalink": "https://https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
+    "sheets": []
 }
 ```
 
@@ -5782,11 +5785,9 @@ smartsheet.FolderResources.CopyFolder(
     2252168947361668,               // long folderId
     destination,
     new FolderCopyInclusion[] {
-        FolderCopyInclusion.ALL
-    },
+        FolderCopyInclusion.ALL },
     new FolderRemapExclusion[] {
-        FolderRemapExclusion.CELL_LINKS
-    }
+        FolderRemapExclusion.CELL_LINKS }
 );
 ```
 
@@ -6165,8 +6166,7 @@ smartsheet.FolderResources.GetFolder(
 smartsheet.FolderResources.GetFolder(
     7116448184199044,           // long folderId
     new FolderInclusion[] {
-        FolderInclusion.SOURCE
-    }
+        FolderInclusion.SOURCE }
 );
 ```
 
@@ -6249,14 +6249,14 @@ smartsheet.home.listFolders()
 ```csharp
 // Get all folders in "Sheets" folder (omit pagination parameters).
 smartsheet.HomeResources.FolderResources.ListFolders(
-    null                    // PaginationParameters paging
+    null                    // PaginationParameters
 );
 ```
 
 ```java
 // Get all folders (omit pagination parameters).
 smartsheet.homeResources().folderResources().listFolders(
-    null            // PaginationParameters parameters
+    null            // PaginationParameters
 );
 ```
 
@@ -6313,7 +6313,7 @@ smartsheet.folders.listChildFolders(options)
 // Get all folders in another folder (omit pagination parameters).
 smartsheet.FolderResources.ListFolders(
     7116448184199044,           // long folderId
-    null                        // PaginationParameters paging
+    null                        // PaginationParameters
 );
 ```
 
@@ -6321,7 +6321,7 @@ smartsheet.FolderResources.ListFolders(
 // Get all folders in another folder (omit pagination parameters).
 smartsheet.folderResources().listFolders(
     7116448184199044,               // long parentFolderId
-    null                            // PaginationParameters parameters
+    null                            // PaginationParameters
 );
 ```
 
@@ -6378,7 +6378,7 @@ smartsheet.workspaces.listWorkspaceFolders(options)
 // Get all folders in workspace (omit pagination parameters).
 smartsheet.WorkspaceResources.FolderResources.ListFolders(
     7116448184199044,               // long workspaceId
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -6386,7 +6386,7 @@ smartsheet.WorkspaceResources.FolderResources.ListFolders(
 // Get all folders in workspace (omit pagination parameters).
 smartsheet.workspaceResources().folderResources().listFolders(
     7116448184199044,                   // long workspaceId
-    null                                // PaginationParameters parameters
+    null                                // PaginationParameters
 );
 ```
 
@@ -6586,17 +6586,18 @@ A Group is a collection of [Group Members](#group-members).
 
 ### Group Object
 
-> Example Object:
+> Example Group Object:
 
 ```json
 {
-	"id": 4583173393803140,
-	"name": "Group 1",
-	"description": "My group",
-	"owner": "john.doe@smartsheet.com",
-	"ownerId": 2331373580117892,
-	"createdAt": "2014-05-29T14:41:35-07:00",
-	"modifiedAt": "2014-05-29T14:41:35-07:00"
+    "id": 4583173393803140,
+    "name": "Group 1",
+    "description": "My group",
+    "owner": "john.doe@smartsheet.com",
+    "ownerId": 2331373580117892,
+    "members": [],
+    "createdAt": "2014-05-29T14:41:35-07:00",
+    "modifiedAt": "2014-05-29T14:41:35-07:00"
 }
 ```
 
@@ -6896,14 +6897,14 @@ smartsheet.groups.listGroups()
 ```csharp
 // Get all org groups (omit pagination parameters).
 smartsheet.GroupResources.ListGroups(
-    null                    // PaginationParameters paging
+    null                    // PaginationParameters
 );
 ```
 
 ```java
 // Get all org groups (omit pagination parameters).
 smartsheet.groupResources().listGroups(
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 ```
 
@@ -7067,6 +7068,18 @@ For details about working with a Group's members, see [Group Members](#group-mem
 A Group Member is a User that belongs to a [Group](#groups).
 
 ## <%= OBJECTS %>
+
+> Example GroupMember Object
+
+```json
+{
+    "id": 2331373580117892,
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "name": "John Doe"
+}
+```
 
 ### GroupMember Object
 
@@ -7258,7 +7271,7 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 
 ### Home Object
 
-> Example Object:
+> Example Home Object:
 
 ```json
 {
@@ -7396,14 +7409,19 @@ A Report is a filtered view of the data from one or more Sheets. Like a Sheet, a
 
 ### Report Object
 
-> Example Object:
+> Example Report Object:
 
 ```json
 {
-	"id": 6761305928427396,
-	"name": "r1",
-	"accessLevel": "OWNER",
-	"permalink": "https://app.smartsheet.com/b/home?lx=zWThapjNSR8LxW_kTdxPhQ"
+    "id": 4583173393803140,
+    "name": "My Report",
+    "totalRowCount": 4,
+    "accessLevel": "OWNER",
+    "permalink": "https://app.smartsheet.com/b/home?lx=pWNSDH9itjBXxBzFmyf-5w",
+    "createdAt": "2012-07-24T18:22:29-07:00",
+    "modifiedAt": "2012-07-24T18:30:52-07:00",
+    "columns": [],
+    "rows": []
 }
 ```
 
@@ -7788,7 +7806,7 @@ smartsheet.reports.listReports()
 ```csharp
 // Get all reports (omit pagination parameters).
 smartsheet.ReportResources.ListReports(
-    null,               // PaginationParameters paging
+    null,               // PaginationParameters
     null                // Nullable<DateTime> modifiedSince = null
 );
 
@@ -7804,7 +7822,7 @@ smartsheet.ReportResources.ListReports(
 ```java
 // Get all reports (omit pagination parameters).
 smartsheet.reportResources().listReports(
-    null,               // PaginationParameters parameters
+    null,               // PaginationParameters
     null                // Date modifiedSince
 );
 
@@ -8008,7 +8026,7 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 
 ### Row Object
 
-> Example Object:
+> Example Row Object:
 
 ```json
 {
@@ -8384,8 +8402,7 @@ smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     2258256056870788,           // long sheetId
     directive,
     new CopyRowInclusion[] {
-        CopyRowInclusion.CHILDREN
-    },
+        CopyRowInclusion.CHILDREN },
     true
 );
 ```
@@ -8477,13 +8494,9 @@ smartsheet.sheets.deleteRow(options)
 ```csharp
 // Delete rows (specify 'ignoreRowsNotFound' parameter with value of 'true').
 smartsheet.SheetResources.RowResources.DeleteRows(
-    2252168947361668,               // long sheetId
-    new long[] {
-        207098194749316,            // long rowId,
-        207098194749317,            // long additional rowId
-        207098194749318,            // long additional rowId
-    }
-    true                            // Boolean ignoreRowsNotFound
+    2252168947361668,                                    // long sheetId
+    new long[] { 207098194749316, 207098194749317 },     // rowIds
+    true                                                 // Boolean ignoreRowsNotFound
 );
 ```
 
@@ -8574,10 +8587,9 @@ smartsheet.SheetResources.RowResources.GetRow(
     2361756178769796,               // long rowId
     new RowInclusion[] {
         RowInclusion.COLUMNS,
-        RowInclusion.COLUMN_TYPE
-        },
+        RowInclusion.COLUMN_TYPE },
     new ObjectExclusion[] { ObjectExclusion.NONEXISTENT_CELLS }
-    );
+);
 ```
 
 ```java
@@ -8711,8 +8723,7 @@ smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
     directive,
     new MoveRowInclusion[] {
         MoveRowInclusion.ATTACHMENTS,
-        MoveRowInclusion.DISCUSSIONS
-    },
+        MoveRowInclusion.DISCUSSIONS },
     true // Nullable<bool> ignoreRowsNotFound
 );
 ```
@@ -9094,7 +9105,7 @@ Use the *Search* operations to search a specific Sheet or to search across all S
 
 ### SearchResult Object
 
-> Example Object:
+> Example SearchResult Object:
 
 ```json
 {
@@ -9237,6 +9248,25 @@ Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
 ## <%= OBJECTS %>
 
+> Example Email Object
+
+```json
+{
+	"sendTo": [{
+		"email": "john.doe@smartsheet.com"
+	}, {
+		"groupId": 2258118617917316
+	}],
+	"subject": "Check these rows out!",
+	"message": "Here are the rows I mentioned in our meeting",
+	"ccMe": false,
+	"format": "PDF",
+	"formatDetails": {
+		"paperSize": "A4"
+	}
+}
+```
+
 ### Email Object
 
      |     |     |
@@ -9314,7 +9344,7 @@ For developer convenience, the Smartsheet API provides access to application con
 
 ### ServerInfo Object
 
-> Example Object:
+> Example ServerInfo Object:
 
 ```json
 {
@@ -9413,19 +9443,18 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 
 ### Share Object
 
-> Example Object:
+> Example Share Object:
 
 ```json
 {
-	"id": "AAAQSF82FOeE",
-	"type": "USER",
-	"userId": 4583173393803140,
-	"email": "john.doe@smartsheet.com",
-	"name": "John Doe",
-	"accessLevel": "OWNER",
-	"scope": "ITEM",
-	"createdAt": "2016-02-17T22:24:09Z",
-	"modifiedAt": "2016-02-17T22:24:09Z"
+    "id": "AQAISF82FOeE",
+    "type": "GROUP",
+    "groupId": 2331373580117892,
+    "name": "Group 1",
+    "accessLevel": "ADMIN",
+    "scope": "ITEM",
+    "createdAt": "2016-02-17T22:24:09Z",
+    "modifiedAt": "2016-02-17T22:24:09Z"
 }
 ```
 
@@ -9478,7 +9507,7 @@ smartsheet.reports.deleteShare(options)
 // Delete report share.
 smartsheet.ReportResources.ShareResources.DeleteShare(
     665829219035012,            // long reportId
-    AAAQSF82F1eE                // string shareId
+    "AAAQSF82F1eE"              // string shareId
 );
 ```
 
@@ -9486,7 +9515,7 @@ smartsheet.ReportResources.ShareResources.DeleteShare(
 // Delete report share.
 smartsheet.reportResources().shareResources().deleteShare(
     665829219035012,        // long reportId
-    AAAQSF82F1eE            // string shareId
+    "AAAQSF82F1eE"          // string shareId
 );
 ```
 
@@ -9535,7 +9564,7 @@ smartsheet.reports.getShare(options)
 // Get report share.
 smartsheet.ReportResources.ShareResources.GetShare(
     6932724448552836,               // long reportId
-    AQAISF82FOeE                    // string shareId
+    "AQAISF82FOeE"                  // string shareId
 );
 ```
 
@@ -9543,7 +9572,7 @@ smartsheet.ReportResources.ShareResources.GetShare(
 // Get report share.
 smartsheet.reportResources().shareResources().getShare(
     665829219035012,        // long reportId
-    AAAQSF82F1eE            // string shareId
+    "AAAQSF82F1eE"          // string shareId
 );
 ```
 
@@ -9591,7 +9620,7 @@ smartsheet.reports.listShares(options)
 // Get all report shares (omit pagination parameters).
 smartsheet.ReportResources.ShareResources.ListShares(
     665829219035012,        // long reportId
-    null,                   // PaginationParameters paging
+    null,                   // PaginationParameters
     null                    // ShareScope shareScope
 );
 ```
@@ -9600,7 +9629,7 @@ smartsheet.ReportResources.ShareResources.ListShares(
 // Get all report shares (omit pagination parameters).
 smartsheet.reportResources().shareResources().listShares(
     665829219035012,        // long reportId
-    null,                   // PaginationParameters parameters
+    null,                   // PaginationParameters
     true                    // Boolean includeWorkspaceShares
 );
 ```
@@ -9831,7 +9860,7 @@ smartsheet.sheets.deleteShare(options)
 // Delete sheet share.
 smartsheet.SheetResources.ShareResources.DeleteShare(
     4583614634583940,               // long sheetId
-    AAAASuWWFOeE                    // string shareId
+    "AAAASuWWFOeE"                  // string shareId
 );
 ```
 
@@ -9839,7 +9868,7 @@ smartsheet.SheetResources.ShareResources.DeleteShare(
 // Delete sheet share.
 smartsheet.sheetResources().shareResources().deleteShare(
     4583614634583940,       // long sheetId
-    AAAASuWWFOeE            // string shareId
+    "AAAASuWWFOeE"          // string shareId
 );
 ```
 
@@ -9888,7 +9917,7 @@ smartsheet.sheets.getShare(options)
 // Get sheet share.
 smartsheet.SheetResources.ShareResources.GetShare(
     4583614634583940,           // long sheetId
-    AQAISF82FOeE                // string shareId
+    "AQAISF82FOeE"              // string shareId
 );
 ```
 
@@ -9896,7 +9925,7 @@ smartsheet.SheetResources.ShareResources.GetShare(
 // Get sheet share.
 smartsheet.sheetResources().shareResources().getShare(
     4583614634583940,       // long sheetId
-    AAAASuWWFOeE            // string shareId
+    "AAAASuWWFOeE"          // string shareId
 );
 ```
 
@@ -9944,7 +9973,7 @@ smartsheet.sheets.listShares(options)
 // Get all sheet shares (omit pagination parameters).
 smartsheet.SheetResources.ShareResources.ListShares(
     4583614634583940,               // long sheetId
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -9952,7 +9981,7 @@ smartsheet.SheetResources.ShareResources.ListShares(
 // Get all sheet shares (omit pagination parameters).
 smartsheet.sheetResources().shareResources().listShares(
     4583614634583940,       // long sheetId
-    null,                   // PaginationParameters parameters
+    null,                   // PaginationParameters
     true                    // Boolean includeWorkspaceShares
 );
 ```
@@ -10398,7 +10427,7 @@ smartsheet.workspaces.deleteShare(options)
 // Delete workspace share.
 smartsheet.WorkspaceResources.ShareResources.DeleteShare(
     1656220827314052,               // long workspaceId
-    AAAEQesWFOeE                    // string shareId
+    "AAAEQesWFOeE"                  // string shareId
 );
 ```
 
@@ -10406,7 +10435,7 @@ smartsheet.WorkspaceResources.ShareResources.DeleteShare(
 // Delete workspace share.
 smartsheet.workspaceResources().shareResources().deleteShare(
     1656220827314052,       // long workspaceId
-    AAAEQesWFOeE            // string shareId
+    "AAAEQesWFOeE"          // string shareId
 );
 ```
 
@@ -10459,7 +10488,7 @@ smartsheet.workspaces.getShare(options)
 // Get workspace share.
 smartsheet.WorkspaceResources.ShareResources.GetShare(
     1656220827314052,           // long workspaceId
-    AQAISF82FOeE                // string shareId
+    "AQAISF82FOeE"              // string shareId
 );
 ```
 
@@ -10467,7 +10496,7 @@ smartsheet.WorkspaceResources.ShareResources.GetShare(
 // Get workspace share.
 smartsheet.workspaceResources().shareResources().getShare(
     1656220827314052,       // long workspaceId
-    AQAISF82FOeE            // string shareId
+    "AQAISF82FOeE"          // string shareId
 );
 ```
 
@@ -10515,7 +10544,7 @@ smartsheet.workspaces.listShares(options)
 // Get all workspace shares (omit pagination parameters).
 smartsheet.WorkspaceResources.ShareResources.ListShares(
     1656220827314052,               // long workspaceId
-    null                            // PaginationParameters paging
+    null                            // PaginationParameters
 );
 ```
 
@@ -10523,7 +10552,7 @@ smartsheet.WorkspaceResources.ShareResources.ListShares(
 // Get all workspace shares (omit pagination parameters).
 smartsheet.workspaceResources().shareResources().listShares(
     1656220827314052,       // long workspaceId
-    null,                   // PaginationParameters parameters
+    null,                   // PaginationParameters
     true                    // Boolean includeWorkspaceShares
 );
 ```
@@ -10688,13 +10717,13 @@ smartsheet.workspaces.updateShare(options)
 ```csharp
 // Set access level to Viewer.
 Share share = new Share.UpdateShareBuilder(
-        AAAFeF82FOeE,           // string shareId
+        "AAAFeF82FOeE",           // string shareId
         AccessLevel.VIEWER)
     .Build();
 
 // Update workspace share.
 smartsheet.WorkspaceResources.ShareResources.UpdateShare(
-    1656220827314052,       // long workspaceId
+    1656220827314052,             // long workspaceId
     share
 );
 ```
@@ -10744,16 +10773,23 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
 ### Sheet Object
 
-> Example Object:
+> Example Sheet Object:
 
 ```json
 {
-	"accessLevel": "OWNER",
-	"id": 4583173393803140,
-	"name": "sheet 1",
-	"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
-	"createdAt": "2015-06-05T20:05:29Z",
-	"modifiedAt": "2015-06-05T20:05:43Z"
+    "accessLevel": "OWNER",
+    "projectSettings": {
+        "workingDays": [],
+        "nonWorkingDays": [],
+        "lengthOfDay": 6
+    },
+    "columns": [],
+    "createdAt": "2012-07-24T18:22:29-07:00",
+    "id": 4583173393803140,
+    "modifiedAt": "2012-07-24T18:30:52-07:00",
+    "name": "sheet 1",
+    "permalink": "https://app.smartsheet.com/b/home?lx=pWNSDH9itjBXxBzFmyf-5w",
+    "rows": []
 }
 ```
 
@@ -11368,8 +11404,7 @@ smartsheet.SheetResources.CreateSheetFromTemplate(
     new TemplateInclusion[] {
         TemplateInclusion.ATTACHMENTS,
         TemplateInclusion.DATA,
-        TemplateInclusion.DISCUSSIONS
-    }
+        TemplateInclusion.DISCUSSIONS }
 );
 ```
 
@@ -11472,8 +11507,7 @@ smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
     new TemplateInclusion[] {
         TemplateInclusion.ATTACHMENTS,
         TemplateInclusion.DATA,
-        TemplateInclusion.DISCUSSIONS
-    }
+        TemplateInclusion.DISCUSSIONS }
 );
 ```
 
@@ -11579,8 +11613,7 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
     new TemplateInclusion[] {
         TemplateInclusion.ATTACHMENTS,
         TemplateInclusion.DATA,
-        TemplateInclusion.DISCUSSIONS
-    }
+        TemplateInclusion.DISCUSSIONS }
 );
 ```
 
@@ -12138,7 +12171,7 @@ smartsheet.sheets.listSheets()
 // Get all sheets (omit 'include' parameter and pagination parameters).
 smartsheet.SheetResources.ListSheets(
     null,               // IEnumerable<SheetInclusion> includes
-    null,               // PaginationParameters paging
+    null,               // PaginationParameters
     null                // Nullable<DateTime> modifiedSince = null
 );
 
@@ -12156,7 +12189,7 @@ smartsheet.SheetResources.ListSheets(
 // Get all sheets (omit 'include' parameter and pagination parameters).
 smartsheet.sheetResources().listSheets(
     null,           // EnumSet<SourceInclusion> includes
-    null,           // PaginationParameters parameters
+    null,           // PaginationParameters
     null            // Date modifiedSince
 );
 
@@ -12665,16 +12698,15 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 
 ### Sight Object
 
-> Example Object:
+> Example Sight Object:
 
 ```json
 {
-	"id": 2331373580117892,
-	"name": "Sales Sight",
-	"accessLevel": "OWNER",
-	"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
-	"createdAt": "2016-01-28T00:24:41Z",
-	"modifiedAt": "2016-01-28T20:32:33Z"
+  "id": 2591554075418573,
+  "name": "Test",
+  "accessLevel": "OWNER",
+  "columnCount": 6,
+  "widgets": []
 }
 ```
 
@@ -12700,6 +12732,25 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published Sight:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the Sight owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 
 ### Widget Object
+
+> Example Widget Object
+
+```json
+{
+    "id": 3056651398234562,
+    "type": "RICHTEXT",
+    "contents": {
+    "htmlContent": "<p>This is a test</p>"
+    },
+    "xPosition": 2,
+    "yPosition": 0,
+    "width": 2,
+    "height": 4,
+    "showTitleIcon": false,
+    "titleFormat": ",,1,,,,,,,3,,,,,,",
+    "version": 1
+}
+```
 
      |     |     |
 -----|-----|-----|
@@ -13269,7 +13320,7 @@ A Template can be used to create a Sheet, as described in [Create Sheet from Tem
 
 ### Template Object
 
-> Example Object:
+> Example Template Object:
 
 ```json
 {
@@ -13318,14 +13369,14 @@ smartsheet.templates.listPublicTemplates()
 ```csharp
 // Get all public templates (omit pagination parameters).
 smartsheet.TemplateResources.ListPublicTemplates(
-    null            // PaginationParameters paging
+    null            // PaginationParameters
 );
 ```
 
 ```java
 // Get all public templates (omit pagination parameters).
 smartsheet.templateResources().listPublicTemplates(
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 ```
 
@@ -13371,14 +13422,14 @@ smartsheet.templates.listUserCreatedTemplates()
 ```csharp
 // Get all user-created templates (omit pagination parameters).
 smartsheet.TemplateResources.ListUserCreatedTemplates(
-    null                // PaginationParameters paging
+    null                // PaginationParameters
 );
 ```
 
 ```java
 // Get all user-created templates (omit pagination parameters).
 smartsheet.templateResources().listUserCreatedTemplates(
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 ```
 
@@ -13597,21 +13648,23 @@ Revokes the access token used to make this request.  The access token is no long
 
 ### User Object
 
-> Example Object:
+> Example User Object:
 
 ```json
 {
-	"id": 94094820842,
-	"email": "john.doe@smartsheet.com",
-	"name": "John Doe",
-	"status": "ACTIVE",
-	"admin": true,
-	"licensedSheetCreator": true,
-	"groupAdmin": true,
-	"resourceViewer": true,
-	"sheetCount": 3,
-	"lastLogin": "2016-08-15T18:32:47Z",
-	"customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+    "email": "john.doe@smartsheet.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "id": 48569348493401200,
+    "status": "ACTIVE",
+    "admin": true,
+    "licensedSheetCreator": true,
+    "groupAdmin": true,
+    "resourceViewer": true, 
+    "alternateEmails": [],
+    "sheetCount": 3,
+    "lastLogin": "2016-08-15T18:32:47Z",
+    "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
 }
 ```
 
@@ -14251,7 +14304,7 @@ smartsheet.users.listAllUsers()
 // Get all users (omit 'email' parameter and pagination parameters).
 smartsheet.UserResources.ListUsers(
     null,               // IEnumerable<string> emails
-    null                // PaginationParameters paging
+    null                // PaginationParameters
 );
 
 // Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true').
@@ -14268,7 +14321,7 @@ smartsheet.UserResources.ListUsers(
 // Get all users (omit 'email' parameter and pagination parameters).
 smartsheet.userResources().listUsers(
     null,       // Set<String> email
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 
 // Specify pagination parameter 'includeAll' 
@@ -14451,10 +14504,10 @@ smartsheet.users.updateUser(options)
 ```csharp
 // Specify updated user properties.
 User user = new User.UpdateUserBuilder(
-    82349925918590,             // long userId
-    true,                       // Nullable<bool> admin
-    true)                       // Nullable<bool> licensedSheetCreator
-.Build();
+        82349925918590,             // long userId
+        true,                       // Nullable<bool> admin
+        true)                       // Nullable<bool> licensedSheetCreator
+    .Build();
 
 // Update user.
 smartsheet.UserResources.UpdateUser(
@@ -14512,14 +14565,15 @@ Updates the User specified in the URL.
 
 ### Workspace Object
 
-> Example Object:
+> Example Workspace Object:
 
 ```json
 {
-	"accessLevel": "OWNER",
-	"id": 3457273486960516,
-	"name": "workspace 1",
-	"permalink": "https://app.smartsheet.com/b/home?lx=JNL0bgXtXc0pzni9tzAc4g"
+    "sheets": [],
+    "accessLevel": "OWNER",
+    "id": 7116448184199044,
+    "name": "New workspace",
+    "permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zgg"
 }
 ```
 
@@ -14897,14 +14951,14 @@ smartsheet.workspaces.listWorkspaces()
 ```csharp
 // Get all workspaces (omit pagination parameters).
 smartsheet.WorkspaceResources.ListWorkspaces(
-    null                // PaginationParameters paging
+    null                // PaginationParameters
 );
 ```
 
 ```java
 // Get all workspaces (omit pagination parameters).
 smartsheet.workspaceResources().listWorkspaces(
-    null        // PaginationParameters parameters
+    null        // PaginationParameters
 );
 ```
 
