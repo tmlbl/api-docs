@@ -2551,7 +2551,7 @@ It provides a more "programmer friendly" format for assembling predecessors. To 
 #### Cell Value Parsing
 
 The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
-for an API in terms of parsing. Being too flexible likely results in unexpected behavior. For instance, if you write code
+for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
 to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
 as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
 as a Text value? Probably not.
@@ -15321,7 +15321,7 @@ Because the amount of format data in a large sheet can potentially be very large
 
 Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
  
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This may be addressed in a future version of the API.
+The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
 
 ## Format Descriptor
 
@@ -15598,7 +15598,7 @@ false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because i
 false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
-false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
+false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
 false  | DISABLED_SCOPE_INACCESSIBLE | Webhook has been disabled because its owner lost access to the corresponding data in Smartsheet (either because the object was deleted or sharing permissions were revoked). | Webhook is automatically re-enabled if access to data is restored (for example, if deleted object is restored or sharing permissions are restored).
 false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet support. | A webhook in this state can only be re-enabled by Smartsheet (contact <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>).  Attempting to re-enable a webhook in this state results in error code 1154.
 
