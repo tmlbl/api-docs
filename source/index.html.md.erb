@@ -34,7 +34,7 @@ search: false
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
 <% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
 <% SUPPORTS_NUMERICDATES = "You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href='#dates-and-times'>Dates and Times</a> for more information." %>
-<% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but will never be present in a response." %>
+<% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but is never present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result Object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object contains a **failedItems** attribute -- an array of [BulkItemFailure Objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
 <% SHARING_ERRORS = "If called with a single [Share Object](#share-object), and that user or group share already exists, [error code](#complete-error-code-list) **1025** is returned.  If called with an array of Share Objects, and one or more user or group shares in the array already exist, they are ignored and omitted from the response." %>
 <% LIST_SHARES_RESPONSE_DESC = "By default, this operation returns only <i>item-level</i> shares (<b><a href='#share-object'>scope</b></a>='ITEM'). Use the <b>include</b> parameter to request that <i>workspace-level</i> shares (<b><a href='#share-object'>scope</b></a>=='WORKSPACE') also be returned." %>
@@ -495,11 +495,11 @@ Here is an example of a URL to which you would send your user as a `GET` request
 `https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
  
 If your user has not logged in to Smartsheet, he/she will first be directed to the Smartsheet login page. 
-After a successful login, Smartsheet will prompt your user to allow or deny the access scopes you requested.
+After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested.
 
 ### Obtain the Authorization Code
 
-During the above steps for requesting authorization from the user, if the user clicks "Allow", he/she will be redirected to the **redirect_uri** with the following parameters:
+During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the **redirect_uri** with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -507,7 +507,7 @@ code | Authorization code required to obtain access token.
 expires_in | Number of seconds code is valid once issued; this is always four minutes - you must obtain an access token within that time.
 state | **state** string specified earlier.
 
-If the user clicks "Deny", he/she will be redirected to the **redirect_uri** with the following parameters:
+If the user clicks "Deny", Smartsheet redirects the user to the **redirect_uri** with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -657,20 +657,20 @@ multiple objects in a single request. For example, if you want to update 10 rows
 ### Optional Bulk Operations
 
 Several endpoints support *optional* bulk `POST` operations which exist alongside the standard single-object `POST`.  For these endpoints, you may pass in either a single object or an array of objects.
-Depending on what was passed in, the [Result Object](#result-object) returned will contain either a single object or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
+Depending on what was passed in, the [Result Object](#result-object) returned contains either a single object or an array.  An example optional bulk operation is [POST /favorites](#add-favorites): you can
 pass in a single [Favorite Object](#favorite-object) to create a single favorite, or an array of Favorite objects to create multiple favorites in a single request.  Endpoints which support bulk operations are
 noted as such in the API reference documentation.
 
-**NOTE**: Most `POST` operations fail when attempting to create a single object which already exists (for example, favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints will *not*
-return an error if one or more items in the array already exist.  Existing items are simply ignored, and [Result Object](#result-object) returned will omit them.
+**NOTE**: Most `POST` operations fail when attempting to create a single object which already exists (for example, favorites, shares, group members).  However, for the corresponding bulk operations, these endpoints do *not*
+return an error if one or more items in the array already exist.  Existing items are simply ignored, and the [Result Object](#result-object) returned omits them.
 
 ### Partial Success
 
-In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, all objects in the request will be created/updated/deleted;
-if not, none of them will be.
+In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, Smartsheet creates/updates/deletes all objects in the request;
+if not, no objects are changed.
 
-However, there are some operations that support *partial success*, which means the operation will still succeed even if one or more of the objects in the request failed for some reason (for example, an object is invalid).  Partial success is 
-*not* the default mode for an operation, and instead must be explicitly enabled by using a query string parameter.  This is noted in the documentation for operations that support partial success.
+However, there are some operations that support *partial success*, which means the operation still succeeds even if one or more of the objects in the request fails for some reason (for example, an object is invalid).  Partial success is 
+*not* the default mode for an operation and you must explicitly enable it by using a query string parameter.  This is noted in the documentation for operations that support partial success.
 
 <%= PARTIAL_SUCCESS %>
 
@@ -2551,7 +2551,7 @@ It provides a more "programmer friendly" format for assembling predecessors. To 
 #### Cell Value Parsing
 
 The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
-for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
+for an API in terms of parsing. Being too flexible likely results in unexpected behavior. For instance, if you write code
 to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
 as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
 as a Text value? Probably not.
@@ -15321,7 +15321,7 @@ Because the amount of format data in a large sheet can potentially be very large
 
 Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
  
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
+The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This may be addressed in a future version of the API.
 
 ## Format Descriptor
 
@@ -15598,7 +15598,7 @@ false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because i
 false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
-false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
+false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
 false  | DISABLED_SCOPE_INACCESSIBLE | Webhook has been disabled because its owner lost access to the corresponding data in Smartsheet (either because the object was deleted or sharing permissions were revoked). | Webhook is automatically re-enabled if access to data is restored (for example, if deleted object is restored or sharing permissions are restored).
 false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet support. | A webhook in this state can only be re-enabled by Smartsheet (contact <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>).  Attempting to re-enable a webhook in this state results in error code 1154.
 
