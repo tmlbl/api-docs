@@ -84,7 +84,7 @@ Updated 2017-06-15
 * Manage folders and workspaces
 * Administer users and accounts
 
-You can view code examples in the programming language of your choice by clicking the corresponding tab in the dark-blue area in the right-hand pane.
+You can view code examples in the programming language of your choice by clicking the corresponding tab in the dark-blue area in the rightmost pane.
 
 ## How Do I Start?
 
@@ -251,7 +251,7 @@ Sheets are composed of rows, columns, and cells. A cell is identified by the Id 
 UI Element | Description | More Info
 -----|-----|-----|
 Sheet | A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#folders), or in a [Workspace](#workspaces). It is comprised of Columns, Rows, and Cells, and may optionally contain Attachments and/or Discussions. | [Sheet Object](#sheet-object)
-Column | A Column Object *defines* the type of the column, but does not actually contain cells. The Column Id is needed to identify the cells in a row. | [Column Object,](#column-object) [Column types](#column-types)
+Column | A Column Object *defines* the type of the column, but does not actually contain cells. The Column Id identifies the cells in a row. | [Column Object,](#column-object) [Column types](#column-types)
 Row | A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Attachments and/or Discussions. | [Row Object](#row-object)
 Cell | A Cell is a location within a Sheet that may contain a value. A collection of Cells comprises each Row in a Sheet. | [Cell Object,](#cell-object) [Cell reference](#cell-reference)
 
@@ -262,7 +262,7 @@ Also, make sure your code does not depend on the order in which JSON objects are
 
 # Getting Started
 
-## Making Your First API Call
+## Make Your First API Call
 
 Before you write any code, try executing API requests using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request and Response.
 
@@ -311,7 +311,7 @@ Many Smartsheet API operations handle sheets, rows, columns, and cells. Each is 
 
 Before you begin, you should already have an access token, which you used in the exercise above. Use the same access token for this walkthrough.
 
-1. The first thing you need is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [GET All Sheets](#get-all-sheets) if you want to do this programmatically.
+1. The first thing you want is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [GET All Sheets](#get-all-sheets) if you want to do this programmatically.
 
     <img src="images/sheet-properties.png" alt="Image of the Sheet Properties window" />
 
@@ -326,7 +326,7 @@ Before you begin, you should already have an access token, which you used in the
 	"id": 6141831453927300,                         // This is the Id of the entire sheet
 	"name": "My first sheet",
 	"columns": [{                                   // Each Column Object connects column title to Id and defines the column details
-			"id": 2517104256673668,                 // Column Id is needed to identify cells on a row
+			"id": 2517104256673668,                 // Column Id identifies cells on a row
 			"index": 0,
 			"title": "Name",                        // This is the column name as seen in the UI
 			"type": "TEXT_NUMBER",
@@ -342,7 +342,7 @@ Before you begin, you should already have an access token, which you used in the
 		}
 	],
 	"rows": [{                                      // A Row Object
-			"id": 564480076736388,                  // You need the row Id to make updates
+			"id": 564480076736388,                  // You want the row Id to make updates
 			"rowNumber": 1,
 			"expanded": true,
 			"createdAt": "2017-05-12T16:52:38Z",
@@ -434,7 +434,7 @@ Once you complete the developer registration, log in to Smartsheet to access Dev
 3. Before you can register your first app, you must complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.
 4. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
 
-## Registering Your App
+## Register Your App
 
 To build a third-party app, you must first register it with Smartsheet using Developer Tools:
 
@@ -478,7 +478,7 @@ WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions,
 Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
 The following sub-sections describe next steps.
 
-### Requesting Authorization From the User
+### Request Authorization From the User
 
 To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
 
@@ -486,7 +486,7 @@ Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
-redirect_uri<br/>(optional) | Redirect URL you [registered](#registering-your-app) for your app (including protocol, for example, "http://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) for your app (including protocol, for example, "http://"); if not provided, the redirect URL set during registration is used.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 
@@ -497,7 +497,7 @@ Here is an example of a URL to which you would send your user as a `GET` request
 If your user has not logged in to Smartsheet, he/she will first be directed to the Smartsheet login page. 
 After a successful login, Smartsheet will prompt your user to allow or deny the access scopes you requested.
 
-### Obtaining the Authorization Code
+### Obtain the Authorization Code
 
 During the above steps for requesting authorization from the user, if the user clicks "Allow", he/she will be redirected to the **redirect_uri** with the following parameters:
 
@@ -521,7 +521,7 @@ Value | Description |
 unsupported_response_type | response_type must be set to "code".
 invalid_scope | One or more of the requested access scopes are invalid. Please check the list of access scopes.
 
-### Obtaining an Access Token
+### Obtain an Access Token
 
 > Request an access token:
 
@@ -569,19 +569,19 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 Once you’ve successfully obtained an authorization code, the next step is to obtain an access token. 
-To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
+To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
 Value | Description |
 -----|-----|
 grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app.
-code<br/>(required) | Authorization code returned in the [previous step](#obtaining-the-authorization-code).
-redirect_uri<br/>(optional) | Redirect URL [registered](#registering-your-app) for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
-hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Registering Your App](#registering-your-app).
+code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
+redirect_uri<br/>(optional) | Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
+hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
-Reminder: you can see what a success call looks like in the dark-blue area in the right-hand pane. 
+Reminder: you can see what a success call looks like in the dark-blue area in the rightmost pane. 
 
 Possible OAuth error types:
 
@@ -592,7 +592,7 @@ invalid_client | The client information is invalid. Ensure your client id is cor
 invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the app secret and/or code.
 unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
 
-### Refreshing an Access Token
+### Refresh an Access Token
 
 > Refresh an access token:
 
@@ -632,27 +632,27 @@ curl https://api.smartsheet.com/2.0/token \
 An access token is valid for one week but you can use the refresh token to obtain a new access token. 
 Once you obtain the new access token, you must use it in place of the old one, which is no longer valid.
  
-To do so, you’ll need to make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
+To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
 Value | Description |
 -----|-----|
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
-redirect_uri<br/>(optional)| Redirect URL [registered](#registering-your-app) for your app, including the protocol (for example, "http://").
-hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Registering Your App](#registering-your-app).
+redirect_uri<br/>(optional)| Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "http://").
+hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
-### Getting Basic User Info
+### Get Basic User Info
 Once you have obtained an access token on behalf of the user, you can fetch basic information (including user Id, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
 
-# Working at Scale 
+# Work at Scale 
 
 ## Bulk Operations
 
 The Smartsheet API supports a number of bulk operations that can operate on multiple objects.  Unlike single-object operations, bulk operations allow you to create, update, or delete
-multiple objects in a single request. For example, if you need to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
+multiple objects in a single request. For example, if you want to update 10 rows within a sheet, do so using a single [Update Rows](#update-rows) request, rather than executing 10 separate requests - one for each row.
 
 ### Optional Bulk Operations
 
@@ -689,7 +689,7 @@ Value | Type | Description |
 **page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results is returned.
 **includeAll**  | Boolean | If true, include all results, that is, do not paginate.  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
 
-<aside class="notice">Most index endpoints default to a page size of 100 results.  If you need all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
+<aside class="notice">Most index endpoints default to a page size of 100 results.  If you want all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
 
 ### Paged Responses
 
@@ -745,7 +745,7 @@ Attachments can exist on a [Comment](#comments) (that is, within a Discussion), 
 **parentId** | number | The id of the parent 
 **sizeInKb** | number | The size of the file, if the attachmentType is FILE  
 
-## Posting an Attachment
+## Post an Attachment
 
 Like the Smartsheet Web app, the Smartsheet API allows uploading files to Sheets, Rows and Comments. 
 You can upload a file by performing either a *simple upload* or a *multipart upload*. 
@@ -930,7 +930,7 @@ smartsheet.Attachments.attach_file_to_comment(
 
 `POST /sheets/{sheetId}/comments/{commentId}/attachments`
 
-<% SUPPORTS_MULTIPART = "This operation can be performed using a [simple upload](#simple-uploads) or a [multipart upload](#multipart-uploads). For more information, see [Posting an Attachment](#posting-an-attachment)." %>
+<% SUPPORTS_MULTIPART = "This operation can be performed using a [simple upload](#simple-uploads) or a [multipart upload](#multipart-uploads). For more information, see [Post an Attachment](#post-an-attachment)." %>
 
 Attaches a file to the Comment. <%= SUPPORTS_MULTIPART %>
 
@@ -3652,7 +3652,7 @@ smartsheet.sheetResources().discussionResources().commentResources().addCommentW
 ```python
 # Create comment.
 comment = smartsheet.models.Comment({
-    'text': 'You might need this.'
+    'text': 'You might want this.'
 })
 
 # Add comment (with attachment) to discussion.
@@ -6518,7 +6518,7 @@ Updates the Folder specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [Folder Object](#folder-object), limited to the following required attribute:<ul><li>name (string)</li></ul>Name need not be unique.
+<%= REQUEST %> | [Folder Object](#folder-object), limited to the following required attribute:<ul><li>name (string)</li></ul>Name does not have to be unique.
 <%= RETURNS %> | [Result Object](#result-object) containing the updated [Folder Object](#folder-object)
 
 # Groups
@@ -9039,7 +9039,7 @@ Outdent an existing Row. | **outdent** = (number of level to outdent, minimum of
 
 <aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Rows in a single request, try achieving the objective by using two separate requests: 1) Move parent Row. 2) Move child Rows.</aside>
 
-# Searching
+# Search
 
 Use the *Search* operations to search a specific Sheet or to search across all Sheets that a User can access.
 
@@ -9184,7 +9184,7 @@ Searches all Sheets that the User can access, for the specified text.
 
 <%= partial "snippets/searchSheet.md.erb" %>
 
-# Sending via Email
+# Send via Email
 
 Use the *Send* operations to send a Report, a Row, or a Sheet via email.
 
@@ -15453,7 +15453,7 @@ Should you encounter issues with the Smartsheet API while building an integratio
 At a high-level, it works like this:
 
 <ol>
-	<li><span class="customInstructionsHeading">Your application subscribes to <a href="#event-callbacks">callbacks</a>.</span><br/>First, you need to subscribe to event notifications (callbacks) by creating one or more webhooks.  You can create a webhook manually via the API or have your application create a webhook dynamically.  Each webhook must specify:
+	<li><span class="customInstructionsHeading">Your application subscribes to <a href="#event-callbacks">callbacks</a>.</span><br/>First, subscribe to event notifications (callbacks) by creating one or more webhooks.  You can create a webhook manually via the API or have your application create a webhook dynamically.  Each webhook must specify:
 		<ul>
 			<li>Which Smartsheet object to monitor for events</li>
 			<li>Which events in that object should trigger a callback</li>
@@ -15476,7 +15476,7 @@ At a high-level, it works like this:
 		<br/>
 	</li>
 	<li><span class="customInstructionsHeading">Your application receives, acknowledges, and processes callbacks.</span><br/>Your application receives the <code>HTTP POST</code>, acknowledges the callback by responding with HTTP status 200, and processes the callback. 
-	Because the callbacks are "skinny", you may need to make one or more requests to the Smartsheet API to retrieve the actual data associated with the change.
+	Because the callbacks are "skinny", make one or more requests to the Smartsheet API to retrieve the actual data associated with the change.
 	</li>
 </ol>
 
@@ -15598,7 +15598,7 @@ false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because i
 false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
-false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third-party app's access is subsequently restored, it will need to create new webhooks.
+false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
 false  | DISABLED_SCOPE_INACCESSIBLE | Webhook has been disabled because its owner lost access to the corresponding data in Smartsheet (either because the object was deleted or sharing permissions were revoked). | Webhook is automatically re-enabled if access to data is restored (for example, if deleted object is restored or sharing permissions are restored).
 false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet support. | A webhook in this state can only be re-enabled by Smartsheet (contact <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>).  Attempting to re-enable a webhook in this state results in error code 1154.
 
