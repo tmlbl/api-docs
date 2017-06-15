@@ -46,51 +46,55 @@ smartsheet.reports.sendReportViaEmail(options)
 
 ```csharp
 // Specify recipients.
-Recipient[] recipients = new Recipient[] { 
-	new Recipient { Email = "john.doe@smartsheet.com" }, 
-	new Recipient { GroupId = 2258118617917316 } 
+Recipient[] recipients = new Recipient[] {
+    new Recipient { Email = "john.doe@smartsheet.com" },
+    new Recipient { GroupId = 2258118617917316 }
 };
 
 // Configure email.
-SheetEmail sheetEmail = new SheetEmail { 
-	SendTo = recipients, 
-	Subject = "Check this report out!", 
-	Message = "Here is the report I mentioned in our meeting", 
-	CcMe = false, 
-	Format = SheetEmailFormat.PDF, 
-	FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 } 
+SheetEmail sheetEmail = new SheetEmail {
+    SendTo = recipients,
+    Subject = "Check this report out!",
+    Message = "Here is the report I mentioned in our meeting",
+    CcMe = false,
+    Format = SheetEmailFormat.PDF,
+    FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 }
 };
 
 // Send report via email.
-smartsheet.ReportResources.SendReport(reportId, sheetEmail);
+smartsheet.ReportResources.SendReport (8130994621441924, sheetEmail);       // long reportId
 ```
 
 ```java
 // Specify an individual recipient.
-RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder().setEmail("john.doe@smartsheet.com").build();
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+    .setEmail("john.doe@smartsheet.com")
+    .build();
 
 // Specify a group recipient.
-RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder().setGroupId(2258118617917316).build();
+RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder()
+    .setGroupId(2258118617917316L)
+    .build();
 
 /// Set recipients.
-List<Recipient> recipients = Arrays.asList(recipientEmail, recipientGroup);
+List<Recipient> recipients = Arrays.asList(recipientEmail,recipientGroup);
 
 // Set format details.
 FormatDetails formatDetails = new FormatDetails();
-formatDetails.setPaperSize(PaperSize.A0); 
+formatDetails.setPaperSize(PaperSize.A0);
 
 // Configure email.
 SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
-	.setSendTo(recipients)
-	.setSubject("Check this report out!")
-	.setMessage("Here is the report I mentioned in our meeting")
-	.setCcMe(false)
-	.setFormat(SheetEmailFormat.PDF)
-	.setFormatDetails(formatDetails)
-	.build();
+    .setSendTo(recipients)
+    .setSubject("Check this report out!")
+    .setMessage("Here is the report I mentioned in our meeting")
+    .setCcMe(false)
+    .setFormat(SheetEmailFormat.PDF)
+    .setFormatDetails(formatDetails)
+    .build();
 
 // Send report via email.
-smartsheet.reportResources().sendReport(reportId, email)
+smartsheet.reportResources().sendReport(8130994621441924L, email);      // long reportId
 ```
 
 ```python
