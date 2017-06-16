@@ -2,7 +2,7 @@
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/emails \
--H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"sendTo" : [{"email": "john.doe@smartsheet.com"}, {"groupId": 2258118617917316}], "subject": "Check these rows out!", "message": "Here is the Sheet I mentioned in our meeting.", "ccMe": false, "format": "PDF", "formatDetails": {"paperSize": "A4"}}'
@@ -47,51 +47,55 @@ smartsheet.sheets.sendSheetViaEmail(options)
 
 ```csharp
 // Specify recipients.
-Recipient[] recipients = new Recipient[] { 
-	new Recipient { Email = "john.doe@smartsheet.com" }, 
-	new Recipient { GroupId = 2258118617917316 } 
+Recipient[] recipients = new Recipient[] {
+    new Recipient { Email = "john.doe@smartsheet.com" },
+    new Recipient { GroupId = 2258118617917316 }
 };
 
 // Configure email.
-SheetEmail sheetEmail = new SheetEmail { 
-	SendTo = recipients, 
-	Subject = "Check this report out!", 
-	Message = "Here are the rows I mentioned in our meeting", 
-	CcMe = false, 
-	Format = SheetEmailFormat.PDF, 
-	FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 } 
+SheetEmail sheetEmail = new SheetEmail {
+    SendTo = recipients,
+    Subject = "Check this report out!",
+    Message = "Here are the rows I mentioned in our meeting",
+    CcMe = false,
+    Format = SheetEmailFormat.PDF,
+    FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 }
 };
 
 // Send sheet via email.
-smartsheet.SheetResources.SendSheet(sheetId, sheetEmail);
+smartsheet.SheetResources.SendSheet(4293147074291588, sheetEmail);      // sheetId
 ```
 
 ```java
 // Specify individual recipient.
-RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder().setEmail("john.doe@smartsheet.com").build();
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+    .setEmail("john.doe@smartsheet.com")
+    .build();
 
 // Specify group recipient.
-RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder().setGroupId(2258118617917316).build();
+RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder()
+    .setGroupId(2258118617917316L)
+    .build();
 
 // Set recipients.
-List<Recipient> recipients = Arrays.asList(recipientEmail, recipientGroup);
+List<Recipient> recipients = Arrays.asList(recipientEmail,recipientGroup);
 
 // Set format details.
 FormatDetails formatDetails = new FormatDetails();
-formatDetails.setPaperSize(PaperSize.A0); 
+formatDetails.setPaperSize(PaperSize.A0);
 
 // Configure email.
 SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
-	.setSendTo(recipients)
-	.setSubject("Check these rows out!")
-	.setMessage("Here are the rows I mentioned in our meeting")
-	.setCcMe(false)
-	.setFormat(SheetEmailFormat.PDF)
-	.setFormatDetails(formatDetails)
-	.build();
+    .setSendTo(recipients)
+    .setSubject("Check these rows out!")
+    .setMessage("Here are the rows I mentioned in our meeting")
+    .setCcMe(false)
+    .setFormat(SheetEmailFormat.PDF)
+    .setFormatDetails(formatDetails)
+    .build();
 
 // Send sheet via email.
-smartsheet.sheetResources().sendSheet(sheetId, email);
+smartsheet.sheetResources().sendSheet(4293147074291588L, email);        // sheetId
 ```
 
 ```python
@@ -131,5 +135,5 @@ Sends the Sheet as a PDF attachment via email to the designated recipients.
 -----|-----|
 <%= SCOPE %> | SHARE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [SheetEmail object](#sheetemail-object)
-<%= RETURNS %> | [Result object](#result-object)
+<%= REQUEST %> | [SheetEmail Object](#sheetemail-object)
+<%= RETURNS %> | [Result Object](#result-object)

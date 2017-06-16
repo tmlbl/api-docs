@@ -2,7 +2,7 @@
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/emails \
--H "Authorization: Bearer ACCESS_TOKEN" \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{ \
@@ -27,8 +27,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/emails \
 
 ```csharp
 // Specify recipients.
-Recipient[] recipients = new Recipient[] { 
-    new Recipient { Email = "recipient@smartsheet.com" }, 
+Recipient[] recipients = new Recipient[] {
+    new Recipient { Email = "recipient@smartsheet.com" },
 };
 
 // Configure email.
@@ -44,12 +44,14 @@ MultiRowEmail multiRowEmail = new MultiRowEmail {
 };
 
 // Send rows via email.
-smartsheet.SheetResources.RowResources.SendRows(sheetId, multiRowEmail);
+smartsheet.SheetResources.RowResources.SendRows(4293147074291588, multiRowEmail);       // sheetId
 ```
 
 ```java
 // Specify recipients.
-RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder().setEmail("recipient@smartsheet.com").build();
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+    .setEmail("recipient@smartsheet.com")
+    .build();
 
 List<Recipient> recipients = new ArrayList<Recipient>();
 recipients.add(recipientEmail);
@@ -67,7 +69,7 @@ MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
     .build();
 
 // Send rows via email.
-smartsheet.sheetResources().rowResources().sendRows(sheetId, multiRowEmail);
+smartsheet.sheetResources().rowResources().sendRows(4293147074291588L, multiRowEmail);   // sheetId
 ```
 
 ```python
@@ -100,5 +102,5 @@ Sends one or more Rows via email.
 -----|-----|
 <%= SCOPE %> | SHARE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [MultiRowEmail object](#multirowemail-object). <br/><br/>The columns included for each row in the email will be populated according to the following rules:<ul><li>If the **columnIds** attribute of the MultiRowEmail object is specified as an array of column IDs, those specific columns will be included.</li><li>If the **columnIds** attribute of the MultiRowEmail object is omitted, all columns except hidden columns shall be included.</li><li>If the **columnIds** attribute of the MultiRowEmail object is specified as *empty*, no columns shall be included. (Note: In this case, either **includeAttachments**:true or **includeDiscussions**:true must be specified.)
-<%= RETURNS %> | [Result object](#result-object)
+<%= REQUEST %> | [MultiRowEmail Object](#multirowemail-object). <br/><br/>The columns included for each row in the email are populated according to the following rules:<ul><li>If the **columnIds** attribute of the MultiRowEmail Object is specified as an array of column Ids, those specific columns are included.</li><li>If the **columnIds** attribute of the MultiRowEmail Object is omitted, all columns except hidden columns shall be included.</li><li>If the **columnIds** attribute of the MultiRowEmail Object is specified as *empty*, no columns shall be included. (Note: In this case, either **includeAttachments**:true or **includeDiscussions**:true must be specified.)
+<%= RETURNS %> | [Result Object](#result-object)
