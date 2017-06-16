@@ -12797,7 +12797,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 ```
 
 ```java
-// [todo]
+// Specify destination.
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
+    .setDestinationType(DestinationType.FOLDER)
+    .setDestinationId(9283173393803140L)        // long destinationFolderId
+    .setNewName("newSightName")
+    .build();
+
+// Copy sight.
+smartsheet.sightResources().copySight(
+    9283173393803140L,                          // long sightId
+    destination
+);
 ```
 
 ```python
@@ -12848,7 +12859,10 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```java
-// [todo]
+// Delete sight.
+smartsheet.sightResources().deleteSight(
+    3056651398234562L       // long sightId
+);
 ```
 
 ```python
@@ -12892,7 +12906,10 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```java
-// [todo]
+// Get sight.
+smartsheet.sightResources().getSight(
+    3056651398234562L       // long sightId
+);
 ```
 
 ```python
@@ -12980,7 +12997,11 @@ curl https://api.smartsheet.com/2.0/sights \
 ```
 
 ```java
-// [todo]
+// List all sights.
+smartsheet.sightResources().listSights(
+    null,       // PaginationParameters
+    null        // Date modifiedSince
+);
 ```
 
 ```python
@@ -13056,7 +13077,17 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 ```
 
 ```java
-// [todo]
+// Specify destination.
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
+    .setDestinationType(DestinationType.FOLDER)
+    .setDestinationId(9283173393803140L)        // long destinationFolderId
+    .build();
+
+// Move sight.
+smartsheet.sightResources().moveSight(
+    9283173393803140L,                          // long sightId
+    destination
+);
 ```
 
 ```python
