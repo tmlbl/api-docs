@@ -28,7 +28,7 @@ search: false
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
 <% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response only includes the objects that are modified on or after the date and time specified." %>
-<% PARAMETER_OVERRIDE_VALIDATION = "**overrideValidation** (optional): You may use the query string parameter <b>overrideValidation</b> with a value of <code>true</code> to allow a cell value outside of the validation limits. You must specify **strict** with a value of `false` to bypass free value checking from the API."  %>
+<% PARAMETER_OVERRIDE_VALIDATION = "**overrideValidation** (optional): You may use the query string parameter <b>overrideValidation</b> with a value of <code>true</code> to allow a cell value outside of the validation limits. You must specify **strict** with a value of `false` to bypass value type checking."  %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
 <% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
@@ -2217,7 +2217,7 @@ A collection of Cells comprises each Row in a Sheet.
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
 **linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
-**overrideValidation** | Boolean | (Admin only) Flag indicating whether the cell value can contain a value outside of the validation limits (value = `true`). When using this parameter, you must also set **strict** to `false` to bypass free value checking from the API. This property is honored for POST or PUT actions that update rows.
+**overrideValidation** | Boolean | (Admin only) Flag indicating whether the cell value can contain a value outside of the validation limits (value = `true`). When using this parameter, you must also set **strict** to `false` to bypass value type checking. This property is honored for POST or PUT actions that update rows.
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a non-default format applied.
 **conditionalFormat** | string | The format descriptor describing this cell's conditional format (see [Formatting](#formatting)).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **format** and this cell has a conditional format applied.
 **strict** | Boolean | Set to **false** to enable lenient parsing. Defaults to **true**. <%= REQUEST_ONLY_ATTRIBUTE %> See [Cell Value Parsing](#cell-value-parsing) for more information about using this attribute. 
@@ -2562,6 +2562,8 @@ If an input value doesn't conform, the API returns [error code 1042](#400-level-
 
 If, however, you want the same flexibility as the Smartsheet Web app, you can disable the strict rules, and we’ll do our best to make
 sense of it. To enable lenient parsing simply include `"strict" : false` in the [Cell Object](#cell-object) in your request body.
+
+<aside class="notice">How does strict cell value parsing compare to cell validation settings? Strict cell value parsing determines how string values are parsed. It is set on a per-call basis. In contrast, cell validation is part of the column definition. The overrideValidation property is restricted to sheet admins and does **not** override strict parsing.</aside>
 
 The parsing rules for the various column types are as follows:
 
@@ -2970,6 +2972,7 @@ Column column1 = new Column.AddColumnToSheetBuilder()
 Column column2 = new Column.AddColumnToSheetBuilder()
     .setTitle("New Date Column")
     .setType(ColumnType.DATE)
+    .setValidation(true)
     .setIndex(4)
     .build();
 
@@ -15294,6 +15297,11 @@ HTTP status code | Smartsheet errorCode | Smartsheet message
 403 | 1188 | The account status of the user specified is not active.
 400 | 1189 | Only Enterprise or Team accounts with security controls are able to change primary emails.
 400 | 1190 | Only Enterprise or Team accounts with special permission granted are able to change primary emails.
+400 | 1210 | Column validation is not supported for column type '{0}'.
+400 | 1211 | The value "{0}" could not be saved to column "{1}." This column is restricted to "{2}" values only.
+403 | 1212 | You must be a sheet admin to override validation.
+400 | 1213 | A(n) {0} could not be saved to column "{1}" since column validation is enabled as type "{2}".
+400 | 1214 | Dropdown and Contact List columns with data validation must have at least one option value.
 429 | 4003 | Rate limit exceeded.
 400 | 5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.
 
