@@ -3718,6 +3718,20 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 -d '{"text":"This is the updated comment text."}'
 ```
 
+```java
+// Specify edited comment properties.
+Comment comment = new Comment.AddCommentBuilder()
+    .setText("This is the updated comment text")
+    .build();
+
+// Edit comment.
+smartsheet.discussionCommentResources().addComment
+    4503677744506756L,          // long sheetId
+    4503677744506756L,          // long discussionId
+    comment
+;
+```
+
 > Example Response:
 
 ```json
@@ -10268,7 +10282,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
 ```
 
 ```java
-// [todo]
+// Specify share (to one user as Editor).
+List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+    .setEmailAddress("jane.doe@smartsheet.com")
+    .setAccessLevel(AccessLevel.EDITOR)
+    .build());
+
+// Share sight.
+smartsheet.sightResources().shareResources().shareTo(
+    4583614634583940L,       // long sightId
+    shares,
+    true                     // Boolean sendEmail
+);
 ```
 
 ```python
