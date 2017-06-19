@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-06-16
+Updated 2017-06-19
 
 # Overview
 ## Introduction
@@ -197,7 +197,7 @@ token.setAccessToken("ll352u9jujauoqz4gstvsae05");
 Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
 
 // Get current user.
-smartsheet.userResources().getCurrentUser();
+UserProfile results = smartsheet.userResources().getCurrentUser();
 ```
 
 ```python
@@ -905,7 +905,7 @@ smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(
 File file = new File(filePath);
 
 // Attach file to comment.
-smartsheet.sheetResources().commentResources().attachmentResources().attachFile(
+Attachment attachment = smartsheet.sheetResources().commentResources().attachmentResources().attachFile(
     9283173393803140L,       // long sheetId
     1234567890234568L,       // long commentId
     file,
@@ -1015,7 +1015,7 @@ smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(
 File file = new File(filePath);
 
 // Attach file to row.
-smartsheet.sheetResources().rowResources().attachmentResources().attachFile(
+Attachment attachment = smartsheet.sheetResources().rowResources().attachmentResources().attachFile(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
     file,
@@ -1120,7 +1120,7 @@ smartsheet.SheetResources.AttachmentResources.AttachFile(
 File file = new File(filePath);
 
 // Attach file to sheet.
-smartsheet.sheetResources().attachmentResources().attachFile(
+Attachment attachment = smartsheet.sheetResources().attachmentResources().attachFile(
     9283173393803140L,       // long sheetId
     file,
     "application/msword"
@@ -1529,7 +1529,7 @@ smartsheet.SheetResources.AttachmentResources.GetAttachment(
 
 ```java
 // Get attachment.
-smartsheet.sheetResources().attachmentResources().getAttachment(
+Attachment attachment = smartsheet.sheetResources().attachmentResources().getAttachment(
     9283173393803140L,       // long sheetId
     0123456789012334L        // long attachmentId
 );
@@ -1900,7 +1900,7 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersi
 File file = new File(filePath);
 
 // Attach new version of the file.
-smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
+Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
     9283173393803140L,       // long sheetId
     0123456789123452L,       // long attachmentId
     file,
@@ -1969,7 +1969,7 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersi
 File file = new File(filePath);
 
 // Attach new version of the file.
-smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
+Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
     9283173393803140L,       // long sheetId
     0123456789123456L,       // long attachmentId
     file,
@@ -2977,7 +2977,7 @@ Column column2 = new Column.AddColumnToSheetBuilder()
     .build();
 
 // Add columns to the sheet.
-smartsheet.sheetResources().columnResources().addColumns(
+List<Column> results = smartsheet.sheetResources().columnResources().addColumns(
     9283173393803140L,       // long sheetId
     Arrays.asList(column1, column2)
 );
@@ -3165,14 +3165,14 @@ smartsheet.SheetResources.ColumnResources.GetColumn(
 
 ```java
 // Get column (omit 'include' parameter).
-smartsheet.sheetResources().columnResources().getColumn(
+Column results = smartsheet.sheetResources().columnResources().getColumn(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long columnId
     null                     // EnumSet<ColumnInclusion> includes
 );
 
 // Get column (specify 'include' parameter with value of "FILTERS").
-smartsheet.sheetResources().columnResources().getColumn(
+Column results = smartsheet.sheetResources().columnResources().getColumn(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long columnId
     EnumSet.of(ColumnInclusion.FILTERS)
@@ -3244,7 +3244,7 @@ smartsheet.SheetResources.ColumnResources.ListColumns(
 
 ```java
 // Get all columns (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().columnResources().listColumns(
+PagedResult<Column> results = smartsheet.sheetResources().columnResources().listColumns(
     9283173393803140L,                   // long sheetId
     null,                                // EnumSet<ColumnInclusion> includes
     null                                 // PaginationParameters
@@ -3871,7 +3871,7 @@ smartsheet.SheetResources.CommentResources.GetComment(
 
 ```java
 // Get comment.
-smartsheet.sheetResources().commentResources().getComment(
+Comment comment = smartsheet.sheetResources().commentResources().getComment(
     2252168947361668L,       // long sheetId
     4856934849340120L        // long commentId
 );
@@ -3955,7 +3955,7 @@ smartsheet.ContactResources.GetContact(
 
 ```java
 // Get contact.
-smartsheet.contactResources().getContact(
+Contact contact = smartsheet.contactResources().getContact(
     "AAAAATYU54QAD7_fNhTnhA"      // string contactId
 );
 ```
@@ -4003,7 +4003,7 @@ smartsheet.ContactResources.ListContacts(
 
 ```java
 // Get all contacts (omit pagination parameters).
-smartsheet.contactResources().listContacts(
+PagedResult<Contact> contacts = smartsheet.contactResources().listContacts(
     null        // PaginationParameters
 );
 ```
@@ -4559,7 +4559,7 @@ smartsheet.SheetResources.DiscussionResources.ListDiscussions(
 
 ```java
 // Get all discussions (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().discussionResources().listDiscussions(
+PagedResult<Discussion> results = smartsheet.sheetResources().discussionResources().listDiscussions(
     9283173393803140L,   // long sheetId
     null,                // PaginationParameters
     null                 // EnumSet<DiscussionInclusion> includes
@@ -4569,7 +4569,7 @@ smartsheet.sheetResources().discussionResources().listDiscussions(
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
-smartsheet.sheetResources().discussionResources().listDiscussions(
+PagedResult<Discussion> results = smartsheet.sheetResources().discussionResources().listDiscussions(
     9283173393803140L,   // long sheetId
     parameters,
     EnumSet.of(DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS)
@@ -4634,7 +4634,7 @@ smartsheet.SheetResources.DiscussionResources.GetDiscussion(
 
 ```java
 // Get discussion.
-smartsheet.sheetResources().discussionResources().getDiscussion(
+Discussion results = smartsheet.sheetResources().discussionResources().getDiscussion(
     9283173393803140L,       // long sheetId
     0123456789012345L        // long discussionId
 );
@@ -4725,7 +4725,7 @@ smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
 
 ```java
 // Get all row discussions (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
+PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
     2252168947361668L,       // long sheetId
     4293147074291588L,       // long rowId
     null,                    // PaginationParameters
@@ -4736,7 +4736,7 @@ smartsheet.sheetResources().rowResources().discussionResources().listDiscussions
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true').
-smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
+PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
     2252168947361668L,       // long sheetId
     4293147074291588L,       // long rowId
     parameters,
@@ -4932,7 +4932,7 @@ smartsheet.FavoriteResources.ListFavorites(
 
 ```java
 // Get all favorites (omit pagination parameters).
-smartsheet.favoriteResources().listFavorites(
+PagedResult<Favorite> results = smartsheet.favoriteResources().listFavorites(
     null        // PaginationParameters
 );
 ```
@@ -5760,7 +5760,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Copy folder (omit 'include' and 'skipRemap' parameters).
-smartsheet.folderResources().copyFolder(
+Folder results = smartsheet.folderResources().copyFolder(
     2252168947361668L,                      // long folderId
     destination,
     null,                                   // EnumSet<FolderCopyInclusion> includes
@@ -5768,7 +5768,7 @@ smartsheet.folderResources().copyFolder(
 );
 
 // Copy folder (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS").
-smartsheet.folderResources().copyFolder(
+Folder results = smartsheet.folderResources().copyFolder(
     2252168947361668L,                      // long folderId
     destination,
     EnumSet.of(FolderCopyInclusion.ALL),
@@ -6131,13 +6131,13 @@ smartsheet.FolderResources.GetFolder(
 
 ```java
 // Get folder (omit 'include' parameter).
-smartsheet.folderResources().getFolder(
+Folder results = smartsheet.folderResources().getFolder(
     7116448184199044L,       // long folderId
     null)                    // EnumSet<SourceInclusion> includes
 );
 
 // Get folder (specify 'include' parameter with value of "SOURCE").
-smartsheet.folderResources().getFolder(
+Folder results = smartsheet.folderResources().getFolder(
     7116448184199044L,       // long folderId
     EnumSet.of(SourceInclusion.SOURCE))
 );
@@ -6214,7 +6214,7 @@ smartsheet.HomeResources.FolderResources.ListFolders(
 
 ```java
 // Get all folders (omit pagination parameters).
-smartsheet.homeResources().folderResources().listFolders(
+PagedResult<Folder> results = smartsheet.homeResources().folderResources().listFolders(
     null            // PaginationParameters
 );
 ```
@@ -6278,7 +6278,7 @@ smartsheet.FolderResources.ListFolders(
 
 ```java
 // Get all folders in another folder (omit pagination parameters).
-smartsheet.folderResources().listFolders(
+PagedResult<Folder> results = smartsheet.folderResources().listFolders(
     7116448184199044L,               // long parentFolderId
     null                             // PaginationParameters
 );
@@ -6343,7 +6343,7 @@ smartsheet.WorkspaceResources.FolderResources.ListFolders(
 
 ```java
 // Get all folders in workspace (omit pagination parameters).
-smartsheet.workspaceResources().folderResources().listFolders(
+PagedResult<Folder> results = smartsheet.workspaceResources().folderResources().listFolders(
     7116448184199044L,                   // long workspaceId
     null                                 // PaginationParameters
 );
@@ -6410,7 +6410,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Move folder.
-smartsheet.folderResources().moveFolder(
+Folder results = smartsheet.folderResources().moveFolder(
     7960873114331012L,                         // long folderId
     destination
 );
@@ -6790,7 +6790,7 @@ smartsheet.GroupResources.GetGroup(
 
 ```java
 // Get group.
-smartsheet.groupResources().getGroup(
+Group results = smartsheet.groupResources().getGroup(
     6932724448552836L        // long groupId
 );
 ```
@@ -6863,7 +6863,7 @@ smartsheet.GroupResources.ListGroups(
 
 ```java
 // Get all org groups (omit pagination parameters).
-smartsheet.groupResources().listGroups(
+PagedResult<Group> results = smartsheet.groupResources().listGroups(
     null        // PaginationParameters
 );
 ```
@@ -7099,7 +7099,7 @@ smartsheet.GroupResources.AddGroupMembers(
 GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
 
 // Add members to group.
-smartsheet.groupResources().memberResources().addGroupMembers(
+List<GroupMember> results = smartsheet.groupResources().memberResources().addGroupMembers(
     7917992160847748L,       // long groupId
     Arrays.asList(member)
 );
@@ -7287,12 +7287,12 @@ smartsheet.HomeResources.GetHome(
 
 ```java
 // Get all contents (omit 'include' parameter).
-smartsheet.homeResources().getHome(
+Home results = smartsheet.homeResources().getHome(
     null            // EnumSet<SourceInclusion> includes
 );
 
 // Get all contents (specify 'include' parameter with value of "SOURCE").
-smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
+Home results = smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
 ```
 
 ```python
@@ -7476,7 +7476,7 @@ smartsheet.ReportResources.GetReport(
 
 ```java
 // Get report (omit 'include', 'pageSize', and 'page' parameters).
-smartsheet.reportResources().getReport(
+Report results = smartsheet.reportResources().getReport(
     4583173393803140L,      // long reportId
     null,                   // EnumSet<ReportInclusion> includes
     null,                   // int pageSize
@@ -7484,7 +7484,7 @@ smartsheet.reportResources().getReport(
 );
 
 // Get report (specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2").
-smartsheet.reportResources().getReport(
+Report results = smartsheet.reportResources().getReport(
     4583173393803140L,      // long reportId
     EnumSet.of(
         ReportInclusion.ATTACHMENTS,
@@ -7781,7 +7781,7 @@ smartsheet.ReportResources.ListReports(
 
 ```java
 // Get all reports (omit pagination parameters).
-smartsheet.reportResources().listReports(
+PagedResult<Report> results = smartsheet.reportResources().listReports(
     null,               // PaginationParameters
     null                // Date modifiedSince
 );
@@ -7790,7 +7790,7 @@ smartsheet.reportResources().listReports(
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all reports (specify 'includeAll' parameter with value of 'true').
-smartsheet.reportResources().listReports(parameters, modifiedSince);
+PagedResult<Report> results = smartsheet.reportResources().listReports(parameters, modifiedSince);
 ```
 
 ```python
@@ -8372,7 +8372,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRo
     .build();
 
 // Copy rows (omit 'include' and 'ignoreRowsNotFound' parameters).
-smartsheet.sheetResources().rowResources().copyRows(
+CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
     2258256056870788L,                                              // long sheetId
     null,                                                           // EnumSet<RowCopyInclusion> includes
     true,                                                           // Boolean ignoreRowsNotFound
@@ -8380,7 +8380,7 @@ smartsheet.sheetResources().rowResources().copyRows(
 );
 
 // Copy rows (specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true').
-smartsheet.sheetResources().rowResources().copyRows(
+CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
     2258256056870788L,                                              // long sheetId
     EnumSet.of(RowCopyInclusion.CHILDREN),
     true,
@@ -8546,7 +8546,7 @@ smartsheet.SheetResources.RowResources.GetRow(
 
 ```java
 // Get row (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().rowResources().getRow(
+Row results = smartsheet.sheetResources().rowResources().getRow(
     4583173393803140L,       // long sheetId
     2361756178769796L,       // long rowId
     null,                    // EnumSet<RowInclusion> includes
@@ -8554,7 +8554,7 @@ smartsheet.sheetResources().rowResources().getRow(
 );
 
 // Get row (specify 'include' parameter with values of "COLUMNS" and "COLUMN_TYPE", and 'exclude' parameter with value of "NONEXISTENT_CELLS").
-smartsheet.sheetResources().rowResources().getRow(
+Row results = smartsheet.sheetResources().rowResources().getRow(
     4583173393803140L,       // long sheetId
     2361756178769796L,       // long rowId
     EnumSet.of(
@@ -8693,7 +8693,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRo
     .build();
 
 // Move rows (omit 'include' and 'ignoreRowsNotFound' parameters).
-smartsheet.sheetResources().rowResources().moveRows(
+CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
     2258256056870788L,                  // long sheetId
     null,                               // EnumSet<RowMoveInclusion> includes
     true,                               // Boolean ignoreRowsNotFound
@@ -8701,7 +8701,7 @@ smartsheet.sheetResources().rowResources().moveRows(
 );
 
 // Move rows (specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true').
-smartsheet.sheetResources().rowResources().moveRows(
+CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
     2258256056870788L,                  // long sheetId
     EnumSet.of(
         RowMoveInclusion.ATTACHMENTS,
@@ -8869,7 +8869,7 @@ Row rowB = new Row.UpdateRowBuilder()
     .build();
 
 // Update rows in sheet.
-smartsheet.sheetResources().rowResources().updateRows(
+List<Row> results = smartsheet.sheetResources().rowResources().updateRows(
     2068827774183300L,                              // long sheetId
     Arrays.asList(rowA, rowB)
 );
@@ -9140,7 +9140,7 @@ smartsheet.SearchResources.Search(query);
 String query = "stuff";
 
 // Search everything.
-smartsheet.searchResources().search(query);
+SearchResult results = smartsheet.searchResources().search(query);
 ```
 
 ```python
@@ -9367,7 +9367,7 @@ smartsheet.ServerInfoResources.GetServerInfo();
 
 ```java
 // Get server info.
-smartsheet.serverInfoResources().getServerInfo();
+ServerInfo results = smartsheet.serverInfoResources().getServerInfo();
 ```
 
 ```python
@@ -9529,7 +9529,7 @@ smartsheet.ReportResources.ShareResources.GetShare(
 
 ```java
 // Get report share.
-smartsheet.reportResources().shareResources().getShare(
+Share results = smartsheet.reportResources().shareResources().getShare(
     665829219035012L,        // long reportId
     "AAAQSF82F1eE"           // string shareId
 );
@@ -9586,7 +9586,7 @@ smartsheet.ReportResources.ShareResources.ListShares(
 
 ```java
 // Get all report shares (omit pagination parameters).
-smartsheet.reportResources().shareResources().listShares(
+PagedResult<Share> results = smartsheet.reportResources().shareResources().listShares(
     665829219035012L,        // long reportId
     null,                    // PaginationParameters
     true                     // Boolean includeWorkspaceShares
@@ -9882,7 +9882,7 @@ smartsheet.SheetResources.ShareResources.GetShare(
 
 ```java
 // Get sheet share.
-smartsheet.sheetResources().shareResources().getShare(
+Share results = smartsheet.sheetResources().shareResources().getShare(
     4583614634583940L,       // long sheetId
     "AAAASuWWFOeE"           // string shareId
 );
@@ -9938,7 +9938,7 @@ smartsheet.SheetResources.ShareResources.ListShares(
 
 ```java
 // Get all sheet shares (omit pagination parameters).
-smartsheet.sheetResources().shareResources().listShares(
+PagedResult<Share> results = smartsheet.sheetResources().shareResources().listShares(
     4583614634583940L,       // long sheetId
     null,                    // PaginationParameters
     true                     // Boolean includeWorkspaceShares
@@ -10464,7 +10464,7 @@ smartsheet.WorkspaceResources.ShareResources.GetShare(
 
 ```java
 // Get workspace share.
-smartsheet.workspaceResources().shareResources().getShare(
+Share results = smartsheet.workspaceResources().shareResources().getShare(
     1656220827314052L,       // long workspaceId
     "AQAISF82FOeE"           // string shareId
 );
@@ -10520,7 +10520,7 @@ smartsheet.WorkspaceResources.ShareResources.ListShares(
 
 ```java
 // Get all workspace shares (omit pagination parameters).
-smartsheet.workspaceResources().shareResources().listShares(
+PagedResult<Share> results = smartsheet.workspaceResources().shareResources().listShares(
     1656220827314052L,       // long workspaceId
     null,                    // PaginationParameters
     true                     // Boolean includeWorkspaceShares
@@ -10880,14 +10880,14 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Copy sheet (omit 'include' parameter).
-smartsheet.sheetResources().copySheet(
+Sheet returns = smartsheet.sheetResources().copySheet(
     9283173393803140L,                          // long sheetId
     destination,
     null                                        // EnumSet<SheetCopyInclusion> includes
 );
 
 // Copy sheet (specify 'include' parameter with value of "all").
-smartsheet.sheetResources().copySheet(
+Sheet returns = smartsheet.sheetResources().copySheet(
     9283173393803140L,                         // long sheetId
     destination,
     EnumSet.of(SheetCopyInclusion.ALL)
@@ -11595,7 +11595,7 @@ Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
     .build();
 
 // Create sheet from template in the specified folder (omit 'include' parameter).
-smartsheet.sheetResources().createSheetInFolderFromTemplate(
+smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
     1656220827314052L,                  // long folderId
     sheet,
     null                                // EnumSet<SheetTemplateInclusion> includes
@@ -11731,7 +11731,7 @@ smartsheet.SheetResources.GetSheetVersion(
 
 ```java
 // Get sheet version.
-smartsheet.sheetResources().getSheetVersion(
+int = smartsheet.sheetResources().getSheetVersion(
     1531988831168388L        // long sheetId
 );
 ```
@@ -11810,7 +11810,7 @@ smartsheet.SheetResources.GetSheet(
 
 ```java
 // Get sheet (omit all parameters).
-smartsheet.sheetResources().getSheet(
+Sheet results = smartsheet.sheetResources().getSheet(
     9283173393803140L,      // long sheetId
     null,                   // EnumSet<SheetInclusion> includes    
     null,                   // EnumSet<ObjectExclusion> excludes
@@ -12157,7 +12157,7 @@ smartsheet.SheetResources.ListSheets(
 
 ```java
 // Get all sheets (omit 'include' parameter and pagination parameters).
-smartsheet.sheetResources().listSheets(
+PagedResult<Sheet> results = smartsheet.sheetResources().listSheets(
     null,           // EnumSet<SourceInclusion> includes
     null,           // PaginationParameters
     null            // Date modifiedSince
@@ -12167,7 +12167,7 @@ smartsheet.sheetResources().listSheets(
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all sheets (specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true').
-smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
+PagedResult<Sheet> results = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
 ```
 
 ```python
@@ -12259,7 +12259,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Move sheet.
-smartsheet.sheetResources().moveSheet(
+Sheet results = smartsheet.sheetResources().moveSheet(
     4583173393803140L,                         // long sheetId
     destination
 );
@@ -12340,7 +12340,7 @@ smartsheet.SheetResources.GetPublishStatus(
 
 ```java
 // Get sheet publish status.
-smartsheet.sheetResources().getPublishStatus(
+ReportPublish results = smartsheet.sheetResources().getPublishStatus(
     4583173393803140L,       // long sheetId
 );
 ```
@@ -12438,7 +12438,7 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder()
     .build();
 
 // Set sheet publish status.
-smartsheet.sheetResources().updatePublishStatus(
+ReportPublish results = smartsheet.sheetResources().updatePublishStatus(
     4583614634583940L,       // long sheetId
     sheetPublish
 );
@@ -12825,13 +12825,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 // Specify destination.
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
-    .setDestinationId(9283173393803140L)        // long destinationFolderId
+    .setDestinationId(3791509922310020L)        // long destinationFolderId
     .setNewName("newSightName")
     .build();
 
 // Copy sight.
-smartsheet.sightResources().copySight(
-    9283173393803140L,                          // long sightId
+Sight results = smartsheet.sightResources().copySight(
+    6327127650920324L,                          // long sightId
     destination
 );
 ```
@@ -12886,7 +12886,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```java
 // Delete sight.
 smartsheet.sightResources().deleteSight(
-    3056651398234562L       // long sightId
+    3100061023397764L       // long sightId
 );
 ```
 
@@ -12932,8 +12932,8 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 
 ```java
 // Get sight.
-smartsheet.sightResources().getSight(
-    3056651398234562L       // long sightId
+Sight results = smartsheet.sightResources().getSight(
+    6327127650920324L       // long sightId
 );
 ```
 
@@ -13023,7 +13023,7 @@ curl https://api.smartsheet.com/2.0/sights \
 
 ```java
 // List all sights.
-smartsheet.sightResources().listSights(
+PagedResult<Sight> results = smartsheet.sightResources().listSights(
     null,       // PaginationParameters
     null        // Date modifiedSince
 );
@@ -13109,7 +13109,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Move sight.
-smartsheet.sightResources().moveSight(
+Sight results = smartsheet.sightResources().moveSight(
     9283173393803140L,                          // long sightId
     destination
 );
@@ -13374,7 +13374,7 @@ smartsheet.TemplateResources.ListPublicTemplates(
 
 ```java
 // Get all public templates (omit pagination parameters).
-smartsheet.templateResources().listPublicTemplates(
+PagedResult<Template> results = smartsheet.templateResources().listPublicTemplates(
     null        // PaginationParameters
 );
 ```
@@ -13427,7 +13427,7 @@ smartsheet.TemplateResources.ListUserCreatedTemplates(
 
 ```java
 // Get all user-created templates (omit pagination parameters).
-smartsheet.templateResources().listUserCreatedTemplates(
+PagedResult<Template> results = smartsheet.templateResources().listUserCreatedTemplates(
     null        // PaginationParameters
 );
 ```
@@ -14152,7 +14152,7 @@ smartsheet.UserResources.GetCurrentUser();
 
 ```java
 // Get current user.
-smartsheet.userResources().getCurrentUser();
+UserProfile results = smartsheet.userResources().getCurrentUser();
 ```
 
 ```python
@@ -14229,7 +14229,7 @@ smartsheet.UserResources.GetUser(
 
 ```java
 // Get user.
-smartsheet.userResources().getUser(
+UserProfile results = smartsheet.userResources().getUser(
     48569348493401200L           // long userId
 );
 ```
@@ -14318,7 +14318,7 @@ smartsheet.UserResources.ListUsers(
 
 ```java
 // Get all users (omit 'email' parameter and pagination parameters).
-smartsheet.userResources().listUsers(
+PagedResult<User> results = smartsheet.userResources().listUsers(
     null,       // Set<String> email
     null        // PaginationParameters
 );
@@ -14327,7 +14327,7 @@ smartsheet.userResources().listUsers(
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all users (specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true').
-smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
+PagedResult<User> results = smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
 ```
 
 ```python
@@ -14627,7 +14627,7 @@ smartsheet.WorkspaceResources.CopyWorkspace(
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setNewName("newWorkspaceName").build();
 
 // Copy workspace (omit 'include' and 'skipRemap' parameters).
-smartsheet.workspaceResources().copyWorkspace(
+Workspace results = smartsheet.workspaceResources().copyWorkspace(
     7116448184199044L,          // long workspaceId
     destination,
     null,                       // EnumSet<WorkspaceCopyInclusion> includes
@@ -14635,7 +14635,7 @@ smartsheet.workspaceResources().copyWorkspace(
 );
 
 // Copy workspace (specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS").
-smartsheet.workspaceResources().copyWorkspace(
+Workspace results = smartsheet.workspaceResources().copyWorkspace(
     7116448184199044L,          // long workspaceId
     destination,
     EnumSet.of(WorkspaceCopyInclusion.ALL),
@@ -14871,14 +14871,14 @@ smartsheet.WorkspaceResources.GetWorkspace(
 
 ```java
 // Get workspace (omit 'loadAll' and 'include' parameters).
-smartsheet.workspaceResources().getWorkspace(
+Workspace results = smartsheet.workspaceResources().getWorkspace(
     6621332407379844L,      // long workspaceId
     null,                   // Boolean loadAll
     null                    // EnumSet<SourceInclusion> includes
 );
 
 // Get workspace (specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source").
-smartsheet.workspaceResources().getWorkspace(
+Workspace results = smartsheet.workspaceResources().getWorkspace(
     6621332407379844L,      // long workspaceId
     false,                  // Boolean loadAll
     EnumSet.of(SourceInclusion.SOURCE)
@@ -14956,7 +14956,7 @@ smartsheet.WorkspaceResources.ListWorkspaces(
 
 ```java
 // Get all workspaces (omit pagination parameters).
-smartsheet.workspaceResources().listWorkspaces(
+PagedResult<Workspace> results = smartsheet.workspaceResources().listWorkspaces(
     null        // PaginationParameters
 );
 ```
