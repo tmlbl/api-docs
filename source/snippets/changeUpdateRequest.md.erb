@@ -21,31 +21,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests/{updateReque
 ```
 
 ```java
-// Specify recipients.
-RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
-    .setEmail("recipient1@smartsheet.com")
-    .setEmail("recipient2@smartsheet.com")
-    .build();
-
-List<Recipient> recipients = new ArrayList<Recipient>();
-recipients.add(recipientEmail);
-
-// Configure email.
-MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
-    .setSendTo(recipients)
-    .setSubject("some subject")
-    .setMessage("some message")
-    .setCcMe(false)
-    .setRowIds(Arrays.asList(rowId1, rowId2)
-    .setColumnIds(Arrays.asList(columnId1, columnId2)
-    .setIncludeAttachments(false)
-    .setIncludeDiscussions(false)
-    .build();
+// Identify the update request you want to change.
+UpdateRequest updateRequest = new UpdateRequest();
+updateRequest.setId(143978411648900L);        // long updateRequestId
+updateRequest.setSubject("new subject");
+updateRequest.setMessage("updated message");
 
 // Change update request.
-SheetUpdateRequestResources returns = smartsheet.sheetUpdateRequestResources().updateUpdateRequest(
-    1639534409607044L,      // long sheetId
-    multiRowEmail
+smartsheet.sheetResources().updateRequestResources().updateUpdateRequest(
+    1639534409607044L,          // long sheetId
+    updateRequest
 );
 ```
 

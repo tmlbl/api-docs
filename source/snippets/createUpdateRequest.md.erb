@@ -50,7 +50,7 @@ smartsheet.SheetResources.SendUpdateRequest(sheetId, multiEmail);
 ```javascript
 // [todo]
 ```
-<!--Pending SDK Update
+
 ```java
 // Specify recipients.
 RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
@@ -61,26 +61,21 @@ RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
 List<Recipient> recipients = new ArrayList<Recipient>();
 recipients.add(recipientEmail);
 
-// Configure email.
-MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
-    .setSendTo(recipients)
-    .setSubject("some subject")
-    .setMessage("some message")
-    .setCcMe(false)
-    .setRowIds(Arrays.asList(rowId1, rowId2))
-    .setColumnIds(Arrays.asList(columnId1, columnId2))
-    .setIncludeAttachments(false)
-    .setIncludeDiscussions(false)
-    .build();
+// Create update request.
+UpdateRequest updateRequest = new UpdateRequest();
+updateRequest.setSendTo(recipients);
+updateRequest.setSubject("some subject");
+updateRequest.setMessage("example message");
+updateRequest.setRowIds(Arrays.asList(3344087179913092L, 7847686807283588L));
+updateRequest.setColumnIds(Arrays.asList(1735559124150148L, 1735559124150148L));
+updateRequest.setIncludeAttachments(false);
+updateRequest.setIncludeDiscussions(false);
 
 // Create update request.
-UpdateRequest returns = smartsheet.sheetUpdateRequestResources().createUpdateRequest(
+smartsheet.sheetResources().updateRequestResources().createUpdateRequest(
     1639534409607044L,      // long sheetId
-    multiRowEmail
+    updateRequest
 );
-```-->
-```java
-[Todo]
 ```
 
 <!--Pending SDK Update 
