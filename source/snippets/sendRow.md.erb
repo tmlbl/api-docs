@@ -22,7 +22,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/emails \
 ```
 
 ```javascript
-// Configure email.
+// Configure email
 var email = {
     "sendTo": [
         {
@@ -39,14 +39,14 @@ var email = {
     "includeAttachments": true
 };
 
-// Set options.
+// Set options
 var options = {
     body: email,
     sheetId: 2252168947361668,
     rowId: 4293147074291588
 };
 
-// Send row via email.
+// Send row via email
 smartsheet.sheets.sendRow(options)
     .then(function (data) {
         console.log(data);
@@ -57,13 +57,13 @@ smartsheet.sheets.sendRow(options)
 ```
 
 ```csharp
-// Specify recipients.
+// Specify recipients
 Recipient[] recipients = new Recipient[] {
     new Recipient { Email = "john.doe@smartsheet.com" },
     new Recipient { GroupId = 2258118617917316 }
 };
 
-// Configure email.
+// Configure email
 RowEmail rowEmail = new RowEmail {
     SendTo = recipients,
     Subject = "Check these rows out!",
@@ -73,29 +73,29 @@ RowEmail rowEmail = new RowEmail {
     IncludeDiscussions = false
 };
 
-// Send row via email.
+// Send row via email
 smartsheet.SheetResources.RowResources.SendRow(2252168947361668, 4293147074291588, rowEmail);      // sheetId, rowId
 ```
 
 ```java
-// Specify individual recipient.
+// Specify individual recipient
 RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
     .setEmail("john.doe@smartsheet.com")
     .build();
 
-// Specify group recipient.
+// Specify group recipient
 RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder()
     .setGroupId(2258118617917316L)
     .build();
 
-// Set recipients.
+// Set recipients
 List<Recipient> recipients = Arrays.asList(recipientEmail, recipientGroup);
 
-// Set format details.
+// Set format details
 FormatDetails formatDetails = new FormatDetails();
 formatDetails.setPaperSize(PaperSize.A0);
 
-// Configure email.
+// Configure email
 RowEmail email = new RowEmail.AddRowEmailBuilder()
     .setSendTo(recipients)
     .setSubject("Check these rows out!")
@@ -105,7 +105,7 @@ RowEmail email = new RowEmail.AddRowEmailBuilder()
     .setIncludeDiscussions(true)
     .build();
 
-// Send row via email.
+// Send row via email
 smartsheet.sheetResources().rowResources().sendRow(2252168947361668L, 4293147074291588L, email);        // sheetId, rowId
 ```
 

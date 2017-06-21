@@ -166,11 +166,11 @@ curl https://api.smartsheet.com/2.0/users/me \
 ```
 
 ```javascript
-// Set the access token.
+// Set the access token
 var client = require('smartsheet');
 var smartsheet = client.createClient({accessToken:'ll352u9jujauoqz4gstvsae05'});
 
-// Get current user.
+// Get current user
 smartsheet.users.getCurrentUser()
 	.then(function(data) {
 		console.log(data);
@@ -181,30 +181,30 @@ smartsheet.users.getCurrentUser()
 ```
 
 ```csharp
-// Set the access token.
+// Set the access token
 Token token = new Token();
 token.AccessToken = "ll352u9jujauoqz4gstvsae05";
 SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
 
-// Get current user.
+// Get current user
 smartsheet.UserResources.GetCurrentUser();
 ```
 
 ```java
-// Set the access token.
+// Set the access token
 Token token = new Token();
 token.setAccessToken("ll352u9jujauoqz4gstvsae05");
 Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
 
-// Get current user.
+// Get current user
 UserProfile results = smartsheet.userResources().getCurrentUser();
 ```
 
 ```python
-# Create base client object and set the access token.
+# Create base client object and set the access token
 smartsheet = smartsheet.Smartsheet('ll352u9jujauoqz4gstvsae05')
 
-# Get current user.
+# Get current user
 smartsheet.Users.get_current_user()
 ```
 
@@ -311,7 +311,7 @@ Many Smartsheet API operations handle sheets, rows, columns, and cells. Each is 
 
 Before you begin, you should already have an access token, which you used in the exercise above. Use the same access token for this walkthrough.
 
-1. The first thing you want is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [GET All Sheets](#get-all-sheets) if you want to do this programmatically.
+1. The first thing you want is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [List Sheets](#list-sheets) if you want to do this programmatically.
 
     <img src="images/sheet-properties.png" alt="Image of the Sheet Properties window" />
 
@@ -677,7 +677,7 @@ However, there are some operations that support *partial success*, which means t
 ## Paging
 
 The Smartsheet API contains a number of *index endpoints* (typically denoted in the documentation with titles beginning with "Get All" or "List") which return arrays of objects.
-Examples include `GET` [/users](#get-all-users), [/sheets](#get-all-sheets), [/sheets/{sheetId}/columns](#get-all-columns), and many others.  These endpoints all support pagination, meaning
+Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/{sheetId}/columns](#list-columns), and many others.  These endpoints all support pagination, meaning
 you can retrieve paged subsets of results, enabling you to process potentially large result sets in smaller chunks.
 
 ### Paging Query String Parameters
@@ -870,7 +870,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
@@ -880,7 +880,7 @@ var options = {
     commentId: 4293147074291588
 };
 
-// Attach file to comment.
+// Attach file to comment
 smartsheet.sheets.addCommentAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -900,10 +900,10 @@ smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(
 ```
 
 ```java
-// Specify file to be attached.
+// Specify file to be attached
 File file = new File(filePath);
 
-// Attach file to comment.
+// Attach file to comment
 Attachment attachment = smartsheet.sheetResources().commentResources().attachmentResources().attachFile(
     9283173393803140L,       // long sheetId
     1234567890234568L,       // long commentId
@@ -978,7 +978,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
@@ -988,7 +988,7 @@ var options = {
     rowId: 4293147074291588
 };
 
-// Attach file to row.
+// Attach file to row
 smartsheet.sheets.addRowAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1008,10 +1008,10 @@ smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(
 ```
 
 ```java
-// Specify file to be attached.
+// Specify file to be attached
 File file = new File(filePath);
 
-// Attach file to row.
+// Attach file to row
 Attachment attachment = smartsheet.sheetResources().rowResources().attachmentResources().attachFile(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
@@ -1083,7 +1083,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
@@ -1092,7 +1092,7 @@ var options = {
     sheetId: 2252168947361668
 };
 
-// Attach file to sheet.
+// Attach file to sheet
 smartsheet.sheets.addAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1111,10 +1111,10 @@ smartsheet.SheetResources.AttachmentResources.AttachFile(
 ```
 
 ```java
-// Specify file to be attached.
+// Specify file to be attached
 File file = new File(filePath);
 
-// Attach file to sheet.
+// Attach file to sheet
 Attachment attachment = smartsheet.sheetResources().attachmentResources().attachFile(
     9283173393803140L,       // long sheetId
     file,
@@ -1157,21 +1157,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```
 
 ```javascript
-// Specify URL attachment.
+// Specify URL attachment
 var attachment = {
     "name": "Search Engine",
     "attachmentType": "LINK",
     "url": "http://www.google.com"
 };
 
-// Set options.
+// Set options
 var options = {
     body: attachment,
     sheetId: 2252168947361668,
     commentId: 4445024629876612
 };
 
-// Attach URL to comment.
+// Attach URL to comment
 smartsheet.sheets.addCommentAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1182,13 +1182,13 @@ smartsheet.sheets.addCommentAttachment(options)
 ```
 	
 ```csharp
-// Create attachment.
+// Create attachment
 Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
 
-// Attach URL to comment.
+// Attach URL to comment
 smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
     9283173393803140,           // long sheetId
     0123456789012345,           // long commentId
@@ -1197,7 +1197,7 @@ smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
 ```
 
 ```java
-// Create attachment.
+// Create attachment
 Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .setUrl("http://www.google.com")
     .setAttachmentType(AttachmentType.LINK)
@@ -1205,7 +1205,7 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .setDescription("A popular search engine")
     .build();
 
-// Attach URL to comment.
+// Attach URL to comment
 smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long commentId
@@ -1214,14 +1214,14 @@ smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
 ```
 
 ```python
-# Create URL attachment.
+# Create URL attachment
 url = smartsheet.models.Attachment({
     'name': 'Search Engine',
     'attachment_type': 'LINK',
     'url': 'http://www.google.com'
 })
 
-# Attach URL to comment.
+# Attach URL to comment
 smartsheet.Attachments.attach_url_to_comment(sheetId, commentId, url)
 ```
 
@@ -1248,7 +1248,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```
 
 ```javascript
-// Specify URL attachment.
+// Specify URL attachment
 var attachment = {
     "name": "Search Engine",
     "description": "A popular search engine",
@@ -1256,14 +1256,14 @@ var attachment = {
     "url": "http://www.google.com"
 };
 
-// Set options.
+// Set options
 var options = {
     body: attachment,
     sheetId: 2252168947361668,
     rowId: 4293147074291588
 };
 
-// Attach URL to row.
+// Attach URL to row
 smartsheet.sheets.addRowAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1274,13 +1274,13 @@ smartsheet.sheets.addRowAttachment(options)
 ```
 
 ```csharp
-// Create attachment.
+// Create attachment
 Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
 
-// Attach URL to row.
+// Attach URL to row
 smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
     9283173393803140,           // long sheetId
     0123456789012345,           // long rowId
@@ -1289,7 +1289,7 @@ smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
 ```
 
 ```java
-// Create attachment.
+// Create attachment
 Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .setUrl("http://www.google.com")
     .setAttachmentType(AttachmentType.LINK)
@@ -1297,7 +1297,7 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .setDescription("A popular search engine")
     .build();
 
-// Attach URL to row.
+// Attach URL to row
 smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
@@ -1306,7 +1306,7 @@ smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
 ```
 
 ```python
-# Create URL attachment.
+# Create URL attachment
 url = smartsheet.models.Attachment({
     'name': 'Search Engine',
     'description': 'A popular search engine.'
@@ -1314,7 +1314,7 @@ url = smartsheet.models.Attachment({
     'url': 'http://www.google.com'
 })
 
-# Attach URL to row.
+# Attach URL to row
 smartsheet.Attachments.attach_url_to_row(sheetId, rowId, url)
 ```
 
@@ -1341,7 +1341,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```
 
 ```javascript
-// Specify URL attachment.
+// Specify URL attachment
 var attachment = {
     "name": "Search Engine",
     "description": "A popular search engine",
@@ -1349,13 +1349,13 @@ var attachment = {
     "url": "http://www.google.com"
 };
 
-// Set options.
+// Set options
 var options = {
     body: attachment,
     sheetId: 2252168947361668
 };
 
-// Attach URL to sheet.
+// Attach URL to sheet
 smartsheet.sheets.addAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1366,13 +1366,13 @@ smartsheet.sheets.addAttachment(options)
 ```
 
 ```csharp
-// Create attachment.
+// Create attachment
 Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
 
-// Attach URL to sheet.
+// Attach URL to sheet
 smartsheet.SheetResources.AttachmentResources.AttachUrl(
     9283173393803140,           // long sheetId
     attachment
@@ -1380,7 +1380,7 @@ smartsheet.SheetResources.AttachmentResources.AttachUrl(
 ```
 
 ```java
-// Create attachment.
+// Create attachment
 Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .setUrl("http://www.google.com")
     .setAttachmentType(AttachmentType.LINK)
@@ -1388,7 +1388,7 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .setDescription("A popular search engine")
     .build();
 
-// Attach URL to sheet.
+// Attach URL to sheet
 smartsheet.sheetResources().attachmentResources().attachUrl(
     9283173393803140L,       // long sheetId
     attachment
@@ -1396,7 +1396,7 @@ smartsheet.sheetResources().attachmentResources().attachUrl(
 ```
 
 ```python
-# Create URL attachment.
+# Create URL attachment
 url = smartsheet.models.Attachment({
     'name': 'Search Engine',
     'description': 'A popular search engine.',
@@ -1404,7 +1404,7 @@ url = smartsheet.models.Attachment({
     'url': 'http://www.google.com'
 })
 
-# Attach URL to sheet.
+# Attach URL to sheet
 smartsheet.Attachments.attach_url_to_sheet(sheetId, url)
 ```
 
@@ -1429,13 +1429,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     attachmentId: 7169782752536452,
 };
 
-// Delete attachment.
+// Delete attachment
 smartsheet.sheets.deleteAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1494,13 +1494,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     attachmentId: 4583173393803140
 };
 
-// Get attachment.
+// Get attachment
 smartsheet.sheets.getAttachment(options)
     .then(function (data) {
         console.log(data);
@@ -1561,12 +1561,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668
 };
 
-// List attachments.
+// List attachments
 smartsheet.sheets.listAttachments(options)
     .then(function (data) {
         console.log(data);
@@ -1657,13 +1657,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     discussionId: 3962273862576004
 };
 
-// List discussion attachments.
+// List discussion attachments
 smartsheet.sheets.listDiscussionAttachments(options)
     .then(function (data) {
         console.log(data);
@@ -1760,13 +1760,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     rowId: 4293147074291588
 };
 
-// List row attachments.
+// List row attachments
 smartsheet.sheets.getRowAttachments(options)
     .then(function (data) {
         console.log(data);
@@ -1880,10 +1880,10 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersi
 ```
 
 ```java
-// Specify the new file to be attached.
+// Specify the new file to be attached
 File file = new File(filePath);
 
-// Attach new version of the file.
+// Attach new version of the file
 Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
     9283173393803140L,       // long sheetId
     0123456789123452L,       // long attachmentId
@@ -1917,7 +1917,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
@@ -1927,7 +1927,7 @@ var options = {
     rowId: 4293147074291588
 };
 
-// Attach new version of the file.
+// Attach new version of the file
 smartsheet.sheets.attachNewVersion(options)
     .then(function (data) {
         console.log(data);
@@ -1947,10 +1947,10 @@ smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersi
 ```
 
 ```java
-// Specify the new file to be attached.
+// Specify the new file to be attached
 File file = new File(filePath);
 
-// Attach new version of the file.
+// Attach new version of the file
 Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
     9283173393803140L,       // long sheetId
     0123456789123456L,       // long attachmentId
@@ -2007,13 +2007,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     attachmentId: 5510069950408580
 };
 
-// Delete all versions of the attachment.
+// Delete all versions of the attachment
 smartsheet.sheets.deleteAllAttachmentVersions(options)
     .then(function (data) {
         console.log(data);
@@ -2071,13 +2071,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     attachmentId: 5510069950408580
 };
 
-// List versions of the attachment.
+// List versions of the attachment
 smartsheet.sheets.listAttachmentVersions(options)
     .then(function (data) {
         console.log(data);
@@ -2344,14 +2344,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     rowId: 4293147074291588,
     columnId: 642523719853956
 };
 
-// Get cell history.
+// Get cell history
 smartsheet.sheets.getCellHistory(options)
     .then(function (data) {
         console.log(data);
@@ -2658,10 +2658,10 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
      |     |     |
 -----|-----|-----|
 **imageId** | string | Image Id
-**width** | number | Image width (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
-**height** | number | Image height (in pixels).<br/>In the [Get All Image URLs](#get-all-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [Get All Image URLs](#get-all-image-urls).) 
+**width** | number | Image width (in pixels).<br/>In the [Get All Image URLs](#list-image-urls) request, this (optional) attribute represents requested width; in the response, it represents actual width of the image returned. (See [List Image URLs](#list-image-urls).) 
+**height** | number | Image height (in pixels).<br/>In the [Get All Image URLs](#list-image-urls) request, this (optional) attribute represents requested height; in the response, it represents actual height of the image returned. (See [List Image URLs](#list-image-urls).) 
 **url** | string | Temporary URL that can be used to retrieve the image. This attribute can be present in a response but is never specified in a request.
-**error** | [Error](#complete-error-code-list) | Error Object. Present in the [Get All Image URLs](#get-all-image-urls) response only if an error occurred retrieving the image.
+**error** | [Error](#complete-error-code-list) | Error Object. Present in the [Get All Image URLs](#list-image-urls) response only if an error occurred retrieving the image.
 
 ### ImageUrlMap Object
 
@@ -2884,7 +2884,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 ```
 
 ```javascript
-// Specify new columns.
+// Specify new columns
 var column = [
     {
         "title": "New Picklist Column 1",
@@ -2904,13 +2904,13 @@ var column = [
     }
 ];
 
-// Set options.
+// Set options
 var options = {
     body: column,
     sheetId: 2252168947361668
 };
 
-// Add columns to the sheet.
+// Add columns to the sheet
 smartsheet.sheets.addColumn(options)
     .then(function (data) {
         console.log(data);
@@ -2921,15 +2921,15 @@ smartsheet.sheets.addColumn(options)
 ```
 
 ```csharp
-// Create a column.
+// Create a column
 Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST)
     .SetOptions( new string[] { "First", "Second", "Third" })
     .Build();
 
-// Create another column.
+// Create another column
 Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
 
-// Add columns to the sheet.
+// Add columns to the sheet
 smartsheet.SheetResources.ColumnResources.AddColumns(
     9283173393803140, // long sheetId
     new Column[] { columnA, columnB }
@@ -2937,7 +2937,7 @@ smartsheet.SheetResources.ColumnResources.AddColumns(
 ```
 
 ```java
-// Create columns.
+// Create columns
 Column column1 = new Column.AddColumnToSheetBuilder()
     .setTitle("New Picklist Column 1")
     .setType(ColumnType.PICKLIST)
@@ -2952,7 +2952,7 @@ Column column2 = new Column.AddColumnToSheetBuilder()
     .setIndex(4)
     .build();
 
-// Add columns to the sheet.
+// Add columns to the sheet
 List<Column> results = smartsheet.sheetResources().columnResources().addColumns(
     9283173393803140L,       // long sheetId
     Arrays.asList(column1, column2)
@@ -2960,7 +2960,7 @@ List<Column> results = smartsheet.sheetResources().columnResources().addColumns(
 ```
 
 ```python
-# Create the columns.
+# Create the columns
 column1 = smartsheet.models.Column({
     'title': 'New Picklist Column 1',
     'type': 'PICKLIST',
@@ -2979,7 +2979,7 @@ column2 = smartsheet.models.Column({
     'index': 4
 })
 
-# Add columns to the sheet.
+# Add columns to the sheet
 smartsheet.Sheets.add_columns(sheetId, [column1, column2])
 ```
 
@@ -3041,13 +3041,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     columnId: 7881817631025028
 };
 
-// Delete column.
+// Delete column
 smartsheet.sheets.deleteColumn(options)
     .then(function (data) {
         console.log(data);
@@ -3104,13 +3104,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     columnId: 7960873114331012
 };
 
-// Get column.
+// Get column
 smartsheet.sheets.getColumns(options)
     .then(function (data) {
         console.log(data);
@@ -3190,7 +3190,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668
 };
@@ -3227,7 +3227,7 @@ PagedResult<Column> results = smartsheet.sheetResources().columnResources().list
 action = smartsheet.Sheets.get_columns(sheetId, include_all=True)
 columns = action.data
 
-# Paginate the list of columns (100 columns per page).
+# Paginate the list of columns (100 columns per page)
 action = smartsheet.Sheets.get_columns(sheetId)
 pages = action.total_pages
 columns = action.data
@@ -3294,7 +3294,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```
 
 ```javascript
-// Specify column properties.
+// Specify column properties
 var column = {
     "index": 0,
     "title": "First Column",
@@ -3302,14 +3302,14 @@ var column = {
     "options": ["One", "Two"]
 };
 
-// Set options.
+// Set options
 var options = {
     body: column,
     sheetId: 2252168947361668,
     columnId: 5005385858869124
 };
 
-// Update column.
+// Update column
 smartsheet.sheets.updateColumn(options)
     .then(function (data) {
         console.log(data);
@@ -3320,7 +3320,7 @@ smartsheet.sheets.updateColumn(options)
 ```
 
 ```csharp
-// Specify column properties.
+// Specify column properties
 Column column = new Column.UpdateColumnBuilder(
         5005385858869124,
         "First Column",
@@ -3329,12 +3329,12 @@ Column column = new Column.UpdateColumnBuilder(
     .SetOptions( new string[] { "One", "Two" })
     .Build();
 
-// Update column.
+// Update column
 smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, column);
 ```
 
 ```java
-// Specify column properties.
+// Specify column properties
 Column column = new Column.UpdateColumnBuilder()
     .setColumnId(2252168947361668L)         // long columnId
     .setTitle("First Column")
@@ -3343,12 +3343,12 @@ Column column = new Column.UpdateColumnBuilder()
     .setOptions(Arrays.asList("One", "Two"))
     .build();
 
-// Update column.
+// Update column
 smartsheet.sheetResources().columnResources().updateColumn(2252168947361668L, column);
 ```
 
 ```python
-# Specify column properties.
+# Specify column properties
 altered_column = smartsheet.models.Column({
     'title': 'First Column',
     'type': 'PICKLIST',
@@ -3356,7 +3356,7 @@ altered_column = smartsheet.models.Column({
     'index': 0
 })
 
-# Update column.
+# Update column
 action = smartsheet.Sheets.update_column(sheetId, columnId, altered_column)
 # action.result is an instance of smartsheet.models.Column
 ```
@@ -3476,7 +3476,7 @@ AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type include an [AutoN
 
 A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
 
-<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#get-all-discussions">Get All Discussions</a> followed by a <a href="#get-discussion">Get Discussion</a> call to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#get-all-row-discussions">Get All Row Discussions</a> using the include query parameter.</li></ul></aside>
+<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#list-discussions">Get All Discussions</a> followed by a <a href="#get-discussion">Get Discussion</a> call to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#list-row-discussions">List Row Discussions</a> using the include query parameter.</li></ul></aside>
 
 ## <%= OBJECTS %>
 
@@ -3518,17 +3518,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 ```
 
 ```javascript
-// Specify comment.
+// Specify comment
 var comment = { "text": "This is a new comment." };
 
-// Set options.
+// Set options
 var options = {
     body: comment,
     sheetId: 2252168947361668,
     discussionId: 3962273862576004
 };
 
-// Add comment to discussion.
+// Add comment to discussion
 smartsheet.sheets.addDiscussionComment(options)
     .then(function (data) {
         console.log(data);
@@ -3539,10 +3539,10 @@ smartsheet.sheets.addDiscussionComment(options)
 ```
 
 ```csharp
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
-// Add comment to discussion.
+// Add comment to discussion
 smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
     2252168947361668,               // long sheetId
     3962273862576004,               // long discussionId
@@ -3551,10 +3551,10 @@ smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
 ```
 
 ```java
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
 
-// Add comment to discussion.
+// Add comment to discussion
 smartsheet.sheetResources().discussionResources().commentResources().addComment(
     2252168947361668L,       // long sheetId
     3962273862576004L,       // long discussionId
@@ -3594,10 +3594,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 ```
 
 ```csharp
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
-// Add comment (with attachment) to discussion.
+// Add comment (with attachment) to discussion
 smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(
     2252168947361668,                   // long sheetId
     3962273862576004,                   // long discussionId
@@ -3608,10 +3608,10 @@ smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAtt
 ```
 
 ```java
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
 
-// Add comment (with attachment) to discussion.
+// Add comment (with attachment) to discussion
 File file = new File(filePath);
 smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(
     2252168947361668L,       // long sheetId
@@ -3623,12 +3623,12 @@ smartsheet.sheetResources().discussionResources().commentResources().addCommentW
 ```
 
 ```python
-# Create comment.
+# Create comment
 comment = smartsheet.models.Comment({
     'text': 'You might want this.'
 })
 
-# Add comment (with attachment) to discussion.
+# Add comment (with attachment) to discussion
 action = smartsheet.Discussions.add_comment_to_discussion_with_attachment(
     sheetId,
     discussionId,
@@ -3689,12 +3689,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 ```
 
 ```java
-// Specify edited comment properties.
+// Specify edited comment properties
 Comment comment = new Comment.AddCommentBuilder()
     .setText("This is the updated comment text")
     .build();
 
-// Edit comment.
+// Edit comment
 smartsheet.discussionCommentResources().addComment
     4503677744506756L,          // long sheetId
     4503677744506756L,          // long discussionId
@@ -3748,13 +3748,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     commentId: 4952999001909124
 };
 
-// Delete comment.
+// Delete comment
 smartsheet.sheets.deleteComment(options)
     .then(function (data) {
         console.log(data);
@@ -3812,13 +3812,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     commentId: 48569348493401200
 };
 
-// Get comment.
+// Get comment
 smartsheet.sheets.getComment(options)
     .then(function (data) {
         console.log(data);
@@ -4054,8 +4054,8 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
 **comments** | [Comment](#comment-object)[] | Array of Comment Objects
 **commentCount** | number | The number of comments in the discussion
 **commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects
-**parentId** | number | Id of the directly associated row or sheet: present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
-**parentType** | string | "SHEET" or "ROW": present only when the direct association is not clear (see [Get All Discussions](#get-all-discussions))
+**parentId** | number | Id of the directly associated row or sheet: present only when the direct association is not clear (see [List Discussions](#list-discussions))
+**parentType** | string | "SHEET" or "ROW": present only when the direct association is not clear (see [List Discussions](#list-discussions))
 **lastCommentedAt** | timestamp | Time of most recent comment
 **lastCommentedUser** | [User](#user-object) | User Object containing name and email of the author of the most recent Comment
 **createdBy** | [User](#user-object) | User Object containing name and email of the creator of the Discussion
@@ -4075,7 +4075,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 ```
 
 ```javascript
-// Specify discussion.
+// Specify discussion
 var discussion = {
     "title": "This is a new discussion",
     "comment": {
@@ -4083,14 +4083,14 @@ var discussion = {
     }
 };
 
-// Set options.
+// Set options
 var options = {
     body: discussion,
     sheetId: 2252168947361668,
     rowId: 4293147074291588
 };
 
-// Add discussion to row.
+// Add discussion to row
 smartsheet.sheets.createRowDiscussion(options)
     .then(function (data) {
         console.log(data);
@@ -4101,13 +4101,13 @@ smartsheet.sheets.createRowDiscussion(options)
 ```
 
 ```csharp
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
-// Add discussion to row.
+// Add discussion to row
 smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
     9283173393803140,               // long sheetId
     0123456789012345,               // long rowId
@@ -4116,13 +4116,13 @@ smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
 ```
 
 ```java
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
 
-// Add discussion to row.
+// Add discussion to row
 smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
@@ -4169,13 +4169,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 ```
 
 ```csharp
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
-// Add discussion to row.
+// Add discussion to row
 smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(
     9283173393803140,                   // long sheetId
     0123456789012345,                   // long rowId
@@ -4186,16 +4186,16 @@ smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithA
 ```
 
 ```java
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
 
 // Set file path
 File file = new File(filePath);
 
-// Add discussion to row.
+// Add discussion to row
 smartsheet.sheetResources().rowResources().discussionResources().createDiscussionWithAttachment(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
@@ -4206,7 +4206,7 @@ smartsheet.sheetResources().rowResources().discussionResources().createDiscussio
 ```
 
 ```python
-# Add discussion to row.
+# Add discussion to row
 action = smartsheet.Discussions.create_discussion_on_row_with_attachment(
     sheetId,
     rowId,
@@ -4250,7 +4250,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 ```
 
 ```javascript
-// Specify discussion.
+// Specify discussion
 var discussion = {
     "title": "This is a new discussion",
     "comment": {
@@ -4258,13 +4258,13 @@ var discussion = {
     }
 };
 
-// Set options.
+// Set options
 var options = {
     body: discussion,
     sheetId: 2252168947361668
 };
 
-// Add discussion to sheet.
+// Add discussion to sheet
 smartsheet.sheets.createDiscussion(options)
     .then(function (data) {
         console.log(data);
@@ -4275,13 +4275,13 @@ smartsheet.sheets.createDiscussion(options)
 ```
 
 ```csharp
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
 
-// Add discussion to sheet.
+// Add discussion to sheet
 smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
     9283173393803140,                   // long sheetId
     discussion
@@ -4289,13 +4289,13 @@ smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
 ```
 
 ```java
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
 
-// Add discussion to sheet.
+// Add discussion to sheet
 smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
     9283173393803140L,       // long sheetId
     discussion
@@ -4340,13 +4340,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 ```
 
 ```csharp
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", comment).Build();
 
-// Add discussion (including comment with attachment) to sheet.
+// Add discussion (including comment with attachment) to sheet
 smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(
     9283173393803140,                   // long sheetId
     discussion,
@@ -4356,14 +4356,14 @@ smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(
 ```
 
 ```java
-// Create comment.
+// Create comment
 Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
-// Create discussion (including the comment).
+// Create discussion (including the comment)
 Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
 File file = new File(filePath);
 
-// Add discussion (including comment with attachment) to sheet.
+// Add discussion (including comment with attachment) to sheet
 smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(
     9283173393803140L,       // long sheetId
     discussion,
@@ -4414,13 +4414,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     discussionId: 991393444325252
 };
 
-// Delete discussion.
+// Delete discussion
 smartsheet.sheets.deleteDiscussion(options)
     .then(function (data) {
         console.log(data);
@@ -4477,12 +4477,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comment
 ```
 
 ```javascript 
-// Set options.
+// Set options
 var options = {
     sheetId: 3138415114905476
 };
 
-// List discussions.
+// List discussions
 smartsheet.sheets.getDiscussions(options)
     .then(function (data) {
         console.log(data);
@@ -4561,13 +4561,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId} 
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     discussionId: 2331373580117892
 };
 
-// Get discussion.
+// Get discussion
 smartsheet.sheets.getDiscussions(options)
     .then(function (data) {
         console.log(data);
@@ -4636,13 +4636,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?in
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     rowId: 4293147074291588
 };
 
-// List row discussions.
+// List row discussions
 smartsheet.sheets.getRowDiscussions(options)
     .then(function (data) {
         console.log(data);
@@ -4764,7 +4764,7 @@ curl https://api.smartsheet.com/2.0/favorites \
 ```
 
 ```javascript 
-// Specify favorites.
+// Specify favorites
 var favorites = [
 	{
     	"type": "sheet",
@@ -4772,12 +4772,12 @@ var favorites = [
 	}
 ];
 
-// Set options.
+// Set options
 var options = {
     body: favorites
 };
 
-// Add items to favorites.
+// Add items to favorites
 smartsheet.favorites.addItemsToFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -4788,7 +4788,7 @@ smartsheet.favorites.addItemsToFavorites(options)
 ```
 
 ```csharp
-// Specify favorites.
+// Specify favorites
 Favorite[] favorites = new Favorite[] {
     new Favorite.AddFavoriteBuilder(
         ObjectType.SHEET,
@@ -4796,19 +4796,19 @@ Favorite[] favorites = new Favorite[] {
     .Build()
 };
 
-// Add items to favorites.
+// Add items to favorites
 smartsheet.FavoriteResources.AddFavorites(favorites);
 ```
 
 ```java
-// Specify favorites.
+// Specify favorites
 List<Favorite> favorites = new Favorite.AddFavoriteBuilder()
     .addFavorite(
         8400677765441412L,       // long sheetId
         FavoriteType.SHEET)
     .build();
 
-// Add items to favorites.
+// Add items to favorites
 smartsheet.favoriteResources().addFavorites(favorites);
 ```
 
@@ -4986,12 +4986,12 @@ curl https://api.smartsheet.com/2.0/favorites/folder/{folderId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     objectId: 2252168947361668
 };
 
-// Remove folder from list of favorites.
+// Remove folder from list of favorites
 smartsheet.favorites.removeFolderFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5043,12 +5043,12 @@ curl https://api.smartsheet.com/2.0/favorites/report/{reportId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     objectId: 2252168947361668
 };
 
-// Remove report from list of favorites.
+// Remove report from list of favorites
 smartsheet.favorites.removeReportFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5100,12 +5100,12 @@ curl https://api.smartsheet.com/2.0/favorites/sheet/{sheetId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     objectId: 2252168947361668
 };
 
-// Remove sheet from list of favorites.
+// Remove sheet from list of favorites
 smartsheet.favorites.removeSheetFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5156,12 +5156,12 @@ curl https://api.smartsheet.com/2.0/favorites/template/{templateId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     objectId: 2252168947361668
 };
 
-// Remove template from list of favorites.
+// Remove template from list of favorites
 smartsheet.favorites.removeTemplateFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5213,12 +5213,12 @@ curl https://api.smartsheet.com/2.0/favorites/workspace/{workspaceId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     objectId: 2252168947361668
 };
 
-// Remove workspace from list of favorites.
+// Remove workspace from list of favorites
 smartsheet.favorites.removeWorkspaceFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5273,14 +5273,14 @@ curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{fold
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     queryParameters: {
         objectIds: "2252168947361668, 2252168947361669"
     }
 };
 
-// Remove folders from list of favorites.
+// Remove folders from list of favorites
 smartsheet.favorites.removeFoldersFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5332,14 +5332,14 @@ curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{repo
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     queryParameters: {
         objectIds: "2252168947361668, 2252168947361669"
     }
 };
 
-// Remove reports from list of favorites.
+// Remove reports from list of favorites
 smartsheet.favorites.removeReportsFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5391,14 +5391,14 @@ curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetI
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     queryParameters: {
         objectIds: "2252168947361668, 2252168947361669"
     }
 };
 
-// Remove sheets from list of favorites.
+// Remove sheets from list of favorites
 smartsheet.favorites.removeSheetsFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5486,14 +5486,14 @@ curl https://api.smartsheet.com/2.0/favorites/template?objectIds={templateId1},{
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     queryParameters: {
         objectIds: "2252168947361668, 2252168947361669"
     }
 };
 
-// Remove templates from list of favorites.
+// Remove templates from list of favorites
 smartsheet.favorites.removeTemplatesFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5545,14 +5545,14 @@ curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds={workspaceId1}
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     queryParameters: {
         objectIds: "2252168947361668, 2252168947361669"
     }
 };
 
-// Remove workspaces from list of favorites.
+// Remove workspaces from list of favorites
 smartsheet.favorites.removeWorkspacesFromFavorites(options)
     .then(function (data) {
         console.log(data);
@@ -5607,7 +5607,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 {
     "id": 7116448184199044,
     "name": "Projects",
-    "permalink": "https://https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
+    "permalink": "https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
     "sheets": []
 }
 ```
@@ -5640,7 +5640,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 ```
 
 ```csharp
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination {
     DestinationId = destinationFolderId,
     DestinationType = DestinationType.FOLDER,
@@ -5667,7 +5667,7 @@ smartsheet.FolderResources.CopyFolder(
 ```
 
 ```java
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
     .setDestinationId(2252168947361668L)    // long destinationFolderId
@@ -5746,17 +5746,17 @@ curl https://api.smartsheet.com/2.0/home/folders \
 ```
 
 ```javascript
-// Set folder name.
+// Set folder name
 var folder = {
     "name": "New folder"
 };
 
-// Set options.
+// Set options
 var options = {
     body: folder
 };
 
-// Create folder in "Sheets" folder (Home).
+// Create folder in "Sheets" folder (Home)
 smartsheet.home.createFolder(options)
     .then(function (data) {
         console.log(data);
@@ -5767,18 +5767,18 @@ smartsheet.home.createFolder(options)
 ```
 
 ```csharp
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
 
-// Create folder in "Sheets" folder (Home).
+// Create folder in "Sheets" folder (Home)
 smartsheet.HomeResources.FolderResources.CreateFolder(folder);
 ```
 
 ```java
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
-// Create folder in "Sheets" folder (Home).
+// Create folder in "Sheets" folder (Home)
 smartsheet.homeResources().folderResources().createFolder(folder);
 ```
 
@@ -5809,18 +5809,18 @@ curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
 ```
 
 ```javascript
-// Set folder name.
+// Set folder name
 var folder = {
     "name": "New folder"
 };
 
-// Set options.
+// Set options
 var options = {
     body: folder,
     folderId: 7960873114331012
 };
 
-// Create folder in another folder.
+// Create folder in another folder
 smartsheet.folders.createChildFolder(options)
     .then(function (data) {
         console.log(data);
@@ -5831,10 +5831,10 @@ smartsheet.folders.createChildFolder(options)
 ```
 
 ```csharp
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
 
-// Create folder in another folder.
+// Create folder in another folder
 smartsheet.FolderResources.CreateFolder(
     7960873114331012,               // long destinationFolderId
     folder
@@ -5842,10 +5842,10 @@ smartsheet.FolderResources.CreateFolder(
 ```
 
 ```java
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
-// Create folder in another folder.
+// Create folder in another folder
 smartsheet.folderResources().createFolder(
     7960873114331012L,       // long destinationFolderId
     folder
@@ -5879,18 +5879,18 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid}/folders \
 ```
 
 ```javascript
-// Set folder name.
+// Set folder name
 var folder = {
     "name": "New folder"
 };
 
-// Set options.
+// Set options
 var options = {
     body: folder,
     workspaceId: 1656220827314052
 };
 
-// Create folder in a workspace.
+// Create folder in a workspace
 smartsheet.workspaces.createFolder(options)
     .then(function (data) {
         console.log(data);
@@ -5901,10 +5901,10 @@ smartsheet.workspaces.createFolder(options)
 ```
 
 ```csharp
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
 
-// Create folder in a workspace.
+// Create folder in a workspace
 smartsheet.WorkspaceResources.FolderResources.CreateFolder(
     1656220827314052,               // long workspaceId
     folder
@@ -5912,10 +5912,10 @@ smartsheet.WorkspaceResources.FolderResources.CreateFolder(
 ```
 
 ```java
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
-// Create folder in a workspace.
+// Create folder in a workspace
 smartsheet.workspaceResources().folderResources().createFolder(
     1656220827314052L,       // long workspaceId
     folder
@@ -5947,12 +5947,12 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 965780272637828 // Id of Folder
 };
 
-// Delete folder.
+// Delete folder
 smartsheet.folders.deleteFolder(options)
     .then(function (data) {
         console.log(data);
@@ -6007,12 +6007,12 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 7116448184199044 // Id of Folder
 };
 
-// Get folder.
+// Get folder
 smartsheet.folders.getFolder(options)
     .then(function (data) {
         console.log(data);
@@ -6062,7 +6062,7 @@ folder = smartsheet.Folders.get_folder(folderId)
 {
     "id": 7116448184199044,
     "name": "Projects",
-    "permalink": "https://https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
+    "permalink": "https://app.smartsheet.com/b/home?lx=B0_lvAtnWygeMrWr4Rfoa",
     "sheets": [
         {
             "id": 4509918431602564,
@@ -6158,12 +6158,12 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     folderId: 5107651446105988
 };
 
-// List folders in another folder.
+// List folders in another folder
 smartsheet.folders.listChildFolders(options)
     .then(function (data) {
         console.log(data);
@@ -6222,12 +6222,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     workspaceId: 1656220827314052
 };
 
-// List folders in workspace.
+// List folders in workspace
 smartsheet.workspaces.listWorkspaceFolders(options)
     .then(function (data) {
         console.log(data);
@@ -6292,13 +6292,13 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 ```
 
 ```csharp
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination {
     DestinationId = destinationFolderId,
     DestinationType = DestinationType.FOLDER,
 };
 
-// Move folder.
+// Move folder
 smartsheet.FolderResources.MoveFolder(
     7960873114331012,               // long folderId
     destination
@@ -6306,13 +6306,13 @@ smartsheet.FolderResources.MoveFolder(
 ```
 
 ```java
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
     .setDestinationId(7960873114331012L)        // long destinationFolderId
     .build();
 
-// Move folder.
+// Move folder
 Folder results = smartsheet.folderResources().moveFolder(
     7960873114331012L,                         // long folderId
     destination
@@ -6368,18 +6368,18 @@ curl https://api.smartsheet.com/2.0/folders/{folderId} \
 ```
 
 ```javascript
-// Set folder name.
+// Set folder name
 var folder = {
     "name": "New name for folder"
 };
 
-// Set options.
+// Set options
 var options = {
     id: 1486948649985924, // Id of Folder
     body: folder
 };
 
-// Update folder.
+// Update folder
 smartsheet.folders.updateFolder(options)
     .then(function (data) {
         console.log(data);
@@ -6390,24 +6390,24 @@ smartsheet.folders.updateFolder(options)
 ```
 
 ```csharp
-// Set folder name.
+// Set folder name
 Folder folder = new Folder.UpdateFolderBuilder(
     7960873114331012,               // long folderId
     "New name for folder")
     .Build();
 
-// Update folder.
+// Update folder
 smartsheet.FolderResources.UpdateFolder(folder);
 ```
 
 ```java
-// Set folder name and id of the folder to be updated.
+// Set folder name and id of the folder to be updated
 Folder folder = new Folder.UpdateFolderBuilder()
     .setName("New name for folder")
     .setId(7960873114331012L)      // long folderId
     .build();
 
-// Update folder.
+// Update folder
 smartsheet.folderResources().updateFolder(folder);
 ```
 
@@ -6486,7 +6486,7 @@ curl https://api.smartsheet.com/2.0/groups \
 ```
 
 ```javascript
-// Specify group.
+// Specify group
 var group = {
     "name": "API-created Group",
     "description": "Group created via API",
@@ -6497,12 +6497,12 @@ var group = {
     ]
 };
 
-// Set options.
+// Set options
 var options = {
     body: group
 };
 
-// Create group.
+// Create group
 smartsheet.groups.createGroup(options)
     .then(function (data) {
         console.log(data);
@@ -6513,26 +6513,26 @@ smartsheet.groups.createGroup(options)
 ```
 
 ```csharp
-// Create group member.
+// Create group member
 GroupMember member = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
 
-// Add member to group.
+// Add member to group
 Group group = new Group.CreateGroupBuilder("API-created Group", "Group created via API")
     .SetMembers(new GroupMember[] { member })
     .Build();
 
-// Create group.
+// Create group
 smartsheet.GroupResources.CreateGroup(group);
 ```
 
 ```java
-// Create group member.
+// Create group member
 GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("john.doe@smartsheet.com").build();
 
-// Add member to group.
+// Add member to group
 Group group = new Group.CreateGroupBuilder().setName("API-created Group").setDescription("Group created via API").setMembers(Arrays.asList(member)).build();
 
-// Create group.
+// Create group
 smartsheet.groupResources().createGroup(group);
 ```
 
@@ -6599,12 +6599,12 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 6932724448552836 // Id of Group
 };
 
-// Delete group.
+// Delete group
 smartsheet.groups.deleteGroup(options)
     .then(function (data) {
         console.log(data);
@@ -6663,12 +6663,12 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 4583173393803140 // Id of Group
 };
 
-// Get group.
+// Get group
 smartsheet.groups.getGroup(options)
     .then(function (data) {
         console.log(data);
@@ -6819,19 +6819,19 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```
 
 ```javascript
-// Specify the name and description of the group.
+// Specify the name and description of the group
 var group = {
     "name": "Renamed Group",
     "description": "Some new description"
 };
 
-// Set options.
+// Set options
 var options = {
     body: group,
     id: 2331373580117892 // Id of Group
 };
 
-// Update group.
+// Update group
 smartsheet.groups.updateGroup(options)
     .then(function (data) {
         console.log(data);
@@ -6842,26 +6842,26 @@ smartsheet.groups.updateGroup(options)
 ```
 
 ```csharp
-// Specify the name and description of the group.
+// Specify the name and description of the group
 Group group = new Group.UpdateGroupBuilder(
         6932724448552836)               // long groupId
     .SetName ("Renamed Group")
     .SetDescription ("Some new description")
     .Build();
 
-// Update group.
+// Update group
 smartsheet.GroupResources.UpdateGroup(group);
 ```
 
 ```java
-// Specify the name and description of the group.
+// Specify the name and description of the group
 Group group = new Group.UpdateGroupBuilder()
     .setId(6932724448552836L)               // long groupId
     .setName("Renamed Group")
     .setDescription("Some new description")
     .build();
 
-// Update group.
+// Update group
 smartsheet.groupResources().updateGroup(group);
 ```
 
@@ -6955,16 +6955,16 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members \
 ```
 
 ```javascript
-// Specify group members.
+// Specify group members
 var members = [{ "email": "jane.doe@smartsheet.com" }];
 
-// Set options.
+// Set options
 var options = {
     body: members,
     groupId: 7917992160847748
 };
 
-// Add members to group.
+// Add members to group
 smartsheet.groups.addGroupMembers(options)
     .then(function (data) {
         console.log(data);
@@ -6975,10 +6975,10 @@ smartsheet.groups.addGroupMembers(options)
 ```
 
 ```csharp
-// Create group member.
+// Create group member
 GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
 
-// Add members to group.
+// Add members to group
 smartsheet.GroupResources.AddGroupMembers(
     7917992160847748,           // long groupId
     new GroupMember[] { member }
@@ -6986,10 +6986,10 @@ smartsheet.GroupResources.AddGroupMembers(
 ```
 
 ```java
-// Create group member.
+// Create group member
 GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
 
-// Add members to group.
+// Add members to group
 List<GroupMember> results = smartsheet.groupResources().memberResources().addGroupMembers(
     7917992160847748L,       // long groupId
     Arrays.asList(member)
@@ -7053,13 +7053,13 @@ curl https://api.smartsheet.com/2.0/groups/{groupId}/members/{userId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     groupId: 7917992160847748,
     userId: 1539725208119172
 };
 
-// Remove member from group.
+// Remove member from group
 smartsheet.groups.removeGroupMember(options)
     .then(function (data) {
         console.log(data);
@@ -7323,12 +7323,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 4583173393803140 // Id of Report
 };
 
-// Get report.
+// Get report
 smartsheet.reports.getReport(options)
     .then(function (data) {
         console.log(data);
@@ -7468,12 +7468,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 3882962191181700 // Id of Report
 };
 
-// Get report as Excel.
+// Get report as Excel
 smartsheet.reports.getReportAsExcel(options)
     .then(function (data) {
         console.log(data);
@@ -7544,12 +7544,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 3882962191181700 // Id of Report
 };
 
-// Get report as CSV.
+// Get report as CSV
 smartsheet.reports.getReportAsCSV(options)
     .then(function (data) {
         console.log(data);
@@ -7947,7 +7947,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 ```
 
 ```javascript
-// Specify rows.
+// Specify rows
 var row = [
     {
         "toTop": true,
@@ -7979,13 +7979,13 @@ var row = [
     }
 ];
 
-// Set options.
+// Set options
 var options = {
     body: row,
     sheetId: 2252168947361668
 };
 
-// Add rows to sheet.
+// Add rows to sheet
 smartsheet.sheets.addRows(options)
     .then(function (data) {
         console.log(data);
@@ -7996,7 +7996,7 @@ smartsheet.sheets.addRows(options)
 ```
 
 ```csharp
-// Specify cell values for first row.
+// Specify cell values for first row
 Cell[] cellsA = new Cell[] {
     new Cell.AddCellBuilder(7960873114331012, true)             // columnId, value
         .Build(),
@@ -8005,7 +8005,7 @@ Cell[] cellsA = new Cell[] {
         .Build()
 };
 
-// Specify contents of first row.
+// Specify contents of first row
 Row rowA = new Row.AddRowBuilder(
         true,                       // Nullable<bool> toTop
         null,                       // Nullable<bool> toBottom
@@ -8015,7 +8015,7 @@ Row rowA = new Row.AddRowBuilder(
     .SetCells(cellsA)
     .Build();
 
-// Specify cell values of second row.
+// Specify cell values of second row
 Cell[] cellsB = new Cell[] {
     new Cell.AddCellBuilder(7960873114331012, true)
         .Build(),
@@ -8024,12 +8024,12 @@ Cell[] cellsB = new Cell[] {
         .Build()
 };
 
-// Specify contents of second row.
+// Specify contents of second row
 Row rowB = new Row.AddRowBuilder(true, null, null, null, null)
     .SetCells(cellsB)
     .Build();
 
-// Add rows to sheet.
+// Add rows to sheet
 smartsheet.SheetResources.RowResources.AddRows(
     873476834787,                   // long sheetId
     new Row[] { rowA, rowB }        // IEnumerable<Row> rowsToAdd
@@ -8037,7 +8037,7 @@ smartsheet.SheetResources.RowResources.AddRows(
 ```
 
 ```java
-// Specify cell values for first row.
+// Specify cell values for first row
 List<Cell> cellsA = new Cell.AddRowCellsBuilder()
     .addCell(
         7960873114331012L,      // long cellId
@@ -8047,10 +8047,10 @@ List<Cell> cellsA = new Cell.AddRowCellsBuilder()
         "New status")
     .build();
 
-// Specify contents of first row.
+// Specify contents of first row
 Row rowA = new Row.AddRowBuilder().setCells(cellsA).setToBottom(true).build();
 
-// Specify cell values for second row.
+// Specify cell values for second row
 List<Cell> cellsB = new Cell.AddRowCellsBuilder()
     .addCell(
         7960873114331012L,
@@ -8060,15 +8060,15 @@ List<Cell> cellsB = new Cell.AddRowCellsBuilder()
         "New status")
     .build();
 
-// Specify contents of second row.
+// Specify contents of second row
 Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
 
-// Add rows to sheet.
+// Add rows to sheet
 smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
 ```
 
 ```python
-# Specify cell values for one row.
+# Specify cell values for one row
 row_a = smartsheet.models.Row()
 row_a.to_top = True
 row_a.cells.append({
@@ -8081,7 +8081,7 @@ row_a.cells.append({
     'strict': False
 })
 
-# Specify cell values for another row.
+# Specify cell values for another row
 row_b = smartsheet.models.Row()
 row_b.to_top = True
 row_b.cells.append({
@@ -8094,7 +8094,7 @@ row_b.cells.append({
     'strict': False
 })
 
-# Add rows to sheet.
+# Add rows to sheet
 action = smartsheet.Sheets.add_rows(sheetId, [row_a, row_b])
 ```
 
@@ -8188,7 +8188,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/copy \
 ```
 
 ```javascript
-// Specify the directive.
+// Specify the directive
 var copyRow = {
     "rowIds": [145417762563972, 8026717110462340],
     "to": {
@@ -8196,13 +8196,13 @@ var copyRow = {
     }
 };
 
-// Set options.
+// Set options
 var options = {
     body: copyRow,
     sheetId: 2252168947361668
 };
 
-// Copy rows.
+// Copy rows
 smartsheet.sheets.copyRowToAnotherSheet(options)
     .then(function (data) {
         console.log(data);
@@ -8213,10 +8213,10 @@ smartsheet.sheets.copyRowToAnotherSheet(options)
 ```
 
 ```csharp
-// Specify destination sheet.
+// Specify destination sheet
 CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 2258256056870788 };
 
-// Specify rows to be copied (and destination sheet).
+// Specify rows to be copied (and destination sheet)
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
 
 // Omit 'include' and 'ignoreRowsNotFound' parameters
@@ -8238,12 +8238,12 @@ smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
 ```
 
 ```java
-// Specify destination sheet.
+// Specify destination sheet
 CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder()
     .setSheetId(2258256056870788L)                                  // long sheetId
     .build();
 
-// Specify rows to be copied (and destination sheet).
+// Specify rows to be copied (and destination sheet)
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder()
     .setRowIds(Arrays.asList(145417762563972L, 8026717110462340L))  // long rowIds
     .setTo(destination)
@@ -8304,13 +8304,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids={rowId1},{rowId2},
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 2252168947361668,
     rowId: 207098194749316
 };
 
-// Delete row.
+// Delete row
 smartsheet.sheets.deleteRow(options)
     .then(function (data) {
         console.log(data);
@@ -8384,13 +8384,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discus
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 4583173393803140,
     rowId: 2361756178769796
 };
 
-// Get row.
+// Get row
 smartsheet.sheets.getRow(options)
     .then(function (data) {
         console.log(data);
@@ -8506,7 +8506,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/move \
 ```
 
 ```javascript
-// Specify the directive.
+// Specify the directive
 var moveRow = {
     "rowIds": [145417762563972, 8026717110462340],
     "to": {
@@ -8514,13 +8514,13 @@ var moveRow = {
     }
 };
 
-// Set options.
+// Set options
 var options = {
     body: moveRow,
     sheetId: 2252168947361668
 };
 
-// Move rows.
+// Move rows
 smartsheet.sheets.moveRowToAnotherSheet(options)
     .then(function (data) {
         console.log(data);
@@ -8531,10 +8531,10 @@ smartsheet.sheets.moveRowToAnotherSheet(options)
 ```
 
 ```csharp
-// Specify destination sheet.
+// Specify destination sheet
 CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 2258256056870788 };
 
-// Specify rows to be moved (and destination sheet).
+// Specify rows to be moved (and destination sheet)
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
 
 // Omit 'include' and 'ignoreRowsNotFound' parameters
@@ -8552,17 +8552,17 @@ smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
     new MoveRowInclusion[] {
         MoveRowInclusion.ATTACHMENTS,
         MoveRowInclusion.DISCUSSIONS },
-    true // Nullable<bool> ignoreRowsNotFound
+    true                            // Nullable<bool> ignoreRowsNotFound
 );
 ```
 
 ```java
-// Specify destination sheet.
+// Specify destination sheet
 CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder()
     .setSheetId(2258256056870788L)      // long sheetId
     .build();
 
-// Specify rows to be moved (and destination sheet).
+// Specify rows to be moved (and destination sheet)
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder()
     .setRowIds(Arrays.asList(145417762563972L, 8026717110462340L))
     .setTo(destination)
@@ -8636,7 +8636,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 ```
 
 ```javascript
-// Specify updated cell values.
+// Specify updated cell values
 var row = [
     {
         "id": "6572427401553796",
@@ -8666,13 +8666,13 @@ var row = [
     }
 ];
 
-// Set options.
+// Set options
 var options = {
     body: row,
     sheetId: 2252168947361668
 };
 
-// Update rows in sheet.
+// Update rows in sheet
 smartsheet.sheets.updateRow(options)
     .then(function (data) {
         console.log(data);
@@ -8683,7 +8683,7 @@ smartsheet.sheets.updateRow(options)
 ```
 
 ```csharp
-// Specify updated cell values for first row.
+// Specify updated cell values for first row
 Cell[] cellsA = new Cell[] {
     new Cell.UpdateCellBuilder(
             7518312134403972,                               // long columnId
@@ -8693,12 +8693,12 @@ Cell[] cellsA = new Cell[] {
         .Build()
 };
 
-// Specify updated contents of first row.
+// Specify updated contents of first row
 Row rowA = new Row.UpdateRowBuilder(6572427401553796)       // long rowId
     .SetCells(cellsA)
     .Build();
 
-// Specify updated cell values for second row.
+// Specify updated cell values for second row
 Cell[] cellsB = new Cell[] {
     new Cell.UpdateCellBuilder(7518312134403972, "desc_updated")
         .Build(),
@@ -8706,12 +8706,12 @@ Cell[] cellsB = new Cell[] {
         .Build()
 };
 
-// Specify updated contents of second row.
+// Specify updated contents of second row
 Row rowB = new Row.UpdateRowBuilder(3428827774183300)       // long rowId
     .SetCells(cellsB)
     .Build();
 
-// Update rows in sheet.
+// Update rows in sheet
 smartsheet.SheetResources.RowResources.UpdateRows(
     2068827774183300,                                       // long sheetId
     new Row[] { rowA, rowB }                                // IEnumerable<Row> rowsToUpdate
@@ -8719,31 +8719,31 @@ smartsheet.SheetResources.RowResources.UpdateRows(
 ```
 
 ```java
-// Specify updated cell values for first row.
+// Specify updated cell values for first row
 List<Cell> cellsA = new Cell.UpdateRowCellsBuilder()
     .addCell(7518312134403972L, "new value")        // long columnId
     .addCell(1888812600190852L, "A")                // long columnId
     .build();
 
-// Specify updated contents of first row.
+// Specify updated contents of first row
 Row rowA = new Row.UpdateRowBuilder()
     .setCells(cellsA)
     .setRowId(6572427401553796L)                    // long rowId
     .build();
 
-// Specify updated cell values for second row.
+// Specify updated cell values for second row
 List<Cell> cellsB = new Cell.UpdateRowCellsBuilder()
     .addCell(7518312134403972L, "desc_updated")     // long columnId
     .addCell(1888812600190852L, "B")                // long columnId
     .build();
 
-// Specify updated contents of second row.
+// Specify updated contents of second row
 Row rowB = new Row.UpdateRowBuilder()
     .setCells(cellsB)
     .setRowId(2068827774183300L)                    // long rowId
     .build();
 
-// Update rows in sheet.
+// Update rows in sheet
 List<Row> results = smartsheet.sheetResources().rowResources().updateRows(
     2068827774183300L,                              // long sheetId
     Arrays.asList(rowA, rowB)
@@ -8751,7 +8751,7 @@ List<Row> results = smartsheet.sheetResources().rowResources().updateRows(
 ```
 
 ```python
-# Specify updated cell values for one row.
+# Specify updated cell values for one row
 row_a = smartsheet.Sheets.get_row(sheetId, 6572427401553796)
 
 # use row get_column(columnId) convenience method to pluck the 
@@ -8762,11 +8762,11 @@ cell_b = row_a.get_column(1888812600190852)
 cell_b.value = 'A'
 
 # use row set_column(id, Cell) convenience method
-# to replace the cell in-place.
+# to replace the cell in-place
 row_a.set_column(cell_a.column_id, cell_a)
 row_a.set_column(cell_b.column_id, cell_b)
 
-# Specify updated cell values for a second row.
+# Specify updated cell values for a second row
 row_b = smartsheet.Sheets.get_row(sheetId, 2068827774183300)
 cell_c = row_b.get_column(7518312134403972)
 cell_c.value = 'desc_updated'
@@ -8775,7 +8775,7 @@ cell_d.value = 'B'
 row_b.set_column(cell_c.column_id, cell_c)
 row_b.set_column(cell_d.column_id, cell_d)
 
-# Update rows.
+# Update rows
 smartsheet.Sheets.update_rows(sheetId, [row_a, row_b])
 ```
 
@@ -8987,12 +8987,12 @@ curl https://api.smartsheet.com/2.0/search?query=stuff \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     query: "stuff"
 };
 
-// Search everything.
+// Search everything
 smartsheet.search.searchAll(options)
     .then(function (data) {
         console.log(data);
@@ -9003,26 +9003,26 @@ smartsheet.search.searchAll(options)
 ```
 
 ```csharp
-// Set search criteria.
+// Set search criteria
 string query = "stuff";
 
-// Search everything.
+// Search everything
 smartsheet.SearchResources.Search(query);
 ```
 
 ```java
-// Set search criteria.
+// Set search criteria
 String query = "stuff";
 
-// Search everything.
+// Search everything
 SearchResult results = smartsheet.searchResources().search(query);
 ```
 
 ```python
-# Set search criteria.
+# Set search criteria
 query = 'stuff'
 
-# Search everything.
+# Search everything
 result = smartsheet.Search.search(query)
 # result is a smartsheet.models.SearchResult object
 ```
@@ -9317,13 +9317,13 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     reportId: 665829219035012,
     shareId: "AAAQSF82F1eE"
 };
 
-// Delete report share.
+// Delete report share
 smartsheet.reports.deleteShare(options)
     .then(function (data) {
         console.log(data);
@@ -9371,13 +9371,13 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```javascript 
-// Set options.
+// Set options
 var options = {
     reportId: 6932724448552836,
     shareId: "AQAISF82FOeE"
 };
 
-// Get report share.
+// Get report share
 smartsheet.reports.getShare(options)
     .then(function (data) {
         console.log(data);
@@ -9425,12 +9425,12 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     reportId: 665829219035012
 };
 
-// List report shares.
+// List report shares
 smartsheet.reports.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -9495,7 +9495,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
 ```
 
 ```javascript
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 var share = [
 	{
 		"email": "jane.doe@smartsheet.com", 
@@ -9503,13 +9503,13 @@ var share = [
 	}
 ];
 
-// Set options.
+// Set options
 var options = {
     body: share,
     reportId: 665829219035012
 };
 
-// Share report.
+// Share report
 smartsheet.reports.share(options)
     .then(function (data) {
         console.log(data);
@@ -9520,10 +9520,10 @@ smartsheet.reports.share(options)
 ```
 
 ```csharp
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
 
-// Share report.
+// Share report
 smartsheet.ReportResources.ShareResources.ShareTo(
     665829219035012,            // long reportId
     shares,
@@ -9532,13 +9532,13 @@ smartsheet.ReportResources.ShareResources.ShareTo(
 ```
 
 ```java
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
-// Share report.
+// Share report
 smartsheet.reportResources().shareResources().shareTo(
     665829219035012L,        // long reportId
     shares,
@@ -9583,17 +9583,17 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set the access level to Viewer.
+// Set the access level to Viewer
 var share = {"accessLevel": "VIEWER"};
 
-// Set options.
+// Set options
 var options = {
     body: share,
     reportId: 665829219035012,
     shareId: "AAAFeF82FOeE"
 };
 
-// Update report share.
+// Update report share
 smartsheet.reports.updateShare(options)
     .then(function (data) {
         console.log(data);
@@ -9604,10 +9604,10 @@ smartsheet.reports.updateShare(options)
 ```
 
 ```csharp
-// Set the access level to Viewer.
+// Set the access level to Viewer
 Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
-// Update report share.
+// Update report share
 smartsheet.ReportResources.ShareResources.UpdateShare(
     665829219035012,            // long reportId
     share
@@ -9615,13 +9615,13 @@ smartsheet.ReportResources.ShareResources.UpdateShare(
 ```
 
 ```java
-// Set the access level to Viewer.
+// Set the access level to Viewer
 Share share = new Share.UpdateShareBuilder()
     .setShareId("AAAFeF82FOeE")         // string shareId
     .setAccessLevel(AccessLevel.VIEWER)
     .build();
 
-// Update report share.
+// Update report share
 smartsheet.reportResources().shareResources().updateShare(
     665829219035012L,                   // long reportId
     share
@@ -9661,13 +9661,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 4583614634583940,
     shareId: "AAAASuWWFOeE"
 };
 
-// Delete sheet share.
+// Delete sheet share
 smartsheet.sheets.deleteShare(options)
     .then(function (data) {
         console.log(data);
@@ -9715,13 +9715,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 4583614634583940,
     shareId: "AQAISF82FOeE"
 };
 
-// Get sheet share.
+// Get sheet share
 smartsheet.sheets.getShare(options)
     .then(function (data) {
         console.log(data);
@@ -9769,12 +9769,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 4583614634583940
 };
 
-// List sheet shares.
+// List sheet shares
 smartsheet.sheets.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -9838,7 +9838,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
 ```
 
 ```javascript
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 var share = [
 	{
 		"email": "jane.doe@smartsheet.com", 
@@ -9846,13 +9846,13 @@ var share = [
 	}
 ];
 
-// Set options.
+// Set options
 var options = {
     body: share,
     sheetId: 4583614634583940
 };
 
-// Share sheet.
+// Share sheet
 smartsheet.sheets.share(options)
     .then(function (data) {
         console.log(data);
@@ -9863,10 +9863,10 @@ smartsheet.sheets.share(options)
 ```
 
 ```csharp
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
 
-// Share sheet.
+// Share sheet
 smartsheet.SheetResources.ShareResources.ShareTo(
     4583614634583940,               // long sheetId
     shares,
@@ -9875,13 +9875,13 @@ smartsheet.SheetResources.ShareResources.ShareTo(
 ```
 
 ```java
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
-// Share sheet.
+// Share sheet
 smartsheet.sheetResources().shareResources().shareTo(
     4583614634583940L,       // long sheetId
     shares,
@@ -9927,17 +9927,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set access level to Viewer.
+// Set access level to Viewer
 var share = {"accessLevel": "VIEWER"};
 
-// Set options.
+// Set options
 var options = {
     body: share,
     sheetId: 4583614634583940,
     shareId: "AAAFeF82FOeE"
 };
 
-// Update sheet share.
+// Update sheet share
 smartsheet.sheets.updateShare(options)
     .then(function (data) {
         console.log(data);
@@ -9948,10 +9948,10 @@ smartsheet.sheets.updateShare(options)
 ```
 
 ```csharp
-// Set access level to Viewer.
+// Set access level to Viewer
 Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
-// Update sheet share.
+// Update sheet share
 smartsheet.SheetResources.ShareResources.UpdateShare(
     4583614634583940,               // long sheetId
     share
@@ -9959,10 +9959,10 @@ smartsheet.SheetResources.ShareResources.UpdateShare(
 ```
 
 ```java
-// Set the access level to Viewer.
+// Set the access level to Viewer
 Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
 
-// Update report share.
+// Update report share
 smartsheet.sheetResources().shareResources().updateShare(
     4583614634583940L,       // long sheetId
     share
@@ -10135,13 +10135,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
 ```
 
 ```java
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
-// Share sight.
+// Share sight
 smartsheet.sightResources().shareResources().shareTo(
     4583614634583940L,       // long sightId
     shares,
@@ -10230,13 +10230,13 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     workspaceId: 1656220827314052,
     shareId: "AAAEQesWFOeE"
 };
 
-// Delete workspace share.
+// Delete workspace share
 smartsheet.workspaces.deleteShare(options)
     .then(function (data) {
         console.log(data);
@@ -10288,13 +10288,13 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     workspaceId: 1656220827314052,
     shareId: "AQAISF82FOeE"
 };
 
-// Get workspace share.
+// Get workspace share
 smartsheet.workspaces.getShare(options)
     .then(function (data) {
         console.log(data);
@@ -10342,12 +10342,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     workspaceId: 1656220827314052
 };
 
-// List workspace shares.
+// List workspace shares
 smartsheet.workspaces.listShares(options)
     .then(function (data) {
         console.log(data);
@@ -10414,7 +10414,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=tr
 ```
 
 ```javascript
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 var shares = [
 	{
 		"email": "john.doe@smartsheet.com",
@@ -10422,13 +10422,13 @@ var shares = [
 	}
 ];
 
-// Set options.
+// Set options
 var options = {
 	workspaceId: 7960873114331012,
 	body: shares
 };
 
-// Share workspace.
+// Share workspace
 smartsheet.workspaces.share(options)
 	.then(function(data) {
 		console.log(data);
@@ -10439,10 +10439,10 @@ smartsheet.workspaces.share(options)
 ```
 
 ```csharp
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
 
-// Share workspace.
+// Share workspace
 smartsheet.WorkspaceResources.ShareResources.ShareTo(
     7960873114331012,               // long workspaceId
     shares,
@@ -10451,13 +10451,13 @@ smartsheet.WorkspaceResources.ShareResources.ShareTo(
 ```
 
 ```java
-// Specify share (to one user as Editor).
+// Specify share (to one user as Editor)
 List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
-// Share workspace.
+// Share workspace
 smartsheet.workspaceResources().shareResources().shareTo(
     7960873114331012L,       // long workspaceId
     shares,
@@ -10509,17 +10509,17 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares/{shareId} \
 ```
 
 ```javascript
-// Set access level to Viewer.
+// Set access level to Viewer
 var share = {"accessLevel": "VIEWER"};
 
-// Set options.
+// Set options
 var options = {
     body: share,
     workspaceId: 1656220827314052,
     shareId: "AAAFeF82FOeE"
 };
 
-// Update workspace share.
+// Update workspace share
 smartsheet.workspaces.updateShare(options)
     .then(function (data) {
         console.log(data);
@@ -10530,13 +10530,13 @@ smartsheet.workspaces.updateShare(options)
 ```
 
 ```csharp
-// Set access level to Viewer.
+// Set access level to Viewer
 Share share = new Share.UpdateShareBuilder(
         "AAAFeF82FOeE",           // string shareId
         AccessLevel.VIEWER)
     .Build();
 
-// Update workspace share.
+// Update workspace share
 smartsheet.WorkspaceResources.ShareResources.UpdateShare(
     1656220827314052,             // long workspaceId
     share
@@ -10544,10 +10544,10 @@ smartsheet.WorkspaceResources.ShareResources.UpdateShare(
 ```
 
 ```java
-// Set the access level to Viewer.
+// Set the access level to Viewer
 Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
 
-// Update workspace share.
+// Update workspace share
 smartsheet.workspaceResources().shareResources().updateShare(
     1656220827314052L,   // long workspaceId
     share
@@ -10693,7 +10693,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 ```
 
 ```csharp
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination {
     DestinationId = 3791509922310020,               // long destinationFolderId
     DestinationType = DestinationType.FOLDER,
@@ -10716,7 +10716,7 @@ smartsheet.SheetResources.CopySheet(
 ```
 
 ```java
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
     .setDestinationId(9283173393803140L)        // long destinationFolderId
@@ -10799,7 +10799,7 @@ curl https://api.smartsheet.com/2.0/sheets \
 ```
 
 ```javascript
-// Specify sheet properties.
+// Specify sheet properties
 var sheet = {
     "name": "newsheet",
     "columns": [
@@ -10816,12 +10816,12 @@ var sheet = {
     ]
 };
 
-// Set options.
+// Set options
 var options = {
 	body: sheet
 };
 
-// Create sheet in "Sheets" folder.
+// Create sheet in "Sheets" folder
 smartsheet.sheets.createSheet(options)
 	.then(function(data) {
 		console.log(data);
@@ -10832,7 +10832,7 @@ smartsheet.sheets.createSheet(options)
 ```
 
 ```csharp
-// Specify properties of the first column.
+// Specify properties of the first column
 Column columnA = new Column.CreateSheetColumnBuilder(
         "Favorite",             // column title
         null,                   // Nullable(bool) isPrimary
@@ -10841,14 +10841,14 @@ Column columnA = new Column.CreateSheetColumnBuilder(
         Symbol.STAR)
     .Build(),
 
-// Specify properties of the second column.
+// Specify properties of the second column
 Column columnB = new Column.CreateSheetColumnBuilder(
         "Primary Column",
         true,
         ColumnType.TEXT_NUMBER)
     .Build(),
 
-// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet).
+// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
 smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
         "newsheet",
         new Column[] { columnA, columnB })
@@ -10856,21 +10856,21 @@ smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
 ```
 
 ```java
-// Specify properties of the first column.
+// Specify properties of the first column
 Column columnA = new Column.AddColumnToSheetBuilder()
     .setTitle("Favorite")
     .setType(ColumnType.CHECKBOX)
     .setSymbol(Symbol.STAR)
     .build();
 
-// Specify properties of the second column.
+// Specify properties of the second column
 Column columnB = new Column.AddColumnToSheetBuilder()
     .setTitle("Primary Column")
     .setType(ColumnType.TEXT_NUMBER)
     .setPrimary(true)
     .build();
 
-// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet).
+// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
 Sheet sheet = new Sheet.CreateSheetBuilder()
     .setName("newsheet")
     .setColumns(Arrays.asList(columnA, columnB))
@@ -10919,7 +10919,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets \
 ```
 
 ```javascript
-// Specify sheet properties.
+// Specify sheet properties
 var sheet = {
     "name": "newsheet",
     "columns": [
@@ -10936,13 +10936,13 @@ var sheet = {
     ]
 };
 
-// Set options.
+// Set options
 var options = {
     body: sheet,
     folderId: 3734419270854532
 };
 
-// Create sheet in folder.
+// Create sheet in folder
 smartsheet.sheets.createSheetInFolder(options)
     .then(function (data) {
         console.log(data);
@@ -10953,7 +10953,7 @@ smartsheet.sheets.createSheetInFolder(options)
 ```
 
 ```csharp
-// Specify properties of the first column.
+// Specify properties of the first column
 Column columnA = new Column.CreateSheetColumnBuilder(
         "Favorite",
         null,               // Nullable(bool) primary
@@ -10962,14 +10962,14 @@ Column columnA = new Column.CreateSheetColumnBuilder(
         Symbol.STAR)
     .Build(),
 
-// Specify properties of the second column.
+// Specify properties of the second column
 Column columnB = new Column.CreateSheetColumnBuilder(
         "Primary Column",
         true,
         ColumnType.TEXT_NUMBER)
     .Build(),
 
-// Create sheet in folder (specifying the 2 columns to include in the sheet).
+// Create sheet in folder (specifying the 2 columns to include in the sheet)
 smartsheet.FolderResources.SheetResources.CreateSheet(
     3734419270854532,                   // long folderId
     new Sheet.CreateSheetBuilder(
@@ -10979,21 +10979,21 @@ smartsheet.FolderResources.SheetResources.CreateSheet(
 ```
 
 ```java
-// Specify properties of the first column.
+// Specify properties of the first column
 Column columnA = new Column.AddColumnToSheetBuilder()
     .setTitle("Favorite")
     .setType(ColumnType.CHECKBOX)
     .setSymbol(Symbol.STAR)
     .build();
 
-// Specify properties of the second column.
+// Specify properties of the second column
 Column columnB = new Column.AddColumnToSheetBuilder()
     .setTitle("Primary Column")
     .setType(ColumnType.TEXT_NUMBER)
     .setPrimary(true)
     .build();
 
-// Create sheet in folder (specifying the 2 columns to include in the sheet).
+// Create sheet in folder (specifying the 2 columns to include in the sheet)
 Sheet sheet = new Sheet.CreateSheetBuilder()
     .setName("newsheet")
     .setColumns(Arrays.asList(columnA, columnB))
@@ -11042,7 +11042,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets \
 ```
 
 ```javascript
-// Specify sheet properties.
+// Specify sheet properties
 var sheet = {
     "name": "newsheet",
     "columns": [
@@ -11059,13 +11059,13 @@ var sheet = {
     ]
 };
 
-// Set options.
+// Set options
 var options = {
 	body: sheet,
 	workspaceId: 1656220827314052
 };
 
-// Create sheet in workspace.
+// Create sheet in workspace
 smartsheet.sheets.createSheetInWorkspace(options)
 	.then(function(data) {
 		console.log(data);
@@ -11076,7 +11076,7 @@ smartsheet.sheets.createSheetInWorkspace(options)
 ```
 
 ```csharp
-// Specify properties of the first column.
+// Specify properties of the first column
 Column columnA = new Column.CreateSheetColumnBuilder(
         "Favorite",
         null,               // Nullable(bool) primary
@@ -11085,14 +11085,14 @@ Column columnA = new Column.CreateSheetColumnBuilder(
         Symbol.STAR)
     .Build(),
 
-// Specify properties of the second column.
+// Specify properties of the second column
 Column columnB = new Column.CreateSheetColumnBuilder(
         "Primary Column",
         true,
         ColumnType.TEXT_NUMBER)
     .Build(),
 
-// Create sheet in workspace (specifying the 2 columns to include in the sheet).
+// Create sheet in workspace (specifying the 2 columns to include in the sheet)
 smartsheet.WorkspaceResources.SheetResources.CreateSheet(
         3734419270854532,               // long workspaceId
         new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB })
@@ -11100,21 +11100,21 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheet(
 ```
 
 ```java
-// Specify properties of the first column.
+// Specify properties of the first column
 Column columnA = new Column.AddColumnToSheetBuilder()
     .setTitle("Favorite")
     .setType(ColumnType.CHECKBOX)
     .setSymbol(Symbol.STAR)
     .build();
 
-// Specify properties of the second column.
+// Specify properties of the second column
 Column columnB = new Column.AddColumnToSheetBuilder()
     .setTitle("Primary Column")
     .setType(ColumnType.TEXT_NUMBER)
     .setPrimary(true)
     .build();
 
-// Create sheet in workspace (specifying the 2 columns to include in the sheet).
+// Create sheet in workspace (specifying the 2 columns to include in the sheet)
 Sheet sheet = new Sheet.CreateSheetBuilder()
     .setName("newsheet")
     .setColumns(Arrays.asList(columnA, columnB))
@@ -11174,18 +11174,18 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 ```
 
 ```javascript
-// Specify the directive.
+// Specify the directive
 var sheet = {
     "name": "newsheet",
     "fromId": 7679398137620356
 };
 
-// Set options.
+// Set options
 var options = {
     body: sheet
 };
 
-// Create sheet from template.
+// Create sheet from template
 smartsheet.sheets.createSheetFromExisting(options)
     .then(function (data) {
         console.log(data);
@@ -11196,7 +11196,7 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```
 
 ```csharp
-// Specify name for the sheet and Id of the template.
+// Specify name for the sheet and Id of the template
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
         "newsheet",
         7679398137620356)           // long templateId
@@ -11219,7 +11219,7 @@ smartsheet.SheetResources.CreateSheetFromTemplate(
 ```
 
 ```java
-// Specify name for the sheet and Id of the template.
+// Specify name for the sheet and Id of the template
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
     .setFromId(7679398137620356L)           // long templateId
     .setName("newsheet")
@@ -11273,19 +11273,19 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attac
 ```
 
 ``` javascript
-// Specify the directive.
+// Specify the directive
 var sheet = {
     "name": "newsheet",
     "fromId": 7679398137620356
 };
 
-// Set options.
+// Set options
 var options = {
     body: sheet,
     folderId: 3734419270854532
 };
 
-// Create sheet from template in the specified folder.
+// Create sheet from template in the specified folder
 smartsheet.sheets.createSheetFromExisting(options)
     .then(function (data) {
         console.log(data);
@@ -11296,7 +11296,7 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```
 
 ```csharp
-// Specify name for the sheet and Id of the template.
+// Specify name for the sheet and Id of the template
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
         "newsheet",
         7679398137620356).              // long templateId
@@ -11321,7 +11321,7 @@ smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
 ```
 
 ```java
-// Specify name for the sheet and Id of the template.
+// Specify name for the sheet and Id of the template
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
     .setFromId(7679398137620356L)       // long templateId
     .setName("newsheet")
@@ -11378,19 +11378,19 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 ```
 
 ```javascript
-// Specify the directive.
+// Specify the directive
 var sheet = {
     "name": "newsheet",
     "fromId": 7679398137620356
 };
 
-// Set options.
+// Set options
 var options = {
     body: sheet,
     workspaceId: 1656220827314052
 };
 
-// Create sheet from template in the specified workspace.
+// Create sheet from template in the specified workspace
 smartsheet.sheets.createSheetFromExisting(options)
     .then(function (data) {
         console.log(data);
@@ -11401,7 +11401,7 @@ smartsheet.sheets.createSheetFromExisting(options)
 ```
 
 ```csharp
-// Specify name for the sheet and Id of the template.
+// Specify name for the sheet and Id of the template
 Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
         "newsheet",
         7679398137620356)           // long templateId
@@ -11426,7 +11426,7 @@ smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
 ```
 
 ```java
-// Specify name for the sheet and Id of the template.
+// Specify name for the sheet and Id of the template
 Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
     .setFromId(7679398137620356L)       // long templateId
     .setName("newsheet")
@@ -11481,12 +11481,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     id: 1531988831168388 // Id of Sheet
 };
 
-// Delete sheet.
+// Delete sheet
 smartsheet.sheets.deleteSheet(options)
     .then(function (data) {
         console.log(data);
@@ -11541,12 +11541,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/version \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 1531988831168388
 };
 
-// Get sheet version.
+// Get sheet version
 smartsheet.sheets.getSheetVersion(options)
     .then(function (data) {
         console.log(data);
@@ -11610,12 +11610,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
 	id: 4583173393803140 // Id of Sheet
 };
 
-// Get sheet.
+// Get sheet
 smartsheet.sheets.getSheet(options)
 	.then(function(data) {
 		console.log(data);
@@ -11733,7 +11733,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
   id: 4583173393803140 // Id of Sheet
 };
@@ -11798,7 +11798,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
   id: 4583173393803140 // Id of Sheet
 };
@@ -11865,7 +11865,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
   id: 4583173393803140 // Id of Sheet
 };
@@ -12057,13 +12057,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 ```
 
 ```csharp
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination {
     DestinationId = 7960873114331012,           // long destinationFolderId
     DestinationType = DestinationType.FOLDER,
 };
 
-// Move sheet.
+// Move sheet
 smartsheet.SheetResources.MoveSheet(
     4583173393803140,                           // long sheetId
     destination
@@ -12071,13 +12071,13 @@ smartsheet.SheetResources.MoveSheet(
 ```
 
 ```java
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
     .setDestinationId(7960873114331012L)        // long destinationFolderId
     .build();
 
-// Move sheet.
+// Move sheet
 Sheet results = smartsheet.sheetResources().moveSheet(
     4583173393803140L,                         // long sheetId
     destination
@@ -12134,12 +12134,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
   sheetId: 4583614634583940
 };
 
-// Get sheet publish status.
+// Get sheet publish status
 smartsheet.sheets.getPublishStatus(options)
 	.then(function(data) {
 		console.log(data);
@@ -12203,7 +12203,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 ```
 
 ```javascript
-// Specify publish status.
+// Specify publish status
 var publishStatus = {
   "readOnlyLiteEnabled": true,
   "readOnlyFullEnabled": false,
@@ -12211,13 +12211,13 @@ var publishStatus = {
   "icalEnabled": false
 };
 
-// Set options.
+// Set options
 var options = {
   body: publishStatus,
   sheetId: 4583614634583940
 };
 
-// Set publish status.
+// Set publish status
 smartsheet.sheets.setPublishStatus(options)
 	.then(function(data) {
 		console.log(data);
@@ -12228,7 +12228,7 @@ smartsheet.sheets.setPublishStatus(options)
 ```
 
 ```csharp
-// Specify sheet publish status properties.
+// Specify sheet publish status properties
 SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(
         true,               // Nullable<bool> readOnlyLiteEnabled
         false,              // Nullable<bool> readOnlyFullEnabled
@@ -12236,7 +12236,7 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(
         false)              // Nullable<bool> icalEnabled
     .Build();
 
-// Set sheet publish status.
+// Set sheet publish status
 smartsheet.SheetResources.UpdatePublishStatus(
     4583614634583940,       // long sheetId
     sheetPublish
@@ -12244,7 +12244,7 @@ smartsheet.SheetResources.UpdatePublishStatus(
 ```
 
 ```java
-// Specify sheet publish status properties.
+// Specify sheet publish status properties
 SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder()
     .setIcalEnabled(false)
     .setReadOnlyFullEnabled(false)
@@ -12252,7 +12252,7 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder()
     .setReadOnlyLiteEnabled(true)
     .build();
 
-// Set sheet publish status.
+// Set sheet publish status
 SheetPublish results = smartsheet.sheetResources().updatePublishStatus(
     4583614634583940L,       // long sheetId
     sheetPublish
@@ -12338,7 +12338,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
-// Specify updated sheet properties.
+// Specify updated sheet properties
 var sheet = {
     "name": "New Sheet Name",
     "userSettings": {
@@ -12346,13 +12346,13 @@ var sheet = {
 	}
 };
 
-// Set options.
+// Set options
 var options = {
     body: sheet,
     id: 7960873114331012 // Id of Sheet
 };
 
-// Update sheet.
+// Update sheet
 smartsheet.sheets.updateSheet(options)
     .then(function (data) {
         console.log(data);
@@ -12363,26 +12363,26 @@ smartsheet.sheets.updateSheet(options)
 ```
 
 ```csharp
-// Specify updated sheet properties.
+// Specify updated sheet properties
 Sheet sheet = new Sheet.UpdateSheetBuilder(sheetId)
     .SetName("New Sheet Name")
     .SetUserSettings(
         new SheetUserSettings{ CriticalPathEnabled = true })
     .Build();
 
-// Update sheet.
+// Update sheet
 smartsheet.SheetResources.UpdateSheet(sheet);
 ```
 
 ```java
-// Specify updated sheet properties.
+// Specify updated sheet properties
 Sheet sheet = new Sheet.UpdateSheetBuilder()
     .setSheetId(7960873114331012L)           // long sheetId
     .setName("New Sheet Name")
     .setUserSettings(userSettings)
     .build();
 
-// Update sheet.
+// Update sheet
 smartsheet.sheetResources().updateSheet(sheet);
 ```
 
@@ -12462,7 +12462,7 @@ There are two ways to get discussion-related information for a Sheet:
 Operation | Returns
 ----------|----------|-----------
 [Get Sheet](#get-sheet)<br/>(with **include** parameter value "discussions") | Response does *not* contain the Comments that comprise each Discussion.
-[Get All Discussions](#get-all-discussions)<br/>(with **include** parameter value "comments") |  Response *does* contain the Comments that comprise each Discussion.
+[List Discussions](#list-discussions)<br/>(with **include** parameter value "comments") |  Response *does* contain the Comments that comprise each Discussion.
 
 For more information about working with a Sheet's discussions, see [Discussions](#discussions).
 
@@ -12635,14 +12635,14 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 ```
 
 ```java
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
     .setDestinationId(3791509922310020L)        // long destinationFolderId
     .setNewName("newSightName")
     .build();
 
-// Copy sight.
+// Copy sight
 Sight results = smartsheet.sightResources().copySight(
     6327127650920324L,                          // long sightId
     destination
@@ -12912,13 +12912,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 ```
 
 ```java
-// Specify destination.
+// Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
     .setDestinationId(9283173393803140L)        // long destinationFolderId
     .build();
 
-// Move sight.
+// Move sight
 Sight results = smartsheet.sightResources().moveSight(
     9283173393803140L,                          // long sightId
     destination
@@ -13539,7 +13539,7 @@ curl https://api.smartsheet.com/2.0/users?sendEmail=true \
 ```
 
 ```javascript
-// Specify user properties.
+// Specify user properties
 var user = {
 	"firstName": "John",
 	"lastName": "Doe",
@@ -13548,7 +13548,7 @@ var user = {
 	"licensedSheetCreator": true
 };
 
-// Set options.
+// Set options
 var options = {
 	body: user
 };
@@ -13562,7 +13562,7 @@ smartsheet.users.addUser(options)
 ```
 
 ```csharp
-// Set user properties.
+// Set user properties
 User user = new User.AddUserBuilder(
         "john.doe@smartsheet.com",
         false,              // Nullable<bool> admin
@@ -13571,7 +13571,7 @@ User user = new User.AddUserBuilder(
     .SetLastName ("Doe")
     .Build();
 
-// Add user.
+// Add user
 smartsheet.UserResources.AddUser(
     user,
     true,                   // Nullable<bool> sendEmail
@@ -13580,7 +13580,7 @@ smartsheet.UserResources.AddUser(
 ```
 
 ```java
-// Set user properties.
+// Set user properties
 User user = new User.AddUserBuilder().setAdmin(false)
     .setEmail("john.doe@smartsheet.com")
     .setFirstName("John")
@@ -13588,7 +13588,7 @@ User user = new User.AddUserBuilder().setAdmin(false)
     .setLicensedSheetCreator(true)
     .build();
 
-// Add user.
+// Add user
 smartsheet.userResources().addUser(user);
 ```
 
@@ -14002,12 +14002,12 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
 	id: 48569348493401200	// Id of user
 };
 
-// Get user.
+// Get user
 smartsheet.users.getUser(options)
   	.then(function(data) {
     	console.log(data)
@@ -14187,12 +14187,12 @@ curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_Id&removeFrom
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
 	id: 94094820842 // Id of User
 };
 
-// Remove user.
+// Remove user
 smartsheet.users.removeUser(options)
 	.then(function(data) {
 		console.log(data)
@@ -14270,19 +14270,19 @@ curl https://api.smartsheet.com/2.0/users/{userId} \
 ```
 
 ```javascript
-// Specify updated user properties.
+// Specify updated user properties
 var user = {
 	"admin": true,
 	"licensedSheetCreator": true
 };
 
-// Set options.
+// Set options
 var options = {
 	body: user,
 	id: 82349925918590 // Id of User
 };
 
-// Update user.
+// Update user
 smartsheet.users.updateUser(options)
 	.then(function(data) {
 		console.log(data)
@@ -14292,14 +14292,14 @@ smartsheet.users.updateUser(options)
 ```
 
 ```csharp
-// Specify updated user properties.
+// Specify updated user properties
 User user = new User.UpdateUserBuilder(
         82349925918590,             // long userId
         true,                       // Nullable<bool> admin
         true)                       // Nullable<bool> licensedSheetCreator
     .Build();
 
-// Update user.
+// Update user
 smartsheet.UserResources.UpdateUser(
     82349925918590,             // long userId
     user
@@ -14307,10 +14307,10 @@ smartsheet.UserResources.UpdateUser(
 ```
 
 ```java
-// Specify updated user properties.
+// Specify updated user properties
 User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(true).setLicensedSheetCreator(true).build();
 
-// Update user.
+// Update user
 smartsheet.userResources().updateUser(user);
 ```
 
@@ -14391,7 +14391,7 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
 ```
 
 ```csharp
-// Specify name for the new workspace.
+// Specify name for the new workspace
 ContainerDestination destination = new ContainerDestination {
     NewName = "newWorkspaceName"
 };
@@ -14413,7 +14413,7 @@ smartsheet.WorkspaceResources.CopyWorkspace(
 ```
 
 ```java
-// Specify name for the new workspace.
+// Specify name for the new workspace
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setNewName("newWorkspaceName").build();
 
 // Omit 'include' and 'skipRemap' parameters
@@ -14483,15 +14483,15 @@ curl https://api.smartsheet.com/2.0/workspaces \
 ```
 
 ```javascript
-// Specify workspace name.
+// Specify workspace name
 var workspace = {"name": "New workspace"};
 
-// Set options.
+// Set options
 var options = {
     body: workspace
 };
 
-// Create workspace.
+// Create workspace
 smartsheet.workspaces.createWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -14502,18 +14502,18 @@ smartsheet.workspaces.createWorkspace(options)
 ```
 
 ```csharp
-// Specify workspace name.
+// Specify workspace name
 Workspace workspace = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
 
-// Create workspace.
+// Create workspace
 smartsheet.WorkspaceResources.CreateWorkspace(workspace);
 ```
 
 ```java
-// Specify workspace name.
+// Specify workspace name
 Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
 
-// Create workspace.
+// Create workspace
 smartsheet.workspaceResources().createWorkspace(workspace);
 ```
 
@@ -14563,12 +14563,12 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     workspaceId: 6621332407379844
 };
 
-// Delete workspace.
+// Delete workspace
 smartsheet.workspaces.deleteWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -14623,12 +14623,12 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     workspaceId: 7116448184199044
 };
 
-// Get workspace.
+// Get workspace
 smartsheet.workspaces.getWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -14809,16 +14809,16 @@ curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
 ```
 
 ```javascript
-// Specify updated workspace properties.
+// Specify updated workspace properties
 var workspace = {"name": "Updated workspace"};
 
-// Set options.
+// Set options
 var options = {
     body: workspace,
     workspaceId: 7960873114331012
 };
 
-// Update workspace.
+// Update workspace
 smartsheet.workspaces.updateWorkspace(options)
     .then(function (data) {
         console.log(data);
@@ -14829,24 +14829,24 @@ smartsheet.workspaces.updateWorkspace(options)
 ```
 
 ```csharp
-// Specify updated workspace name.
+// Specify updated workspace name
 Workspace workspace = new Workspace.UpdateWorkspaceBuilder(
         7960873114331012,           // long workspaceId
         "Updated workspace")
     .Build();
 
-// Update workspace.
+// Update workspace
 smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
 ```
 
 ```java
-// Specify updated workspace properties.
+// Specify updated workspace properties
 Workspace workspace = new Workspace.UpdateWorkspaceBuilder()
     .setName("Updated workspace")
     .setId(7960873114331012L)       // long workspaceId
     .build();
 
-// Update workspace.
+// Update workspace
 smartsheet.workspaceResources().updateWorkspace(workspace);
 ```
 
