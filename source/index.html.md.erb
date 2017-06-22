@@ -12631,7 +12631,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 ```
 
 ```csharp
-// [todo]
+// Specify destination
+ContainerDestination destination = new ContainerDestination
+{
+    DestinationId = 3791509922310020,               // long destinationFolderId
+    DestinationType = DestinationType.FOLDER,
+    NewName = "newSightName"
+};
+
+// Copy Sight
+Sight results = smartsheet.SightResources.CopySight(
+    6327127650920324,                               // long sightId
+    destination
+);
 ```
 
 ```java
@@ -12693,7 +12705,9 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```csharp
-// [todo]
+smartsheet.SightResources.DeleteSight(
+    5077532685952900            // long sheetId
+);
 ```
 
 ```java
@@ -12914,7 +12928,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 ```
 
 ```csharp
-// [todo]
+// Specify destination
+ContainerDestination destination = new ContainerDestination
+{
+    DestinationId = 8460057768683396,               // long destinationFolderId
+    DestinationType = DestinationType.FOLDER
+};
+
+// Move Sight
+Sight results = smartsheet.SightResources.MoveSight(
+    5077532685952900,                               // long sightId
+    destination
+);
 ```
 
 ```java
