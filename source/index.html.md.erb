@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-06-21
+Updated 2017-06-22
 
 # Overview
 ## Introduction
@@ -3688,18 +3688,21 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 -d '{"text":"This is the updated comment text."}'
 ```
 
-```java
+```csharp
 // Specify edited comment properties
-Comment comment = new Comment.AddCommentBuilder()
-    .setText("This is the updated comment text")
-    .build();
+Comment comment = new Comment();
+comment.Id = 7144101943502724;
+comment.Text = "This is the updated comment text";
 
 // Edit comment
-smartsheet.discussionCommentResources().addComment
-    4503677744506756L,          // long sheetId
-    4503677744506756L,          // long discussionId
+smartsheet.SheetResources.DiscussionResources.CommentResources.UpdateComment(
+    3285357287499652,          // long sheetId
     comment
-;
+);
+```
+            
+```java
+[todo]
 ```
 
 > Example Response:
@@ -10131,7 +10134,21 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
 ```
 
 ```csharp
-// [todo]
+// Specify share (to one user as Viewer)
+Share[] shares = new Share[] 
+{ 
+    new Share.CreateShareBuilder(
+        "jane.roe@smartsheet.com",
+        AccessLevel.VIEWER)
+    .Build()
+};
+
+// Share sight
+smartsheet.SightResources.ShareResources.ShareTo(
+    6327127650920324,       // long sightId
+    shares,
+    true                    // Boolean sendEmail
+);
 ```
 
 ```java
