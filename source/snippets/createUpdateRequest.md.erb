@@ -20,31 +20,30 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 }'
 ```
 
-<!--Pending SDK Update 
 ```csharp
 // Specify recipients
-Recipient[] recipients = new Recipient[] { 
-    new Recipient { Email = "recipient1@smartsheet.com" },
-    new Recipient { Email = "recipient2@smartsheet.com" }
+Recipient[] recipients = new Recipient[] {
+    new Recipient { Email = "recipient1@smartsheet.com"}
 };
 
-// Configure email
-MultiRowEmail multiEmail = new MultiRowEmail {
+// Configure update request
+UpdateRequest updateRequest = new UpdateRequest
+{
     SendTo = recipients,
     Subject = "some subject",
     Message = "some message",
     CcMe = true,
-    RowIds = new long[] { rowId1, rowId2 },
-    ColumnIds = new long[] { colId1, colId2 },
+    RowIds = new long[] { 1123834706323332, 5627434333693828 },
+    ColumnIds = new long[] { 4549065498224516, 2297265684539268 },
     IncludeAttachments = true,
     IncludeDiscussions = true
 };
 
 // Send update request via email
-smartsheet.SheetResources.SendUpdateRequest(sheetId, multiEmail);
-```-->
-```csharp
-// [todo]
+UpdateRequest results = smartsheet.SheetResources.UpdateRequestResources.CreateUpdateRequest(
+    3285357287499652,       // long sheetId
+    updateRequest
+);
 ```
 
 ```javascript
