@@ -1,8 +1,8 @@
-> Example Request:
+> Example Request: Create Update Request
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{ \
@@ -20,41 +20,39 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 }'
 ```
 
-<!--Pending SDK Update 
 ```csharp
-// Specify recipients.
+// Specify recipients
 Recipient[] recipients = new Recipient[] {
-    new Recipient { Email = "recipient1@smartsheet.com" },
-    new Recipient { Email = "recipient2@smartsheet.com" }
+    new Recipient { Email = "recipient1@smartsheet.com"}
 };
 
-// Configure email.
-MultiRowEmail multiEmail = new MultiRowEmail {
+// Configure update request
+UpdateRequest updateRequest = new UpdateRequest
+{
     SendTo = recipients,
     Subject = "some subject",
     Message = "some message",
     CcMe = true,
-    RowIds = new long[] { rowId1, rowId2 },
-    ColumnIds = new long[] { colId1, colId2 },
+    RowIds = new long[] { 1123834706323332, 5627434333693828 },
+    ColumnIds = new long[] { 4549065498224516, 2297265684539268 },
     IncludeAttachments = true,
     IncludeDiscussions = true
 };
 
-// Send update request via email.
-smartsheet.SheetResources.SendUpdateRequest (sheetId, multiEmail);
-```-->
-```csharp
-// [todo]
+// Send update request via email
+UpdateRequest results = smartsheet.SheetResources.UpdateRequestResources.CreateUpdateRequest(
+    3285357287499652,       // long sheetId
+    updateRequest
+);
 ```
 
 ```javascript
 // [todo]
 ```
 
-<!--Pending SDK Update 
 ```java
-// Specify recipients.
-RecipientEmail recipientEmail=new RecipientEmail.AddRecipientEmailBuilder()
+// Specify recipients
+RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
     .setEmail("recipient1@smartsheet.com")
     .setEmail("recipient2@smartsheet.com")
     .build();
@@ -62,28 +60,26 @@ RecipientEmail recipientEmail=new RecipientEmail.AddRecipientEmailBuilder()
 List<Recipient> recipients = new ArrayList<Recipient>();
 recipients.add(recipientEmail);
 
-// Configure email.
-MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
-    .setSendTo(recipients)
-    .setSubject("some subject")
-    .setMessage("some message")
-    .setCcMe(false)
-    .setRowIds(Arrays.asList(rowId1, rowId2)
-    .setColumnIds(Arrays.asList(columnId1, columnId2)
-    .setIncludeAttachments(false)
-    .setIncludeDiscussions(false)
-    .build();
+// Specify parameters for update request
+UpdateRequest updateRequest = new UpdateRequest();
+updateRequest.setSendTo(recipients);
+updateRequest.setSubject("some subject");
+updateRequest.setMessage("example message");
+updateRequest.setRowIds(Arrays.asList(3344087179913092L, 7847686807283588L));
+updateRequest.setColumnIds(Arrays.asList(1735559124150148L, 1735559124150148L));
+updateRequest.setIncludeAttachments(false);
+updateRequest.setIncludeDiscussions(false);
 
-// Send update request via email.
-smartsheet.sheetResources().createUpdateRequest(sheetId, multiRowEmail);
-```-->
-```java
-// [todo]
+// Create update request
+smartsheet.sheetResources().updateRequestResources().createUpdateRequest(
+    1639534409607044L,      // long sheetId
+    updateRequest
+);
 ```
 
 <!--Pending SDK Update 
 ```python
-# Configure email.
+# Configure email
 email = smartsheet.models.MultiRowEmail()
 email.send_to = [
     smartsheet.models.Recipient({'email': 'recipient1@smartsheet.com'}),
@@ -94,7 +90,7 @@ email.cc_me = False
 email.row_ids = [rowId1, rowId2]
 email.column_ids = [columnId1, columnId2]
 
-# Send update request.
+# Send update request
 smartsheet.Sheets.send_update_request(sheetId, email)
 ```-->
 ```python
@@ -105,11 +101,11 @@ smartsheet.Sheets.send_update_request(sheetId, email)
 
 <%= partial "snippets/createImmediateUpdateRequest_response.md.erb" %>
 
-> Example Request:
+> Example Request: Create Immediate Update Request
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Authorization: Bearer ACCESS_TOKEN" \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{ \
@@ -139,8 +135,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 
 `POST /sheets/{sheetId}/updaterequests`
 
-Creates an Update Request for the specified Rows within the Sheet. An email notification (containing a link to the update request) is sent to the specified recipients according to the specified scheduled.
+Creates an Update Request for the specified Row(s) within the Sheet. An email notification (containing a link to the update request) will be sent to the specified recipient(s) according to the specified scheduled.
 
-<aside class="notice" >The recipients of an update request must be specified using email address(es) only. Sending an update request to a <a href="#groups">Group</a> is not supported.</aside>
+<aside class="notice" >The recipient(s) of an update request must be specified using email address(es) only. Sending an update request to a <a href="#groups">Group</a> is not supported.</aside>
 
 <%= partial "snippets/createUpdateRequest_table.md.erb" %>
