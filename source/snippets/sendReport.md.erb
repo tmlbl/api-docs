@@ -1,4 +1,4 @@
-> Example Request:
+> Example Request: Send Report
 
 ```shell
 curl https://api.smartsheet.com/2.0/reports/{reportId}/emails \
@@ -9,7 +9,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/emails \
 ```
 
 ```javascript
-// Configure email.
+// Configure email
 var email = {
     "sendTo": [
         {
@@ -28,13 +28,13 @@ var email = {
     }
 };
 
-// Set options.
+// Set options
 var options = {
     body: email,
     reportId: 8130994621441924
 };
 
-// Send report via email.
+// Send report via email
 smartsheet.reports.sendReportViaEmail(options)
     .then(function (data) {
         console.log(data);
@@ -45,13 +45,13 @@ smartsheet.reports.sendReportViaEmail(options)
 ```
 
 ```csharp
-// Specify recipients.
+// Specify recipients
 Recipient[] recipients = new Recipient[] {
     new Recipient { Email = "john.doe@smartsheet.com" },
     new Recipient { GroupId = 2258118617917316 }
 };
 
-// Configure email.
+// Configure email
 SheetEmail sheetEmail = new SheetEmail {
     SendTo = recipients,
     Subject = "Check this report out!",
@@ -61,29 +61,29 @@ SheetEmail sheetEmail = new SheetEmail {
     FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 }
 };
 
-// Send report via email.
+// Send report via email
 smartsheet.ReportResources.SendReport (8130994621441924, sheetEmail);       // long reportId
 ```
 
 ```java
-// Specify an individual recipient.
+// Specify an individual recipient
 RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
     .setEmail("john.doe@smartsheet.com")
     .build();
 
-// Specify a group recipient.
+// Specify a group recipient
 RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder()
     .setGroupId(2258118617917316L)
     .build();
 
-/// Set recipients.
+/// Set recipients
 List<Recipient> recipients = Arrays.asList(recipientEmail,recipientGroup);
 
-// Set format details.
+// Set format details
 FormatDetails formatDetails = new FormatDetails();
 formatDetails.setPaperSize(PaperSize.A0);
 
-// Configure email.
+// Configure email
 SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
     .setSendTo(recipients)
     .setSubject("Check this report out!")
@@ -93,12 +93,11 @@ SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
     .setFormatDetails(formatDetails)
     .build();
 
-// Send report via email.
+// Send report via email
 smartsheet.reportResources().sendReport(8130994621441924L, email);      // long reportId
 ```
 
 ```python
-# Send report via email.
 action = smartsheet.Reports.send_report(
     reportId,
     smartsheet.models.SheetEmail({
