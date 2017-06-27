@@ -22,14 +22,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 
 ```csharp
 // Specify recipients
-Recipient[] recipients = new Recipient[] {
+Recipient[] recipientSpecification = new Recipient[] {
     new Recipient { Email = "recipient1@smartsheet.com"}
 };
 
 // Configure update request
-UpdateRequest updateRequest = new UpdateRequest
+UpdateRequest updateRequestSpecification = new UpdateRequest
 {
-    SendTo = recipients,
+    SendTo = recipientSpecification,
     Subject = "some subject",
     Message = "some message",
     CcMe = true,
@@ -40,9 +40,9 @@ UpdateRequest updateRequest = new UpdateRequest
 };
 
 // Send update request via email
-UpdateRequest results = smartsheet.SheetResources.UpdateRequestResources.CreateUpdateRequest(
+UpdateRequest newUpdateRequest = smartsheet.SheetResources.UpdateRequestResources.CreateUpdateRequest(
     3285357287499652,       // long sheetId
-    updateRequest
+    updateRequestSpecification
 );
 ```
 
@@ -52,17 +52,17 @@ UpdateRequest results = smartsheet.SheetResources.UpdateRequestResources.CreateU
 
 ```java
 // Specify recipients
-RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
+RecipientEmail recipientSpecification = new RecipientEmail.AddRecipientEmailBuilder()
     .setEmail("recipient1@smartsheet.com")
     .setEmail("recipient2@smartsheet.com")
     .build();
 
 List<Recipient> recipients = new ArrayList<Recipient>();
-recipients.add(recipientEmail);
+recipients.add(recipientSpecification);
 
 // Specify parameters for update request
 UpdateRequest updateRequest = new UpdateRequest();
-updateRequest.setSendTo(recipients);
+updateRequest.setSendTo(recipientSpecification);
 updateRequest.setSubject("some subject");
 updateRequest.setMessage("example message");
 updateRequest.setRowIds(Arrays.asList(3344087179913092L, 7847686807283588L));

@@ -46,14 +46,14 @@ smartsheet.reports.sendReportViaEmail(options)
 
 ```csharp
 // Specify recipients
-Recipient[] recipients = new Recipient[] {
+Recipient[] recipientSpecification = new Recipient[] {
     new Recipient { Email = "john.doe@smartsheet.com" },
     new Recipient { GroupId = 2258118617917316 }
 };
 
 // Configure email
 SheetEmail sheetEmail = new SheetEmail {
-    SendTo = recipients,
+    SendTo = recipientSpecification,
     Subject = "Check this report out!",
     Message = "Here is the report I mentioned in our meeting",
     CcMe = false,
@@ -77,15 +77,15 @@ RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder()
     .build();
 
 /// Set recipients
-List<Recipient> recipients = Arrays.asList(recipientEmail,recipientGroup);
+List<Recipient> recipientList = Arrays.asList(recipientEmail,recipientGroup);
 
 // Set format details
 FormatDetails formatDetails = new FormatDetails();
 formatDetails.setPaperSize(PaperSize.A0);
 
 // Configure email
-SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
-    .setSendTo(recipients)
+SheetEmail emailSpecification = new SheetEmail.AddSheetEmailBuilder()
+    .setSendTo(recipientList)
     .setSubject("Check this report out!")
     .setMessage("Here is the report I mentioned in our meeting")
     .setCcMe(false)
@@ -94,7 +94,7 @@ SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
     .build();
 
 // Send report via email
-smartsheet.reportResources().sendReport(8130994621441924L, email);      // long reportId
+smartsheet.reportResources().sendReport(8130994621441924L, emailSpecification);      // long reportId
 ```
 
 ```python
