@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-06-27
+Updated 2017-06-28
 
 # Overview
 ## Introduction
@@ -13770,7 +13770,10 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```csharp
-// [todo]
+AlternateEmail primaryEmail = smartsheet.UserResources.PromoteAlternateEmail(
+    401090454808452,        // long userId
+    123456789012345         // long altEmailId
+);
 ```
 
 ```java
@@ -13826,7 +13829,10 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```csharp
-// [todo]
+smartsheet.UserResources.DeleteAlternateEmail(
+    401090454808452,        // long userId
+    123456789012345         // long altEmailId
+);
 ```
 
 ```java
@@ -13870,7 +13876,10 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEma
 ```
 
 ```csharp
-// [todo]
+smartsheet.UserResources.GetAlternateEmail(
+    401090454808452,        // long userId
+    123456789012345         // long altEmailId
+);
 ```
 
 ```java
@@ -13915,7 +13924,11 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```csharp
-// [todo]
+// Omit 'email' parameter and pagination parameters
+PaginatedResult<AlternateEmail> results = smartsheet.UserResources.ListAlternateEmails(
+    401090454808452,        // long userId
+    null                    // PaginationParameters
+);
 ```
 
 ```java
@@ -15803,6 +15816,12 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -X DELETE
 ```
 
+```csharp
+smartsheet.WebhookResources.DeleteWebhook(
+    401090454808452     // long webhookId
+);
+```
+
 ```java
 
 ```
@@ -15835,6 +15854,12 @@ Deletes the Webhook specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```csharp
+Webhook webhook = smartsheet.WebhookResources.GetWebhook(
+    401090454808452     // long webhookId
+);
 ```
 
 ```java
@@ -15880,6 +15905,13 @@ Gets the Webhook specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/webhooks \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```csharp
+// Omit pagination parameters
+PaginatedResult<Webhook> webhooks = smartsheet.WebhookResources.ListWebhooks(
+    null            // PaginationParameters
+);
 ```
 
 ```java
