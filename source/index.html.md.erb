@@ -15761,7 +15761,23 @@ curl https://api.smartsheet.com/2.0/webhooks \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{ "name": "Webhook #4", "callbackUrl": "http://www.myApp.com/webhooks", "scope": "sheet", "scopeObjectId": 2258256056870788, "version": 1, "events": [ "*.*" ]}'
+-d '{ "name": "Webhook #4", "callbackUrl": "https://www.myApp.com/webhooks", "scope": "sheet", "scopeObjectId": 2258256056870788, "version": 1, "events": [ "*.*" ]}'
+```
+
+```csharp
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.Name = "Webhook #4";
+webhook.CallbackUrl = "https://www.myApp.com/webhooks";
+webhook.Scope = "sheet";
+webhook.ScopeObjectId = 3285357287499652;
+webhook.Events = new string[] { "*.*" };
+webhook.Version = 1;
+
+// Create Webhook
+Webhook newWebhook = smartsheet.WebhookResources.CreateWebhook(
+    webhook
+);
 ```
 
 ```java
@@ -15970,6 +15986,12 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
 -X POST
 ```
 
+```csharp
+WebhookSharedSecret newSecret = smartsheet.WebhookResources.ResetSharedSecret(
+    401090454808452     // long webhookId
+);
+```
+            
 ```java
 
 ```
@@ -16007,6 +16029,19 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{ "enabled": true }'
+```
+
+```csharp
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.CallbackUrl = "https://www.myApp.com/webhooks";
+webhook.Version = 2;
+webhook.Enabled = true;
+
+// Update Webhook
+Webhook updatedWebhook = smartsheet.WebhookResources.UpdateWebhook(
+    webhook
+);
 ```
 
 ```java
