@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-06-26
+Updated 2017-06-29
 
 # Overview
 ## Introduction
@@ -90,7 +90,7 @@ You can view code examples in the programming language of your choice by clickin
 
 This documentation provides two [Getting Started](#getting-started) tutorials that walk you through making your first API call and interpreting the response to a GET sheet request. You may also want to bookmark or note the following resources:
 
-* [Smartsheet Developer Portal:](https://www.smartsheet.com/developers) If registering, use a different email address from your paid Smartsheet account so you can test the API and make API calls
+* [Smartsheet Developer Portal:](http://developers.smartsheet.com) If registering, use a different email address from your paid Smartsheet account so you can test the API and make API calls
 * Developer Newsletter (subscribe while at the Developer Portal using the <i>Get Developer Updates</i> form)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/smartsheet-api) using the "smartsheet-api" tag
 * Additional [Getting Started documentation on GitHub](https://github.com/smartsheet-platform/getting-started)
@@ -187,7 +187,7 @@ token.AccessToken = "ll352u9jujauoqz4gstvsae05";
 SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
 
 // Get current user
-UserProfile results = smartsheet.UserResources.GetCurrentUser();
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
 ```
 
 ```java
@@ -197,7 +197,7 @@ token.setAccessToken("ll352u9jujauoqz4gstvsae05");
 Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken(token.getAccessToken()).build();
 
 // Get current user
-UserProfile results = smartsheet.userResources().getCurrentUser();
+UserProfile userProfile = smartsheet.userResources().getCurrentUser();
 ```
 
 ```python
@@ -234,7 +234,7 @@ The header name is <b>Authorization</b> and the value of the header is <b>Bearer
 
 <aside class="warning">The token generated runs with your credentials. Be sure to secure your tokens and do not share tokens with anyone.</aside>
 
-<aside class="notice">If your application requires users to be able to login with their own account, you must implement the full OAuth flow. See the documentation for <a href="#third-party-app-development">Third-party App Development</a> and <a href="https://www.smartsheet.com/developers/register">Developer Registration</a>.</aside>
+<aside class="notice">If your application requires users to be able to login with their own account, you must implement the full OAuth flow. See the documentation for <a href="#third-party-app-development">Third-party App Development</a> and <a href="http://developers.smartsheet.com/register">Developer Registration</a>.</aside>
 
 ## Dates and Times
 
@@ -311,7 +311,7 @@ Many Smartsheet API operations handle sheets, rows, columns, and cells. Each is 
 
 Before you begin, you should already have an access token, which you used in the exercise above. Use the same access token for this walkthrough.
 
-1. The first thing you want is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [List Sheets](#list-sheets) if you want to do this programmatically.
+1. The first thing you must have is a sheetId. To find a sheetId through the UI, with the sheet open, click Sheet Actions in the left toolbar and select Properties. Note: use [List Sheets](#list-sheets) if you want to do this programmatically.
 
     <img src="images/sheet-properties.png" alt="Image of the Sheet Properties window" />
 
@@ -342,7 +342,7 @@ Before you begin, you should already have an access token, which you used in the
 		}
 	],
 	"rows": [{                                      // A Row Object
-			"id": 564480076736388,                  // You want the row Id to make updates
+			"id": 564480076736388,                  // You must use the row Id to make updates
 			"rowNumber": 1,
 			"expanded": true,
 			"createdAt": "2017-05-12T16:52:38Z",
@@ -424,7 +424,7 @@ As a developer, you may be building applications that allow any Smartsheet user 
 ## Developer Registration
 
 Third-party app registration and management is available via the Developer Tools. 
-To get access to Developer Tools, you must first [register](https://www.smartsheet.com/developers/register) as a Smartsheet developer. 
+To get access to Developer Tools, you must first [register](http://developers.smartsheet.com/register) as a Smartsheet developer. 
 Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
  
 Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
@@ -629,7 +629,7 @@ curl https://api.smartsheet.com/2.0/token \
 }
 ```
 
-An access token is valid for one week but you can use the refresh token to obtain a new access token. 
+Access tokens expire after 7 days. Use the refresh token to obtain a new access token. 
 Once you obtain the new access token, you must use it in place of the old one, which is no longer valid.
  
 To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
@@ -689,7 +689,7 @@ Value | Type | Description |
 **page**		| number  | Which page to return.  Defaults to **1** if not specified.  If you specify a value greater than the total number of pages, the last page of results is returned.
 **includeAll**  | Boolean | If true, include all results, that is, do not paginate.  Mutually exclusive with **pageSize** and **page** (they are ignored if **includeAll**=true is specified).
 
-<aside class="notice">Most index endpoints default to a page size of 100 results.  If you want all results at once, you should specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
+<aside class="notice">Most index endpoints default to a page size of 100 results.  If you want all results at once, you must specify the <code class="prettyprint">includeAll=true</code> query string parameter.</aside>
 
 ### Paged Responses
 
@@ -1153,7 +1153,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"name":"Search Engine", "description": "A popular search engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
+-d '{"name":"Search Engine", "attachmentType":"LINK", "url":"http://www.google.com"}'
 ```
 
 ```javascript
@@ -1183,31 +1183,31 @@ smartsheet.sheets.addCommentAttachment(options)
 	
 ```csharp
 // Create attachment
-Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
+Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .Build();
 
 // Attach URL to comment
-Attachment results = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
+Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
     9283173393803140,           // long sheetId
     0123456789012345,           // long commentId
-    attachment
+    attachmentSpecification
 );
 ```
 
 ```java
 // Create attachment
-Attachment attachment = new Attachment.CreateAttachmentBuilder()
+Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
     .setUrl("http://www.google.com")
     .setAttachmentType(AttachmentType.LINK)
     .setName("Search Engine")
     .build();
 
 // Attach URL to comment
-Attachment results = smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
+Attachment updatedAttachment = smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long commentId
-    attachment
+    attachmentSpecification
 );
 ```
 
@@ -1273,22 +1273,22 @@ smartsheet.sheets.addRowAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
+Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
 
 // Attach URL to row
-Attachment results = smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
+Attachment updatedAttachment = smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
     9283173393803140,           // long sheetId
     0123456789012345,           // long rowId
-    attachment
+    attachmentSpecification
 );
 ```
 
 ```java
 // Create attachment
-Attachment attachment = new Attachment.CreateAttachmentBuilder()
+Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
     .setUrl("http://www.google.com")
     .setAttachmentType(AttachmentType.LINK)
     .setName("Search Engine")
@@ -1296,10 +1296,10 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .build();
 
 // Attach URL to row
-Attachment results = smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
+Attachment updatedAttachment = smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
-    attachment
+    attachmentSpecification
 );
 ```
 
@@ -1365,21 +1365,21 @@ smartsheet.sheets.addAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachment = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
+Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
     .SetName("Search Engine")
     .SetDescription("A popular search engine")
     .Build();
 
 // Attach URL to sheet
-Attachment results = smartsheet.SheetResources.AttachmentResources.AttachUrl(
+Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.AttachUrl(
     9283173393803140,           // long sheetId
-    attachment
+    attachmentSpecification
 );
 ```
 
 ```java
 // Create attachment
-Attachment attachment = new Attachment.CreateAttachmentBuilder()
+Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
     .setUrl("http://www.google.com")
     .setAttachmentType(AttachmentType.LINK)
     .setName("Search Engine")
@@ -1387,9 +1387,9 @@ Attachment attachment = new Attachment.CreateAttachmentBuilder()
     .build();
 
 // Attach URL to sheet
-Attachment results = smartsheet.sheetResources().attachmentResources().attachUrl(
+Attachment updatedAttachment = smartsheet.sheetResources().attachmentResources().attachUrl(
     9283173393803140L,       // long sheetId
-    attachment
+    attachmentSpecification
 );
 ```
 
@@ -2360,7 +2360,7 @@ smartsheet.sheets.getCellHistory(options)
 ```
 
 ```csharp
-// Omit 'include' parameter and pagination parameters
+// Sample 1: Omit 'include' parameter and pagination parameters
 PaginatedResult<CellHistory> results = smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     9283173393803140,               // long sheetId
     0123456789012345,               // long rowId
@@ -2369,7 +2369,7 @@ PaginatedResult<CellHistory> results = smartsheet.SheetResources.RowResources.Ce
     null                            // PaginationParameters
 );
 
-// Specify 'include' parameter with value of "COLUMN_TYPE" and 'includeAll' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with value of "COLUMN_TYPE" and 'includeAll' parameter with value of 'true'
 PaginatedResult<CellHistory> results = smartsheet.SheetResources.RowResources.CellResources.GetCellHistory(
     9283173393803140,               // long sheetId
     0123456789012345,               // long rowId
@@ -2928,7 +2928,7 @@ Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnT
 Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
 
 // Add columns to the sheet
-IList<Column> results = smartsheet.SheetResources.ColumnResources.AddColumns(
+IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
     9283173393803140, // long sheetId
     new Column[] { columnA, columnB }
 );
@@ -2951,7 +2951,7 @@ Column column2 = new Column.AddColumnToSheetBuilder()
     .build();
 
 // Add columns to the sheet
-List<Column> results = smartsheet.sheetResources().columnResources().addColumns(
+List<Column> newColumns = smartsheet.sheetResources().columnResources().addColumns(
     9283173393803140L,       // long sheetId
     Arrays.asList(column1, column2)
 );
@@ -3119,15 +3119,15 @@ smartsheet.sheets.getColumns(options)
 ```
 
 ```csharp
-// Omit 'include' parameter
-Column results = smartsheet.SheetResources.ColumnResources.GetColumn(
+// Sample 1: Omit 'include' parameter
+Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
     9283173393803140,               // long sheetId
     0123456789012345,               // long columnId
     null                            // IEnumerable<ColumnInclusion> includes
 );
 
-// Specify 'include' parameter with value of "FILTERS"
-Column results = smartsheet.SheetResources.ColumnResources.GetColumn(
+// Sample 2: Specify 'include' parameter with value of "FILTERS"
+Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
     9283173393803140,               // long sheetId
     0123456789012345,               // long columnId
     new ColumnInclusion[] { ColumnInclusion.FILTERS }
@@ -3135,15 +3135,15 @@ Column results = smartsheet.SheetResources.ColumnResources.GetColumn(
 ```
 
 ```java
-// Omit 'include' parameter
-Column results = smartsheet.sheetResources().columnResources().getColumn(
+// Sample 1: Omit 'include' parameter
+Column column = smartsheet.sheetResources().columnResources().getColumn(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long columnId
     null                     // EnumSet<ColumnInclusion> includes
 );
 
-// Specify 'include' parameter with value of "FILTERS"
-Column results = smartsheet.sheetResources().columnResources().getColumn(
+// Sample 2: Specify 'include' parameter with value of "FILTERS"
+Column column = smartsheet.sheetResources().columnResources().getColumn(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long columnId
     EnumSet.of(ColumnInclusion.FILTERS)
@@ -3205,7 +3205,7 @@ smartsheet.sheets.getColumns(options)
 
 ```csharp
 // Omit 'include' parameter and pagination parameters
-PaginatedResult<Column> results = smartsheet.SheetResources.ColumnResources.ListColumns(
+PaginatedResult<Column> columns = smartsheet.SheetResources.ColumnResources.ListColumns(
     9283173393803140,               // long sheetId
     null,                           // IEnumerable<ColumnInclusion> include
     null                            // PaginationParameters
@@ -3214,7 +3214,7 @@ PaginatedResult<Column> results = smartsheet.SheetResources.ColumnResources.List
 
 ```java
 // Omit 'include' parameter and pagination parameters
-PagedResult<Column> results = smartsheet.sheetResources().columnResources().listColumns(
+PagedResult<Column> columns = smartsheet.sheetResources().columnResources().listColumns(
     9283173393803140L,                   // long sheetId
     null,                                // EnumSet<ColumnInclusion> includes
     null                                 // PaginationParameters
@@ -3319,7 +3319,7 @@ smartsheet.sheets.updateColumn(options)
 
 ```csharp
 // Specify column properties
-Column column = new Column.UpdateColumnBuilder(
+Column columnSpecification = new Column.UpdateColumnBuilder(
         5005385858869124,
         "First Column",
         0)                  // column index
@@ -3328,12 +3328,12 @@ Column column = new Column.UpdateColumnBuilder(
     .Build();
 
 // Update column
-Column results = smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, column);
+Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, columnSpecification);
 ```
 
 ```java
 // Specify column properties
-Column column = new Column.UpdateColumnBuilder()
+Column columnSpecification = new Column.UpdateColumnBuilder()
     .setColumnId(2252168947361668L)         // long columnId
     .setTitle("First Column")
     .setIndex(0)
@@ -3342,7 +3342,7 @@ Column column = new Column.UpdateColumnBuilder()
     .build();
 
 // Update column
-Column results = smartsheet.sheetResources().columnResources().updateColumn(2252168947361668L, column);
+Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(2252168947361668L, columnSpecification);
 ```
 
 ```python
@@ -3538,25 +3538,25 @@ smartsheet.sheets.addDiscussionComment(options)
 
 ```csharp
 // Create comment
-Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
 // Add comment to discussion
-Comment results = smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
+Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
     2252168947361668,               // long sheetId
     3962273862576004,               // long discussionId
-    comment
+    commentSpecification
 );
 ```
 
 ```java
 // Create comment
-Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+Comment commentSpecification = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
 
 // Add comment to discussion
-Comment results = smartsheet.sheetResources().discussionResources().commentResources().addComment(
+Comment newComment = smartsheet.sheetResources().discussionResources().commentResources().addComment(
     2252168947361668L,       // long sheetId
     3962273862576004L,       // long discussionId
-    comment
+    commentSpecification
 );
 ```
 
@@ -3593,13 +3593,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 ```csharp
 // Create comment
-Comment comment = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
 
 // Add comment (with attachment) to discussion
-Comment results = smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(
+Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(
     2252168947361668,                   // long sheetId
     3962273862576004,                   // long discussionId
-    comment,
+    commentSpecification,
     filePath,
     "application/octet-stream"
 );
@@ -3607,14 +3607,14 @@ Comment results = smartsheet.SheetResources.DiscussionResources.CommentResources
 
 ```java
 // Create comment
-Comment comment = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+Comment commentSpecification = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
 
 // Add comment (with attachment) to discussion
 File file = new File(filePath);
 smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(
     2252168947361668L,       // long sheetId
     3962273862576004L,       // long discussionId
-    comment,
+    commentSpecification,
     file,
     "application/octet-stream"
 );
@@ -3688,14 +3688,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 
 ```csharp
 // Specify edited comment properties
-Comment comment = new Comment();
+Comment commentSpecification = new Comment();
 comment.Id = 7144101943502724;
 comment.Text = "This is the updated comment text";
 
 // Edit comment
-Comment results = smartsheet.SheetResources.DiscussionResources.CommentResources.UpdateComment(
+Comment updatedComment = smartsheet.SheetResources.DiscussionResources.CommentResources.UpdateComment(
     3285357287499652,          // long sheetId
-    comment
+    commentSpecification
 );
 ```
             
@@ -4103,31 +4103,31 @@ smartsheet.sheets.createRowDiscussion(options)
 
 ```csharp
 // Create comment
-Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
 
 // Add discussion to row
-Discussion results = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
+Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
     9283173393803140,               // long sheetId
     0123456789012345,               // long rowId
-    discussion
+    discussionSpecification
 );
 ```
 
 ```java
 // Create comment
-Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
 
 // Add discussion to row
-Discussion results = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
+Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
-    discussion
+    discussionSpecification
 );
 ```
 
@@ -4171,16 +4171,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 
 ```csharp
 // Create comment
-Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
 
 // Add discussion to row
-Discussion results = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(
+Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(
     9283173393803140,                   // long sheetId
     0123456789012345,                   // long rowId
-    discussion,
+    discussionSpecification,
     filePath,
     "application/octet-stream"
 );
@@ -4188,19 +4188,19 @@ Discussion results = smartsheet.SheetResources.RowResources.DiscussionResources.
 
 ```java
 // Create comment
-Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
 
 // Set file path
 File file = new File(filePath);
 
 // Add discussion to row
-Discussion results = smartsheet.sheetResources().rowResources().discussionResources().createDiscussionWithAttachment(
+Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussionWithAttachment(
     9283173393803140L,       // long sheetId
     0123456789012345L,       // long rowId
-    discussion,
+    discussionSpecification,
     file,
     "application/octet-stream"
 );
@@ -4277,29 +4277,29 @@ smartsheet.sheets.createDiscussion(options)
 
 ```csharp
 // Create comment
-Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion", comment).Build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
 
 // Add discussion to sheet
-Discussion results = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
+Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
     9283173393803140,                   // long sheetId
-    discussion
+    discussionSpecification
 );
 ```
 
 ```java
 // Create comment
-Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
 
 // Add discussion to sheet
-Discussion results = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
+Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
     9283173393803140L,       // long sheetId
-    discussion
+    discussionSpecification
 );
 ```
 
@@ -4342,15 +4342,15 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 
 ```csharp
 // Create comment
-Comment comment = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", comment).Build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", commentSpecification).Build();
 
 // Add discussion (including comment with attachment) to sheet
-Discussion results = smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(
+Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(
     9283173393803140,                   // long sheetId
-    discussion,
+    discussionSpecification,
     filePath,
     "application/octet-stream"
 );
@@ -4358,16 +4358,16 @@ Discussion results = smartsheet.SheetResources.DiscussionResources.CreateDiscuss
 
 ```java
 // Create comment
-Comment comment = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
 
 // Create discussion (including the comment)
-Discussion discussion = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(comment).build();
+Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
 File file = new File(filePath);
 
 // Add discussion (including comment with attachment) to sheet
-Discussion results = smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(
+Discussion newDiscussion = smartsheet.sheetResources().discussionResources().createDiscussionWithAttachment(
     9283173393803140L,       // long sheetId
-    discussion,
+    discussionSpecification,
     file,
     "application/octet-stream"
 );
@@ -4494,14 +4494,14 @@ smartsheet.sheets.getDiscussions(options)
 ```
 
 ```csharp
-// Omit 'include' parameter and pagination parameters
+// Sample 1: Omit 'include' parameter and pagination parameters
 PaginatedResult<Discussion> results = smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     9283173393803140,               // long sheetId
     null,                           // IEnumerable<DiscussionInclusion> include
     null                            // PaginationParameters
 );
 
-// Specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true'
 PaginatedResult<Discussion> results = smartsheet.SheetResources.DiscussionResources.ListDiscussions(
     9283173393803140,               // long sheetId
     new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS },
@@ -4513,14 +4513,14 @@ PaginatedResult<Discussion> results = smartsheet.SheetResources.DiscussionResour
 ```
 
 ```java
-// Omit 'include' parameter and pagination parameters
+// Sample 1: Omit 'include' parameter and pagination parameters
 PagedResult<Discussion> results = smartsheet.sheetResources().discussionResources().listDiscussions(
     9283173393803140L,   // long sheetId
     null,                // PaginationParameters
     null                 // EnumSet<DiscussionInclusion> includes
 );
 
-// Specify pagination parameter 'includeAll'
+// Sample 2: Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // List discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
@@ -4579,14 +4579,14 @@ smartsheet.sheets.getDiscussions(options)
 ```
 
 ```csharp
-Discussion results = smartsheet.SheetResources.DiscussionResources.GetDiscussion(
+Discussion discussion = smartsheet.SheetResources.DiscussionResources.GetDiscussion(
     9283173393803140,               // long sheetId
     0123456789012345                // long discussionId
 );
 ```
 
 ```java
-Discussion results = smartsheet.sheetResources().discussionResources().getDiscussion(
+Discussion discussion = smartsheet.sheetResources().discussionResources().getDiscussion(
     9283173393803140L,       // long sheetId
     0123456789012345L        // long discussionId
 );
@@ -4654,7 +4654,7 @@ smartsheet.sheets.getRowDiscussions(options)
 ```
 
 ```csharp
-// Omit 'include' parameter and pagination parameters
+// Sample 1: Omit 'include' parameter and pagination parameters
 PaginatedResult<Discussion> results = smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
     2252168947361668,                   // long sheetId
     4293147074291588,                   // long rowId
@@ -4662,7 +4662,7 @@ PaginatedResult<Discussion> results = smartsheet.SheetResources.RowResources.Dis
     null                                // PaginationParameters
 );
 
-// Specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true'
 PaginatedResult<Discussion> results = smartsheet.SheetResources.RowResources.DiscussionResources.ListDiscussions(
     2252168947361668,                   // long sheetId
     4293147074291588,                   // long rowId
@@ -4675,7 +4675,7 @@ PaginatedResult<Discussion> results = smartsheet.SheetResources.RowResources.Dis
 ```
 
 ```java
-// Omit 'include' parameter and pagination parameters
+// Sample 1: Omit 'include' parameter and pagination parameters
 PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
     2252168947361668L,       // long sheetId
     4293147074291588L,       // long rowId
@@ -4683,7 +4683,7 @@ PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().dis
     null                     // EnumSet<DiscussionInclusion> includes
 );
 
-// Specify pagination parameter 'includeAll'
+// Sample 2: Specify pagination parameter 'includeAll'
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
@@ -4790,7 +4790,7 @@ smartsheet.favorites.addItemsToFavorites(options)
 
 ```csharp
 // Specify favorites
-Favorite[] favorites = new Favorite[] {
+Favorite[] favoritesSpecification = new Favorite[] {
     new Favorite.AddFavoriteBuilder(
         ObjectType.SHEET,
         8400677765441412)           // long objectId (in this case, the sheetId)
@@ -4798,19 +4798,19 @@ Favorite[] favorites = new Favorite[] {
 };
 
 // Add items to favorites
-Favorite results = smartsheet.FavoriteResources.AddFavorites(favorites);
+Favorite newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
 ```
 
 ```java
 // Specify favorites
-List<Favorite> favorites = new Favorite.AddFavoriteBuilder()
+List<Favorite> favoritesSpecification = new Favorite.AddFavoriteBuilder()
     .addFavorite(
         8400677765441412L,       // long sheetId
         FavoriteType.SHEET)
     .build();
 
 // Add items to favorites
-List<Favorite> results = smartsheet.favoriteResources().addFavorites(favorites);
+List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(favoritesSpecification);
 ```
 
 ```python
@@ -5648,16 +5648,16 @@ ContainerDestination destination = new ContainerDestination {
     NewName = "newFolderName"
 };
 
-// Omit 'include' and 'skipRemap' parameters
-Folder results = smartsheet.FolderResources.CopyFolder(
+// Sample 1: Omit 'include' and 'skipRemap' parameters
+Folder folder = smartsheet.FolderResources.CopyFolder(
     2252168947361668,               // long folderId
     destination,
     null,                           // IEnumerable<FolderCopyInclusion> include
     null                            // IEnumerable<FolderRemapExclusion> skipRemap
 );
 
-// Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS"
-Folder results = smartsheet.FolderResources.CopyFolder(
+// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS"
+Folder folder = smartsheet.FolderResources.CopyFolder(
     2252168947361668,               // long folderId
     destination,
     new FolderCopyInclusion[] {
@@ -5675,16 +5675,16 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .setNewName("newFolderName")
     .build();
 
-// Omit 'include' and 'skipRemap' parameters
-Folder results = smartsheet.folderResources().copyFolder(
+// Sample 1: Omit 'include' and 'skipRemap' parameters
+Folder folder = smartsheet.folderResources().copyFolder(
     2252168947361668L,                      // long folderId
     destination,
     null,                                   // EnumSet<FolderCopyInclusion> includes
     null                                    // EnumSet<FolderRemapExclusion> skipRemap
 );
 
-// Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS"
-Folder results = smartsheet.folderResources().copyFolder(
+// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS"
+Folder folder = smartsheet.folderResources().copyFolder(
     2252168947361668L,                      // long folderId
     destination,
     EnumSet.of(FolderCopyInclusion.ALL),
@@ -5769,18 +5769,18 @@ smartsheet.home.createFolder(options)
 
 ```csharp
 // Set folder name
-Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
 
 // Create folder in "Sheets" folder (Home)
-Folder results = smartsheet.HomeResources.FolderResources.CreateFolder(folder);
+Folder newFolder = smartsheet.HomeResources.FolderResources.CreateFolder(folderSpecification);
 ```
 
 ```java
 // Set folder name
-Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
 // Create folder in "Sheets" folder (Home)
-Folder results = smartsheet.homeResources().folderResources().createFolder(folder);
+Folder newFolder = smartsheet.homeResources().folderResources().createFolder(folderSpecification);
 ```
 
 ```python
@@ -5833,23 +5833,23 @@ smartsheet.folders.createChildFolder(options)
 
 ```csharp
 // Set folder name
-Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
 
 // Create folder in another folder
-Folder results = smartsheet.FolderResources.CreateFolder(
+Folder newFolder = smartsheet.FolderResources.CreateFolder(
     7960873114331012,               // long destinationFolderId
-    folder
+    folderSpecification
 );
 ```
 
 ```java
 // Set folder name
-Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
 // Create folder in another folder
-Folder results = smartsheet.folderResources().createFolder(
+Folder newFolder = smartsheet.folderResources().createFolder(
     7960873114331012L,       // long destinationFolderId
-    folder
+    folderSpecification
 );
 ```
 
@@ -5903,23 +5903,23 @@ smartsheet.workspaces.createFolder(options)
 
 ```csharp
 // Set folder name
-Folder folder = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
 
 // Create folder in a workspace
-Folder results = smartsheet.WorkspaceResources.FolderResources.CreateFolder(
+Folder newFolder = smartsheet.WorkspaceResources.FolderResources.CreateFolder(
     1656220827314052,               // long workspaceId
-    folder
+    folderSpecification
 );
 ```
 
 ```java
 // Set folder name
-Folder folder = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
 
 // Create folder in a workspace
-Folder results = smartsheet.workspaceResources().folderResources().createFolder(
+Folder newFolder = smartsheet.workspaceResources().folderResources().createFolder(
     1656220827314052L,       // long workspaceId
-    folder
+    folderSpecification
 );
 ```
 
@@ -6024,14 +6024,14 @@ smartsheet.folders.getFolder(options)
 ```
 
 ```csharp
-// Omit 'include' parameter
-Folder results = smartsheet.FolderResources.GetFolder(
+// Sample 1: Omit 'include' parameter
+Folder folder = smartsheet.FolderResources.GetFolder(
     7116448184199044,           // long folderId
     null                        // IEnumerable<FolderInclusion> include
 );
 
-// Specify 'include' parameter with value of "SOURCE"
-Folder results = smartsheet.FolderResources.GetFolder(
+// Sample 2: Specify 'include' parameter with value of "SOURCE"
+Folder folder = smartsheet.FolderResources.GetFolder(
     7116448184199044,           // long folderId
     new FolderInclusion[] {
         FolderInclusion.SOURCE }
@@ -6039,14 +6039,14 @@ Folder results = smartsheet.FolderResources.GetFolder(
 ```
 
 ```java
-// Omit 'include' parameter
-Folder results = smartsheet.folderResources().getFolder(
+// Sample 1: Omit 'include' parameter
+Folder folder = smartsheet.folderResources().getFolder(
     7116448184199044L,       // long folderId
     null)                    // EnumSet<SourceInclusion> includes
 );
 
-// Specify 'include' parameter with value of "SOURCE"
-Folder results = smartsheet.folderResources().getFolder(
+// Sample 2: Specify 'include' parameter with value of "SOURCE"
+Folder folder = smartsheet.folderResources().getFolder(
     7116448184199044L,       // long folderId
     EnumSet.of(SourceInclusion.SOURCE))
 );
@@ -6114,14 +6114,14 @@ smartsheet.home.listFolders()
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Folder> results = smartsheet.HomeResources.FolderResources.ListFolders(
+PaginatedResult<Folder> folders = smartsheet.HomeResources.FolderResources.ListFolders(
     null                    // PaginationParameters
 );
 ```
 
 ```java
 // Omit pagination parameters
-PagedResult<Folder> results = smartsheet.homeResources().folderResources().listFolders(
+PagedResult<Folder> folders = smartsheet.homeResources().folderResources().listFolders(
     null            // PaginationParameters
 );
 ```
@@ -6176,7 +6176,7 @@ smartsheet.folders.listChildFolders(options)
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Folder> results = smartsheet.FolderResources.ListFolders(
+PaginatedResult<Folder> folders = smartsheet.FolderResources.ListFolders(
     7116448184199044,           // long folderId
     null                        // PaginationParameters
 );
@@ -6184,7 +6184,7 @@ PaginatedResult<Folder> results = smartsheet.FolderResources.ListFolders(
 
 ```java
 // Omit pagination parameters
-PagedResult<Folder> results = smartsheet.folderResources().listFolders(
+PagedResult<Folder> folders = smartsheet.folderResources().listFolders(
     7116448184199044L,               // long parentFolderId
     null                             // PaginationParameters
 );
@@ -6240,7 +6240,7 @@ smartsheet.workspaces.listWorkspaceFolders(options)
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Folder> results = smartsheet.WorkspaceResources.FolderResources.ListFolders(
+PaginatedResult<Folder> folders = smartsheet.WorkspaceResources.FolderResources.ListFolders(
     7116448184199044,               // long workspaceId
     null                            // PaginationParameters
 );
@@ -6248,7 +6248,7 @@ PaginatedResult<Folder> results = smartsheet.WorkspaceResources.FolderResources.
 
 ```java
 // Omit pagination parameters
-PagedResult<Folder> results = smartsheet.workspaceResources().folderResources().listFolders(
+PagedResult<Folder> folders = smartsheet.workspaceResources().folderResources().listFolders(
     7116448184199044L,                   // long workspaceId
     null                                 // PaginationParameters
 );
@@ -6300,7 +6300,7 @@ ContainerDestination destination = new ContainerDestination {
 };
 
 // Move folder
-Folder results = smartsheet.FolderResources.MoveFolder(
+Folder folder = smartsheet.FolderResources.MoveFolder(
     7960873114331012,               // long folderId
     destination
 );
@@ -6314,7 +6314,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Move folder
-Folder results = smartsheet.folderResources().moveFolder(
+Folder folder = smartsheet.folderResources().moveFolder(
     7960873114331012L,                         // long folderId
     destination
 );
@@ -6392,24 +6392,24 @@ smartsheet.folders.updateFolder(options)
 
 ```csharp
 // Set folder name
-Folder folder = new Folder.UpdateFolderBuilder(
+Folder folderSpecification = new Folder.UpdateFolderBuilder(
     7960873114331012,               // long folderId
     "New name for folder")
     .Build();
 
 // Update folder
-Folder results = smartsheet.FolderResources.UpdateFolder(folder);
+Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecification);
 ```
 
 ```java
 // Set folder name and id of the folder to be updated
-Folder folder = new Folder.UpdateFolderBuilder()
+Folder folderSpecification = new Folder.UpdateFolderBuilder()
     .setName("New name for folder")
     .setId(7960873114331012L)      // long folderId
     .build();
 
 // Update folder
-Folder results = smartsheet.folderResources().updateFolder(folder);
+Folder updatedFolder = smartsheet.folderResources().updateFolder(folderSpecification);
 ```
 
 ```python
@@ -6515,26 +6515,26 @@ smartsheet.groups.createGroup(options)
 
 ```csharp
 // Create group member
-GroupMember member = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
+GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
 
 // Add member to group
-Group group = new Group.CreateGroupBuilder("API-created Group", "Group created via API")
-    .SetMembers(new GroupMember[] { member })
+Group groupSpecification = new Group.CreateGroupBuilder("API-created Group", "Group created via API")
+    .SetMembers(new GroupMember[] { memberSpecification })
     .Build();
 
 // Create group
-Group results = smartsheet.GroupResources.CreateGroup(group);
+Group newGroup = smartsheet.GroupResources.CreateGroup(groupSpecification);
 ```
 
 ```java
 // Create group member
-GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("john.doe@smartsheet.com").build();
+GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder().setEmail("john.doe@smartsheet.com").build();
 
 // Add member to group
-Group group = new Group.CreateGroupBuilder().setName("API-created Group").setDescription("Group created via API").setMembers(Arrays.asList(member)).build();
+Group groupSpecification = new Group.CreateGroupBuilder().setName("API-created Group").setDescription("Group created via API").setMembers(Arrays.asList(memberSpecification)).build();
 
 // Create group
-Group results = smartsheet.groupResources().createGroup(group);
+Group newGroup = smartsheet.groupResources().createGroup(groupSpecification);
 ```
 
 ```python
@@ -6680,13 +6680,13 @@ smartsheet.groups.getGroup(options)
 ```
 
 ```csharp
-Group results = smartsheet.GroupResources.GetGroup(
+Group group = smartsheet.GroupResources.GetGroup(
     6932724448552836            // long groupId
 );
 ```
 
 ```java
-Group results = smartsheet.groupResources().getGroup(
+Group group = smartsheet.groupResources().getGroup(
     6932724448552836L        // long groupId
 );
 ```
@@ -6750,14 +6750,14 @@ smartsheet.groups.listGroups()
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Group> results = smartsheet.GroupResources.ListGroups(
+PaginatedResult<Group> groups = smartsheet.GroupResources.ListGroups(
     null                    // PaginationParameters
 );
 ```
 
 ```java
 // Omit pagination parameters
-PagedResult<Group> results = smartsheet.groupResources().listGroups(
+PagedResult<Group> groups = smartsheet.groupResources().listGroups(
     null        // PaginationParameters
 );
 ```
@@ -6844,26 +6844,26 @@ smartsheet.groups.updateGroup(options)
 
 ```csharp
 // Specify the name and description of the group
-Group group = new Group.UpdateGroupBuilder(
+Group groupSpecification = new Group.UpdateGroupBuilder(
         6932724448552836)               // long groupId
     .SetName ("Renamed Group")
     .SetDescription ("Some new description")
     .Build();
 
 // Update group
-Group results = smartsheet.GroupResources.UpdateGroup(group);
+Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
 ```
 
 ```java
 // Specify the name and description of the group
-Group group = new Group.UpdateGroupBuilder()
+Group groupSpecification = new Group.UpdateGroupBuilder()
     .setId(6932724448552836L)               // long groupId
     .setName("Renamed Group")
     .setDescription("Some new description")
     .build();
 
 // Update group
-Group results = smartsheet.groupResources().updateGroup(group);
+Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification);
 ```
 
 ```python
@@ -6977,23 +6977,23 @@ smartsheet.groups.addGroupMembers(options)
 
 ```csharp
 // Create group member
-GroupMember member = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
+GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
 
 // Add members to group
-IList<GroupMember> results = smartsheet.GroupResources.AddGroupMembers(
+IList<GroupMember> newMembers = smartsheet.GroupResources.AddGroupMembers(
     7917992160847748,           // long groupId
-    new GroupMember[] { member }
+    new GroupMember[] { memberSpecification }
 );
 ```
 
 ```java
 // Create group member
-GroupMember member = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
+GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
 
 // Add members to group
-List<GroupMember> results = smartsheet.groupResources().memberResources().addGroupMembers(
+List<GroupMember> newMembers = smartsheet.groupResources().memberResources().addGroupMembers(
     7917992160847748L,       // long groupId
-    Arrays.asList(member)
+    Arrays.asList(memberSpecification)
 );
 ```
 
@@ -7161,25 +7161,25 @@ smartsheet.home.listContents()
 ```
 
 ```csharp
-// Omit 'include' parameters
-Home results = smartsheet.HomeResources.GetHome(
+// Sample 1: Omit 'include' parameters
+Home home = smartsheet.HomeResources.GetHome(
     null                // IEnumerable<HomeInclusion> includes
 );
 
-// Specify 'include' parameter with value of "SOURCE"
-Home results = smartsheet.HomeResources.GetHome(
+// Sample 2: Specify 'include' parameter with value of "SOURCE"
+Home home = smartsheet.HomeResources.GetHome(
     new HomeInclusion[] { HomeInclusion.SOURCE }
 );
 ```
 
 ```java
-// Omit 'include' parameter
-Home results = smartsheet.homeResources().getHome(
+// Sample 1: Omit 'include' parameter
+Home home = smartsheet.homeResources().getHome(
     null            // EnumSet<SourceInclusion> includes
 );
 
-// Specify 'include' parameter with value of "SOURCE"
-Home results = smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
+// Sample 2: Specify 'include' parameter with value of "SOURCE"
+Home home = smartsheet.homeResources().getHome(EnumSet.of(SourceInclusion.SOURCE)));
 ```
 
 ```python
@@ -7340,16 +7340,16 @@ smartsheet.reports.getReport(options)
 ```
 
 ```csharp
-// Omit 'include', 'pageSize', and 'page' parameters
-Report results = smartsheet.ReportResources.GetReport(
+// Sample 1: Omit 'include', 'pageSize', and 'page' parameters
+Report report = smartsheet.ReportResources.GetReport(
     4583173393803140,           // long reportId
     null,                       // IEnumerable<ReportInclusion> include
     null,                       // int pageSize
     null                        // int page
 );
 
-// Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2"
-Report results = smartsheet.ReportResources.GetReport(
+// Sample 2: Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2"
+Report report = smartsheet.ReportResources.GetReport(
     4583173393803140,           // long reportId
     new ReportInclusion[] {
         ReportInclusion.ATTACHMENTS,
@@ -7361,16 +7361,16 @@ Report results = smartsheet.ReportResources.GetReport(
 ```
 
 ```java
-// Omit 'include', 'pageSize', and 'page' parameters
-Report results = smartsheet.reportResources().getReport(
+// Sample 1: Omit 'include', 'pageSize', and 'page' parameters
+Report report = smartsheet.reportResources().getReport(
     4583173393803140L,      // long reportId
     null,                   // EnumSet<ReportInclusion> includes
     null,                   // int pageSize
     null                    // int page
 );
 
-// Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2"
-Report results = smartsheet.reportResources().getReport(
+// Sample 2: Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", 'pageSize' parameter with value of "500", and 'page' of value "2"
+Report report = smartsheet.reportResources().getReport(
     4583173393803140L,      // long reportId
     EnumSet.of(
         ReportInclusion.ATTACHMENTS,
@@ -7644,14 +7644,14 @@ smartsheet.reports.listReports()
 ```
 
 ```csharp
-// Omit pagination parameters
-PaginatedResult<Report> results = smartsheet.ReportResources.ListReports(
+// Sample 1: Omit pagination parameters
+PaginatedResult<Report> reports = smartsheet.ReportResources.ListReports(
     null,               // PaginationParameters
     null                // Nullable<DateTime> modifiedSince = null
 );
 
-// Specify 'includeAll' parameter with value of 'true'
-PaginatedResult<Report> results = smartsheet.ReportResources.ListReports(
+// Sample 2: Specify 'includeAll' parameter with value of 'true'
+PaginatedResult<Report> reports = smartsheet.ReportResources.ListReports(
     new PaginationParameters(
         true,           // includeAll
         null,           // int pageSize
@@ -7660,17 +7660,17 @@ PaginatedResult<Report> results = smartsheet.ReportResources.ListReports(
 ```
 
 ```java
-// Omit pagination parameters
-PagedResult<Report> results = smartsheet.reportResources().listReports(
+// Sample 1: Omit pagination parameters
+PagedResult<Report> reports = smartsheet.reportResources().listReports(
     null,               // PaginationParameters
     null                // Date modifiedSince
 );
 
-// Specify pagination parameter 'includeAll' 
+// Sample 2: Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Specify 'includeAll' parameter with value of 'true'
-PagedResult<Report> results = smartsheet.reportResources().listReports(parameters, modifiedSince);
+PagedResult<Report> reports = smartsheet.reportResources().listReports(parameters, modifiedSince);
 ```
 
 ```python
@@ -8031,7 +8031,7 @@ Row rowB = new Row.AddRowBuilder(true, null, null, null, null)
     .Build();
 
 // Add rows to sheet
-IList<Row> results = smartsheet.SheetResources.RowResources.AddRows(
+IList<Row> newRows = smartsheet.SheetResources.RowResources.AddRows(
     873476834787,                   // long sheetId
     new Row[] { rowA, rowB }        // IEnumerable<Row> rowsToAdd
 );
@@ -8065,7 +8065,7 @@ List<Cell> cellsB = new Cell.AddRowCellsBuilder()
 Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
 
 // Add rows to sheet
-List<Row> results = smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
+List<Row> newRows = smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
 ```
 
 ```python
@@ -8220,7 +8220,7 @@ CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 
 // Specify rows to be copied (and destination sheet)
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
 
-// Omit 'include' and 'ignoreRowsNotFound' parameters
+// Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     2258256056870788,           // long sheetId
     directive,
@@ -8228,7 +8228,7 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToA
     null                        // Nullable<bool> ignoreRowsNotFound
 );
 
-// Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
     2258256056870788,           // long sheetId
     directive,
@@ -8250,7 +8250,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRo
     .setTo(destination)
     .build();
 
-// Omit 'include' and 'ignoreRowsNotFound' parameters
+// Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
     2258256056870788L,                                              // long sheetId
     null,                                                           // EnumSet<RowCopyInclusion> includes
@@ -8258,7 +8258,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRow
     directive
 );
 
-// Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
     2258256056870788L,                                              // long sheetId
     EnumSet.of(RowCopyInclusion.CHILDREN),
@@ -8403,7 +8403,7 @@ smartsheet.sheets.getRow(options)
 
 ```csharp
 // Omit 'include' parameter and pagination parameters
-Row results = smartsheet.SheetResources.RowResources.GetRow(
+Row row = smartsheet.SheetResources.RowResources.GetRow(
     4583173393803140,               // long sheetId
     2361756178769796,               // long rowId
     null,                           // IEnumerable<RowInclusion> include
@@ -8411,7 +8411,7 @@ Row results = smartsheet.SheetResources.RowResources.GetRow(
 );
 
 // Specify 'include' parameter with values of "COLUMNS" and "COLUMN_TYPE", and 'exclude' parameter with value of "NONEXISTENT_CELLS"
-Row results = smartsheet.SheetResources.RowResources.GetRow(
+Row row = smartsheet.SheetResources.RowResources.GetRow(
     4583173393803140,               // long sheetId
     2361756178769796,               // long rowId
     new RowInclusion[] {
@@ -8423,7 +8423,7 @@ Row results = smartsheet.SheetResources.RowResources.GetRow(
 
 ```java
 // Omit 'include' parameter and pagination parameters
-Row results = smartsheet.sheetResources().rowResources().getRow(
+Row row = smartsheet.sheetResources().rowResources().getRow(
     4583173393803140L,       // long sheetId
     2361756178769796L,       // long rowId
     null,                    // EnumSet<RowInclusion> includes
@@ -8431,7 +8431,7 @@ Row results = smartsheet.sheetResources().rowResources().getRow(
 );
 
 // Specify 'include' parameter with values of "COLUMNS" and "COLUMN_TYPE", and 'exclude' parameter with value of "NONEXISTENT_CELLS"
-Row results = smartsheet.sheetResources().rowResources().getRow(
+Row row = smartsheet.sheetResources().rowResources().getRow(
     4583173393803140L,       // long sheetId
     2361756178769796L,       // long rowId
     EnumSet.of(
@@ -8538,7 +8538,7 @@ CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = 
 // Specify rows to be moved (and destination sheet)
 CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { 145417762563972, 8026717110462340 }, To = destination };
 
-// Omit 'include' and 'ignoreRowsNotFound' parameters
+// Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
     2258256056870788,               // long sheetId
     directive,
@@ -8546,7 +8546,7 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToA
     null                            // Nullable<bool> ignoreRowsNotFound
 );
 
-// Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
     2258256056870788,               // long sheetId
     directive,
@@ -8569,7 +8569,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRo
     .setTo(destination)
     .build();
 
-// Omit 'include' and 'ignoreRowsNotFound' parameters
+// Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
     2258256056870788L,                  // long sheetId
     null,                               // EnumSet<RowMoveInclusion> includes
@@ -8577,7 +8577,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRow
     directive
 );
 
-// Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true'
+// Sample 2: Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
     2258256056870788L,                  // long sheetId
     EnumSet.of(
@@ -8713,7 +8713,7 @@ Row rowB = new Row.UpdateRowBuilder(3428827774183300)       // long rowId
     .Build();
 
 // Update rows in sheet
-IList<Row> results = smartsheet.SheetResources.RowResources.UpdateRows(
+IList<Row> updatedRows = smartsheet.SheetResources.RowResources.UpdateRows(
     2068827774183300,                                       // long sheetId
     new Row[] { rowA, rowB }                                // IEnumerable<Row> rowsToUpdate
 );
@@ -8745,7 +8745,7 @@ Row rowB = new Row.UpdateRowBuilder()
     .build();
 
 // Update rows in sheet
-List<Row> results = smartsheet.sheetResources().rowResources().updateRows(
+List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
     2068827774183300L,                              // long sheetId
     Arrays.asList(rowA, rowB)
 );
@@ -9236,11 +9236,11 @@ smartsheet.server.getInfo()
 ```
 
 ```csharp
-ServerInfo results = smartsheet.ServerInfoResources.GetServerInfo();
+ServerInfo serverInfo = smartsheet.ServerInfoResources.GetServerInfo();
 ```
 
 ```java
-ServerInfo results = smartsheet.serverInfoResources().getServerInfo();
+ServerInfo serverInfo = smartsheet.serverInfoResources().getServerInfo();
 ```
 
 ```python
@@ -9389,14 +9389,14 @@ smartsheet.reports.getShare(options)
 ```
 
 ```csharp
-Share results = smartsheet.ReportResources.ShareResources.GetShare(
+Share share = smartsheet.ReportResources.ShareResources.GetShare(
     6932724448552836,               // long reportId
     "AQAISF82FOeE"                  // string shareId
 );
 ```
 
 ```java
-Share results = smartsheet.reportResources().shareResources().getShare(
+Share share = smartsheet.reportResources().shareResources().getShare(
     665829219035012L,        // long reportId
     "AAAQSF82F1eE"           // string shareId
 );
@@ -9443,7 +9443,7 @@ smartsheet.reports.listShares(options)
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Share> results = smartsheet.ReportResources.ShareResources.ListShares(
+PaginatedResult<Share> shares = smartsheet.ReportResources.ShareResources.ListShares(
     665829219035012,        // long reportId
     null,                   // PaginationParameters
     null                    // ShareScope shareScope
@@ -9452,7 +9452,7 @@ PaginatedResult<Share> results = smartsheet.ReportResources.ShareResources.ListS
 
 ```java
 // Omit pagination parameters
-PagedResult<Share> results = smartsheet.reportResources().shareResources().listShares(
+PagedResult<Share> shares = smartsheet.reportResources().shareResources().listShares(
     665829219035012L,        // long reportId
     null,                    // PaginationParameters
     true                     // Boolean includeWorkspaceShares
@@ -9522,27 +9522,27 @@ smartsheet.reports.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
 
 // Share report
-IList<Share> results = smartsheet.ReportResources.ShareResources.ShareTo(
+IList<Share> addressList = smartsheet.ReportResources.ShareResources.ShareTo(
     665829219035012,            // long reportId
-    shares,
+    shareSpecification,
     true                        // Nullable<bool> sendEmail
 );
 ```
 
 ```java
 // Specify share (to one user as Editor)
-List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+List<Share> shareSpecification = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
 // Share report
-List<Share> results = smartsheet.reportResources().shareResources().shareTo(
+List<Share> addressList = smartsheet.reportResources().shareResources().shareTo(
     665829219035012L,        // long reportId
-    shares,
+    shareSpecification,
     true                     // Boolean sendEmail
 );
 ```
@@ -9606,26 +9606,26 @@ smartsheet.reports.updateShare(options)
 
 ```csharp
 // Set the access level to Viewer
-Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
+Share shareSpecification = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
 // Update report share
-Share results = smartsheet.ReportResources.ShareResources.UpdateShare(
+Share updatedShare = smartsheet.ReportResources.ShareResources.UpdateShare(
     665829219035012,            // long reportId
-    share
+    shareSpecification
 );
 ```
 
 ```java
 // Set the access level to Viewer
-Share share = new Share.UpdateShareBuilder()
+Share shareSpecification = new Share.UpdateShareBuilder()
     .setShareId("AAAFeF82FOeE")         // string shareId
     .setAccessLevel(AccessLevel.VIEWER)
     .build();
 
 // Update report share
-Share results = smartsheet.reportResources().shareResources().updateShare(
+Share updatedShare = smartsheet.reportResources().shareResources().updateShare(
     665829219035012L,                   // long reportId
-    share
+    shareSpecification
 );
 ```
 
@@ -9733,14 +9733,14 @@ smartsheet.sheets.getShare(options)
 ```
 
 ```csharp
-Share = smartsheet.SheetResources.ShareResources.GetShare(
+Share share = smartsheet.SheetResources.ShareResources.GetShare(
     4583614634583940,           // long sheetId
     "AQAISF82FOeE"              // string shareId
 );
 ```
 
 ```java
-Share results = smartsheet.sheetResources().shareResources().getShare(
+Share share = smartsheet.sheetResources().shareResources().getShare(
     4583614634583940L,       // long sheetId
     "AAAASuWWFOeE"           // string shareId
 );
@@ -9787,7 +9787,7 @@ smartsheet.sheets.listShares(options)
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Share> results = smartsheet.SheetResources.ShareResources.ListShares(
+PaginatedResult<Share> shares = smartsheet.SheetResources.ShareResources.ListShares(
     4583614634583940,               // long sheetId
     null                            // PaginationParameters
 );
@@ -9795,7 +9795,7 @@ PaginatedResult<Share> results = smartsheet.SheetResources.ShareResources.ListSh
 
 ```java
 // Omit pagination parameters
-PagedResult<Share> results = smartsheet.sheetResources().shareResources().listShares(
+PagedResult<Share> shares = smartsheet.sheetResources().shareResources().listShares(
     4583614634583940L,       // long sheetId
     null,                    // PaginationParameters
     true                     // Boolean includeWorkspaceShares
@@ -9865,27 +9865,27 @@ smartsheet.sheets.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
 
 // Share sheet
-IList<Share> results = smartsheet.SheetResources.ShareResources.ShareTo(
+IList<Share> addressList = smartsheet.SheetResources.ShareResources.ShareTo(
     4583614634583940,               // long sheetId
-    shares,
+    shareSpecification,
     true                            // Nullable<bool> sendEmail
 );
 ```
 
 ```java
 // Specify share (to one user as Editor)
-List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+List<Share> shareSpecification = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
 // Share sheet
-List<Share> results = smartsheet.sheetResources().shareResources().shareTo(
+List<Share> addressList = smartsheet.sheetResources().shareResources().shareTo(
     4583614634583940L,       // long sheetId
-    shares,
+    shareSpecification,
     true                     // Boolean sendEmail
 );
 ```
@@ -9950,23 +9950,23 @@ smartsheet.sheets.updateShare(options)
 
 ```csharp
 // Set access level to Viewer
-Share share = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
+Share shareSpecification = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
 
 // Update sheet share
-Share results = smartsheet.SheetResources.ShareResources.UpdateShare(
+Share updatedShare = smartsheet.SheetResources.ShareResources.UpdateShare(
     4583614634583940,               // long sheetId
-    share
+    shareSpecification
 );
 ```
 
 ```java
 // Set the access level to Viewer
-Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+Share shareSpecification = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
 
 // Update report share
-Share results = smartsheet.sheetResources().shareResources().updateShare(
+Share updatedShare = smartsheet.sheetResources().shareResources().updateShare(
     4583614634583940L,       // long sheetId
-    share
+    shareSpecification
 );
 ```
 
@@ -10011,7 +10011,10 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```java
-// [todo]
+smartsheet.sightResources().shareResources().deleteShare(
+    6327127650920324L,           // long sightId
+    "AAABbMomFOeE"               // string shareId
+);
 ```
 
 ```python
@@ -10046,11 +10049,17 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```csharp
-// [todo]
+Share share = smartsheet.SightResources.ShareResources.GetShare(
+    6327127650920324,           // long sightId
+    "AAABbMomFOeE"              // string shareId
+);
 ```
 
 ```java
-// [todo]
+Share share = smartsheet.sightResources().shareResources().getShare(
+    6327127650920324L,           // long sightId
+    "AAABbMomFOeE"              // string shareId
+);
 ```
 
 ```python
@@ -10137,15 +10146,15 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
 
 ```java
 // Specify share (to one user as Editor)
-List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+List<Share> shareSpecification = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
 // Share sight
-List<Share> results = smartsheet.sightResources().shareResources().shareTo(
+List<Share> addressList = smartsheet.sightResources().shareResources().shareTo(
     4583614634583940L,       // long sightId
-    shares,
+    shareSpecification,
     true                     // Boolean sendEmail
 );
 ```
@@ -10196,7 +10205,14 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```java
-// [todo]
+// Set the access level to Viewer
+Share shareSpecification = new Share.UpdateShareBuilder().setShareId("AAABbMomFOeE").setAccessLevel(AccessLevel.VIEWER).build();
+
+// Update Sight share
+Share updatedShare = smartsheet.sightResources().shareResources().updateShare(
+    6327127650920324L,       // long sightId
+    shareSpecification
+);
 ```
 
 ```python
@@ -10306,14 +10322,14 @@ smartsheet.workspaces.getShare(options)
 ```
 
 ```csharp
-Share results = smartsheet.WorkspaceResources.ShareResources.GetShare(
+Share share = smartsheet.WorkspaceResources.ShareResources.GetShare(
     1656220827314052,           // long workspaceId
     "AQAISF82FOeE"              // string shareId
 );
 ```
 
 ```java
-Share results = smartsheet.workspaceResources().shareResources().getShare(
+Share share = smartsheet.workspaceResources().shareResources().getShare(
     1656220827314052L,       // long workspaceId
     "AQAISF82FOeE"           // string shareId
 );
@@ -10360,7 +10376,7 @@ smartsheet.workspaces.listShares(options)
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Share> results = smartsheet.WorkspaceResources.ShareResources.ListShares(
+PaginatedResult<Share> shares = smartsheet.WorkspaceResources.ShareResources.ListShares(
     1656220827314052,               // long workspaceId
     null                            // PaginationParameters
 );
@@ -10368,7 +10384,7 @@ PaginatedResult<Share> results = smartsheet.WorkspaceResources.ShareResources.Li
 
 ```java
 // Omit pagination parameters
-PagedResult<Share> results = smartsheet.workspaceResources().shareResources().listShares(
+PagedResult<Share> shares = smartsheet.workspaceResources().shareResources().listShares(
     1656220827314052L,       // long workspaceId
     null,                    // PaginationParameters
     true                     // Boolean includeWorkspaceShares
@@ -10441,27 +10457,27 @@ smartsheet.workspaces.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shares = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
 
 // Share workspace
-IList<Share> results = smartsheet.WorkspaceResources.ShareResources.ShareTo(
+IList<Share> addressList = smartsheet.WorkspaceResources.ShareResources.ShareTo(
     7960873114331012,               // long workspaceId
-    shares,
+    shareSpecification,
     true                            // Nullable<bool> sendEmail
 );
 ```
 
 ```java
 // Specify share (to one user as Editor)
-List<Share> shares = Arrays.asList( new Share.CreateUserShareBuilder()
+List<Share> shareSpecification = Arrays.asList( new Share.CreateUserShareBuilder()
     .setEmailAddress("jane.doe@smartsheet.com")
     .setAccessLevel(AccessLevel.EDITOR)
     .build());
 
 // Share workspace
-List<Share> results = smartsheet.workspaceResources().shareResources().shareTo(
+List<Share> addressList = smartsheet.workspaceResources().shareResources().shareTo(
     7960873114331012L,       // long workspaceId
-    shares,
+    shareSpecification,
     true                     // Boolean sendEmail
 );
 ```
@@ -10532,26 +10548,26 @@ smartsheet.workspaces.updateShare(options)
 
 ```csharp
 // Set access level to Viewer
-Share share = new Share.UpdateShareBuilder(
+Share shareSpecification = new Share.UpdateShareBuilder(
         "AAAFeF82FOeE",           // string shareId
         AccessLevel.VIEWER)
     .Build();
 
 // Update workspace share
-Share results = smartsheet.WorkspaceResources.ShareResources.UpdateShare(
+Share updatedShare = smartsheet.WorkspaceResources.ShareResources.UpdateShare(
     1656220827314052,             // long workspaceId
-    share
+    shareSpecification
 );
 ```
 
 ```java
 // Set the access level to Viewer
-Share share = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
+Share shareSpecification = new Share.UpdateShareBuilder().setShareId(shareId).setAccessLevel(AccessLevel.VIEWER).build();
 
 // Update workspace share
-Share results = smartsheet.workspaceResources().shareResources().updateShare(
+Share updatedShare = smartsheet.workspaceResources().shareResources().updateShare(
     1656220827314052L,   // long workspaceId
-    share
+    shareSpecification
 );
 ```
 
@@ -10701,15 +10717,15 @@ ContainerDestination destination = new ContainerDestination {
     NewName = "newSheetName"
 };
 
-// Omit 'include' parameter
-Sheet results = smartsheet.SheetResources.CopySheet(
+// Sample 1: Omit 'include' parameter
+Sheet sheet = smartsheet.SheetResources.CopySheet(
     9283173393803140,                               // long sheetId
     destination,
     null                                            // IEnumerable<SheetCopyInclusion> include
 );
 
-// Specify 'include' parameter with value of "all"
-Sheet results = smartsheet.SheetResources.CopySheet(
+// Sample 2: Specify 'include' parameter with value of "all"
+Sheet sheet = smartsheet.SheetResources.CopySheet(
     9283173393803140,                               // long sheetId
     destination,
     new SheetCopyInclusion[] { SheetCopyInclusion.ALL }
@@ -10724,15 +10740,15 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .setNewName("newSheetName")
     .build();
 
-// Omit 'include' parameter
-Sheet returns = smartsheet.sheetResources().copySheet(
+// Sample 1: Omit 'include' parameter
+Sheet sheet = smartsheet.sheetResources().copySheet(
     9283173393803140L,                          // long sheetId
     destination,
     null                                        // EnumSet<SheetCopyInclusion> includes
 );
 
-// Specify 'include' parameter with value of "all"
-Sheet returns = smartsheet.sheetResources().copySheet(
+// Sample 2: Specify 'include' parameter with value of "all"
+Sheet sheet = smartsheet.sheetResources().copySheet(
     9283173393803140L,                         // long sheetId
     destination,
     EnumSet.of(SheetCopyInclusion.ALL)
@@ -10850,8 +10866,8 @@ Column columnB = new Column.CreateSheetColumnBuilder(
     .Build(),
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
-smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
-        "newsheet",
+Sheet newSheet = smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
+        "new sheet title",
         new Column[] { columnA, columnB })
     .Build());
 ```
@@ -10872,11 +10888,11 @@ Column columnB = new Column.AddColumnToSheetBuilder()
     .build();
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
-Sheet sheet = new Sheet.CreateSheetBuilder()
-    .setName("newsheet")
+Sheet newSheet = new Sheet.CreateSheetBuilder()
+    .setName("new sheet title")
     .setColumns(Arrays.asList(columnA, columnB))
     .build();
-smartsheet.sheetResources().createSheet(sheet);
+smartsheet.sheetResources().createSheet(newSheet);
 ```
 
 ```python
@@ -10971,10 +10987,10 @@ Column columnB = new Column.CreateSheetColumnBuilder(
     .Build(),
 
 // Create sheet in folder (specifying the 2 columns to include in the sheet)
-Sheet results = smartsheet.FolderResources.SheetResources.CreateSheet(
+Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheet(
     3734419270854532,                   // long folderId
     new Sheet.CreateSheetBuilder(
-        "newsheet",
+        "new sheet title",
         new Column[] { columnA, columnB })
     .Build());
 ```
@@ -10995,11 +11011,11 @@ Column columnB = new Column.AddColumnToSheetBuilder()
     .build();
 
 // Create sheet in folder (specifying the 2 columns to include in the sheet)
-Sheet sheet = new Sheet.CreateSheetBuilder()
-    .setName("newsheet")
+Sheet newSheet = new Sheet.CreateSheetBuilder()
+    .setName("new sheet title")
     .setColumns(Arrays.asList(columnA, columnB))
     .build();
-smartsheet.sheetResources().createSheetInFolder(3734419270854532L, sheet);      // long folderId
+smartsheet.sheetResources().createSheetInFolder(3734419270854532L, newSheet);      // long folderId
 ```
 
 ```python
@@ -11094,9 +11110,9 @@ Column columnB = new Column.CreateSheetColumnBuilder(
     .Build(),
 
 // Create sheet in workspace (specifying the 2 columns to include in the sheet)
-Sheet results = smartsheet.WorkspaceResources.SheetResources.CreateSheet(
+Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheet(
         3734419270854532,               // long workspaceId
-        new Sheet.CreateSheetBuilder("newsheet", new Column[] { columnA, columnB })
+        new Sheet.CreateSheetBuilder("new sheet title", new Column[] { columnA, columnB })
     .Build());
 ```
 
@@ -11116,11 +11132,11 @@ Column columnB = new Column.AddColumnToSheetBuilder()
     .build();
 
 // Create sheet in workspace (specifying the 2 columns to include in the sheet)
-Sheet sheet = new Sheet.CreateSheetBuilder()
-    .setName("newsheet")
+Sheet newSheet = new Sheet.CreateSheetBuilder()
+    .setName("new sheet title")
     .setColumns(Arrays.asList(columnA, columnB))
     .build();
-smartsheet.sheetResources().createSheetInWorkspace(3734419270854532L, sheet);       // long workspaceId
+smartsheet.sheetResources().createSheetInWorkspace(3734419270854532L, newSheet);       // long workspaceId
 ```
 
 ```python
@@ -11198,20 +11214,20 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
-        "newsheet",
+Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
+        "new sheet title",
         7679398137620356)           // long templateId
     .Build();
 
-// Omit 'include' parameter
-Sheet results = smartsheet.SheetResources.CreateSheetFromTemplate(
-    sheet,
+// Sample 1: Omit 'include' parameter
+Sheet newSheet = smartsheet.SheetResources.CreateSheetFromTemplate(
+    sheetSpecification,
     null                            // IEnumerable<TemplateInclusion> include
 );
 
-// Include ATTACHMENTS, DATA, and DISCUSSIONS
-Sheet results = smartsheet.SheetResources.CreateSheetFromTemplate(
-    sheet,
+// Sample 2: Include ATTACHMENTS, DATA, and DISCUSSIONS
+Sheet newSheet = smartsheet.SheetResources.CreateSheetFromTemplate(
+    sheetSpecification,
     new TemplateInclusion[] {
         TemplateInclusion.ATTACHMENTS,
         TemplateInclusion.DATA,
@@ -11298,22 +11314,22 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
-        "newsheet",
+Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
+        "new sheet title",
         7679398137620356).              // long templateId
     Build();
 
-// Omit 'include' parameter
-Sheet results = smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
+// Sample 1: Omit 'include' parameter
+Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
     3734419270854532,               // long folderId
-    sheet,
+    sheetSpecification,
     null                            // IEnumerable<TemplateInclusion> include
 );
 
-// Include ATTACHMENTS, DATA, and DISCUSSIONS
-Sheet results = smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
+// Sample 2: Include ATTACHMENTS, DATA, and DISCUSSIONS
+Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
     3734419270854532,               // long folderId
-    sheet,
+    sheetSpecification,
     new TemplateInclusion[] {
         TemplateInclusion.ATTACHMENTS,
         TemplateInclusion.DATA,
@@ -11403,22 +11419,22 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheet = new Sheet.CreateSheetFromTemplateBuilder(
-        "newsheet",
+Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
+        "new sheet name",           // sheet title visible to user
         7679398137620356)           // long templateId
     .Build();
 
-// Omit 'include' parameter
-Sheet results = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
+// Sample 1: Omit 'include' parameter
+Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
     1656220827314052,               // long workspaceId
-    sheet,
+    sheetSpecification,
     null                            // IEnumerable<TemplateInclusion> include
 );
 
-// Include ATTACHMENTS, DATA, and DISCUSSIONS
-Sheet results = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
+// Sample 2: Include ATTACHMENTS, DATA, and DISCUSSIONS
+Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
     1656220827314052,               // long workspaceId
-    sheet,
+    sheetSpecification,
     new TemplateInclusion[] {
         TemplateInclusion.ATTACHMENTS,
         TemplateInclusion.DATA,
@@ -11428,22 +11444,22 @@ Sheet results = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemp
 
 ```java
 // Specify name for the sheet and Id of the template
-Sheet sheet = new Sheet.CreateFromTemplateOrSheetBuilder()
+Sheet sheetSpecification = new Sheet.CreateFromTemplateOrSheetBuilder()
     .setFromId(7679398137620356L)       // long templateId
-    .setName("newsheet")
+    .setName("new sheet name")
     .build();
 
-// Omit 'include' parameter
-Sheet results = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
+// Sample 1: Omit 'include' parameter
+Sheet newSheet = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
     1656220827314052L,                  // long folderId
-    sheet,
+    sheetSpecification,
     null                                // EnumSet<SheetTemplateInclusion> includes
 );
 
-// Include ATTACHMENTS, DATA, and DISCUSSIONS
-Sheet results = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
+// Sample 2: Include ATTACHMENTS, DATA, and DISCUSSIONS
+Sheet newSheet = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
     1656220827314052L,                 // long folderId
-    sheet,
+    sheetSpecification,
     EnumSet.of(
         SheetTemplateInclusion.ATTACHMENTS,
         SheetTemplateInclusion.DATA,
@@ -11628,7 +11644,7 @@ smartsheet.sheets.getSheet(options)
 
 ```csharp
 // Omit all parameters
-Sheet results = smartsheet.SheetResources.GetSheet(
+Sheet sheet = smartsheet.SheetResources.GetSheet(
     9283173393803140,           // long sheetId
     null,                       // IEnumerable<SheetLevelInclusion> includes
     null,                       // IEnumerable<SheetLevelExclusion> excludes
@@ -11642,7 +11658,7 @@ Sheet results = smartsheet.SheetResources.GetSheet(
 
 ```java
 // Omit all parameters
-Sheet results = smartsheet.sheetResources().getSheet(
+Sheet sheet = smartsheet.sheetResources().getSheet(
     9283173393803140L,      // long sheetId
     null,                   // EnumSet<SheetInclusion> includes    
     null,                   // EnumSet<ObjectExclusion> excludes
@@ -11959,15 +11975,15 @@ smartsheet.sheets.listSheets()
 ```
 
 ```csharp
-// Omit 'include' parameter and pagination parameters
-PaginatedResult<Sheet> results = smartsheet.SheetResources.ListSheets(
+// Sample 1: Omit 'include' parameter and pagination parameters
+PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
     null,               // IEnumerable<SheetInclusion> includes
     null,               // PaginationParameters
     null                // Nullable<DateTime> modifiedSince = null
 );
 
-// Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
-PaginatedResult<Sheet> results = smartsheet.SheetResources.ListSheets(
+// Sample 2: Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
+PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
     new SheetInclusion[] { SheetInclusion.SOURCE },
     new PaginationParameters(
         true,           // includeAll
@@ -11977,18 +11993,18 @@ PaginatedResult<Sheet> results = smartsheet.SheetResources.ListSheets(
 ```
 
 ```java
-// Omit 'include' parameter and pagination parameters
-PagedResult<Sheet> results = smartsheet.sheetResources().listSheets(
+// Sample 1: Omit 'include' parameter and pagination parameters
+PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(
     null,           // EnumSet<SourceInclusion> includes
     null,           // PaginationParameters
     null            // Date modifiedSince
 );
 
-// Specify pagination parameter 'includeAll' 
+// Sample 2: Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
-PagedResult<Sheet> results = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
+PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
 ```
 
 ```python
@@ -12065,7 +12081,7 @@ ContainerDestination destination = new ContainerDestination {
 };
 
 // Move sheet
-Sheet results = smartsheet.SheetResources.MoveSheet(
+Sheet sheet = smartsheet.SheetResources.MoveSheet(
     4583173393803140,                           // long sheetId
     destination
 );
@@ -12079,7 +12095,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Move sheet
-Sheet results = smartsheet.sheetResources().moveSheet(
+Sheet sheet = smartsheet.sheetResources().moveSheet(
     4583173393803140L,                         // long sheetId
     destination
 );
@@ -12151,13 +12167,13 @@ smartsheet.sheets.getPublishStatus(options)
 ```
 
 ```csharp
-SheetPublish results = smartsheet.SheetResources.GetPublishStatus(
+SheetPublish status = smartsheet.SheetResources.GetPublishStatus(
     4583173393803140            // long sheetId
 );
 ```
 
 ```java
-SheetPublish results = smartsheet.sheetResources().getPublishStatus(
+SheetPublish status = smartsheet.sheetResources().getPublishStatus(
     4583173393803140L,       // long sheetId
 );
 ```
@@ -12230,7 +12246,7 @@ smartsheet.sheets.setPublishStatus(options)
 
 ```csharp
 // Specify sheet publish status properties
-SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(
+SheetPublish publishSpecification = new SheetPublish.PublishStatusBuilder(
         true,               // Nullable<bool> readOnlyLiteEnabled
         false,              // Nullable<bool> readOnlyFullEnabled
         false,              // Nullable<bool> readWriteEnabled
@@ -12238,15 +12254,15 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder(
     .Build();
 
 // Set sheet publish status
-SheetPublish results = smartsheet.SheetResources.UpdatePublishStatus(
+SheetPublish updatedStatus = smartsheet.SheetResources.UpdatePublishStatus(
     4583614634583940,       // long sheetId
-    sheetPublish
+    publishSpecification
 );
 ```
 
 ```java
 // Specify sheet publish status properties
-SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder()
+SheetPublish publishSpecification = new SheetPublish.PublishStatusBuilder()
     .setIcalEnabled(false)
     .setReadOnlyFullEnabled(false)
     .setReadWriteEnabled(false)
@@ -12254,9 +12270,9 @@ SheetPublish sheetPublish = new SheetPublish.PublishStatusBuilder()
     .build();
 
 // Set sheet publish status
-SheetPublish results = smartsheet.sheetResources().updatePublishStatus(
+SheetPublish updatedStatus = smartsheet.sheetResources().updatePublishStatus(
     4583614634583940L,       // long sheetId
-    sheetPublish
+    publishSpecification
 );
 ```
 
@@ -12365,26 +12381,26 @@ smartsheet.sheets.updateSheet(options)
 
 ```csharp
 // Specify updated sheet properties
-Sheet sheet = new Sheet.UpdateSheetBuilder(sheetId)
+Sheet sheetSpecification = new Sheet.UpdateSheetBuilder(sheetId)
     .SetName("New Sheet Name")
     .SetUserSettings(
         new SheetUserSettings{ CriticalPathEnabled = true })
     .Build();
 
 // Update sheet
-Sheet results = smartsheet.SheetResources.UpdateSheet(sheet);
+Sheet updatedSheet = smartsheet.SheetResources.UpdateSheet(sheetSpecification);
 ```
 
 ```java
 // Specify updated sheet properties
-Sheet sheet = new Sheet.UpdateSheetBuilder()
+Sheet sheetSpecification = new Sheet.UpdateSheetBuilder()
     .setSheetId(7960873114331012L)           // long sheetId
     .setName("New Sheet Name")
     .setUserSettings(userSettings)
     .build();
 
 // Update sheet
-Sheet results = smartsheet.sheetResources().updateSheet(sheet);
+Sheet updatedSheet = smartsheet.sheetResources().updateSheet(sheetSpecification);
 ```
 
 ```python
@@ -12547,7 +12563,7 @@ Smartsheet Sights(TM) are a collection of widgets that can contain data from a v
 **height** | number | Number of Rows that the widget occupies on the Sight
 **width** | number | Number of Columns that the widget occupies on the Sight
 **version** | int | Widget version number
-**contents** | [WidgetContent](#widgetcontent-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* Object (and attributes within) depends on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li> <li>IMAGE - [ImageWidgetContent](#imagewidgetcontent-object)</li>
+**contents** | [WidgetContent](#widget-object) | Data that specifies the contents of the widget. _Note: the type of *WidgetContent* Object (and attributes within) depends on the value of *Widget.type*: <ul><li>CELLLINK - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>SHEETSUMMARY - [CellLinkWidgetContent](#celllinkwidgetcontent-object)</li> <li>RICHTEXT - [RichTextWidgetContent](#richtextwidgetcontent-object)</li> <li>SHORTCUTICON - [ShortcutWidgetContent](#shortcutwidgetcontent-object)</li> <li>SHORTCUTLIST - [ShortcutWidgetContent](#shortcutwidgetcontent-object) </li> <li>GRIDGANTT - [ReportWidgetContent](#reportwidgetcontent-object)</li> <li>IMAGE - [ImageWidgetContent](#imagewidgetcontent-object)</li>
 
 ### CellLinkWidgetContent Object
 
@@ -12641,7 +12657,7 @@ ContainerDestination destination = new ContainerDestination
 };
 
 // Copy Sight
-Sight results = smartsheet.SightResources.CopySight(
+Sight sight = smartsheet.SightResources.CopySight(
     6327127650920324,                               // long sightId
     destination
 );
@@ -12656,7 +12672,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Copy sight
-Sight results = smartsheet.sightResources().copySight(
+Sight sight = smartsheet.sightResources().copySight(
     6327127650920324L,                          // long sightId
     destination
 );
@@ -12754,13 +12770,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```csharp
-Sight results = smartsheet.SightResources.GetSight(
+Sight sight = smartsheet.SightResources.GetSight(
     6327127650920324        // long sightId
 );
 ```
 
 ```java
-Sight results = smartsheet.sightResources().getSight(
+Sight sight = smartsheet.sightResources().getSight(
     6327127650920324L       // long sightId
 );
 ```
@@ -12846,14 +12862,14 @@ curl https://api.smartsheet.com/2.0/sights \
 ```
 
 ```csharp
-PaginatedResult<Sight> results = smartsheet.SightResources.ListSights(
+PaginatedResult<Sight> sights = smartsheet.SightResources.ListSights(
     null,       // PaginationParameters
     null        // Nullable<DateTime> modifiedSince
 );
 ```
 
 ```java
-PagedResult<Sight> results = smartsheet.sightResources().listSights(
+PagedResult<Sight> sights = smartsheet.sightResources().listSights(
     null,       // PaginationParameters
     null        // Date modifiedSince
 );
@@ -12936,7 +12952,7 @@ ContainerDestination destination = new ContainerDestination
 };
 
 // Move Sight
-Sight results = smartsheet.SightResources.MoveSight(
+Sight sight = smartsheet.SightResources.MoveSight(
     5077532685952900,                               // long sightId
     destination
 );
@@ -12950,7 +12966,7 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
     .build();
 
 // Move sight
-Sight results = smartsheet.sightResources().moveSight(
+Sight sight = smartsheet.sightResources().moveSight(
     9283173393803140L,                          // long sightId
     destination
 );
@@ -13096,7 +13112,7 @@ Publishes or unpublishes a Sight.
 
 ## Share Sight
 
-For details about Sight sharing, see [Sight Sharing](#sights-sharing).
+For details about Sight sharing, see [Sight Sharing](#sight-sharing).
 
 ## Update Sight
 
@@ -13207,14 +13223,14 @@ smartsheet.templates.listPublicTemplates()
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Template> results = smartsheet.TemplateResources.ListPublicTemplates(
+PaginatedResult<Template> templates = smartsheet.TemplateResources.ListPublicTemplates(
     null            // PaginationParameters
 );
 ```
 
 ```java
 // Omit pagination parameters
-PagedResult<Template> results = smartsheet.templateResources().listPublicTemplates(
+PagedResult<Template> templates = smartsheet.templateResources().listPublicTemplates(
     null        // PaginationParameters
 );
 ```
@@ -13258,14 +13274,14 @@ smartsheet.templates.listUserCreatedTemplates()
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Template> results = smartsheet.TemplateResources.ListUserCreatedTemplates(
+PaginatedResult<Template> templates = smartsheet.TemplateResources.ListUserCreatedTemplates(
     null                // PaginationParameters
 );
 ```
 
 ```java
 // Omit pagination parameters
-PagedResult<Template> results = smartsheet.templateResources().listUserCreatedTemplates(
+PagedResult<Template> templates = smartsheet.templateResources().listUserCreatedTemplates(
     null        // PaginationParameters
 );
 ```
@@ -13407,11 +13423,11 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```csharp
-// [todo]
+smartsheet.TokenResources.RevokeAccessToken();
 ```
 
 ```java
-// [todo]
+smartsheet.tokenResources().revokeAccessToken();
 ```
 
 ```python
@@ -13594,7 +13610,7 @@ smartsheet.users.addUser(options)
 
 ```csharp
 // Set user properties
-User user = new User.AddUserBuilder(
+User userSpecification = new User.AddUserBuilder(
         "john.doe@smartsheet.com",
         false,              // Nullable<bool> admin
         true)               // Nullable<bool> licensedSheetCreator
@@ -13603,8 +13619,8 @@ User user = new User.AddUserBuilder(
     .Build();
 
 // Add user
-User results = smartsheet.UserResources.AddUser(
-    user,
+User newUser = smartsheet.UserResources.AddUser(
+    userSpecification,
     true,                   // Nullable<bool> sendEmail
     null                    // Nullable<bool> allowInviteAccountAdmin
 );
@@ -13612,7 +13628,7 @@ User results = smartsheet.UserResources.AddUser(
 
 ```java
 // Set user properties
-User user = new User.AddUserBuilder().setAdmin(false)
+User userSpecification = new User.AddUserBuilder().setAdmin(false)
     .setEmail("john.doe@smartsheet.com")
     .setFirstName("John")
     .setLastName("Doe")
@@ -13620,7 +13636,7 @@ User user = new User.AddUserBuilder().setAdmin(false)
     .build();
 
 // Add user
-User results = smartsheet.userResources().addUser(user);
+User newUser = smartsheet.userResources().addUser(userSpecification);
 ```
 
 ```python
@@ -13767,7 +13783,10 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```csharp
-// [todo]
+AlternateEmail primaryEmail = smartsheet.UserResources.PromoteAlternateEmail(
+    401090454808452,        // long userId
+    123456789012345         // long altEmailId
+);
 ```
 
 ```java
@@ -13823,11 +13842,17 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```csharp
-// [todo]
+smartsheet.UserResources.DeleteAlternateEmail(
+    401090454808452,        // long userId
+    123456789012345         // long altEmailId
+);
 ```
 
 ```java
-// [todo]
+smartsheet.userResources().deleteAlternateEmail(
+    401090454808452L,        // long userId
+    123456789012345L         // long altEmailId
+);
 ```
 
 ```python
@@ -13867,11 +13892,17 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEma
 ```
 
 ```csharp
-// [todo]
+smartsheet.UserResources.GetAlternateEmail(
+    401090454808452,        // long userId
+    123456789012345         // long altEmailId
+);
 ```
 
 ```java
-// [todo]
+smartsheet.userResources().getAlternateEmail(
+    401090454808452L,        // long userId
+    123456789012345L         // long altEmailId
+);
 ```
 
 ```python
@@ -13912,11 +13943,19 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```csharp
-// [todo]
+// Omit 'email' parameter and pagination parameters
+PaginatedResult<AlternateEmail> results = smartsheet.UserResources.ListAlternateEmails(
+    401090454808452,        // long userId
+    null                    // PaginationParameters
+);
 ```
 
 ```java
-// [todo]
+// Omit 'email' parameter and pagination parameters
+PagedResult<AlternateEmail> results = smartsheet.userResources().listAlternateEmails(
+    401090454808452L,        // long userId
+    null                    // PaginationParameters
+);
 ```
 
 ```python
@@ -13977,11 +14016,11 @@ smartsheet.users.getCurrentUser()
 ```
 
 ```csharp
-UserProfile results = smartsheet.UserResources.GetCurrentUser();
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
 ```
 
 ```java
-UserProfile results = smartsheet.userResources().getCurrentUser();
+UserProfile userProfile = smartsheet.userResources().getCurrentUser();
 ```
 
 ```python
@@ -14049,13 +14088,13 @@ smartsheet.users.getUser(options)
 ```
 
 ```csharp
-UserProfile results = smartsheet.UserResources.GetUser(
+UserProfile userProfile = smartsheet.UserResources.GetUser(
     48569348493401200           // long userId
 );
 ```
 
 ```java
-UserProfile results = smartsheet.userResources().getUser(
+UserProfile userProfile = smartsheet.userResources().getUser(
     48569348493401200L           // long userId
 );
 ```
@@ -14124,14 +14163,14 @@ smartsheet.users.listAllUsers()
 ```
 
 ```csharp
-// Omit 'email' parameter and pagination parameters
-PaginatedResult<User> results = smartsheet.UserResources.ListUsers(
+// Sample 1: Omit 'email' parameter and pagination parameters
+PaginatedResult<User> users = smartsheet.UserResources.ListUsers(
     null,               // IEnumerable<string> emails
     null                // PaginationParameters
 );
 
-// Specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true'
-PaginatedResult<User> results = smartsheet.UserResources.ListUsers(
+// Sample 2: Specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true'
+PaginatedResult<User> users = smartsheet.UserResources.ListUsers(
     new string[] { "john.doe@smartsheet.com" },
     new PaginationParameters(
         true, // includeAll
@@ -14141,17 +14180,17 @@ PaginatedResult<User> results = smartsheet.UserResources.ListUsers(
 ```
 
 ```java
-// Omit 'email' parameter and pagination parameters
-PagedResult<User> results = smartsheet.userResources().listUsers(
+// Sample 1: Omit 'email' parameter and pagination parameters
+PagedResult<User> users = smartsheet.userResources().listUsers(
     null,       // Set<String> email
     null        // PaginationParameters
 );
 
-// Specify pagination parameter 'includeAll' 
+// Sample 2: Specify pagination parameter 'includeAll' 
 PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
 
 // Specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true'
-PagedResult<User> results = smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
+PagedResult<User> users = smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
 ```
 
 ```python
@@ -14324,25 +14363,25 @@ smartsheet.users.updateUser(options)
 
 ```csharp
 // Specify updated user properties
-User user = new User.UpdateUserBuilder(
+User userSpecification = new User.UpdateUserBuilder(
         82349925918590,             // long userId
         true,                       // Nullable<bool> admin
         true)                       // Nullable<bool> licensedSheetCreator
     .Build();
 
 // Update user
-User results = smartsheet.UserResources.UpdateUser(
+User updatedUser = smartsheet.UserResources.UpdateUser(
     82349925918590,             // long userId
-    user
+    userSpecification
 );
 ```
 
 ```java
 // Specify updated user properties
-User user = new User.UpdateUserBuilder().setUserId(userId).setAdmin(true).setLicensedSheetCreator(true).build();
+User userSpecification = new User.UpdateUserBuilder().setUserId(userId).setAdmin(true).setLicensedSheetCreator(true).build();
 
 // Update user
-User results = smartsheet.userResources().updateUser(user);
+User updatedUser = smartsheet.userResources().updateUser(userSpecification);
 ```
 
 ```python
@@ -14427,15 +14466,15 @@ ContainerDestination destination = new ContainerDestination {
     NewName = "newWorkspaceName"
 };
 
-// Omit 'include' and 'skipRemap' parameters
-Workspace results = smartsheet.WorkspaceResources.CopyWorkspace(
+// Sample 1: Omit 'include' and 'skipRemap' parameters
+Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
     7116448184199044,           // long workspaceId
     destination null,           // IEnumerable<WorkspaceCopyInclusion> include
     null                        // IEnumerable<WorkspaceRemapExclusion> skipRemap
 );
 
-// Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS"
-Workspace results = smartsheet.WorkspaceResources.CopyWorkspace(
+// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS"
+Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
     7116448184199044,           // long workspaceId
     destination,
     new WorkspaceCopyInclusion[] { WorkspaceCopyInclusion.ALL },
@@ -14447,16 +14486,16 @@ Workspace results = smartsheet.WorkspaceResources.CopyWorkspace(
 // Specify name for the new workspace
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setNewName("newWorkspaceName").build();
 
-// Omit 'include' and 'skipRemap' parameters
-Workspace results = smartsheet.workspaceResources().copyWorkspace(
+// Sample 1: Omit 'include' and 'skipRemap' parameters
+Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
     7116448184199044L,          // long workspaceId
     destination,
     null,                       // EnumSet<WorkspaceCopyInclusion> includes
     null                        // EnumSet<WorkspaceRemapExclusion> skipRemap
 );
 
-// Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS"
-Workspace results = smartsheet.workspaceResources().copyWorkspace(
+// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS"
+Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
     7116448184199044L,          // long workspaceId
     destination,
     EnumSet.of(WorkspaceCopyInclusion.ALL),
@@ -14534,18 +14573,18 @@ smartsheet.workspaces.createWorkspace(options)
 
 ```csharp
 // Specify workspace name
-Workspace workspace = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
+Workspace workspaceSpecification = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
 
 // Create workspace
-Workspace results = smartsheet.WorkspaceResources.CreateWorkspace(workspace);
+Workspace newWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(workspaceSpecification);
 ```
 
 ```java
 // Specify workspace name
-Workspace workspace = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
+Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
 
 // Create workspace
-Workspace results = smartsheet.workspaceResources().createWorkspace(workspace);
+Workspace newWorkspace = smartsheet.workspaceResources().createWorkspace(workspaceSpecification);
 ```
 
 ```python
@@ -14670,15 +14709,15 @@ smartsheet.workspaces.getWorkspace(options)
 ```
 
 ```csharp
-// Omit 'loadAll' and 'include' parameters
-Workspace results = smartsheet.WorkspaceResources.GetWorkspace(
+// Sample 1: Omit 'loadAll' and 'include' parameters
+Workspace workspace = smartsheet.WorkspaceResources.GetWorkspace(
     6621332407379844,           // long workspaceId
     null,                       // Nullable<bool> loadAll,
     null                        // IEnumerable<WorkspaceInclusion> include
 );
 
-// Specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source"
-Workspace results = smartsheet.WorkspaceResources.GetWorkspace(
+// Sample 2: Specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source"
+Workspace workspace = smartsheet.WorkspaceResources.GetWorkspace(
     6621332407379844,           // long workspaceId
     false,                      // Nullable<bool> loadAll,
     new WorkspaceInclusion[] { WorkspaceInclusion.SOURCE }
@@ -14686,15 +14725,15 @@ Workspace results = smartsheet.WorkspaceResources.GetWorkspace(
 ```
 
 ```java
-// Omit 'loadAll' and 'include' parameters
-Workspace results = smartsheet.workspaceResources().getWorkspace(
+// Sample 1: Omit 'loadAll' and 'include' parameters
+Workspace workspace = smartsheet.workspaceResources().getWorkspace(
     6621332407379844L,      // long workspaceId
     null,                   // Boolean loadAll
     null                    // EnumSet<SourceInclusion> includes
 );
 
-// Specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source"
-Workspace results = smartsheet.workspaceResources().getWorkspace(
+// Sample 2: Specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source"
+Workspace workspace = smartsheet.workspaceResources().getWorkspace(
     6621332407379844L,      // long workspaceId
     false,                  // Boolean loadAll
     EnumSet.of(SourceInclusion.SOURCE)
@@ -14763,14 +14802,14 @@ smartsheet.workspaces.listWorkspaces()
 
 ```csharp
 // Omit pagination parameters
-PaginatedResult<Workspace> results = smartsheet.WorkspaceResources.ListWorkspaces(
+PaginatedResult<Workspace> workspaces = smartsheet.WorkspaceResources.ListWorkspaces(
     null                // PaginationParameters
 );
 ```
 
 ```java
 // Omit pagination parameters
-PagedResult<Workspace> results = smartsheet.workspaceResources().listWorkspaces(
+PagedResult<Workspace> workspaces = smartsheet.workspaceResources().listWorkspaces(
     null        // PaginationParameters
 );
 ```
@@ -14861,24 +14900,24 @@ smartsheet.workspaces.updateWorkspace(options)
 
 ```csharp
 // Specify updated workspace name
-Workspace workspace = new Workspace.UpdateWorkspaceBuilder(
+Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder(
         7960873114331012,           // long workspaceId
         "Updated workspace")
     .Build();
 
 // Update workspace
-Workspace results = smartsheet.WorkspaceResources.UpdateWorkspace(workspace);
+Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(workspaceSpecification);
 ```
 
 ```java
 // Specify updated workspace properties
-Workspace workspace = new Workspace.UpdateWorkspaceBuilder()
+Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder()
     .setName("Updated workspace")
     .setId(7960873114331012L)       // long workspaceId
     .build();
 
 // Update workspace
-Workspace results = smartsheet.workspaceResources().updateWorkspace(workspace);
+Workspace updatedWorkspace = smartsheet.workspaceResources().updateWorkspace(workspaceSpecification);
 ```
 
 ```python
@@ -15745,11 +15784,39 @@ curl https://api.smartsheet.com/2.0/webhooks \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{ "name": "Webhook #4", "callbackUrl": "http://www.myApp.com/webhooks", "scope": "sheet", "scopeObjectId": 2258256056870788, "version": 1, "events": [ "*.*" ]}'
+-d '{ "name": "Webhook #4", "callbackUrl": "https://www.myApp.com/webhooks", "scope": "sheet", "scopeObjectId": 2258256056870788, "version": 1, "events": [ "*.*" ]}'
+```
+
+```csharp
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.Name = "Webhook #4";
+webhook.CallbackUrl = "https://www.myApp.com/webhooks";
+webhook.Scope = "sheet";
+webhook.ScopeObjectId = 3285357287499652;
+webhook.Events = new string[] { "*.*" };
+webhook.Version = 1;
+
+// Create Webhook
+Webhook newWebhook = smartsheet.WebhookResources.CreateWebhook(
+    webhook
+);
 ```
 
 ```java
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.setName("Webhook #4");
+webhook.setCallbackUrl("https://www.myApp.com/webhooks");
+webhook.setScope("sheet");
+webhook.setScopeObjectId(3285357287499652L);
+webhook.setEvents(Arrays.asList("*.*"));
+webhook.setVersion(1);
 
+// Create Webhook
+Webhook newWebhook = smartsheet.webhookResources().createWebhook(
+    webhook
+);
 ```
 
 > Example Response:
@@ -15800,8 +15867,16 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -X DELETE
 ```
 
-```java
+```csharp
+smartsheet.WebhookResources.DeleteWebhook(
+    401090454808452     // long webhookId
+);
+```
 
+```java
+smartsheet.webhookResources().deleteWebhook(
+    401090454808452L     // long webhookId
+);
 ```
 
 > Example Response:
@@ -15834,8 +15909,16 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
-```java
+```csharp
+Webhook webhook = smartsheet.WebhookResources.GetWebhook(
+    401090454808452     // long webhookId
+);
+```
 
+```java
+Webhook webhook = smartsheet.webhookResources().getWebhook(
+    3285357287499652L     // long webhookId
+);
 ```
 
 > Example Response:
@@ -15879,8 +15962,18 @@ curl https://api.smartsheet.com/2.0/webhooks \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
-```java
+```csharp
+// Omit pagination parameters
+PaginatedResult<Webhook> webhooks = smartsheet.WebhookResources.ListWebhooks(
+    null            // PaginationParameters
+);
+```
 
+```java
+// Omit pagination parameters
+PagedResult<Webhook> webhooks = smartsheet.webhookResources().listWebhooks(
+    null            // PaginationParameters
+);
 ```
 
 > Example Response:
@@ -15935,8 +16028,16 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
 -X POST
 ```
 
+```csharp
+WebhookSharedSecret newSecret = smartsheet.WebhookResources.ResetSharedSecret(
+    401090454808452     // long webhookId
+);
+```
+            
 ```java
-
+WebhookSharedSecret newSecret = smartsheet.webhookResources().ResetSharedSecret(
+    401090454808452L     // long webhookId
+);
 ```
 
 > Example Response:
@@ -15974,8 +16075,30 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -d '{ "enabled": true }'
 ```
 
-```java
+```csharp
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.CallbackUrl = "https://www.myApp.com/webhooks";
+webhook.Version = 2;
+webhook.Enabled = true;
 
+// Update Webhook
+Webhook updatedWebhook = smartsheet.WebhookResources.UpdateWebhook(
+    webhook
+);
+```
+
+```java
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.setCallbackUrl("https://www.myApp.com/webhooks");
+webhook.setVersion(2);
+webhook.setEnabled(true);
+
+// Update Webhook
+Webhook updatedWebhook = smartsheet.webhookResources().updateWebhook(
+    webhook
+);
 ```
 
 > Example Response:
