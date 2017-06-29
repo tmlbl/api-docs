@@ -15804,7 +15804,19 @@ Webhook newWebhook = smartsheet.WebhookResources.CreateWebhook(
 ```
 
 ```java
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.setName("Webhook #4");
+webhook.setCallbackUrl("https://www.myApp.com/webhooks");
+webhook.setScope("sheet");
+webhook.setScopeObjectId(3285357287499652L);
+webhook.setEvents(Arrays.asList("*.*"));
+webhook.setVersion(1);
 
+// Create Webhook
+Webhook newWebhook = smartsheet.webhookResources().createWebhook(
+    webhook
+);
 ```
 
 > Example Response:
@@ -15862,7 +15874,9 @@ smartsheet.WebhookResources.DeleteWebhook(
 ```
 
 ```java
-
+smartsheet.webhookResources().deleteWebhook(
+    401090454808452L     // long webhookId
+);
 ```
 
 > Example Response:
@@ -15902,7 +15916,9 @@ Webhook webhook = smartsheet.WebhookResources.GetWebhook(
 ```
 
 ```java
-
+Webhook webhook = smartsheet.webhookResources().getWebhook(
+    3285357287499652L     // long webhookId
+);
 ```
 
 > Example Response:
@@ -15954,7 +15970,10 @@ PaginatedResult<Webhook> webhooks = smartsheet.WebhookResources.ListWebhooks(
 ```
 
 ```java
-
+// Omit pagination parameters
+PagedResult<Webhook> webhooks = smartsheet.webhookResources().listWebhooks(
+    null            // PaginationParameters
+);
 ```
 
 > Example Response:
@@ -16016,7 +16035,9 @@ WebhookSharedSecret newSecret = smartsheet.WebhookResources.ResetSharedSecret(
 ```
             
 ```java
-
+WebhookSharedSecret newSecret = smartsheet.webhookResources().ResetSharedSecret(
+    401090454808452L     // long webhookId
+);
 ```
 
 > Example Response:
@@ -16068,7 +16089,16 @@ Webhook updatedWebhook = smartsheet.WebhookResources.UpdateWebhook(
 ```
 
 ```java
+// Webhook specification
+Webhook webhook = new Webhook();
+webhook.setCallbackUrl("https://www.myApp.com/webhooks");
+webhook.setVersion(2);
+webhook.setEnabled(true);
 
+// Update Webhook
+Webhook updatedWebhook = smartsheet.webhookResources().updateWebhook(
+    webhook
+);
 ```
 
 > Example Response:
