@@ -5124,9 +5124,9 @@ curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
 ```
 
 ```python
-action = smartsheet.Favorites.remove_favorites(
+response = ss_client.Favorites.remove_favorites(
     'sight',
-    sightId
+    6327127650920324        # sight_id
 )
 ```
 
@@ -5466,9 +5466,9 @@ curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{fold
 ```
 
 ```python
-action = smartsheet.Favorites.remove_favorites(
+response = ss_client.Favorites.remove_favorites(
     'sight',
-    [sightId1, sightId2]
+    [6327127650920324, 3404239197235076]        # sight_ids
 )
 ```
 
@@ -8759,18 +8759,19 @@ List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
 
 ```python
 # Build new cell value
-newCell = smartsheet.models.Cell()
-newCell.column_id = 7036894123976580
-newCell.value = "First"
-newCell.strict = False
+new_cell_spec = ss_client.models.Cell()
+new_cell_spec.column_id = 7036894123976580
+new_cell_spec.value = "Third"
+new_cell_spec.strict = False
 
 # Build the row to update
-newRow = smartsheet.models.Row()
-newRow.id = 6809535313667972
-newRow.cells.append(newCell)
+new_row_spec = ss_client.models.Row()
+new_row_spec.id = 6809535313667972
+new_row_spec.cells.append(new_cell_spec)
 
 # Update rows
-smartsheet.Sheets.update_rows(sheetId, [newRow])
+ss_client.Sheets.update_rows(5190835902932868,      # sheet_id
+                             [new_row_spec])
 ```
 
 > Example Response:
@@ -12727,7 +12728,7 @@ smartsheet.sightResources().deleteSight(
 ```
 
 ```python
-smartsheet.Sights.delete_sight(sightId)
+ss_client.Sights.delete_sight(3404239197235076)     # sight_id
 ```
 
 > Example Response:
