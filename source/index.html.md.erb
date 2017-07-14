@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-07-13
+Updated 2017-07-14
 
 # Overview
 ## Introduction
@@ -8758,32 +8758,19 @@ List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
 ```
 
 ```python
-# Specify updated cell values for one row
-row_a = smartsheet.Sheets.get_row(sheetId, 6572427401553796)
+# Build new cell value
+newCell = smartsheet.models.Cell()
+newCell.column_id = 7036894123976580
+newCell.value = "First"
+newCell.strict = False
 
-# use row get_column(columnId) convenience method to pluck the 
-# cell with a known columnId out of the row
-cell_a = row_a.get_column(7518312134403972)
-cell_a.value = 'new value'
-cell_b = row_a.get_column(1888812600190852)
-cell_b.value = 'A'
-
-# use row set_column(id, Cell) convenience method
-# to replace the cell in-place
-row_a.set_column(cell_a.column_id, cell_a)
-row_a.set_column(cell_b.column_id, cell_b)
-
-# Specify updated cell values for a second row
-row_b = smartsheet.Sheets.get_row(sheetId, 2068827774183300)
-cell_c = row_b.get_column(7518312134403972)
-cell_c.value = 'desc_updated'
-cell_d = row_b.get_column(1888812600190852)
-cell_d.value = 'B'
-row_b.set_column(cell_c.column_id, cell_c)
-row_b.set_column(cell_d.column_id, cell_d)
+# Build the row to update
+newRow = smartsheet.models.Row()
+newRow.id = 6809535313667972
+newRow.cells.append(newCell)
 
 # Update rows
-smartsheet.Sheets.update_rows(sheetId, [row_a, row_b])
+smartsheet.Sheets.update_rows(sheetId, [newRow])
 ```
 
 > Example Response:
