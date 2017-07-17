@@ -3703,6 +3703,14 @@ Comment updatedComment = smartsheet.SheetResources.DiscussionResources.CommentRe
 [todo]
 ```
 
+```python
+Comment = smartsheet.Discussions.update_comment(
+    1639534409607044,       # sheet_id
+    2285164807120772,       # comment_id
+    smartsheet.models.Comment({
+        'text': 'This is the updated comment text'}))
+```
+
 > Example Response:
 
 ```json
@@ -5124,7 +5132,7 @@ curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
 ```
 
 ```python
-response = ss_client.Favorites.remove_favorites(
+response = smartsheet.Favorites.remove_favorites(
     'sight',
     6327127650920324        # sight_id
 )
@@ -5466,7 +5474,7 @@ curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{fold
 ```
 
 ```python
-response = ss_client.Favorites.remove_favorites(
+response = smartsheet.Favorites.remove_favorites(
     'sight',
     [6327127650920324, 3404239197235076]        # sight_ids
 )
@@ -7753,7 +7761,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 ```
 
 ```python
-status = ss_client.Reports.get_publish_status(
+status = smartsheet.Reports.get_publish_status(
     1653067851556740)       # report_id
 ```
 
@@ -8765,18 +8773,18 @@ List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
 
 ```python
 # Build new cell value
-new_cell_spec = ss_client.models.Cell()
+new_cell_spec = smartsheet.models.Cell()
 new_cell_spec.column_id = 7036894123976580
 new_cell_spec.value = "Third"
 new_cell_spec.strict = False
 
 # Build the row to update
-new_row_spec = ss_client.models.Row()
+new_row_spec = smartsheet.models.Row()
 new_row_spec.id = 6809535313667972
 new_row_spec.cells.append(new_cell_spec)
 
 # Update rows
-ss_client.Sheets.update_rows(5190835902932868,      # sheet_id
+smartsheet.Sheets.update_rows(5190835902932868,      # sheet_id
                              [new_row_spec])
 ```
 
@@ -10107,13 +10115,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
 
 ```python
 # Sample 1: All Sight shares
-response = ss_client.Sights.list_shares(
+response = smartsheet.Sights.list_shares(
     6327127650920324,       # sight_id
     include_all=True)
 shares = response.data
 
 # Sample 2: Paginate the list
-response = ss_client.Sights.list_shares(
+response = smartsheet.Sights.list_shares(
     6327127650920324,       # sight_id
     page_size=10,
     page=1)
@@ -12770,7 +12778,7 @@ smartsheet.sightResources().deleteSight(
 ```
 
 ```python
-ss_client.Sights.delete_sight(3404239197235076)     # sight_id
+smartsheet.Sights.delete_sight(3404239197235076)     # sight_id
 ```
 
 > Example Response:
@@ -13188,7 +13196,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```python
-ss_client.Sights.update_sight(
+smartsheet.Sights.update_sight(
     5363568917931908,           # sight_id
     smartsheet.models.Sight({
         'name': 'New Sight Name'
@@ -15874,6 +15882,17 @@ Webhook newWebhook = smartsheet.webhookResources().createWebhook(
 );
 ```
 
+```python
+Webhook = smartsheet.Webhooks.create_webhook(
+    smartsheet.models.Webhook({
+        'name': 'Webhook #4',
+        'callbackUrl': 'https://www.myApp.com/webhooks',
+        'scope': 'sheet',
+        'scopeObjectId': 5190835902932868,
+        'events': ['*.*'],
+        'version': 1}))
+```
+
 > Example Response:
 
 ```json
@@ -15934,6 +15953,11 @@ smartsheet.webhookResources().deleteWebhook(
 );
 ```
 
+```python
+smartsheet.Webhooks.delete_webhook(
+    4632730873948036)       # webhook_id
+```
+
 > Example Response:
 
 ```json
@@ -15974,6 +15998,11 @@ Webhook webhook = smartsheet.WebhookResources.GetWebhook(
 Webhook webhook = smartsheet.webhookResources().getWebhook(
     3285357287499652L     // long webhookId
 );
+```
+
+```python
+Webhook = smartsheet.Webhooks.get_webhook(
+    4632730873948036)       # webhook_id
 ```
 
 > Example Response:
@@ -16029,6 +16058,13 @@ PaginatedResult<Webhook> webhooks = smartsheet.WebhookResources.ListWebhooks(
 PagedResult<Webhook> webhooks = smartsheet.webhookResources().listWebhooks(
     null            // PaginationParameters
 );
+```
+
+```python
+IndexResult = smartsheet.Webhooks.list_webhooks(
+    page_size=100,
+    page=1,
+    include_all=False)
 ```
 
 > Example Response:
@@ -16154,6 +16190,13 @@ webhook.setEnabled(true);
 Webhook updatedWebhook = smartsheet.webhookResources().updateWebhook(
     webhook
 );
+```
+
+```python
+Webhook = smartsheet.Webhooks.update_webhook(
+    2403299249940356,       # webhook_id
+    ss_client.models.Webhook({
+        'enabled': True}))
 ```
 
 > Example Response:
