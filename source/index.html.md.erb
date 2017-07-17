@@ -10057,7 +10057,9 @@ Share share = smartsheet.sightResources().shareResources().getShare(
 ```
 
 ```python
-# [todo]
+share = smartsheet.Sights.get_share(
+    6327127650920324,       # sight_id
+    'AAACOqOmFOeE')         # share_id
 ```
 
 > Example Response:
@@ -10096,7 +10098,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
 ```
 
 ```python
-# [todo]
+# Sample 1: All Sight shares
+response = ss_client.Sights.list_shares(
+    6327127650920324,       # sight_id
+    include_all=True)
+shares = response.data
+
+# Sample 2: Paginate the list
+response = ss_client.Sights.list_shares(
+    6327127650920324,       # sight_id
+    page_size=10,
+    page=1)
+pages = response.total_pages
+shares = response.data
 ```
 
 > Example Response:
@@ -10154,7 +10168,14 @@ List<Share> addressList = smartsheet.sightResources().shareResources().shareTo(
 ```
 
 ```python
-# [todo]
+response = smartsheet.Sights.share_sight(
+    6327127650920324,       # sight_id
+    smartsheet.models.Share({
+        'access_level': 'ADMIN',
+        'email': 'jane.roe@smartsheet.com'
+    }),
+    True                    # sendEmail
+)
 ```
 
 > Example Response:
