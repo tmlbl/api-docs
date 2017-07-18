@@ -6328,11 +6328,16 @@ PagedResult<Folder> folders = smartsheet.workspaceResources().folderResources().
 ```
 
 ```python
-action = smartsheet.Workspaces.list_folders(workspaceId, include_all=True)
+action = smartsheet.Workspaces.list_folders(
+    7116448184199044,       # workspace_id
+    include_all=True)
 folders = action.data
 
 # Paginate the list
-action = smartsheet.Workspaces.list_folders(workspaceId, page_size=5, page=1)
+action = smartsheet.Workspaces.list_folders(
+    7116448184199044,       # workspace_id
+    page_size=5,
+    page=1)
 pages = action.total_pages
 folders = action.data
 ```
@@ -6368,7 +6373,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
-    DestinationId = destinationFolderId,
+    DestinationId = 4509918431602564,       // long destinationFolderId
     DestinationType = DestinationType.FOLDER,
 };
 
@@ -6383,7 +6388,7 @@ Folder folder = smartsheet.FolderResources.MoveFolder(
 // Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
-    .setDestinationId(7960873114331012L)        // long destinationFolderId
+    .setDestinationId(4509918431602564L)        // long destinationFolderId
     .build();
 
 // Move folder
@@ -6395,9 +6400,9 @@ Folder folder = smartsheet.folderResources().moveFolder(
 
 ```python
 smartsheet.Folders.move_folder(
-    folderId,
+    7960873114331012,                           # folder_id to be moved
     smartsheet.models.Destination({
-        'destination_id': folderId,
+        'destination_id': 4509918431602564,     # destination folder_id
         'destination_type': 'folder'
     })
 )
@@ -6486,7 +6491,9 @@ Folder updatedFolder = smartsheet.folderResources().updateFolder(folderSpecifica
 ```
 
 ```python
-smartsheet.Folders.update_folder(folderId, 'New name for folder')
+smartsheet.Folders.update_folder(
+    7960873114331012,       # folder_id
+    'New name for folder')
 ```
 
 > Example Response:
@@ -6701,7 +6708,8 @@ smartsheet.groupResources().deleteGroup(
 ```
 
 ```python
-smartsheet.Groups.delete_group(groupId)
+smartsheet.Groups.delete_group(
+    6932724448552836)       # group_id
 ```
 
 > Example Response:
@@ -6765,7 +6773,8 @@ Group group = smartsheet.groupResources().getGroup(
 ```
 
 ```python
-group = smartsheet.Groups.get_group(groupId)
+group = smartsheet.Groups.get_group(
+    6932724448552836)       # group_id
 # group is an instance of smartsheet.models.Group
 ```
 
@@ -6941,7 +6950,7 @@ Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification)
 
 ```python
 smartsheet.Groups.update_group(
-    groupId,
+    6932724448552836,       # group_id
     smartsheet.models.Group({
         'name': 'Renamed Group',
         'description': 'Some new description'
@@ -7072,7 +7081,7 @@ List<GroupMember> newMembers = smartsheet.groupResources().memberResources().add
 
 ```python
 smartsheet.Groups.add_members(
-    groupId,
+    6932724448552836,       # group_id
     [smartsheet.models.GroupMember({'email': 'jane.doe@smartsheet.com'})]
 )
 ```
@@ -7158,7 +7167,9 @@ smartsheet.groupResources().memberResources().deleteGroupMember(
 ```
 
 ```python
-smartsheet.Groups.remove_member(groupId, groupMemberId)
+smartsheet.Groups.remove_member(
+    7917992160847748,       # group_id
+    1539725208119172)       # group_member_id
 ```
 
 > Example Response:
@@ -7454,7 +7465,8 @@ Report report = smartsheet.reportResources().getReport(
 ```
 
 ```python
-report = smartsheet.Reports.get_report(reportId)
+report = smartsheet.Reports.get_report(
+    4583173393803140)       # report_id
 ```
 
 > Example Response:
@@ -7574,13 +7586,13 @@ smartsheet.reportResources().getReportAsExcel(
 ```python
 # Download file with filename suggested by API
 smartsheet.Reports.get_report_as_excel(
-    reportId,
+    3882962191181700,       # report_id
     download_folder_path
 )
 
 # Specify custom filename for the downloaded file
 smartsheet.Reports.get_report_as_excel(
-    reportId,
+    3882962191181700,       # report_id
     download_folder_path,
     'MyFileName.xslx'
 )
@@ -7650,13 +7662,13 @@ smartsheet.reportResources().getReportAsCsv(
 ```python
 # Download file with filename suggested by API
 smartsheet.Reports.get_report_as_csv(
-    reportId,
+    3882962191181700,       # report_id
     download_folder_path
 )
 
 # Specify custom filename for the downloaded file
 smartsheet.Reports.get_report_as_csv(
-    reportId,
+    3882962191181700,       # report_id
     download_folder_path,
     'CallMeAl.csv'
 )
@@ -8175,7 +8187,9 @@ row_b.cells.append({
 })
 
 # Add rows to sheet
-action = smartsheet.Sheets.add_rows(sheetId, [row_a, row_b])
+action = smartsheet.Sheets.add_rows(
+    2331373580117892,       # sheet_id
+    [row_a, row_b])
 ```
 
 > Example Response:
@@ -8348,7 +8362,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRow
 
 ```python
 smartsheet.Sheets.copy_rows(
-    sheetId,
+    4583173393803140,               # sheet_id of rows to be copied
     smartsheet.models.CopyOrMoveRowDirective({
         'row_ids': [145417762563972, 8026717110462340]
         'to': smartsheet.models.CopyOrMoveRowDestination({
@@ -8422,7 +8436,9 @@ smartsheet.sheetResources().rowResources().deleteRows(
 ```
 
 ```python
-smartsheet.Sheets.delete_rows(sheetId, [rowId1, rowId2, rowId3])
+smartsheet.Sheets.delete_rows(
+    2252168947361668,                       # sheet_id
+    [207098194749316, 207098194749317])     # row_ids
 ```
 
 > Example Response:
@@ -8524,8 +8540,8 @@ Row row = smartsheet.sheetResources().rowResources().getRow(
 ```python
 # Include discussions, attachments, columns, and columnType
 row = smartsheet.Sheets.get_row(
-    sheetId, 
-    rowId, 
+    4583173393803140,       # sheet_id 
+    2361756178769796,       # row_id 
     include='discussions,attachments,columns,columnType'
 )
 ```
@@ -8669,7 +8685,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRow
 
 ```python
 smartsheet.Sheets.move_rows(
-    sheetId,
+    4583173393803140,           # sheet_id of rows to be moved
     smartsheet.models.CopyOrMoveRowDirective({
         'row_ids': [145417762563972, 8026717110462340],
         'to': smartsheet.models.CopyOrMoveRowDestination({
@@ -8843,8 +8859,9 @@ new_row_spec.id = 6809535313667972
 new_row_spec.cells.append(new_cell_spec)
 
 # Update rows
-smartsheet.Sheets.update_rows(5190835902932868,      # sheet_id
-                             [new_row_spec])
+smartsheet.Sheets.update_rows(
+    5190835902932868,      # sheet_id
+    [new_row_spec])
 ```
 
 > Example Response:
@@ -9416,7 +9433,9 @@ smartsheet.reportResources().shareResources().deleteShare(
 ```
 
 ```python
-smartsheet.Reports.delete_share(reportId, shareId)
+smartsheet.Reports.delete_share(
+    665829219035012,        # report_id
+    'AAAQSF82F1eE')         # share_id
 ```
 
 > Example Response:
@@ -9470,7 +9489,9 @@ Share share = smartsheet.reportResources().shareResources().getShare(
 ```
 
 ```python
-share = smartsheet.Reports.get_share(reportId, shareId)
+share = smartsheet.Reports.get_share(
+    6932724448552836,       # report_id
+    'AAAQSF82F1eE')         # share_id
 ```
 
 > Example Response:
@@ -9616,7 +9637,7 @@ List<Share> addressList = smartsheet.reportResources().shareResources().shareTo(
 
 ```python
 smartsheet.Reports.share_report(
-    reportId,
+    665829219035012,        # report_id
     smartsheet.models.Share({
         'access_level': 'EDITOR',
         'email': 'jane.doe@smartsheet.com'
@@ -9698,8 +9719,8 @@ Share updatedShare = smartsheet.reportResources().shareResources().updateShare(
 
 ```python
 smartsheet.Reports.update_share(
-    reportId,
-    shareId,
+    665829219035012,        # report_id
+    'AAAFeF82FOeE',         # share_id
     smartsheet.models.Share({
         'access_level': 'VIEWER'
     })
@@ -9760,7 +9781,9 @@ smartsheet.sheetResources().shareResources().deleteShare(
 ```
 
 ```python
-smartsheet.Sheets.delete_share(sheetId, shareId)
+smartsheet.Sheets.delete_share(
+    4583614634583940,       # sheet_id
+    'AAAFeF82FOeE')         # share_id
 ```
 
 > Example Response:
@@ -9814,7 +9837,9 @@ Share share = smartsheet.sheetResources().shareResources().getShare(
 ```
 
 ```python
-share = smartsheet.Sheets.get_share(sheetId, shareId)
+share = smartsheet.Sheets.get_share(
+    4583614634583940,       # sheet_id
+    'AAAASuWWFOeE')         # share_id
 ```
 
 > Example Response:
@@ -9870,11 +9895,16 @@ PagedResult<Share> shares = smartsheet.sheetResources().shareResources().listSha
 ```
 
 ```python
-action = smartsheet.Sheets.list_shares(sheetId, include_all=True)
+action = smartsheet.Sheets.list_shares(
+    4583614634583940,       # sheet_id
+    include_all=True)
 shares = action.data
 
 # Paginate the list
-action = smartsheet.Sheets.list_shares(sheetId, page_size=10, page=1)
+action = smartsheet.Sheets.list_shares(
+    4583614634583940,       # sheet_id
+    page_size=10,
+    page=1)
 pages = action.total_pages
 shares = action.data
 ```
@@ -9959,12 +9989,12 @@ List<Share> addressList = smartsheet.sheetResources().shareResources().shareTo(
 
 ```python
 smartsheet.Sheets.share_sheet(
-    sheetId,
+    4583614634583940,       # sheet_id
     smartsheet.models.Share({
         'access_level': 'EDITOR',
         'email': 'jane.doe@smartsheet.com'
     }),
-    True
+    True                    # sendEmail
 )
 ```
 
@@ -10039,8 +10069,8 @@ Share updatedShare = smartsheet.sheetResources().shareResources().updateShare(
 
 ```python
 smartsheet.Sheets.update_share(
-    sheetId,
-    shareId,
+    4583614634583940,       # sheet_id
+    'AAAFeF82FOeE',         # share_id
     smartsheet.models.Share({
         'access_level': 'VIEWER'
     })
@@ -10374,7 +10404,9 @@ smartsheet.workspaceResources().shareResources().deleteShare(
 ```
 
 ```python
-smartsheet.Workspaces.delete_share(workspaceId, shareId)
+smartsheet.Workspaces.delete_share(
+    1656220827314052,           # workspace_id
+    'AAAEQesWFOeE')             # share_id
 ```
 
 > Example Response:
@@ -10432,7 +10464,9 @@ Share share = smartsheet.workspaceResources().shareResources().getShare(
 ```
 
 ```python
-share = smartsheet.Sheets.get_share(workspaceId, shareId)
+share = smartsheet.Sheets.get_share(
+    1656220827314052,           # workspace_id
+    'AAAEQesWFOeE')             # share_id
 ```
 
 > Example Response:
@@ -10488,11 +10522,16 @@ PagedResult<Share> shares = smartsheet.workspaceResources().shareResources().lis
 ```
 
 ```python
-action = smartsheet.Workspaces.list_shares(workspaceId, include_all=True)
+action = smartsheet.Workspaces.list_shares(
+    1656220827314052,       # workspace_id
+    include_all=True)
 shares = action.data
 
 # Paginate the list
-action = smartsheet.Workspaces.list_shares(workspaceId, page_size=10, page=1)
+action = smartsheet.Workspaces.list_shares(
+    1656220827314052,       # workspace_id
+    page_size=10,
+    page=1)
 pages = action.total_pages
 shares = action.data
 ```
@@ -10580,7 +10619,7 @@ List<Share> addressList = smartsheet.workspaceResources().shareResources().share
 
 ```python
 smartsheet.Workspaces.share_workspace(
-    workspaceId,
+    1656220827314052,       # workspace_id
     smartsheet.models.Share({
         'access_level': 'EDITOR',
         'email': 'jane.doe@smartsheet.com'
@@ -10669,8 +10708,8 @@ Share updatedShare = smartsheet.workspaceResources().shareResources().updateShar
 
 ```python
 smartsheet.Workspaces.update_share(
-    workspaceId,
-    shareId,
+    1656220827314052,       # workspace_id
+    'AAAFeF82FOeE',         # share_id
     smartsheet.models.Share({
         'access_level': 'VIEWER'
     })
@@ -10838,14 +10877,14 @@ ContainerDestination destination = new ContainerDestination.AddContainerDestinat
 
 // Sample 1: Omit 'include' parameter
 Sheet sheet = smartsheet.sheetResources().copySheet(
-    9283173393803140L,                          // long sheetId
+    4583173393803140L,                          // long sheetId
     destination,
     null                                        // EnumSet<SheetCopyInclusion> includes
 );
 
 // Sample 2: Specify 'include' parameter with value of "all"
 Sheet sheet = smartsheet.sheetResources().copySheet(
-    9283173393803140L,                         // long sheetId
+    4583173393803140L,                         // long sheetId
     destination,
     EnumSet.of(SheetCopyInclusion.ALL)
 );
@@ -10853,10 +10892,10 @@ Sheet sheet = smartsheet.sheetResources().copySheet(
 
 ```python
 smartsheet.Sheets.copy_sheet(
-    sheetId,
+    4583173393803140,                               # sheet_id
     smartsheet.models.ContainerDestination({
-        'destination_type': 'folder', # folder or workspace or home
-        'destination_id': folderId,
+        'destination_type': 'folder',               # folder, workspace, or home
+        'destination_id': 9283173393803140,         # folder_id
         'new_name': 'newSheetName'
     })
 )
@@ -11128,7 +11167,9 @@ sheet = smartsheet.models.Sheet({
         }
     ]
 })
-action = smartsheet.Folders.create_sheet_in_folder(folderId, sheet)
+action = smartsheet.Folders.create_sheet_in_folder(
+    3734419270854532,       # folder_id
+    sheet)
 sheet = action.result
 ```
 
@@ -11250,7 +11291,9 @@ sheet = smartsheet.models.Sheet({
     ]
 })
 
-action = smartsheet.Workspaces.create_sheet_in_workspace(workspaceId, sheet)
+action = smartsheet.Workspaces.create_sheet_in_workspace(
+    3734419270854532,           # workspace_id
+    sheet)
 sheet = action.result
 ```
 
@@ -11357,7 +11400,7 @@ Sheet results = smartsheet.sheetResources().createSheetFromTemplate(
 action = smartsheet.Home.create_sheet_from_template(
     smartsheet.models.Sheet({
         'name': 'newsheet',
-        'from_id': templateId
+        'from_id': 7679398137620356     # template_id
     })
 )
 sheet = action.result
@@ -11460,10 +11503,10 @@ Sheet results = smartsheet.sheetResources().createSheetInFolderFromTemplate(
 
 ```python
 action = smartsheet.Folders.create_sheet_in_folder_from_template(
-    folderId,
+    3734419270854532,                   # folder_id
     smartsheet.models.Sheet({
         'name': 'newsheet',
-        'from_id': 7679398137620356
+        'from_id': 7679398137620356     # template_id
     })
 )
 ```
@@ -11547,14 +11590,14 @@ Sheet sheetSpecification = new Sheet.CreateFromTemplateOrSheetBuilder()
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
-    1656220827314052L,                  // long folderId
+    1656220827314052L,                  // long workspaceId
     sheetSpecification,
     null                                // EnumSet<SheetTemplateInclusion> includes
 );
 
 // Sample 2: Include ATTACHMENTS, DATA, and DISCUSSIONS
 Sheet newSheet = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
-    1656220827314052L,                 // long folderId
+    1656220827314052L,                 // long workspaceId
     sheetSpecification,
     EnumSet.of(
         SheetTemplateInclusion.ATTACHMENTS,
@@ -11565,10 +11608,10 @@ Sheet newSheet = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
 
 ```python
 action = smartsheet.Workspaces.create_sheet_in_workspace_from_template(
-    workspaceId,
+    1656220827314052,                   # workspace_id
     smartsheet.models.Sheet({
         'name': 'newsheet',
-        'from_id': 7679398137620356
+        'from_id': 7679398137620356     # template_id
     })
 )
 ```
@@ -11622,7 +11665,8 @@ smartsheet.sheetResources().deleteSheet(
 ```
 
 ```python
-smartsheet.Sheets.delete_sheet(sheetId)
+smartsheet.Sheets.delete_sheet(
+    1531988831168388)       # sheet_id
 ```
 
 > Example Response:
@@ -11682,7 +11726,8 @@ Integer version = smartsheet.sheetResources().getSheetVersion(
 ```
 
 ```python
-smartsheet.Sheets.get_sheet_version(sheetId)
+smartsheet.Sheets.get_sheet_version(
+    1531988831168388)       # sheet_id
 ```
 
 > Example Response:
@@ -11767,7 +11812,8 @@ Sheet sheet = smartsheet.sheetResources().getSheet(
 ```
 
 ```python
-sheet = smartsheet.Sheets.get_sheet(sheetId)
+sheet = smartsheet.Sheets.get_sheet(
+    1531988831168388)           # sheet_id
 ```
 
 > Example Response:
@@ -11876,7 +11922,9 @@ smartsheet.sheetResources().getSheetAsExcel(
 ```
 
 ```python
-smartsheet.Sheets.get_sheet_as_excel(sheetId, download_directory_path)
+smartsheet.Sheets.get_sheet_as_excel(
+    1531988831168388,           # sheet_id
+    download_directory_path)
 ```
 
 > Example Response:
@@ -11943,7 +11991,10 @@ smartsheet.sheetResources().getSheetAsPDF(
 ```
 
 ```python
-smartsheet.Sheets.get_sheet_as_pdf(sheetId, download_directory_path, 'A1')
+smartsheet.Sheets.get_sheet_as_pdf(
+    1531988831168388,           # sheet_id
+    download_directory_path,
+    'A1')                       # paperSize
 ```
 
 > Example Response:
@@ -12008,7 +12059,9 @@ smartsheet.sheetResources().getSheetAsCSV(
 ```
 
 ```python
-smartsheet.Sheets.get_sheet_as_csv(sheetId, download_directory_path)
+smartsheet.Sheets.get_sheet_as_csv(
+    1531988831168388,           # sheet_id
+    download_directory_path)
 ```
 
 > Example Response:
@@ -12199,10 +12252,10 @@ Sheet sheet = smartsheet.sheetResources().moveSheet(
 
 ```python
 smartsheet.Sheets.move_sheet(
-    sheetId,
+    1531988831168388,                       # sheet_id
     smartsheet.models.ContainerDestination({
-        'destination_type': 'folder', # folder or workspace or home
-        'destination_id': folderId
+        'destination_type': 'folder',       # folder, workspace, or home
+        'destination_id': 7960873114331012  # folder_id
     })
 )
 ```
@@ -12275,7 +12328,8 @@ SheetPublish status = smartsheet.sheetResources().getPublishStatus(
 ```
 
 ```python
-action = smartsheet.Sheets.get_publish_status(sheetId)
+action = smartsheet.Sheets.get_publish_status(
+    4583173393803140)       # sheet_id
 status = action.result
 # status is a smartsheet.models.SheetPublish object
 ```
@@ -12376,7 +12430,7 @@ SheetPublish updatedStatus = smartsheet.sheetResources().updatePublishStatus(
 # With the Python SDK, if fewer than all four flags are set, current status is retrieved and merged with the flags that _are_ set with this method call.
 
 smartsheet.Sheets.set_publish_status(
-    sheetId,
+    4583173393803140,       # sheet_id
     smartsheet.models.SheetPublish({
         'read_only_lite_enabled': True
     })
@@ -12501,7 +12555,7 @@ Sheet updatedSheet = smartsheet.sheetResources().updateSheet(sheetSpecification)
 
 ```python
 smartsheet.Sheets.update_sheet(
-    sheetId,
+    4583173393803140,       # sheet_id
     smartsheet.models.Sheet({
         'name': 'New Sheet Name',
         'user_settings': smartsheet.models.SheetUserSettings({
@@ -13193,7 +13247,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 response = smartsheet.Sights.set_publish_status(
     5363568917931908,       # sight_id
     smartsheet.models.SightPublish({
-        'readOnlyFullEnabled': True
+        'read_only_full_enabled': True
     })
 )
 ```
@@ -13839,7 +13893,7 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 
 ```python
 smartsheet.Users.add_alternate_email(
-    userId,
+    12345,          # user_id
     [
         smartsheet.models.AlternateEmail({
             'email': 'altEmail1@smartsheet.com'
@@ -13979,7 +14033,9 @@ smartsheet.userResources().deleteAlternateEmail(
 ```
 
 ```python
-smartsheet.Users.delete_alternate_email(userId, alternateEmailId)
+smartsheet.Users.delete_alternate_email(
+    401090454808452,        # user_id
+    123456789012345)        # alternate_email_id
 ```
 
 > Example Response:
@@ -14029,7 +14085,9 @@ smartsheet.userResources().getAlternateEmail(
 ```
 
 ```python
-alt_email = smartsheet.Users.get_alternate_email(userId, alternateEmailId)
+alt_email = smartsheet.Users.get_alternate_email(
+    401090454808452,        # user_id
+    123456789012345)        # alternate_email_id
 ```
 
 > Example Response:
@@ -14082,7 +14140,8 @@ PagedResult<AlternateEmail> results = smartsheet.userResources().listAlternateEm
 ```
 
 ```python
-action = smartsheet.Users.list_alternate_emails(userId)
+action = smartsheet.Users.list_alternate_emails(
+    401090454808452)        # user_id
 emails = action.data
 ```
 
@@ -14223,7 +14282,8 @@ UserProfile userProfile = smartsheet.userResources().getUser(
 ```
 
 ```python
-user = smartsheet.Users.get_user(userId)
+user = smartsheet.Users.get_user(
+    48569348493401200)          # user_id
 ```
 
 > Example Response:
@@ -14419,7 +14479,10 @@ smartsheet.userResources().deleteUser(
 ```
 
 ```python
-smartsheet.Users.remove_user(userId, transfer_to=userId, remove_from_sharing=True)
+smartsheet.Users.remove_user(
+    94094820842,                # user_id
+    transfer_to=62123820842,    # ownership of groups and sheets transfer to user_id
+    remove_from_sharing=True)
 ```
 
 > Example Response:
@@ -14509,7 +14572,7 @@ User updatedUser = smartsheet.userResources().updateUser(userSpecification);
 
 ```python
 smartsheet.Users.update_user(
-    userId,
+    82349925918590,     # user_id
     smartsheet.models.User({
         'licensed_sheet_creator': True,
         'admin': True
@@ -14629,7 +14692,7 @@ Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
 
 ```python
 smartsheet.Workspaces.copy_workspace(
-    workspaceId,
+    7116448184199044,           # workspace_id
     smartsheet.models.ContainerDestination({
         'new_name': 'newWorkspaceName'
     })
@@ -14785,7 +14848,8 @@ smartsheet.workspaceResources().deleteWorkspace(
 ```
 
 ```python
-smartsheet.Workspaces.delete_workspace(workspaceId)
+smartsheet.Workspaces.delete_workspace(
+    6621332407379844)       # workspace_id
 ```
 
 > Example Response:
@@ -14865,7 +14929,8 @@ Workspace workspace = smartsheet.workspaceResources().getWorkspace(
 ```
 
 ```python
-workspace = smartsheet.Workspaces.get_workspace(workspaceId)
+workspace = smartsheet.Workspaces.get_workspace(
+    6621332407379844)       # workspace_id
 ```
 
 > Example Response:
@@ -15046,7 +15111,7 @@ Workspace updatedWorkspace = smartsheet.workspaceResources().updateWorkspace(wor
 
 ```python
 smartsheet.Workspaces.update_workspace(
-    workspaceId,
+    6621332407379844,       # workspace_id
     smartsheet.models.Workspace({
         'name': 'Updated workspace'
     })
