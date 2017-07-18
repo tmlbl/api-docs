@@ -205,7 +205,7 @@ UserProfile userProfile = smartsheet.userResources().getCurrentUser();
 ss_client = ss_client.Smartsheet('ll352u9jujauoqz4gstvsae05')
 
 # Get current user
-ss_client.Users.get_current_user()
+user_profile = ss_client.Users.get_current_user()
 ```
 
 > Example Response:
@@ -913,7 +913,7 @@ Attachment attachment = smartsheet.sheetResources().commentResources().attachmen
 ```
 
 ```python
-ss_client.Attachments.attach_file_to_comment(
+updated_attachment = ss_client.Attachments.attach_file_to_comment(
     9283173393803140,       # sheet_id
     1234567890234568,       # comment_id
     ('ProgressReport.docx', 
@@ -1021,7 +1021,7 @@ Attachment attachment = smartsheet.sheetResources().rowResources().attachmentRes
 ```
 
 ```python
-ss_client.Attachments.attach_file_to_row(
+updated_attachment = ss_client.Attachments.attach_file_to_row(
     9283173393803140,       # sheet_id
     0123456789012345,       # row_id
     ('ProgressReport.docx', 
@@ -1123,7 +1123,7 @@ Attachment attachment = smartsheet.sheetResources().attachmentResources().attach
 ```
 
 ```python
-ss_client.Attachments.attach_file_to_sheet(
+updated_attachment = ss_client.Attachments.attach_file_to_sheet(
     9283173393803140,       # sheet_id
     ('ProgressReport.docx', 
      open('/path/to/ProgressReport.docx', 'rb'), 
@@ -1220,7 +1220,7 @@ url_spec = ss_client.models.Attachment({
 })
 
 # Attach URL to comment
-ss_client.Attachments.attach_url_to_comment(
+updated_attachment = ss_client.Attachments.attach_url_to_comment(
     9283173393803140,       # sheet_id
     0123456789012345,       # comment_id
     url_spec)
@@ -1316,7 +1316,7 @@ url_spec = ss_client.models.Attachment({
 })
 
 # Attach URL to row
-ss_client.Attachments.attach_url_to_row(
+updated_attachment = ss_client.Attachments.attach_url_to_row(
     9283173393803140,       # sheet_id
     0123456789012345,       # row_id
     url_spec)
@@ -1409,7 +1409,7 @@ url_spec = ss_client.models.Attachment({
 })
 
 # Attach URL to sheet
-ss_client.Attachments.attach_url_to_sheet(
+updated_attachment = ss_client.Attachments.attach_url_to_sheet(
     9283173393803140,       # sheet_id
     url_spec)
 ```
@@ -1603,18 +1603,19 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentReso
 ```
 
 ```python
-action = ss_client.Attachments.list_all_attachments(
+# Sample 1: List All
+response = ss_client.Attachments.list_all_attachments(
     9283173393803140,       # sheet_id
     include_all=True)
-attachments = action.data
+attachments = response.data
 
-# Get a paginated list of attachments.
-action = ss_client.Attachments.list_all_attachments(
+# Sample 2: Paginate the list of attachments
+response = ss_client.Attachments.list_all_attachments(
     9283173393803140,       # sheet_id
     page_size=10, 
     page=1)
-pages = action.total_pages
-attachments = action.data
+pages = response.total_pages
+attachments = response.data
 ```
 
 > Example Response:
@@ -1704,20 +1705,21 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().discussionReso
 ```
 
 ```python
-action = ss_client.Attachments.list_discussion_attachments(
+# Sample 1: List All
+response = ss_client.Attachments.list_discussion_attachments(
     9283173393803140,       # sheet_id 
     1234567890123456,       # discussion_id 
     include_all=True)
-attachments = action.data
+attachments = response.data
 
-# Paginate the list
-action = ss_client.Attachments.list_discussion_attachments(
+# Sample 2: Paginate the list
+response = ss_client.Attachments.list_discussion_attachments(
     9283173393803140,       # sheet_id
     1234567890123456,       # discussion_id 
     page_size=10, 
     page=1)
-pages = action.total_pages
-attachments = action.data
+pages = response.total_pages
+attachments = response.data
 ```
 
 > Example Response:
@@ -1807,20 +1809,21 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().rowResources()
 ```
 
 ```python
-action = ss_client.Attachments.list_row_attachments(
+# Sample 1: List all
+response = ss_client.Attachments.list_row_attachments(
     2252168947361668,       # sheet_id 
     4293147074291588,       # row_id 
     include_all=True)
-attachments = action.data
+attachments = response.data
 
-# Paginate the list
-action = ss_client.Attachments.list_row_attachments(
+# Sample 2: Paginate the list
+response = ss_client.Attachments.list_row_attachments(
     2252168947361668,       # sheet_id 
     4293147074291588,       # row_id 
     page_size=10, 
     page=1)
-pages = action.total_pages
-attachments = action.data
+pages = response.total_pages
+attachments = response.data
 ```
 
 > Example Response:
@@ -1905,15 +1908,15 @@ Attachment attachment = smartsheet.sheetResources().attachmentResources().versio
 ```
 
 ```python
-action = ss_client.Attachments.attach_new_version(
+response = ss_client.Attachments.attach_new_version(
     9283173393803140,       # sheet_id
     0123456789123452,       # attachment_id
     ('ProgressReport.docx',
      open('/path/to/ProgressReport.docx', 'rb'),
      'application/msword')
 )
-# action.message == 'SUCCESS'
-# action.result is an Attachment object
+# response.message == 'SUCCESS'
+# response.result is an Attachment object
 ```
 
 > Example Request (simple): Attach New Version
@@ -1972,15 +1975,15 @@ Attachment attachment = smartsheet.sheetResources().attachmentResources().versio
 ```
 
 ```python
-action = ss_client.Attachments.attach_new_version(
+response = ss_client.Attachments.attach_new_version(
     9283173393803140,       # sheet_id
     0123456789123456,       # attachment_id
     ('ProgressReport.docx',
      open('/path/to/ProgressReport.docx', 'rb'),
      'application/msword')
 )
-# action.message == 'SUCCESS'
-# action.result is an Attachment object
+# response.message == 'SUCCESS'
+# response.result is an Attachment object
 ```
 
 > Example Response:
@@ -2120,20 +2123,21 @@ PagedResult<Attachment> attachments = smartsheet.sheetResources().attachmentReso
 ```
 
 ```python
-action = ss_client.Attachments.list_attachment_versions(
+# Sample 1: List all
+response = ss_client.Attachments.list_attachment_versions(
     2252168947361668,       # sheet_id 
     5510069950408580,       # attachment_id
     include_all=True)
-versions = action.data
+versions = response.data
 
-# Paginate the list
-action = ss_client.Attachments.list_attachment_versions(
+# Sample 2: Paginate the list
+response = ss_client.Attachments.list_attachment_versions(
     2252168947361668,       # sheet_id  
     5510069950408580,       # attachment_id 
     page_size=5, 
     page=1)
-pages = action.total_pages
-versions = action.data
+pages = response.total_pages
+versions = response.data
 ```
 
 > Example Response:
@@ -2409,22 +2413,23 @@ PagedResult<CellHistory> cellHistory = smartsheet.sheetResources().rowResources(
 ```
 
 ```python
-action = ss_client.Cells.get_cell_history(
+# Sample 1: Get history
+response = ss_client.Cells.get_cell_history(
     9283173393803140,       # sheet_id
     0123456789012345,       # row_id
     4567890123456789,       # column_id
     include_all=True)
-revisions = action.data
+revisions = response.data
 
-# Paginate the list
-action = ss_client.Cells.get_cell_history(
+# Sample 2: Paginate the list
+response = ss_client.Cells.get_cell_history(
     9283173393803140,       # sheet_id
     0123456789012345,       # row_id
     4567890123456789,       # column_id
     page_size=5,
     page=1)
-pages = action.total_pages
-revisions = action.data
+pages = response.total_pages
+revisions = response.data
 ```
 
 > Example Response:
@@ -2994,7 +2999,7 @@ column2 = ss_client.models.Column({
 })
 
 # Add columns to the sheet
-ss_client.Sheets.add_columns(
+new_columns = ss_client.Sheets.add_columns(
     9283173393803140,       # sheet_id
     [column1, column2])
 ```
@@ -3244,16 +3249,17 @@ PagedResult<Column> columns = smartsheet.sheetResources().columnResources().list
 ```
 
 ```python
-action = ss_client.Sheets.get_columns(
+# Sample 1: List all
+response = ss_client.Sheets.get_columns(
     9283173393803140,       # sheet_id
     include_all=True)
-columns = action.data
+columns = response.data
 
-# Paginate the list of columns (100 columns per page)
-action = ss_client.Sheets.get_columns(
+# Sample 2: Paginate the list (100 columns per page)
+response = ss_client.Sheets.get_columns(
     9283173393803140)       # sheet_id
-pages = action.total_pages
-columns = action.data
+pages = response.total_pages
+columns = response.data
 ```
 
 > Example Response:
@@ -3380,11 +3386,11 @@ altered_column = ss_client.models.Column({
 })
 
 # Update column
-action = ss_client.Sheets.update_column(
+response = ss_client.Sheets.update_column(
     2252168947361668,       # sheet_id
     2252168947361668,       # column_id
     altered_column)
-# action.result is an instance of ss_client.models.Column
+# response.result is an instance of ss_client.models.Column
 ```
 
 > Example Response:
@@ -3589,7 +3595,7 @@ Comment newComment = smartsheet.sheetResources().discussionResources().commentRe
 ```
 
 ```python
-action = ss_client.Discussions.add_comment_to_discussion(
+response = ss_client.Discussions.add_comment_to_discussion(
     2252168947361668,       # sheet_id
     3962273862576004,       # discussion_id
     ss_client.models.Comment({
@@ -3655,7 +3661,7 @@ comment = ss_client.models.Comment({
 })
 
 # Add comment (with attachment) to discussion
-action = ss_client.Discussions.add_comment_to_discussion_with_attachment(
+response = ss_client.Discussions.add_comment_to_discussion_with_attachment(
     2252168947361668,           # sheet_id
     3962273862576004,           # discussion_id
     comment,
@@ -3732,7 +3738,7 @@ Comment updatedComment = smartsheet.SheetResources.DiscussionResources.CommentRe
 ```
 
 ```python
-Comment = ss_client.Discussions.update_comment(
+comment = ss_client.Discussions.update_comment(
     1639534409607044,       # sheet_id
     2285164807120772,       # comment_id
     ss_client.models.Comment({
@@ -4012,13 +4018,14 @@ PagedResult<Contact> contacts = smartsheet.contactResources().listContacts(
 ```
 
 ```python
-action = ss_client.Contacts.list_contacts(include_all=True)
-contacts = action.data
+# Sample 1: List all
+response = ss_client.Contacts.list_contacts(include_all=True)
+contacts = response.data
 
-# Paginate the list of contacts (100 contacts per page)
-action = ss_client.Contacts.list_contacts()
-pages = action.total_pages
-contacts = action.data
+# Sample 2: Paginate the list (100 contacts per page)
+response = ss_client.Contacts.list_contacts()
+pages = response.total_pages
+contacts = response.data
 ```
 
 > Example Response:
@@ -4173,7 +4180,7 @@ Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussion
 ```
 
 ```python
-action = ss_client.Discussions.create_discussion_on_row(
+response = ss_client.Discussions.create_discussion_on_row(
     9283173393803140,           # sheet_id
     0123456789012345,           # row_id
     ss_client.models.Discussion({
@@ -4249,7 +4256,7 @@ Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussion
 
 ```python
 # Add discussion to row
-action = ss_client.Discussions.create_discussion_on_row_with_attachment(
+response = ss_client.Discussions.create_discussion_on_row_with_attachment(
     9283173393803140,       # sheet_id
     0123456789012345,       # row_id
     ss_client.models.Discussion({
@@ -4345,7 +4352,7 @@ Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussion
 ```
 
 ```python
-action = ss_client.Discussions.create_discussion_on_sheet(
+response = ss_client.Discussions.create_discussion_on_sheet(
     9283173393803140,           # sheet_id
     ss_client.models.Discussion({
         'title': 'This is a new discussion',
@@ -4415,7 +4422,7 @@ Discussion newDiscussion = smartsheet.sheetResources().discussionResources().cre
 ```
 
 ```python
-action = ss_client.Discussions.create_discussion_on_sheet_with_attachment(
+response = ss_client.Discussions.create_discussion_on_sheet_with_attachment(
     9283173393803140,           # sheet_id
     ss_client.models.Discussion({
         'title': 'This is a new discussion',
@@ -4487,7 +4494,7 @@ smartsheet.sheetResources().discussionResources().deleteDiscussion(
 ```
 
 ```python
-action = ss_client.Discussions.delete_discussion(
+ss_client.Discussions.delete_discussion(
     9283173393803140,       # sheet_id
     0123456789012345)       # discussion_id
 ```
@@ -4575,18 +4582,19 @@ PagedResult<Discussion> results = smartsheet.sheetResources().discussionResource
 ```
 
 ```python
-action = ss_client.Discussions.get_all_discussions(
+# Sample 1: List all
+response = ss_client.Discussions.get_all_discussions(
     9283173393803140,       # sheet_id
     include_all=True)
-discussions = action.data
+discussions = response.data
 
-# Paginate the list
-action = ss_client.Discussions.get_all_discussions(
+# Sample 2: Paginate the list
+response = ss_client.Discussions.get_all_discussions(
     9283173393803140,       # sheet_id
     page_size=10,
     page=1)
-pages = action.total_pages
-discussions = action.data
+pages = response.total_pages
+discussions = response.data
 ```
 > Example Response:
 
@@ -4746,19 +4754,20 @@ PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().dis
 ```
 
 ```python
-action = ss_client.Discussions.get_row_discussions(
+# Sample 1: List all
+response = ss_client.Discussions.get_row_discussions(
     2252168947361668,               # sheet_id
     4293147074291588,               # row_id
     include_all=True)
-discussions = action.data
+discussions = response.data
 
-# Paginate the list
-action = ss_client.Discussions.get_row_discussions(
+# Sample 2: Paginate the list
+response = ss_client.Discussions.get_row_discussions(
     2252168947361668,               # sheet_id
     4293147074291588,               # row_id
     page_size=10)
-pages = action.total_pages          # starts on page 1 by default
-discussions = action.data
+pages = response.total_pages          # starts on page 1 by default
+discussions = response.data
 ```
 
 > Example Response:
@@ -4870,7 +4879,7 @@ List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(favorit
 ```
 
 ```python
-action = ss_client.Favorites.add_favorites([
+response = ss_client.Favorites.add_favorites([
     ss_client.models.Favorite({
         'type': 'sheet',
         'object_id': 8400677765441412
@@ -4942,13 +4951,14 @@ PagedResult<Favorite> results = smartsheet.favoriteResources().listFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.list_favorites(include_all=True)
-faves = action.data
+# Sample 1: List all
+response = ss_client.Favorites.list_favorites(include_all=True)
+faves = response.data
 
-# Paginate the list
-action = ss_client.Favorites.list_favorites(page_size=10, page=1)
-pages = action.total_pages
-faves = action.data
+# Sample 2: Paginate the list
+response = ss_client.Favorites.list_favorites(page_size=10, page=1)
+pages = response.total_pages
+faves = response.data
 ```
 
 > Example Response:
@@ -5028,7 +5038,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'folder', 
     2252168947361668        # folder_id
 )
@@ -5085,7 +5095,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'report', 
     2252168947361668        # report_id
 )
@@ -5141,7 +5151,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'sheet', 
     2252168947361668        # sheet_id
 )
@@ -5180,7 +5190,7 @@ curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
 ```
 
 ```python
-response = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'sight',
     6327127650920324        # sight_id
 )
@@ -5246,7 +5256,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'template', 
     2252168947361668        # template_id
 )
@@ -5303,7 +5313,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'workspace', 
     2252168947361668        # workspace_id
 )
@@ -5365,7 +5375,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'folder', 
     [2252168947361668, 2252168947361669]        # folder_ids
 )
@@ -5424,7 +5434,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'report', 
     [2252168947361668, 2252168947361669]        # report_ids
 )
@@ -5483,7 +5493,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'sheet', 
     [2252168947361668, 2252168947361669]        # sheet_ids
 )
@@ -5522,7 +5532,7 @@ curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{fold
 ```
 
 ```python
-response = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'sight',
     [6327127650920324, 3404239197235076]        # sight_ids
 )
@@ -5581,7 +5591,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'template', 
     [2252168947361668, 2252168947361669]        # template_ids
 )
@@ -5640,7 +5650,7 @@ smartsheet.favoriteResources().removeFavorites(
 ```
 
 ```python
-action = ss_client.Favorites.remove_favorites(
+ss_client.Favorites.remove_favorites(
     'workspace', 
     [2252168947361668, 2252168947361669]        # workspace_ids
 )
@@ -5755,7 +5765,7 @@ Folder folder = smartsheet.folderResources().copyFolder(
 ```
 
 ```python
-action = ss_client.Folders.copy_folder(
+response = ss_client.Folders.copy_folder(
     2252168947361668,                           # folder_id
     ss_client.models.ContainerDestination({
         'destination_id': 6327127650920324,
@@ -5846,7 +5856,7 @@ Folder newFolder = smartsheet.homeResources().folderResources().createFolder(fol
 ```
 
 ```python
-ss_client.Home.create_folder('New Folder')
+new_folder = ss_client.Home.create_folder('New Folder')
 ```
 
 > Example Response:
@@ -5916,7 +5926,7 @@ Folder newFolder = smartsheet.folderResources().createFolder(
 ```
 
 ```python
-action = ss_client.Folders.create_folder_in_folder(
+response = ss_client.Folders.create_folder_in_folder(
     7960873114331012,       # folder_id
     'New folder')
 ```
@@ -5988,7 +5998,7 @@ Folder newFolder = smartsheet.workspaceResources().folderResources().createFolde
 ```
 
 ```python
-ss_client.Workspaces.create_folder_in_workspace(
+new_workspace = ss_client.Workspaces.create_folder_in_workspace(
     7960873114331012,       # workspace_id
     'New folder')
 ```
@@ -6195,13 +6205,14 @@ PagedResult<Folder> folders = smartsheet.homeResources().folderResources().listF
 ```
 
 ```python
-action = ss_client.Home.list_folders(include_all=True)
-home_sheets_folders = action.data
+# Sample 1: List all
+response = ss_client.Home.list_folders(include_all=True)
+home_sheets_folders = response.data
 
-# Paginate the list
-action = ss_client.Home.list_folders(page_size=5, page=1)
-pages = action.total_pages
-folders = action.data
+# Sample 2: Paginate the list
+response = ss_client.Home.list_folders(page_size=5, page=1)
+pages = response.total_pages
+folders = response.data
 ```
 
 > Example Response:
@@ -6259,18 +6270,19 @@ PagedResult<Folder> folders = smartsheet.folderResources().listFolders(
 ```
 
 ```python
-action = ss_client.Folders.list_folders(
+# Sample 1: List all
+response = ss_client.Folders.list_folders(
     7960873114331012,       # folder_id
     include_all=True)
-folders = action.data
+folders = response.data
 
-# Paginate the list
-action = ss_client.Folders.list_folders(
+# Sample 2: Paginate the list
+response = ss_client.Folders.list_folders(
     7960873114331012,       # folder_id
     page_size=5,
     page=1)
-pages = action.total_pages
-folders = action.data
+pages = response.total_pages
+folders = response.data
 ```
 
 > Example Response:
@@ -6328,18 +6340,19 @@ PagedResult<Folder> folders = smartsheet.workspaceResources().folderResources().
 ```
 
 ```python
-action = ss_client.Workspaces.list_folders(
+# Sample 1: List all
+response = ss_client.Workspaces.list_folders(
     7116448184199044,       # workspace_id
     include_all=True)
-folders = action.data
+folders = response.data
 
-# Paginate the list
-action = ss_client.Workspaces.list_folders(
+# Sample 2: Paginate the list
+response = ss_client.Workspaces.list_folders(
     7116448184199044,       # workspace_id
     page_size=5,
     page=1)
-pages = action.total_pages
-folders = action.data
+pages = response.total_pages
+folders = response.data
 ```
 
 > Example Response:
@@ -6399,7 +6412,7 @@ Folder folder = smartsheet.folderResources().moveFolder(
 ```
 
 ```python
-ss_client.Folders.move_folder(
+folder = ss_client.Folders.move_folder(
     7960873114331012,                           # folder_id to be moved
     ss_client.models.Destination({
         'destination_id': 4509918431602564,     # destination folder_id
@@ -6491,7 +6504,7 @@ Folder updatedFolder = smartsheet.folderResources().updateFolder(folderSpecifica
 ```
 
 ```python
-ss_client.Folders.update_folder(
+updated_folder = ss_client.Folders.update_folder(
     7960873114331012,       # folder_id
     'New name for folder')
 ```
@@ -6618,7 +6631,7 @@ Group newGroup = smartsheet.groupResources().createGroup(groupSpecification);
 ```
 
 ```python
-ss_client.Groups.create_group(
+new_group = ss_client.Groups.create_group(
     ss_client.models.Group({
         'name': 'API-created Group',
         'description': 'Group created via API',
@@ -6845,13 +6858,14 @@ PagedResult<Group> groups = smartsheet.groupResources().listGroups(
 ```
 
 ```python
-action = ss_client.Groups.list_groups(include_all=True)
-groups = action.data
+# Sample 1: List all
+response = ss_client.Groups.list_groups(include_all=True)
+groups = response.data
 
-# Paginate the list
-action = ss_client.Groups.list_groups(page_size=10, page=1)
-pages = action.total_pages
-groups = action.data
+# Sample 2: Paginate the list
+response = ss_client.Groups.list_groups(page_size=10, page=1)
+pages = response.total_pages
+groups = response.data
 ```
 
 > Example Response:
@@ -6949,7 +6963,7 @@ Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification)
 ```
 
 ```python
-ss_client.Groups.update_group(
+updated_group = ss_client.Groups.update_group(
     6932724448552836,       # group_id
     ss_client.models.Group({
         'name': 'Renamed Group',
@@ -7080,7 +7094,7 @@ List<GroupMember> newMembers = smartsheet.groupResources().memberResources().add
 ```
 
 ```python
-ss_client.Groups.add_members(
+new_members = ss_client.Groups.add_members(
     6932724448552836,       # group_id
     [ss_client.models.GroupMember({'email': 'jane.doe@smartsheet.com'})]
 )
@@ -7584,13 +7598,13 @@ smartsheet.reportResources().getReportAsExcel(
 ```
 
 ```python
-# Download file with filename suggested by API
+# Sample 1: Download file with filename suggested by API
 ss_client.Reports.get_report_as_excel(
     3882962191181700,       # report_id
     download_folder_path
 )
 
-# Specify custom filename for the downloaded file
+# Sample 2: Specify custom filename for the downloaded file
 ss_client.Reports.get_report_as_excel(
     3882962191181700,       # report_id
     download_folder_path,
@@ -7660,13 +7674,13 @@ smartsheet.reportResources().getReportAsCsv(
 ```
 
 ```python
-# Download file with filename suggested by API
+# Sample 1: Download file with filename suggested by API
 ss_client.Reports.get_report_as_csv(
     3882962191181700,       # report_id
     download_folder_path
 )
 
-# Specify custom filename for the downloaded file
+# Sample 2: Specify custom filename for the downloaded file
 ss_client.Reports.get_report_as_csv(
     3882962191181700,       # report_id
     download_folder_path,
@@ -7759,13 +7773,14 @@ PagedResult<Report> reports = smartsheet.reportResources().listReports(parameter
 ```
 
 ```python
-action = ss_client.Reports.list_reports(include_all=True)
-reports = action.data
+# Sample 1: List all
+response = ss_client.Reports.list_reports(include_all=True)
+reports = response.data
 
-# Paginate the list
-action = ss_client.Reports.list_reports(page_size=5, page=1)
-pages = action.total_pages
-reports = action.data
+# Sample 2: Paginate the list
+response = ss_client.Reports.list_reports(page_size=5, page=1)
+pages = response.total_pages
+reports = response.data
 ```
 
 > Example Response:
@@ -8187,7 +8202,7 @@ row_b.cells.append({
 })
 
 # Add rows to sheet
-action = ss_client.Sheets.add_rows(
+response = ss_client.Sheets.add_rows(
     2331373580117892,       # sheet_id
     [row_a, row_b])
 ```
@@ -8361,7 +8376,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRow
 ```
 
 ```python
-ss_client.Sheets.copy_rows(
+response = ss_client.Sheets.copy_rows(
     4583173393803140,               # sheet_id of rows to be copied
     ss_client.models.CopyOrMoveRowDirective({
         'row_ids': [145417762563972, 8026717110462340]
@@ -8684,7 +8699,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRow
 ```
 
 ```python
-ss_client.Sheets.move_rows(
+response = ss_client.Sheets.move_rows(
     4583173393803140,           # sheet_id of rows to be moved
     ss_client.models.CopyOrMoveRowDirective({
         'row_ids': [145417762563972, 8026717110462340],
@@ -8859,7 +8874,7 @@ new_row_spec.id = 6809535313667972
 new_row_spec.cells.append(new_cell_spec)
 
 # Update rows
-ss_client.Sheets.update_rows(
+updated_row = ss_client.Sheets.update_rows(
     5190835902932868,      # sheet_id
     [new_row_spec])
 ```
@@ -9548,13 +9563,14 @@ PagedResult<Share> shares = smartsheet.reportResources().shareResources().listSh
 ```
 
 ```python
-action = ss_client.Reports.list_shares(include_all=True)
-shares = action.result
+# Sample 1: List all
+response = ss_client.Reports.list_shares(include_all=True)
+shares = response.result
 
-# Paginate the list
-action = ss_client.Reports.list_shares(page_size=10, page=1)
-pages = action.total_pages
-shares = action.result
+# Sample 2: Paginate the list
+response = ss_client.Reports.list_shares(page_size=10, page=1)
+pages = response.total_pages
+shares = response.result
 ```
 
 > Example Response:
@@ -9636,7 +9652,7 @@ List<Share> addressList = smartsheet.reportResources().shareResources().shareTo(
 ```
 
 ```python
-ss_client.Reports.share_report(
+response = ss_client.Reports.share_report(
     665829219035012,        # report_id
     ss_client.models.Share({
         'access_level': 'EDITOR',
@@ -9718,7 +9734,7 @@ Share updatedShare = smartsheet.reportResources().shareResources().updateShare(
 ```
 
 ```python
-ss_client.Reports.update_share(
+updated_share = ss_client.Reports.update_share(
     665829219035012,        # report_id
     'AAAFeF82FOeE',         # share_id
     ss_client.models.Share({
@@ -9895,18 +9911,19 @@ PagedResult<Share> shares = smartsheet.sheetResources().shareResources().listSha
 ```
 
 ```python
-action = ss_client.Sheets.list_shares(
+# Sample 1: List all
+response = ss_client.Sheets.list_shares(
     4583614634583940,       # sheet_id
     include_all=True)
-shares = action.data
+shares = response.data
 
-# Paginate the list
-action = ss_client.Sheets.list_shares(
+# Sample 2: Paginate the list
+response = ss_client.Sheets.list_shares(
     4583614634583940,       # sheet_id
     page_size=10,
     page=1)
-pages = action.total_pages
-shares = action.data
+pages = response.total_pages
+shares = response.data
 ```
 
 > Example Response:
@@ -9988,7 +10005,7 @@ List<Share> addressList = smartsheet.sheetResources().shareResources().shareTo(
 ```
 
 ```python
-ss_client.Sheets.share_sheet(
+response = ss_client.Sheets.share_sheet(
     4583614634583940,       # sheet_id
     ss_client.models.Share({
         'access_level': 'EDITOR',
@@ -10068,7 +10085,7 @@ Share updatedShare = smartsheet.sheetResources().shareResources().updateShare(
 ```
 
 ```python
-ss_client.Sheets.update_share(
+updated_share = ss_client.Sheets.update_share(
     4583614634583940,       # sheet_id
     'AAAFeF82FOeE',         # share_id
     ss_client.models.Share({
@@ -10203,7 +10220,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
 ```
 
 ```python
-# Sample 1: All Sight shares
+# Sample 1: List all
 response = ss_client.Sights.list_shares(
     6327127650920324,       # sight_id
     include_all=True)
@@ -10336,7 +10353,7 @@ Share updatedShare = smartsheet.sightResources().shareResources().updateShare(
 ```
 
 ```python
-ss_client.Sights.update_share(
+updated_share = ss_client.Sights.update_share(
     6327127650920324,       # sight_id
     'AAALRqomFOeE',         # share_id
     ss_client.models.Share({
@@ -10522,18 +10539,19 @@ PagedResult<Share> shares = smartsheet.workspaceResources().shareResources().lis
 ```
 
 ```python
-action = ss_client.Workspaces.list_shares(
+# Sample 1: List all
+response = ss_client.Workspaces.list_shares(
     1656220827314052,       # workspace_id
     include_all=True)
-shares = action.data
+shares = response.data
 
-# Paginate the list
-action = ss_client.Workspaces.list_shares(
+# Sample 2: Paginate the list
+response = ss_client.Workspaces.list_shares(
     1656220827314052,       # workspace_id
     page_size=10,
     page=1)
-pages = action.total_pages
-shares = action.data
+pages = response.total_pages
+shares = response.data
 ```
 
 > Example Response:
@@ -10618,7 +10636,7 @@ List<Share> addressList = smartsheet.workspaceResources().shareResources().share
 ```
 
 ```python
-ss_client.Workspaces.share_workspace(
+response = ss_client.Workspaces.share_workspace(
     1656220827314052,       # workspace_id
     ss_client.models.Share({
         'access_level': 'EDITOR',
@@ -10707,7 +10725,7 @@ Share updatedShare = smartsheet.workspaceResources().shareResources().updateShar
 ```
 
 ```python
-ss_client.Workspaces.update_share(
+updated_share = ss_client.Workspaces.update_share(
     1656220827314052,       # workspace_id
     'AAAFeF82FOeE',         # share_id
     ss_client.models.Share({
@@ -10891,7 +10909,7 @@ Sheet sheet = smartsheet.sheetResources().copySheet(
 ```
 
 ```python
-ss_client.Sheets.copy_sheet(
+response = ss_client.Sheets.copy_sheet(
     4583173393803140,                               # sheet_id
     ss_client.models.ContainerDestination({
         'destination_type': 'folder',               # folder, workspace, or home
@@ -11031,7 +11049,7 @@ smartsheet.sheetResources().createSheet(newSheet);
 ```
 
 ```python
-sheet = ss_client.models.Sheet({
+sheet_spec = ss_client.models.Sheet({
     'name': 'newsheet',
     'columns': [{
             'title': 'Favorite',
@@ -11044,8 +11062,8 @@ sheet = ss_client.models.Sheet({
         }
     ]
 })
-action = ss_client.Home.create_sheet(sheet)
-sheet = action.result
+response = ss_client.Home.create_sheet(sheet_spec)
+new_sheet = response.result
 ```
 
 > Example Response:
@@ -11154,7 +11172,7 @@ smartsheet.sheetResources().createSheetInFolder(3734419270854532L, newSheet);   
 ```
 
 ```python
-sheet = ss_client.models.Sheet({
+sheet_spec = ss_client.models.Sheet({
     'name': 'newsheet',
     'columns': [{
             'title': 'Favorite',
@@ -11167,10 +11185,10 @@ sheet = ss_client.models.Sheet({
         }
     ]
 })
-action = ss_client.Folders.create_sheet_in_folder(
+response = ss_client.Folders.create_sheet_in_folder(
     3734419270854532,       # folder_id
-    sheet)
-sheet = action.result
+    sheet_spec)
+new_sheet = response.result
 ```
 
 > Example Response:
@@ -11277,7 +11295,7 @@ smartsheet.sheetResources().createSheetInWorkspace(3734419270854532L, newSheet);
 ```
 
 ```python
-sheet = ss_client.models.Sheet({
+sheet_spec = ss_client.models.Sheet({
     'name': 'newsheet',
     'columns': [{
             'title': 'Favorite',
@@ -11291,10 +11309,10 @@ sheet = ss_client.models.Sheet({
     ]
 })
 
-action = ss_client.Workspaces.create_sheet_in_workspace(
+response = ss_client.Workspaces.create_sheet_in_workspace(
     3734419270854532,           # workspace_id
-    sheet)
-sheet = action.result
+    sheet_spec)
+new_sheet = response.result
 ```
 
 > Example Response:
@@ -11397,13 +11415,13 @@ Sheet results = smartsheet.sheetResources().createSheetFromTemplate(
 ```
 
 ```python
-action = ss_client.Home.create_sheet_from_template(
+response = ss_client.Home.create_sheet_from_template(
     ss_client.models.Sheet({
         'name': 'newsheet',
         'from_id': 7679398137620356     # template_id
     })
 )
-sheet = action.result
+new_sheet = response.result
 ```
 
 > Example Response:
@@ -11502,7 +11520,7 @@ Sheet results = smartsheet.sheetResources().createSheetInFolderFromTemplate(
 ```
 
 ```python
-action = ss_client.Folders.create_sheet_in_folder_from_template(
+response = ss_client.Folders.create_sheet_in_folder_from_template(
     3734419270854532,                   # folder_id
     ss_client.models.Sheet({
         'name': 'newsheet',
@@ -11607,7 +11625,7 @@ Sheet newSheet = smartsheet.sheetResources().createSheetInWorkspaceFromTemplate(
 ```
 
 ```python
-action = ss_client.Workspaces.create_sheet_in_workspace_from_template(
+response = ss_client.Workspaces.create_sheet_in_workspace_from_template(
     1656220827314052,                   # workspace_id
     ss_client.models.Sheet({
         'name': 'newsheet',
@@ -11726,7 +11744,7 @@ Integer version = smartsheet.sheetResources().getSheetVersion(
 ```
 
 ```python
-ss_client.Sheets.get_sheet_version(
+version = ss_client.Sheets.get_sheet_version(
     1531988831168388)       # sheet_id
 ```
 
@@ -12157,8 +12175,8 @@ PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(So
 ```
 
 ```python
-action = ss_client.Sheets.list_sheets(include_all=True)
-sheets = action.data
+response = ss_client.Sheets.list_sheets(include_all=True)
+sheets = response.data
 ```
 
 > Example Response:
@@ -12251,7 +12269,7 @@ Sheet sheet = smartsheet.sheetResources().moveSheet(
 ```
 
 ```python
-ss_client.Sheets.move_sheet(
+sheet = ss_client.Sheets.move_sheet(
     1531988831168388,                       # sheet_id
     ss_client.models.ContainerDestination({
         'destination_type': 'folder',       # folder, workspace, or home
@@ -12328,9 +12346,9 @@ SheetPublish status = smartsheet.sheetResources().getPublishStatus(
 ```
 
 ```python
-action = ss_client.Sheets.get_publish_status(
+response = ss_client.Sheets.get_publish_status(
     4583173393803140)       # sheet_id
-status = action.result
+status = response.result
 # status is a ss_client.models.SheetPublish object
 ```
 
@@ -12429,7 +12447,7 @@ SheetPublish updatedStatus = smartsheet.sheetResources().updatePublishStatus(
 ```python
 # With the Python SDK, if fewer than all four flags are set, current status is retrieved and merged with the flags that _are_ set with this method call.
 
-ss_client.Sheets.set_publish_status(
+updated_status = ss_client.Sheets.set_publish_status(
     4583173393803140,       # sheet_id
     ss_client.models.SheetPublish({
         'read_only_lite_enabled': True
@@ -12554,7 +12572,7 @@ Sheet updatedSheet = smartsheet.sheetResources().updateSheet(sheetSpecification)
 ```
 
 ```python
-ss_client.Sheets.update_sheet(
+updated_sheet = ss_client.Sheets.update_sheet(
     4583173393803140,       # sheet_id
     ss_client.models.Sheet({
         'name': 'New Sheet Name',
@@ -12829,7 +12847,7 @@ Sight sight = smartsheet.sightResources().copySight(
 ```
 
 ```python
-ss_client.Sights.copy_sight(
+new_sight = ss_client.Sights.copy_sight(
     6327127650920324,                           # sight_id
     ss_client.models.ContainerDestination({
         'destination_type': 'folder',           # folder, workspace, or home
@@ -13131,7 +13149,7 @@ Sight sight = smartsheet.sightResources().moveSight(
 ```
 
 ```python
-ss_client.Sights.move_sight(
+response = ss_client.Sights.move_sight(
     5363568917931908,                           # sight_id
     ss_client.models.ContainerDestination({
         'destination_type': 'folder',           # folder, workspace, or home
@@ -13309,7 +13327,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```python
-ss_client.Sights.update_sight(
+updated_sight = ss_client.Sights.update_sight(
     5363568917931908,           # sight_id
     ss_client.models.Sight({
         'name': 'New Sight Name'
@@ -13411,9 +13429,9 @@ PagedResult<Template> templates = smartsheet.templateResources().listPublicTempl
 ```
 
 ```python
-action = ss_client.Templates.list_public_templates()
-pages = action.total_pages
-templates = action.data
+response = ss_client.Templates.list_public_templates()
+pages = response.total_pages
+templates = response.data
 ```
 
 > Example Response:
@@ -13462,9 +13480,9 @@ PagedResult<Template> templates = smartsheet.templateResources().listUserCreated
 ```
 
 ```python
-action = ss_client.Templates.list_user_created_templates()
-pages = action.total_pages
-templates = action.data
+response = ss_client.Templates.list_user_created_templates()
+pages = response.total_pages
+templates = response.data
 ```
 
 > Example Response:
@@ -13815,7 +13833,7 @@ User newUser = smartsheet.userResources().addUser(userSpecification);
 ```
 
 ```python
-ss_client.Users.add_user(
+new_user = ss_client.Users.add_user(
     ss_client.models.User({
         'first_name': 'John',
         'last_name': 'Doe',
@@ -13892,7 +13910,7 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```python
-ss_client.Users.add_alternate_email(
+response = ss_client.Users.add_alternate_email(
     12345,          # user_id
     [
         ss_client.models.AlternateEmail({
@@ -13969,7 +13987,7 @@ AlternateEmail primaryEmail = smartsheet.UserResources.PromoteAlternateEmail(
 ```
 
 ```python
-Response = ss_client.Users.promote_alternate_email(
+response = ss_client.Users.promote_alternate_email(
     401090454808452,        # user_id
     12345)                  # alt_id
 ```
@@ -14140,9 +14158,9 @@ PagedResult<AlternateEmail> results = smartsheet.userResources().listAlternateEm
 ```
 
 ```python
-action = ss_client.Users.list_alternate_emails(
+response = ss_client.Users.list_alternate_emails(
     401090454808452)        # user_id
-emails = action.data
+emails = response.data
 ```
 
 > Example Response:
@@ -14206,7 +14224,7 @@ UserProfile userProfile = smartsheet.userResources().getCurrentUser();
 ```
 
 ```python
-me = ss_client.Users.get_current_user()
+user_profile = ss_client.Users.get_current_user()
 ```
 
 > Example Response:
@@ -14282,7 +14300,7 @@ UserProfile userProfile = smartsheet.userResources().getUser(
 ```
 
 ```python
-user = ss_client.Users.get_user(
+user_profile = ss_client.Users.get_user(
     48569348493401200)          # user_id
 ```
 
@@ -14377,13 +14395,14 @@ PagedResult<User> users = smartsheet.userResources().listUsers( new HashSet(Arra
 ```
 
 ```python
-action = ss_client.Users.list_users(include_all=True)
-users = action.data
+# Sample 1; List all
+response = ss_client.Users.list_users(include_all=True)
+users = response.data
 
-# Paginate the list
-action = ss_client.Users.list_users()
-pages = action.total_pages
-users = action.data
+# Sample 2: Paginate the list
+response = ss_client.Users.list_users()
+pages = response.total_pages
+users = response.data
 ```
 
 > Example Response:
@@ -14571,7 +14590,7 @@ User updatedUser = smartsheet.userResources().updateUser(userSpecification);
 ```
 
 ```python
-ss_client.Users.update_user(
+updated_user = ss_client.Users.update_user(
     82349925918590,     # user_id
     ss_client.models.User({
         'licensed_sheet_creator': True,
@@ -14691,7 +14710,7 @@ Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
 ```
 
 ```python
-ss_client.Workspaces.copy_workspace(
+new_workspace = ss_client.Workspaces.copy_workspace(
     7116448184199044,           # workspace_id
     ss_client.models.ContainerDestination({
         'new_name': 'newWorkspaceName'
@@ -14775,7 +14794,7 @@ Workspace newWorkspace = smartsheet.workspaceResources().createWorkspace(workspa
 ```
 
 ```python
-ss_client.Workspaces.create_workspace(
+workspace = ss_client.Workspaces.create_workspace(
     ss_client.models.Workspace({
         'name': 'New workspace'
     })
@@ -15004,13 +15023,14 @@ PagedResult<Workspace> workspaces = smartsheet.workspaceResources().listWorkspac
 ```
 
 ```python
-action = ss_client.Workspaces.list_workspaces(include_all=True)
-workspaces = action.data
+# Sample 1: List all
+response = ss_client.Workspaces.list_workspaces(include_all=True)
+workspaces = response.data
 
-# Paginate the list
-action = ss_client.Workspaces.list_workspaces(page_size=20, page=1)
-pages = action.total_pages
-workspaces = action.data
+# Sample 2: Paginate the list
+response = ss_client.Workspaces.list_workspaces(page_size=20, page=1)
+pages = response.total_pages
+workspaces = response.data
 ```
 
 > Example Response:
@@ -15110,7 +15130,7 @@ Workspace updatedWorkspace = smartsheet.workspaceResources().updateWorkspace(wor
 ```
 
 ```python
-ss_client.Workspaces.update_workspace(
+updated_workspace = ss_client.Workspaces.update_workspace(
     6621332407379844,       # workspace_id
     ss_client.models.Workspace({
         'name': 'Updated workspace'
