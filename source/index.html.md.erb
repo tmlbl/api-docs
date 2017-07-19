@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-07-18
+Updated 2017-07-19
 
 # Overview
 ## Introduction
@@ -1915,8 +1915,8 @@ response = ss_client.Attachments.attach_new_version(
      open('/path/to/ProgressReport.docx', 'rb'),
      'application/msword')
 )
-# response.message == 'SUCCESS'
-# response.result is an Attachment object
+
+updated_attachment = response.result
 ```
 
 > Example Request (simple): Attach New Version
@@ -1982,8 +1982,8 @@ response = ss_client.Attachments.attach_new_version(
      open('/path/to/ProgressReport.docx', 'rb'),
      'application/msword')
 )
-# response.message == 'SUCCESS'
-# response.result is an Attachment object
+
+updated_attachment = response.result
 ```
 
 > Example Response:
@@ -3249,16 +3249,9 @@ PagedResult<Column> columns = smartsheet.sheetResources().columnResources().list
 ```
 
 ```python
-# Sample 1: List all
 response = ss_client.Sheets.get_columns(
     9283173393803140,       # sheet_id
     include_all=True)
-columns = response.data
-
-# Sample 2: Paginate the list (100 columns per page)
-response = ss_client.Sheets.get_columns(
-    9283173393803140)       # sheet_id
-pages = response.total_pages
 columns = response.data
 ```
 
@@ -3378,7 +3371,7 @@ Column updatedColumn = smartsheet.sheetResources().columnResources().updateColum
 
 ```python
 # Specify column properties
-altered_column = ss_client.models.Column({
+updated_column = ss_client.models.Column({
     'title': 'First Column',
     'type': 'PICKLIST',
     'options': ["One", "Two"],
@@ -3389,8 +3382,7 @@ altered_column = ss_client.models.Column({
 response = ss_client.Sheets.update_column(
     2252168947361668,       # sheet_id
     2252168947361668,       # column_id
-    altered_column)
-# response.result is an instance of ss_client.models.Column
+    updated_column)
 ```
 
 > Example Response:
@@ -4023,7 +4015,9 @@ response = ss_client.Contacts.list_contacts(include_all=True)
 contacts = response.data
 
 # Sample 2: Paginate the list (100 contacts per page)
-response = ss_client.Contacts.list_contacts()
+response = ss_client.Contacts.list_contacts(
+    page_size=100,
+    page=1)
 pages = response.total_pages
 contacts = response.data
 ```
@@ -4951,13 +4945,7 @@ PagedResult<Favorite> results = smartsheet.favoriteResources().listFavorites(
 ```
 
 ```python
-# Sample 1: List all
 response = ss_client.Favorites.list_favorites(include_all=True)
-faves = response.data
-
-# Sample 2: Paginate the list
-response = ss_client.Favorites.list_favorites(page_size=10, page=1)
-pages = response.total_pages
 faves = response.data
 ```
 
@@ -6132,7 +6120,6 @@ Folder folder = smartsheet.folderResources().getFolder(
 ```python
 folder = ss_client.Folders.get_folder(
     7960873114331012)       # folder_id
-# folder is an instance of ss_client.models.Folder
 ```
 
 > Example Response:
@@ -6210,7 +6197,9 @@ response = ss_client.Home.list_folders(include_all=True)
 home_sheets_folders = response.data
 
 # Sample 2: Paginate the list
-response = ss_client.Home.list_folders(page_size=5, page=1)
+response = ss_client.Home.list_folders(
+    page_size=5,
+    page=1)
 pages = response.total_pages
 folders = response.data
 ```
@@ -6863,7 +6852,9 @@ response = ss_client.Groups.list_groups(include_all=True)
 groups = response.data
 
 # Sample 2: Paginate the list
-response = ss_client.Groups.list_groups(page_size=10, page=1)
+response = ss_client.Groups.list_groups(
+    page_size=10,
+    page=1)
 pages = response.total_pages
 groups = response.data
 ```
@@ -7778,7 +7769,9 @@ response = ss_client.Reports.list_reports(include_all=True)
 reports = response.data
 
 # Sample 2: Paginate the list
-response = ss_client.Reports.list_reports(page_size=5, page=1)
+response = ss_client.Reports.list_reports(
+    page_size=5,
+    page=1)
 pages = response.total_pages
 reports = response.data
 ```
@@ -8863,20 +8856,20 @@ List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
 
 ```python
 # Build new cell value
-new_cell_spec = ss_client.models.Cell()
-new_cell_spec.column_id = 7036894123976580
-new_cell_spec.value = "Third"
-new_cell_spec.strict = False
+new_cell = ss_client.models.Cell()
+new_cell.column_id = 7036894123976580
+new_cell.value = "Third"
+new_cell.strict = False
 
 # Build the row to update
-new_row_spec = ss_client.models.Row()
-new_row_spec.id = 6809535313667972
-new_row_spec.cells.append(new_cell_spec)
+new_row = ss_client.models.Row()
+new_row.id = 6809535313667972
+new_row.cells.append(new_cell)
 
 # Update rows
 updated_row = ss_client.Sheets.update_rows(
     5190835902932868,      # sheet_id
-    [new_row_spec])
+    [new_row])
 ```
 
 > Example Response:
@@ -9568,7 +9561,9 @@ response = ss_client.Reports.list_shares(include_all=True)
 shares = response.result
 
 # Sample 2: Paginate the list
-response = ss_client.Reports.list_shares(page_size=10, page=1)
+response = ss_client.Reports.list_shares(
+    page_size=10,
+    page=1)
 pages = response.total_pages
 shares = response.result
 ```
@@ -13429,7 +13424,9 @@ PagedResult<Template> templates = smartsheet.templateResources().listPublicTempl
 ```
 
 ```python
-response = ss_client.Templates.list_public_templates()
+response = ss_client.Templates.list_public_templates(
+    page_size=10,
+    page=1)
 pages = response.total_pages
 templates = response.data
 ```
@@ -13480,7 +13477,9 @@ PagedResult<Template> templates = smartsheet.templateResources().listUserCreated
 ```
 
 ```python
-response = ss_client.Templates.list_user_created_templates()
+response = ss_client.Templates.list_user_created_templates(
+    page_size=10,
+    page=1)
 pages = response.total_pages
 templates = response.data
 ```
@@ -14400,7 +14399,9 @@ response = ss_client.Users.list_users(include_all=True)
 users = response.data
 
 # Sample 2: Paginate the list
-response = ss_client.Users.list_users()
+response = ss_client.Users.list_users(
+    page_size=100,
+    page=1)
 pages = response.total_pages
 users = response.data
 ```
@@ -15028,7 +15029,9 @@ response = ss_client.Workspaces.list_workspaces(include_all=True)
 workspaces = response.data
 
 # Sample 2: Paginate the list
-response = ss_client.Workspaces.list_workspaces(page_size=20, page=1)
+response = ss_client.Workspaces.list_workspaces(
+    page_size=20,
+    page=1)
 pages = response.total_pages
 workspaces = response.data
 ```
