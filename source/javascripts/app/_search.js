@@ -1,9 +1,17 @@
 //= require ../lib/_lunr
+<<<<<<< HEAD:source/javascripts/app/_search.js
+=======
+//= require ../lib/_jquery
+>>>>>>> lord/master:source/javascripts/app/_search.js
 //= require ../lib/_jquery.highlight
 (function () {
   'use strict';
 
+<<<<<<< HEAD:source/javascripts/app/_search.js
   var content, darkBox, searchResults;
+=======
+  var content, searchResults;
+>>>>>>> lord/master:source/javascripts/app/_search.js
   var highlightOpts = { element: 'span', className: 'search-highlight' };
 
   var index = new lunr.Index();
@@ -30,7 +38,6 @@
 
   function bind() {
     content = $('.content');
-    darkBox = $('.dark-box');
     searchResults = $('.search-results');
 
     $('#input-search').on('keyup', search);
