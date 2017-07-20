@@ -2742,6 +2742,118 @@ Uploads an image to the specified Cell within a Sheet.
 <%= REQUEST %> | Binary content for the file
 <%= RETURNS %> | [Result Object](#result-object)
 
+## Download Cell Image
+
+> Example Request: Download Cell Image
+
+```shell
+To do
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+//  Step 1: Identify the cell that contains an image
+Row row = smartsheet.SheetResources.RowResources.GetRow(
+    1639534409607044,       // sheetId
+    3344087179913092,       // rowId
+    null,
+    null);
+Cell cell = row.Cells.First(c => c.ColumnId == 1735559124150148);
+
+// Step 2: Get image info from cell
+Image image = cell.Image;
+string imageId = image.Id;
+string localFileName = image.AltText;
+
+// Step 3: Build list of image urls
+ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = imageId } };
+
+string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).ImageUrls[0].Url;
+
+// Step 4: Download the image
+System.Net.WebClient client = new System.Net.WebClient();
+client.DownloadFile(temporaryUrl, localFileName);
+```
+
+```java
+//  Step 1: Identify the cell that contains an image
+Row row = ss.sheetResources().rowResources().getRow(
+    1639534409607044L,      // sheetId
+    3344087179913092L,      // rowId
+    null,
+    null);
+Cell cell = row.getCells().stream().filter(c -> c.getColumnId() == 1735559124150148L).findFirst().orElse(null);
+
+// Step 2: Get image info from cell
+Image image = cell.getImage();
+String imageId = image.getId();
+String localFileName = image.getAltText();
+
+// Step 3: Build list of image urls
+ImageUrl imageUrl = new ImageUrl();
+imageUrl.setImageId(imageId);
+List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
+
+String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
+
+// Step 4: Download the image
+CloseableHttpClient httpclient = HttpClients.createDefault();
+HttpGet httpget = new HttpGet(temporaryUrl);
+CloseableHttpResponse response = httpclient.execute(httpget);
+HttpEntity entity = response.getEntity();
+FileOutputStream fos = new FileOutputStream(localFileName);
+entity.writeTo(fos);
+fos.close();
+```
+
+```python
+# [todo]
+```
+
+> Example Response:
+
+```json
+{
+	"urlExpiresInMillis": 1800000,
+	"imageUrls":  [
+		{
+			"imageId": "e1znCxhuZo_soEJtUmmX_A",
+			"url": "https://urltoimage1.com?qs1=foo"
+		},
+		{
+			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
+			"error": {
+				"errorCode": 5001,
+				"message": "localized_error_message"
+			}
+		}
+	]
+}  
+```
+
+Smartsheet stores images on the server side. If you want to download the images, Smartsheet provides a temporary URL that you can use to download the image. The [ImageUrl Object](#imageurl-object) returned tells you (in milliseconds) how much time you have before the URL expires.
+
+To see sample code for this walkthrough, click the corresponding tab in the dark-blue area in the rightmost pane.
+
+##### Step 1. Identify the cell that contains an image
+
+Once you have specified the row, you must iterate through the row to identify which column has the cell you are looking for.
+
+##### Step 2. Get image info from cell
+
+This step returns an imageId and creates a local file using the alt text as a file name (the default folder location is the folder that your project is in).
+
+##### Step 3. Build list of image urls. For specifics about this step, see [List Image URLs](#list-image-urls).
+
+If you want a thumbnail, you can control those settings in the request body.
+
+##### Step 4. Download the image
+
+This example uses standard HTML syntax. 
+
 ## List Image URLs
 
 > Example Request: List Image URLs
@@ -2759,11 +2871,19 @@ curl https://api.smartsheet.com/2.0/imageurls \
 ```
 
 ```csharp
-// [todo]
+// Build list of image urls
+ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = imageId } };
+
+string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).ImageUrls[0].Url;
 ```
 
 ```java
-// [todo]
+// Build list of image urls
+ImageUrl imageUrl = new ImageUrl();
+imageUrl.setImageId(imageId);
+List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
+
+String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
 ```
 
 ```python
