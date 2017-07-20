@@ -1,8 +1,3 @@
-<<<<<<< HEAD:source/javascripts/app/_toc.js
-=======
-//= require ../lib/_jquery
-//= require ../lib/_jquery_ui
->>>>>>> lord/master:source/javascripts/app/_toc.js
 //= require ../lib/_jquery.tocify
 //= require ../lib/_imagesloaded.min
 (function (global) {
@@ -51,10 +46,6 @@
   $(function() {
     makeToc();
     animate();
-<<<<<<< HEAD:source/javascripts/app/_toc.js
-=======
-    setupLanguages($('body').data('languages'));
->>>>>>> lord/master:source/javascripts/app/_toc.js
     $('.content').imagesLoaded( function() {
       global.toc.calculateHeights();
     });

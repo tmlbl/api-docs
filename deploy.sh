@@ -15,7 +15,6 @@ Options:
                            deploy branch.
   -n, --no-hash            Don't append the source commit's hash to the deploy
                            commit's message.
-<<<<<<< HEAD
   -c, --config-file PATH   Override default & environment variables' values
                            with those in set in the file at 'PATH'. Must be the
                            first option specified.
@@ -30,9 +29,6 @@ These variables have default values defined in the script. The defaults can be
 overridden by environment variables. Any environment variables are overridden
 by values set in a '.env' file (if it exists), and in turn by those set in a
 file specified by the '--config-file' option."
-=======
-"
->>>>>>> lord/master
 
 bundle exec middleman build --clean
 
@@ -42,15 +38,12 @@ parse_args() {
     source .env
   fi
 
-<<<<<<< HEAD
   # Set args from file specified on the command-line.
   if [[ $1 = "-c" || $1 = "--config-file" ]]; then
     source "$2"
     shift 2
   fi
 
-=======
->>>>>>> lord/master
   # Parse arg flags
   # If something is exposed as an environment variable, set/overwrite it
   # here. Otherwise, set/overwrite the internal variable instead.
