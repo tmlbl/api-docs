@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-07-20
+Updated 2017-07-25
 
 # Overview
 ## Introduction
@@ -2755,13 +2755,17 @@ To do
 ```
 
 ```csharp
+long sheetId = 1639534409607044;
+long rowId = 3344087179913092;
+long columnId = 1735559124150148;
+
 //  Step 1: Identify the cell that contains an image
 Row row = smartsheet.SheetResources.RowResources.GetRow(
-    1639534409607044,       // sheetId
-    3344087179913092,       // rowId
+    sheetId,
+    rowId,
     null,
     null);
-Cell cell = row.Cells.First(c => c.ColumnId == 1735559124150148);
+Cell cell = row.Cells.First(c => c.ColumnId == columnId);
 
 // Step 2: Get image info from cell
 Image image = cell.Image;
@@ -2779,13 +2783,17 @@ client.DownloadFile(temporaryUrl, localFileName);
 ```
 
 ```java
+long sheetId = 5670346721388420L;
+long rowId = 3344087179913092L;
+long columnId = 1735559124150148L;
+
 //  Step 1: Identify the cell that contains an image
 Row row = ss.sheetResources().rowResources().getRow(
-    1639534409607044L,      // sheetId
-    3344087179913092L,      // rowId
+    sheetId,
+    rowId,
     null,
     null);
-Cell cell = row.getCells().stream().filter(c -> c.getColumnId() == 1735559124150148L).findFirst().orElse(null);
+Cell cell = row.getCells().stream().filter(c -> c.getColumnId() == columnId).findFirst().orElse(null);
 
 // Step 2: Get image info from cell
 Image image = cell.getImage();
@@ -2813,46 +2821,27 @@ fos.close();
 # [todo]
 ```
 
-> Example Response:
+Downloading a cell image is a multi-step process. This sample downloads a cell image to a local file. The cell is specified by sheet Id, row Id, and column Id.
 
-```json
-{
-	"urlExpiresInMillis": 1800000,
-	"imageUrls":  [
-		{
-			"imageId": "e1znCxhuZo_soEJtUmmX_A",
-			"url": "https://urltoimage1.com?qs1=foo"
-		},
-		{
-			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
-			"error": {
-				"errorCode": 5001,
-				"message": "localized_error_message"
-			}
-		}
-	]
-}  
-```
+Click the appropriate language tab in the rightmost pane to see sample code.
 
-Smartsheet stores images on the server side. If you want to download the images, Smartsheet provides a temporary URL that you can use to download the image. The [ImageUrl Object](#imageurl-object) returned tells you (in milliseconds) how much time you have before the URL expires.
+**Step 1. Locate the cell**
 
-To see sample code for this walkthrough, click the corresponding tab in the dark-blue area in the rightmost pane.
+Get the desired row, then locate the desired cell based on the column Id.
 
-##### Step 1. Identify the cell that contains an image
+**Step 2. Obtain the image Id**
 
-Once you have specified the row, you must iterate through the row to identify which column has the cell you are looking for.
+Cell images are identified by an image Id, which is stored in a cell Image Object. (The image Id is the "key" to the image and should be kept secure.)
 
-##### Step 2. Get image info from cell
+When a user uploads an image to a cell, Smartsheet uses the original file name as the image "Alt text." This example uses that Alt text value as the local file name.
 
-This step returns an imageId and creates a local file using the alt text as a file name (the default folder location is the folder that your project is in).
+**Step 3. Obtain a temporary image URL**
 
-##### Step 3. Build list of image URLs
+The POST /imageurls command creates a temporary URL that you can use to download the image. The URL expires after a short time, which is reported in the response.
 
-If you want a thumbnail, you can control those settings in the request body. For specifics about this step, see [List Image URLs](#list-image-urls).
+**Step 4. Download the image**
 
-##### Step 4. Download the image
-
-This example uses standard HTML syntax. 
+Once you have the URL, issue a standard HTTP GET to download the image and save as a local file.  
 
 ## List Image URLs
 
