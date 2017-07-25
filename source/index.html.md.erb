@@ -2747,7 +2747,45 @@ Uploads an image to the specified Cell within a Sheet.
 > Example Request: Download Cell Image
 
 ```shell
-To do
+// Steps 1 and 2: Locate the cell and obtain the imageId
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+
+// In the response, note the columnId and imageId
+{
+	"cells": [{
+		"columnId": 6800865311909764,
+		"image": {
+			"id": "nQCn-Bm2ncwqsw_FX1XI_w",
+			"height": 932,
+			"width": 1562,
+			"altText": "stanley hotel.png"
+		}
+	}]
+}
+
+// Step 3: Obtain a temporary image URL
+curl https://api.smartsheet.com/2.0/imageurls \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"imageId": "nQCn-Bm2ncwqsw_FX1XI_w","height":40,"width": 20}]'
+
+// In the response, note the URL and its expiration time
+{
+    "urlExpiresInMillis": 1800000,
+    "imageUrls": [
+        {
+            "imageId": "nQCn-Bm2ncwqsw_FX1XI_w",
+            "url": "https://aws.smartsheet.com/storageProxy/image/images/OMB9hAConFbhUdJMQ5czQEkwAj1-ErW-sXz3Dr4nDfE?expirationDate=2017-07-25T22%3A13%3A07%2B0000&height=40&width=20&hmac=e%2BfIb0ffUK%2BZeA2hbGx%2Fj8YcWUY%3D"
+        }
+    ]
+}
+
+// Step 4: Download the image
+curl https://aws.smartsheet.com/storageProxy/image/images/OMB9hAConFbhUdJMQ5czQEkwAj1-ErW-sXz3Dr4nDfE?expirationDate=2017-07-25T22%3A01%3A33%2B0000&height=40&width=20&hmac=5t%2FHs9%2BXTk5cNhyDax9ZgcbepKI%3D \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
 ```
 
 ```javascript
