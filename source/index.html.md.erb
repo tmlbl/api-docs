@@ -2642,7 +2642,9 @@ When creating or updating cells for a contact list column, the **displayValue** 
 You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
 When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
 If null, the cell's value is derived from the hyperlink: 
-<ul><li>If the hyperlink is a URL link, the cell's value is set to the URL itself.</li><li>If the hyperlink is a sheet, report, or Sight link, the cell's value is set to the sheet, report, or Sight name.</li></ul>
+
+* If the hyperlink is a URL link, the cell's value is set to the URL itself.
+* If the hyperlink is a sheet, report, or Sight link, the cell's value is set to the sheet, report, or Sight name.
 
 ### Images in Cells
 
@@ -16037,20 +16039,12 @@ But, consider the following scenario:
 To protect against infinite loops like the one outlined above, Smartsheet introduced support for a new header that an API client can include with any API request that adds, updates, or deletes data in Smartsheet. 
 Here's how it works:
 
-<ul>
-<li>An API client includes the <b>Smartsheet-Change-Agent</b> header in any API request that adds, updates, or deletes data in Smartsheet.<br/><br/>
-	<ul>
-		<li>The header value should be set to a string that the API client recognizes as identifying itself.<br/><br/></li>
-	</ul>
-</li>
-<li>If any <a href="#event-callbacks">Event callbacks</a> fire as a result of an API request that contains the <b>Smartsheet-Change-Agent</b> header, the value of the <b>Smartsheet-Change-Agent</b> header is included in the <a href="#callbackevent-object">callback</a> in the value of the <b>changeAgent</b> attribute.<br/><br/></li>
-<li>If a webhook Subscriber receives a <a href="#callbackevent-object">callback</a> that contains the <b>changeAgent</b> attribute, it should evaluate the attribute value:<br/><br/> 
-	<ul>
-		<li>If the attribute value's comma-delimited list contains the Subscriber API client's change agent value, this indicates that the change which triggered the callback <b>WAS</b> caused by the Subscriber itself, and the Subscriber can choose to ignore the callback, thus preventing an infinite loop.<br/><br/></li>
-		<li>Else, the change which triggered the callback was <b>NOT</b> caused by the Subscriber itself, and if the Subscriber is going to subsequently react to the callback by making a change in Smartsheet (via API request), the API client should append a comma and its own identifier to the original attribute value, and pass that value through using the <b>Smartsheet-Change-Agent</b> header of the API request. Doing so protects against cross-system infinite loops.<br/><br/></li>
-	</ul>
-</li>
-</ul>
+* An API client includes the **Smartsheet-Change-Agent** header in any API request that adds, updates, or deletes data in Smartsheet.
+  * The header value should be set to a string that the API client recognizes as identifying itself.
+* If any [Event callbacks](#event-callbacks) fire as a result of an API request that contains the **Smartsheet-Change-Agent** header, the value of the **Smartsheet-Change-Agent** header is included in the [callback](#callbackevent-object) in the value of the **changeAgent** attribute.
+* If a webhook Subscriber receives a [callback](#callbackevent-object) that contains the **changeAgent** attribute, it should evaluate the attribute value:
+  * If the attribute value's comma-delimited list contains the Subscriber API client's change agent value, this indicates that the change which triggered the callback **WAS** caused by the Subscriber itself, and the Subscriber can choose to ignore the callback, thus preventing an infinite loop.
+  * Else, the change which triggered the callback was **NOT** caused by the Subscriber itself, and if the Subscriber is going to subsequently react to the callback by making a change in Smartsheet (via API request), the API client should append a comma and its own identifier to the original attribute value, and pass that value through using the **Smartsheet-Change-Agent** header of the API request. Doing so protects against cross-system infinite loops.
 
 <aside class="notice">The <b>Smartsheet-Change-Agent</b> header value has a maximum length of 512 characters. If its length exceeds 512 characters, the excess is trimmed from the front of the string, so that the most recent agent information remains.</aside>
 
