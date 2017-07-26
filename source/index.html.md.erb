@@ -2205,7 +2205,7 @@ A collection of Cells comprises each Row in a Sheet.
 -----|-----|-----|
 **columnId** | number | The Id of the column that the cell is located in
 **columnType** | string | See type definition on the [Column Object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
-**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  See [Cell Reference](#cell-reference).
+**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  An empty cell returns no value. See [Cell Reference](#cell-reference).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Reference](#cell-reference).
 **objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set. Note: calculation errors or problems with a formula will not cause the API call to return an error code. Instead, the response will contain the same value as in the UI, such as cell.value = "#CIRCULAR REFERENCE".
@@ -2524,7 +2524,7 @@ be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted 
 like 1234.5678, but its **displayValue** would be "$1,234.57".
 
 **Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **Boolean**,
-depending on the column type.  Complex types are represented as strings, formatted as described below:
+depending on the column type.  An empty cell returns no value. Complex types are represented as strings, formatted as described below:
 
 <% PROJECT_COLUMN_HELP_URL = "https://help.smartsheet.com/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
 
