@@ -1,12 +1,12 @@
-> Example Request:
+> Example Request: Search Sheet
 
 ```shell
 curl https://api.smartsheet.com/2.0/search/sheets/{sheetId}?query=stuff \
--H "Authorization: Bearer ACCESS_TOKEN"
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
 ```javascript
-// Set options.
+// Set options
 var options = {
     sheetId: 1888207043356548,
     queryParameters: {
@@ -14,7 +14,7 @@ var options = {
     }
 };
 
-// Search sheet.
+// Search sheet
 smartsheet.search.searchSheet(options)
     .then(function (data) {
         console.log(data);
@@ -25,28 +25,36 @@ smartsheet.search.searchSheet(options)
 ```
 
 ```csharp
-// Set search criteria.
+// Set search criteria
 string query = "stuff";
 
-// Search sheet.
-smartsheet.SearchResources.SearchSheet(sheetId, query);
+// Search sheet
+SearchResult results = smartsheet.SearchResources.SearchSheet(
+    9283173393803140,       // long sheetId
+    query                   // string
+);
 ```
 
 ```java
-// Set search criteria.
+// Set search criteria
 string query = "stuff";
 
-// Search sheet.
-smartsheet.searchResources().searchSheet(sheetId, query);
+// Search sheet
+SearchResult results = smartsheet.searchResources().searchSheet(
+    9283173393803140L,       // long sheetId
+    query
+);
 ```
 
 ```python
-# Set search criteria.
+# Set search criteria
 query = 'stuff'
 
-# Search sheet.
-result = smartsheet.Search.search_sheet(sheetId, query)
-# result is a smartsheet.models.SearchResult object
+# Search sheet
+response = ss_client.Search.search_sheet(
+    9283173393803140,       # sheet_id
+    query)
+# response is a ss_client.models.SearchResult object
 ```
 
 > Example Response:
@@ -72,7 +80,7 @@ result = smartsheet.Search.search_sheet(sheetId, query)
 
 `GET /search/sheets/{sheetId}`
 
-Searches a Sheet for the specified text.
+Searches a Sheet for the specified text. 
 
 <aside class="notice">Newly-created or recently-updated data may not be immediately discoverable via Search.</aside>
 
@@ -80,5 +88,5 @@ Searches a Sheet for the specified text.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **query** (required): Text with which to perform the search.
-<%= RETURNS %> | [SearchResult object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
+<%= PARAMETERS %> | **query** (required): Text with which to perform the search. Use double-quotes for an exact search.
+<%= RETURNS %> | [SearchResult Object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
