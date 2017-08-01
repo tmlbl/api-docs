@@ -10477,7 +10477,28 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
 ```
 
 ```javascript
-// [todo]
+// Specify share (to one user as Viewer)
+var share = [
+    {
+        "email": "jane.doe@smartsheet.com",
+        "accessLevel": "VIEWER"
+    }
+];
+
+// Set options
+var shareSpecification = {
+    sightId: 6327127650920324,
+    body: share
+};
+
+// Share Sight
+smartsheet.sights.share(shareSpecification)
+ .then(function(addressList) {
+   console.log(addressList);
+ })
+ .catch(function(error) {
+   console.log(error);
+ });
 ```
 
 ```csharp
