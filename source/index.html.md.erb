@@ -10191,19 +10191,19 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 ```javascript
 // Set access level to Viewer
-var share = {"accessLevel": "VIEWER"};
+var shareSpecification = {"accessLevel": "VIEWER"};
 
 // Set options
-var options = {
-    body: share,
-    sheetId: 4583614634583940,
-    shareId: "AAAFeF82FOeE"
+var args = {
+    sheetId: 1696801624483716,
+    shareId: "AAAHAYImFOeE",
+    body: shareSpecification
 };
 
 // Update sheet share
-smartsheet.sheets.updateShare(options)
-    .then(function (data) {
-        console.log(data);
+smartsheet.sheets.updateShare(args)
+    .then(function (updatedShare) {
+        console.log(updatedShare);
     })
     .catch(function (error) {
         console.log(error);
@@ -10482,7 +10482,24 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```javascript
-// [todo]
+// Set access level to Viewer
+var shareSpecification = {"accessLevel": "ADMIN"};
+
+// Set options
+var args = {
+    sightId: 6327127650920324,
+    shareId: "AAALRqomFOeE",
+    body: shareSpecification
+};
+
+// Update Sight share
+smartsheet.sights.updateShare(args)
+    .then(function (updatedShare) {
+        console.log(updatedShare);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13095,7 +13112,7 @@ var args = {
 };
 
 // Get Sight
-ss.sights.getSight(args)
+smartsheet.sights.getSight(args)
     .then(function(sight) {
         console.log(sight.name);
     })
