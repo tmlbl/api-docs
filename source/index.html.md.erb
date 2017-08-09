@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-08-04
+Updated 2017-08-09
 
 # Overview
 ## Introduction
@@ -172,8 +172,8 @@ var smartsheet = client.createClient({accessToken:'ll352u9jujauoqz4gstvsae05'});
 
 // Get current user
 smartsheet.users.getCurrentUser()
-	.then(function(data) {
-		console.log(data);
+	.then(function(userProfile) {
+		console.log(userProfile);
 	})
 	.catch(function(error) {
     	console.log(error);
@@ -929,18 +929,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```javascript
 // Set options
 var options = {
-    contentType: CONTENT_TYPE,
-    fileName: NAME_OF_FILE,
-    fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668,
-    commentId: 4293147074291588
-};
+   sheetId: 2252168947361668,
+   commentId: 4293147074291588,    
+   contentType: CONTENT_TYPE,
+   fileName: NAME_OF_FILE,
+   fileSize: SIZE_OF_FILE,
+   body: ATTACHMENT_DATA
+   };
 
 // Attach file to comment
 smartsheet.sheets.addCommentAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1037,18 +1037,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```javascript
 // Set options
 var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588,    
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
     fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588
-};
+    body: ATTACHMENT_DATA
+    };
 
 // Attach file to row
 smartsheet.sheets.addRowAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1142,17 +1142,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```javascript
 // Set options
 var options = {
-    contentType: CONTENT_TYPE,
-    fileName: NAME_OF_FILE,
-    fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668
-};
+   sheetId: 2252168947361668,
+   contentType: CONTENT_TYPE,
+   fileName: NAME_OF_FILE,
+   fileSize: SIZE_OF_FILE,
+   body: ATTACHMENT_DATA
+   };
 
 // Attach file to sheet
 smartsheet.sheets.addAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1223,15 +1223,15 @@ var attachment = {
 
 // Set options
 var options = {
-    body: attachment,
     sheetId: 2252168947361668,
-    commentId: 4445024629876612
+    commentId: 4445024629876612,
+    body: attachment
 };
 
 // Attach URL to comment
 smartsheet.sheets.addCommentAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedAttachment) {
+        console.log(updatedAttachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1316,15 +1316,15 @@ var attachment = {
 
 // Set options
 var options = {
-    body: attachment,
     sheetId: 2252168947361668,
-    rowId: 4293147074291588
+    rowId: 4293147074291588,
+    body: attachment
 };
 
 // Attach URL to row
 smartsheet.sheets.addRowAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedAttachment) {
+        console.log(updatedAttachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1412,14 +1412,14 @@ var attachment = {
 
 // Set options
 var options = {
-    body: attachment,
-    sheetId: 2252168947361668
+    sheetId: 2252168947361668,
+    body: attachment
 };
 
 // Attach URL to sheet
 smartsheet.sheets.addAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedAttachment) {
+        console.log(updatedAttachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1500,8 +1500,8 @@ var options = {
 
 // Delete attachment
 smartsheet.sheets.deleteAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -1567,8 +1567,8 @@ var options = {
 
 // Get attachment
 smartsheet.sheets.getAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1635,8 +1635,8 @@ var options = {
 
 // List attachments
 smartsheet.sheets.listAttachments(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -1735,8 +1735,8 @@ var options = {
 
 // List discussion attachments
 smartsheet.sheets.listDiscussionAttachments(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -1839,8 +1839,8 @@ var options = {
 
 // List row attachments
 smartsheet.sheets.getRowAttachments(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -1991,18 +1991,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```javascript
 // Set options
 var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588,
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
     fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588
-};
+    body: ATTACHMENT_DATA
+    };
 
 // Attach new version of the file
 smartsheet.sheets.attachNewVersion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -2087,8 +2087,8 @@ var options = {
 
 // Delete all versions of the attachment
 smartsheet.sheets.deleteAllAttachmentVersions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -2153,8 +2153,8 @@ var options = {
 
 // List versions of the attachment
 smartsheet.sheets.listAttachmentVersions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -2428,8 +2428,8 @@ var options = {
 
 // Get cell history
 smartsheet.sheets.getCellHistory(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -3133,14 +3133,14 @@ var column = [
 
 // Set options
 var options = {
-    body: column,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: column
+    };
 
 // Add columns to the sheet
 smartsheet.sheets.addColumn(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newColumns) {
+        console.log(newColumns);
     })
     .catch(function (error) {
         console.log(error);
@@ -3278,8 +3278,8 @@ var options = {
 
 // Delete column
 smartsheet.sheets.deleteColumn(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -3343,8 +3343,8 @@ var options = {
 
 // Get column
 smartsheet.sheets.getColumns(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (column) {
+        console.log(column);
     })
     .catch(function (error) {
         console.log(error);
@@ -3430,8 +3430,8 @@ var options = {
 
 // List columns
 smartsheet.sheets.getColumns(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (columnList) {
+        console.log(columnList);
     })
     .catch(function (error) {
         console.log(error);
@@ -3534,15 +3534,15 @@ var column = {
 
 // Set options
 var options = {
-    body: column,
     sheetId: 2252168947361668,
-    columnId: 5005385858869124
-};
+    columnId: 5005385858869124,
+    body: column
+    };
 
 // Update column
 smartsheet.sheets.updateColumn(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedColumn) {
+        console.log(updatedColumn);
     })
     .catch(function (error) {
         console.log(error);
@@ -3757,15 +3757,15 @@ var comment = { "text": "This is a new comment." };
 
 // Set options
 var options = {
-    body: comment,
     sheetId: 2252168947361668,
-    discussionId: 3962273862576004
-};
+    discussionId: 3962273862576004,
+    body: comment
+    };
 
 // Add comment to discussion
 smartsheet.sheets.addDiscussionComment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newComment) {
+        console.log(newComment);
     })
     .catch(function (error) {
         console.log(error);
@@ -4001,8 +4001,8 @@ var options = {
 
 // Delete comment
 smartsheet.sheets.deleteComment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -4067,8 +4067,8 @@ var options = {
 
 // Get comment
 smartsheet.sheets.getComment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (comment) {
+        console.log(comment);
     })
     .catch(function (error) {
         console.log(error);
@@ -4221,8 +4221,8 @@ curl https://api.smartsheet.com/2.0/contacts \
 
 ```javascript
 smartsheet.contacts.listContacts({})
-.then(function(contacts) {
-  console.log(contacts);
+.then(function(contactsList) {
+  console.log(contactsList);
 })
 .catch(function(error) {
   console.log(error);
@@ -4362,15 +4362,15 @@ var discussion = {
 
 // Set options
 var options = {
-    body: discussion,
     sheetId: 2252168947361668,
-    rowId: 4293147074291588
-};
+    rowId: 4293147074291588,
+    body: discussion
+    };
 
 // Add discussion to row
 smartsheet.sheets.createRowDiscussion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newDiscussion) {
+        console.log(newDiscussion);
     })
     .catch(function (error) {
         console.log(error);
@@ -4537,14 +4537,14 @@ var discussion = {
 
 // Set options
 var options = {
-    body: discussion,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: discussion
+    };
 
 // Add discussion to sheet
 smartsheet.sheets.createDiscussion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newDiscussion) {
+        console.log(newDiscussion);
     })
     .catch(function (error) {
         console.log(error);
@@ -4699,8 +4699,8 @@ var options = {
 
 // Delete discussion
 smartsheet.sheets.deleteDiscussion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -4763,8 +4763,8 @@ var options = {
 
 // List discussions
 smartsheet.sheets.getDiscussions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (discussionList) {
+        console.log(discussionList);
     })
     .catch(function (error) {
         console.log(error);
@@ -4854,8 +4854,8 @@ var options = {
 
 // Get discussion
 smartsheet.sheets.getDiscussions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (discussion) {
+        console.log(discussion);
     })
     .catch(function (error) {
         console.log(error);
@@ -4931,8 +4931,8 @@ var options = {
 
 // List row discussions
 smartsheet.sheets.getRowDiscussions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (discussionList) {
+        console.log(discussionList);
     })
     .catch(function (error) {
         console.log(error);
@@ -5073,8 +5073,8 @@ var options = {
 
 // Add items to favorites
 smartsheet.favorites.addItemsToFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFavorite) {
+        console.log(newFavorite);
     })
     .catch(function (error) {
         console.log(error);
@@ -5156,8 +5156,8 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 ```javascript
 smartsheet.favorites.listFavorites()
-    .then(function (data) {
-        console.log(data);
+    .then(function (favoritesList) {
+        console.log(favoritesList);
     })
     .catch(function (error) {
         console.log(error);
@@ -5237,8 +5237,8 @@ var options = {
 
 // Remove folder from list of favorites
 smartsheet.favorites.removeFolderFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5294,8 +5294,8 @@ var options = {
 
 // Remove report from list of favorites
 smartsheet.favorites.removeReportFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5351,8 +5351,8 @@ var options = {
 
 // Remove sheet from list of favorites
 smartsheet.favorites.removeSheetFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5455,8 +5455,8 @@ var options = {
 
 // Remove template from list of favorites
 smartsheet.favorites.removeTemplateFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5512,8 +5512,8 @@ var options = {
 
 // Remove workspace from list of favorites
 smartsheet.favorites.removeWorkspaceFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5574,8 +5574,8 @@ var options = {
 
 // Remove folders from list of favorites
 smartsheet.favorites.removeFoldersFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5633,8 +5633,8 @@ var options = {
 
 // Remove reports from list of favorites
 smartsheet.favorites.removeReportsFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5692,8 +5692,8 @@ var options = {
 
 // Remove sheets from list of favorites
 smartsheet.favorites.removeSheetsFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5790,8 +5790,8 @@ var options = {
 
 // Remove templates from list of favorites
 smartsheet.favorites.removeTemplatesFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5849,8 +5849,8 @@ var options = {
 
 // Remove workspaces from list of favorites
 smartsheet.favorites.removeWorkspacesFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -6053,8 +6053,8 @@ var options = {
 
 // Create folder in "Sheets" folder (Home)
 smartsheet.home.createFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFolder) {
+        console.log(newFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6111,14 +6111,14 @@ var folder = {
 
 // Set options
 var options = {
-    body: folder,
-    folderId: 7960873114331012
-};
+    folderId: 7960873114331012,
+    body: folder
+    };
 
 // Create folder in another folder
 smartsheet.folders.createChildFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFolder) {
+        console.log(newFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6183,14 +6183,14 @@ var folder = {
 
 // Set options
 var options = {
-    body: folder,
-    workspaceId: 1656220827314052
-};
+    workspaceId: 1656220827314052,
+    body: folder
+    };
 
 // Create folder in a workspace
 smartsheet.workspaces.createFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFolder) {
+        console.log(newFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6253,8 +6253,8 @@ var options = {
 
 // Delete folder
 smartsheet.folders.deleteFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -6314,8 +6314,8 @@ var options = {
 
 // Get folder
 smartsheet.folders.getFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (folder) {
+        console.log(folder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6403,8 +6403,8 @@ curl https://api.smartsheet.com/2.0/home/folders \
 
 ```javascript
 smartsheet.home.listFolders()
-    .then(function (data) {
-        console.log(data);
+    .then(function (folderList) {
+        console.log(folderList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6468,8 +6468,8 @@ var options = {
 
 // List folders in another folder
 smartsheet.folders.listChildFolders(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (folderList) {
+        console.log(folderList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6538,8 +6538,8 @@ var options = {
 
 // List folders in workspace
 smartsheet.workspaces.listWorkspaceFolders(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (folderList) {
+        console.log(folderList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6696,8 +6696,8 @@ var options = {
 
 // Update folder
 smartsheet.folders.updateFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedFolder) {
+        console.log(updatedFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6821,8 +6821,8 @@ var options = {
 
 // Create group
 smartsheet.groups.createGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newGroup) {
+        console.log(newGroup);
     })
     .catch(function (error) {
         console.log(error);
@@ -6923,8 +6923,8 @@ var options = {
 
 // Delete group
 smartsheet.groups.deleteGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -6988,8 +6988,8 @@ var options = {
 
 // Get group
 smartsheet.groups.getGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (group) {
+        console.log(group);
     })
     .catch(function (error) {
         console.log(error);
@@ -7058,8 +7058,8 @@ curl https://api.smartsheet.com/2.0/groups \
 
 ```javascript
 smartsheet.groups.listGroups()
-    .then(function (data) {
-        console.log(data);
+    .then(function (groupList) {
+        console.log(groupList);
     })
     .catch(function (error) {
         console.log(error);
@@ -7149,14 +7149,14 @@ var group = {
 
 // Set options
 var options = {
-    body: group,
-    id: 2331373580117892 // Id of Group
-};
+    id: 2331373580117892, // Id of Group
+    body: group
+    };
 
 // Update group
 smartsheet.groups.updateGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedGroup) {
+        console.log(updatedGroup);
     })
     .catch(function (error) {
         console.log(error);
@@ -7282,14 +7282,14 @@ var members = [{ "email": "jane.doe@smartsheet.com" }];
 
 // Set options
 var options = {
-    body: members,
-    groupId: 7917992160847748
-};
+    groupId: 7917992160847748,
+    body: members
+    };
 
 // Add members to group
 smartsheet.groups.addGroupMembers(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newMembers) {
+        console.log(newMembers);
     })
     .catch(function (error) {
         console.log(error);
@@ -7383,8 +7383,8 @@ var options = {
 
 // Remove member from group
 smartsheet.groups.removeGroupMember(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -7475,8 +7475,8 @@ curl https://api.smartsheet.com/2.0/home?include=source \
 
 ```javascript
 smartsheet.home.listContents()
-	.then(function(data) {
-		console.log(data);
+	.then(function(contents) {
+		console.log(contents);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -7654,8 +7654,8 @@ var options = {
 
 // Get report
 smartsheet.reports.getReport(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (report) {
+        console.log(report);
     })
     .catch(function (error) {
         console.log(error);
@@ -7800,8 +7800,8 @@ var options = {
 
 // Get report as Excel
 smartsheet.reports.getReportAsExcel(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (report) {
+        console.log(report);
     })
     .catch(function (error) {
         console.log(error);
@@ -7959,8 +7959,8 @@ curl https://api.smartsheet.com/2.0/reports
 
 ```javascript
 smartsheet.reports.listReports()
-    .then(function (data) {
-        console.log(data);
+    .then(function (reportList) {
+        console.log(reportList);
     })
     .catch(function (error) {
         console.log(error);
@@ -8315,14 +8315,14 @@ var row = [
 
 // Set options
 var options = {
-    body: row,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: row
+    };
 
 // Add rows to sheet
 smartsheet.sheets.addRows(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newRows) {
+        console.log(newRows);
     })
     .catch(function (error) {
         console.log(error);
@@ -8534,14 +8534,14 @@ var copyRow = {
 
 // Set options
 var options = {
-    body: copyRow,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: copyRow
+    };
 
 // Copy rows
 smartsheet.sheets.copyRowToAnotherSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -8648,8 +8648,8 @@ var options = {
 
 // Delete row
 smartsheet.sheets.deleteRow(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -8730,8 +8730,8 @@ var options = {
 
 // Get row
 smartsheet.sheets.getRow(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (row) {
+        console.log(row);
     })
     .catch(function (error) {
         console.log(error);
@@ -8854,14 +8854,14 @@ var moveRow = {
 
 // Set options
 var options = {
-    body: moveRow,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: moveRow
+    };
 
 // Move rows
 smartsheet.sheets.moveRowToAnotherSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -9006,14 +9006,14 @@ var row = [
 
 // Set options
 var options = {
-    body: row,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: row
+    };
 
 // Update rows in sheet
 smartsheet.sheets.updateRow(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedRows) {
+        console.log(updatedRows);
     })
     .catch(function (error) {
         console.log(error);
@@ -9321,8 +9321,8 @@ var options = {
 
 // Search everything
 smartsheet.search.searchAll(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -9553,8 +9553,8 @@ curl https://api.smartsheet.com/2.0/serverinfo
 
 ```javascript
 smartsheet.server.getInfo()
-    .then(function (data) {
-        console.log(data);
+    .then(function (serverInfo) {
+        console.log(serverInfo);
     })
     .catch(function (error) {
         console.log(error);
@@ -9652,8 +9652,8 @@ var options = {
 
 // Delete report share
 smartsheet.reports.deleteShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -9708,8 +9708,8 @@ var options = {
 
 // Get report share
 smartsheet.reports.getShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (share) {
+        console.log(share);
     })
     .catch(function (error) {
         console.log(error);
@@ -9763,8 +9763,8 @@ var options = {
 
 // List report shares
 smartsheet.reports.listShares(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (shareList) {
+        console.log(shareList);
     })
     .catch(function (error) {
         console.log(error);
@@ -9839,14 +9839,14 @@ var share = [
 
 // Set options
 var options = {
-    body: share,
-    reportId: 665829219035012
-};
+    reportId: 665829219035012,   
+    body: share
+    };
 
 // Share report
 smartsheet.reports.share(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (addressList) {
+        console.log(addressList);
     })
     .catch(function (error) {
         console.log(error);
@@ -9922,15 +9922,15 @@ var share = {"accessLevel": "VIEWER"};
 
 // Set options
 var options = {
-    body: share,
     reportId: 665829219035012,
-    shareId: "AAAFeF82FOeE"
-};
+    shareId: "AAAFeF82FOeE",
+    body: share
+    };
 
 // Update report share
 smartsheet.reports.updateShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedShare) {
+        console.log(updatedShare);
     })
     .catch(function (error) {
         console.log(error);
@@ -10003,8 +10003,8 @@ var options = {
 
 // Delete sheet share
 smartsheet.sheets.deleteShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -10059,8 +10059,8 @@ var options = {
 
 // Get sheet share
 smartsheet.sheets.getShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (share) {
+        console.log(share);
     })
     .catch(function (error) {
         console.log(error);
@@ -10114,8 +10114,8 @@ var options = {
 
 // List sheet shares
 smartsheet.sheets.listShares(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (shareList) {
+        console.log(shareList);
     })
     .catch(function (error) {
         console.log(error);
@@ -10192,14 +10192,14 @@ var share = [
 
 // Set options
 var options = {
-    body: share,
-    sheetId: 4583614634583940
-};
+    sheetId: 4583614634583940,
+    body: share
+    };
 
 // Share sheet
 smartsheet.sheets.share(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (addressList) {
+        console.log(addressList);
     })
     .catch(function (error) {
         console.log(error);
@@ -10354,8 +10354,8 @@ var args = {
 
 // Delete Sight share
 smartsheet.sights.deleteShare(args)
- .then(function(result) {
-   console.log(result);
+ .then(function(results) {
+   console.log(results);
  })
  .catch(function(error) {
    console.log(error);
@@ -10470,8 +10470,8 @@ var args = {
 
 // List Sight shares
 smartsheet.sights.listShares(args)
- .then(function(data) {
-   console.log(data);
+ .then(function(shareList) {
+   console.log(shareList);
  })
  .catch(function(error) {
    console.log(error);
@@ -10703,8 +10703,8 @@ var options = {
 
 // Delete workspace share
 smartsheet.workspaces.deleteShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -10763,8 +10763,8 @@ var options = {
 
 // Get workspace share
 smartsheet.workspaces.getShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (share) {
+        console.log(share);
     })
     .catch(function (error) {
         console.log(error);
@@ -10818,8 +10818,8 @@ var options = {
 
 // List workspace shares
 smartsheet.workspaces.listShares(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (shareList) {
+        console.log(shareList);
     })
     .catch(function (error) {
         console.log(error);
@@ -10905,8 +10905,8 @@ var options = {
 
 // Share workspace
 smartsheet.workspaces.share(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(addressList) {
+		console.log(addressList);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -10989,15 +10989,15 @@ var share = {"accessLevel": "VIEWER"};
 
 // Set options
 var options = {
-    body: share,
     workspaceId: 1656220827314052,
-    shareId: "AAAFeF82FOeE"
-};
+    shareId: "AAAFeF82FOeE",
+    body: share
+    };
 
 // Update workspace share
 smartsheet.workspaces.updateShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedShare) {
+        console.log(updatedShare);
     })
     .catch(function (error) {
         console.log(error);
@@ -11298,8 +11298,8 @@ var options = {
 
 // Create sheet in "Sheets" folder
 smartsheet.sheets.createSheet(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(newSheet) {
+		console.log(newSheet);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -11413,14 +11413,14 @@ var sheet = {
 
 // Set options
 var options = {
-    body: sheet,
-    folderId: 3734419270854532
-};
+    folderId: 3734419270854532,
+    body: sheet
+    };
 
 // Create sheet in folder
 smartsheet.sheets.createSheetInFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newSheet) {
+        console.log(newSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -11538,14 +11538,14 @@ var sheet = {
 
 // Set options
 var options = {
-	body: sheet,
-	workspaceId: 1656220827314052
-};
+    workspaceId: 1656220827314052,
+    body: sheet
+	};
 
 // Create sheet in workspace
 smartsheet.sheets.createSheetInWorkspace(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(newSheet) {
+		console.log(newSheet);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -11655,9 +11655,9 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 ```javascript
 // Specify the directive
 var sheet = {
-    "name": "newsheet",
-    "fromId": 7679398137620356
-};
+    "fromId": 7679398137620356,
+    "name": "newsheet"
+    };
 
 // Set options
 var options = {
@@ -11666,8 +11666,8 @@ var options = {
 
 // Create sheet from template
 smartsheet.sheets.createSheetFromExisting(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newSheet) {
+        console.log(newSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -11859,20 +11859,20 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 ```javascript
 // Specify the directive
 var sheet = {
-    "name": "newsheet",
-    "fromId": 7679398137620356
-};
+    "fromId": 7679398137620356,
+    "name": "newsheet"
+    };
 
 // Set options
 var options = {
-    body: sheet,
-    workspaceId: 1656220827314052
-};
+    workspaceId: 1656220827314052,
+    body: sheet
+    };
 
 // Create sheet from template in the specified workspace
 smartsheet.sheets.createSheetFromExisting(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newSheet) {
+        console.log(newSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -11967,8 +11967,8 @@ var options = {
 
 // Delete sheet
 smartsheet.sheets.deleteSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -12028,8 +12028,8 @@ var options = {
 
 // Get sheet version
 smartsheet.sheets.getSheetVersion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (version) {
+        console.log(version);
     })
     .catch(function (error) {
         console.log(error);
@@ -12098,8 +12098,8 @@ var options = {
 
 // Get sheet
 smartsheet.sheets.getSheet(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(sheetInfo) {
+		console.log(sheetInfo);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12222,8 +12222,8 @@ var options = {
 
 // Get sheet
 smartsheet.sheets.getSheetAsExcel(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(results) {
+		console.log(results);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12438,8 +12438,8 @@ curl https://api.smartsheet.com/2.0/sheets \
 
 ```javascript
 smartsheet.sheets.listSheets()
-	.then(function(data) {
-		console.log(data);
+	.then(function(sheetList) {
+		console.log(sheetList);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12630,8 +12630,8 @@ var options = {
 
 // Get sheet publish status
 smartsheet.sheets.getPublishStatus(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(status) {
+		console.log(status);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12703,14 +12703,14 @@ var publishStatus = {
 
 // Set options
 var options = {
-  body: publishStatus,
-  sheetId: 4583614634583940
-};
+    sheetId: 4583614634583940,
+    body: publishStatus
+    };
 
 // Set publish status
 smartsheet.sheets.setPublishStatus(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(updatedStatus) {
+		console.log(updatedStatus);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12838,14 +12838,14 @@ var sheet = {
 
 // Set options
 var options = {
-    body: sheet,
-    id: 7960873114331012 // Id of Sheet
-};
+    id: 7960873114331012, // Id of Sheet
+    body: sheet
+    };
 
 // Update sheet
 smartsheet.sheets.updateSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedSheet) {
+        console.log(updatedSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -13204,8 +13204,8 @@ var args = {
 };
 
 smartsheet.sights.deleteSight(args)
-.then(function(response) {
-  console.log(response);
+.then(function(results) {
+  console.log(results);
 })
 .catch(function(error) {
   console.log(error);
@@ -13740,8 +13740,8 @@ curl https://api.smartsheet.com/2.0/templates/public \
 
 ```javascript
 smartsheet.templates.listPublicTemplates()
-    .then(function (data) {
-        console.log(data);
+    .then(function (templateList) {
+        console.log(templateList);
     })
     .catch(function (error) {
         console.log(error);
@@ -13793,8 +13793,8 @@ curl https://api.smartsheet.com/2.0/templates \
 
 ```javascript
 smartsheet.templates.listUserCreatedTemplates()
-    .then(function (data) {
-        console.log(data);
+    .then(function (templateList) {
+        console.log(templateList);
     })
     .catch(function (error) {
         console.log(error);
@@ -14132,8 +14132,8 @@ var options = {
 };
 
 smartsheet.users.addUser(options)
-	.then(function(data) {
-		console.log(data)
+	.then(function(newUser) {
+		console.log(newUser)
 	}).catch(function(error) {
 		console.log(error);
 	});
@@ -14545,8 +14545,8 @@ curl https://api.smartsheet.com/2.0/users/me \
 
 ```javascript
 smartsheet.users.getCurrentUser()
-	.then(function(data) {
-		console.log(data);
+	.then(function(userProfile) {
+		console.log(userProfile);
 	})
 	.catch(function(error) {
     	console.log(error);
@@ -14617,8 +14617,8 @@ var options = {
 
 // Get user
 smartsheet.users.getUser(options)
-  	.then(function(data) {
-    	console.log(data)
+  	.then(function(userProfile) {
+    	console.log(userProfile)
   	})
   	.catch(function(error) {
     	console.log(error);
@@ -14693,8 +14693,8 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com&include=
 
 ```javascript 
 smartsheet.users.listAllUsers()
-	.then(function(data) {
-		console.log(data)
+	.then(function(userList) {
+		console.log(userList)
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -14806,8 +14806,8 @@ var options = {
 
 // Remove user
 smartsheet.users.removeUser(options)
-	.then(function(data) {
-		console.log(data)
+	.then(function(results) {
+		console.log(results)
 	})	
 	.catch(function(error) {
 		console.log(error);
@@ -14893,14 +14893,14 @@ var user = {
 
 // Set options
 var options = {
-	body: user,
-	id: 82349925918590 // Id of User
-};
+    id: 82349925918590, // Id of User
+    body: user
+	};
 
 // Update user
 smartsheet.users.updateUser(options)
-	.then(function(data) {
-		console.log(data)
+	.then(function(updatedUser) {
+		console.log(updatedUser)
 	}).catch(function(error) {
 		console.log(error);
 	});
@@ -15109,8 +15109,8 @@ var options = {
 
 // Create workspace
 smartsheet.workspaces.createWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newWorkspace) {
+        console.log(newWorkspace);
     })
     .catch(function (error) {
         console.log(error);
@@ -15186,8 +15186,8 @@ var options = {
 
 // Delete workspace
 smartsheet.workspaces.deleteWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -15247,8 +15247,8 @@ var options = {
 
 // Get workspace
 smartsheet.workspaces.getWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (workspace) {
+        console.log(workspace);
     })
     .catch(function (error) {
         console.log(error);
@@ -15340,8 +15340,8 @@ curl https://api.smartsheet.com/2.0/workspaces \
 
 ```javascript
 smartsheet.workspaces.listWorkspaces()
-	.then(function(data) {
-		console.log(data);
+	.then(function(workspaceList) {
+		console.log(workspaceList);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -15435,14 +15435,14 @@ var workspace = {"name": "Updated workspace"};
 
 // Set options
 var options = {
-    body: workspace,
-    workspaceId: 7960873114331012
-};
+    workspaceId: 7960873114331012,
+    body: workspace
+    };
 
 // Update workspace
 smartsheet.workspaces.updateWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedWorkspace) {
+        console.log(updatedWorkspace);
     })
     .catch(function (error) {
         console.log(error);
