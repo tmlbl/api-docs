@@ -1,6 +1,13 @@
 //= require ../lib/_jquery
 //= require ../lib/_imagesloaded.min
-console.log("* Loading " + window.location);
+
+function _trace(msg) { 
+  console.log(msg)
+}
+
+var doTrace = true;
+
+_trace("* Loading " + window.location);
 ;(function () {
   'use strict';
 
@@ -27,7 +34,7 @@ console.log("* Loading " + window.location);
 
   // Scroll down to account for nav bar - Only if current anchor is at the very top
   function offsetAnchor() {
-    console.log("In offsetAnchor");
+    _trace("In offsetAnchor");
     if (location.hash.length !== 0) {
       var elt = $(location.hash);
       if (Math.abs(elt.offset().top - $(window).scrollTop()) < 1)
@@ -36,14 +43,14 @@ console.log("* Loading " + window.location);
   }
   
   function loadToc($toc, tocLinkSelector, tocListSelector, scrollOffset) {
-    console.log("In loadTOC");
+    _trace("In loadTOC");
     var headerHeights = {};
     var pageHeight = 0;
     var windowHeight = 0;
     var originalTitle = document.title;
 
     var recacheHeights = function() {
-      console.log("In recacheHeights");
+      _trace("In recacheHeights");
       headerHeights = {};
       pageHeight = $(document).height();
       windowHeight = $(window).height();
@@ -56,10 +63,8 @@ console.log("* Loading " + window.location);
       });
     };
 
-    var debouncedOffsetAnchor = debounce(offsetAnchor, 50);
-
     var refreshToc = function() {
-      console.log("In refreshToc");
+      _trace("In refreshToc");
       var currentTop = $(document).scrollTop() + scrollOffset;
 
       if (currentTop + windowHeight >= pageHeight) {
@@ -76,13 +81,12 @@ console.log("* Loading " + window.location);
           best = name;
         }
       }
-      console.log("Found best = " + best);
+      _trace("Found best = " + best);
 
       // Catch the initial load case
       if (currentTop == scrollOffset && !loaded) {
         best = window.location.hash;
-        loaded = true;
-        console.log("Reset best = " + best);
+        _trace("Reset best = " + best + " " + currentTop + " " + scrollOffset);
       }
 
       var $best = $toc.find("[href='" + best + "']").first();
@@ -96,16 +100,20 @@ console.log("* Loading " + window.location);
         $best.siblings(tocListSelector).addClass("active");
         $toc.find(tocListSelector).filter(":not(.active)").slideUp(150);
         $toc.find(tocListSelector).filter(".active").slideDown(150);
-        if (window.history.pushState) {
-          if (currentTop > scrollOffset + 10 )
+        if (window.history.pushState && loaded) {
+          if (currentTop > scrollOffset + 10 ) {
+            _trace("Pushing state: " + best);
             window.history.pushState(null, "", best);
-          else
+          } else {
+            _trace("Pushing state: " + window.location.pathname + window.location.search);
             window.history.pushState(null, "", window.location.pathname + window.location.search);
+          }
         }
         // TODO remove classnames
         document.title = $best.data("title") + " – " + originalTitle;
       }
-      debouncedOffsetAnchor();
+      loaded = true;
+      offsetAnchor();
     };
 
     var makeToc = function() {
@@ -122,9 +130,8 @@ console.log("* Loading " + window.location);
 
       // reload immediately after scrolling on toc click
       $toc.find(tocLinkSelector).click(function() {
-        console.log("* Following TOC link");
+        _trace("* Following TOC link");
         setTimeout(function() {
-           // offsetAnchor();
            refreshToc();
         }, 0);
       });
