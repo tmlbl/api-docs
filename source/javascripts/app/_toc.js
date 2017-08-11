@@ -1,5 +1,6 @@
 //= require ../lib/_jquery
 //= require ../lib/_imagesloaded.min
+console.log("* Loading " + window.location);
 ;(function () {
   'use strict';
 
@@ -24,20 +25,25 @@
   };
 
 
-  // Scroll down to account for nav bar
+  // Scroll down to account for nav bar - Only if current anchor is at the very top
   function offsetAnchor() {
+    console.log("In offsetAnchor");
     if (location.hash.length !== 0) {
-    window.scrollTo(window.scrollX, window.scrollY - 60);
+      var elt = $(location.hash);
+      if (Math.abs(elt.offset().top - $(window).scrollTop()) < 1)
+         window.scrollTo(window.scrollX, window.scrollY - 60);
     }
   }
-
+  
   function loadToc($toc, tocLinkSelector, tocListSelector, scrollOffset) {
+    console.log("In loadTOC");
     var headerHeights = {};
     var pageHeight = 0;
     var windowHeight = 0;
     var originalTitle = document.title;
 
     var recacheHeights = function() {
+      console.log("In recacheHeights");
       headerHeights = {};
       pageHeight = $(document).height();
       windowHeight = $(window).height();
@@ -50,7 +56,10 @@
       });
     };
 
+    var debouncedOffsetAnchor = debounce(offsetAnchor, 50);
+
     var refreshToc = function() {
+      console.log("In refreshToc");
       var currentTop = $(document).scrollTop() + scrollOffset;
 
       if (currentTop + windowHeight >= pageHeight) {
@@ -67,11 +76,13 @@
           best = name;
         }
       }
+      console.log("Found best = " + best);
 
       // Catch the initial load case
       if (currentTop == scrollOffset && !loaded) {
         best = window.location.hash;
         loaded = true;
+        console.log("Reset best = " + best);
       }
 
       var $best = $toc.find("[href='" + best + "']").first();
@@ -94,6 +105,7 @@
         // TODO remove classnames
         document.title = $best.data("title") + " – " + originalTitle;
       }
+      debouncedOffsetAnchor();
     };
 
     var makeToc = function() {
@@ -110,14 +122,15 @@
 
       // reload immediately after scrolling on toc click
       $toc.find(tocLinkSelector).click(function() {
+        console.log("* Following TOC link");
         setTimeout(function() {
-           offsetAnchor();
-          refreshToc();
+           // offsetAnchor();
+           refreshToc();
         }, 0);
       });
 
-      $(window).scroll(debounce(refreshToc, 200));
-      $(window).resize(debounce(recacheHeights, 200));
+      $(window).scroll(debounce(refreshToc, 150));
+      $(window).resize(debounce(recacheHeights, 150));
     };
 
     makeToc();
