@@ -30,17 +30,6 @@ _trace("* Loading " + window.location);
     $(".toc-wrapper").removeClass('open');
     $("#nav-button").removeClass('open');
   };
-
-
-  // Scroll down to account for nav bar - Only if current anchor is at the very top
-  function offsetAnchor() {
-    _trace("In offsetAnchor");
-    if (location.hash.length !== 0) {
-      var elt = $(location.hash);
-      if (Math.abs(elt.offset().top - $(window).scrollTop()) < 1)
-         window.scrollTo(window.scrollX, window.scrollY - 60);
-    }
-  }
   
   function loadToc($toc, tocLinkSelector, tocListSelector, scrollOffset) {
     _trace("In loadTOC");
@@ -52,26 +41,26 @@ _trace("* Loading " + window.location);
     var recacheHeights = function() {
       _trace("In recacheHeights");
       headerHeights = {};
-      pageHeight = $(document).height();
+      pageHeight = $(".content_body").height();
       windowHeight = $(window).height();
 
       $toc.find(tocLinkSelector).each(function() {
         var targetId = $(this).attr('href');
         if (targetId[0] === "#") {
-          headerHeights[targetId] = $(targetId).offset().top;
+          headerHeights[targetId] = $(targetId).position().top;
         }
       });
     };
 
     var refreshToc = function() {
       _trace("In refreshToc");
-      var currentTop = $(document).scrollTop() + scrollOffset;
+      var currentTop = $(".content_body").scrollTop() + scrollOffset;
 
       if (currentTop + windowHeight >= pageHeight) {
         // at bottom of page, so just select last header by making currentTop very large
         // this fixes the problem where the last header won't ever show as active if its content
         // is shorter than the window height
-        currentTop = pageHeight + 1000;
+        // FIXIT HERE!!!!! currentTop = pageHeight + 1000;
       }
 
       var best = null;
@@ -113,7 +102,6 @@ _trace("* Loading " + window.location);
         document.title = $best.data("title") + " – " + originalTitle;
       }
       loaded = true;
-      offsetAnchor();
     };
 
     var makeToc = function() {
@@ -130,13 +118,14 @@ _trace("* Loading " + window.location);
 
       // reload immediately after scrolling on toc click
       $toc.find(tocLinkSelector).click(function() {
-        _trace("* Following TOC link");
+        var x = $(this);
+        _trace("* Following TOC link " + $(this)[0].hash);
         setTimeout(function() {
            refreshToc();
         }, 0);
       });
 
-      $(window).scroll(debounce(refreshToc, 150));
+      $(".content_body").scroll(debounce(refreshToc, 150));
       $(window).resize(debounce(recacheHeights, 150));
     };
 
