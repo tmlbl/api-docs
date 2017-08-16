@@ -7,10 +7,12 @@ def toc_data(page_content)
   headers = []
   html_doc.css('h1, h2, h3').each do |header|
     # puts "Children: " + header.children.text
+    title = Nokogiri::HTML(header.children.text).text
+    title = title.gsub('"', '')                          # Remove any quotes in titles
     headers.push({
       id: header.attribute('id').to_s,
       content: header.children,
-      content_clean: Nokogiri::HTML(header.children.text).text,
+      content_clean: title,
       level: header.name[1].to_i,
       children: []
     })

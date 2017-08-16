@@ -2,7 +2,7 @@
 //= require ../lib/_imagesloaded.min
 
 function _trace(msg) { 
-  console.log(msg)
+  // console.log(msg)
 }
 
 var doTrace = true;
@@ -55,13 +55,6 @@ _trace("* Loading " + window.location);
     var refreshToc = function() {
       _trace("In refreshToc");
       var currentTop = $(".content_body").scrollTop() + scrollOffset;
-
-      if (currentTop + windowHeight >= pageHeight) {
-        // at bottom of page, so just select last header by making currentTop very large
-        // this fixes the problem where the last header won't ever show as active if its content
-        // is shorter than the window height
-        // FIXIT HERE!!!!! currentTop = pageHeight + 1000;
-      }
 
       var best = null;
  
