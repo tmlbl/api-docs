@@ -111,7 +111,6 @@ _trace("* Loading " + window.location);
 
       // reload immediately after scrolling on toc click
       $toc.find(tocLinkSelector).click(function() {
-        var x = $(this);
         _trace("* Following TOC link " + $(this)[0].hash);
         setTimeout(function() {
            refreshToc();
