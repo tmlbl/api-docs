@@ -9,7 +9,6 @@ gem "middleman-sprockets", "~> 4.0.0"
 gem 'rouge', '~> 2.0.5'
 gem 'redcarpet', '~> 3.3.2'
 gem 'middleman-gh-pages', '~> 0.0.3'
-gem 'nokogiri', '~> 1.6.8.1'
 
 gem 'rake', '~> 10.4.2'
 gem 'therubyracer', '~> 0.12.1', platforms: :ruby
