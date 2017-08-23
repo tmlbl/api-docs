@@ -13,6 +13,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations
 under the License.
 %>
+<% STDERR.puts "Rebuilding at " + Time.now.strftime("%d/%m/%Y %H:%M:%S")%>
 <% language_tabs = current_page.data.language_tabs || [] %>
 <!doctype html>
 <html>
@@ -86,6 +87,58 @@ under the License.
     <a href="#" id="nav-button" class>
       <img src="images/navbar.png">
     </a>
+    <div class="toc-wrapper">
+      <% if language_tabs.any? %>
+        <div class="lang-selector">
+          <% language_tabs.each do |lang| %>
+            <% if lang.is_a? Hash %>
+              <a href="#" data-language-name="<%= lang.keys.first %>"><%= lang.values.first %></a>
+            <% else %>
+              <a href="#" data-language-name="<%= lang %>"><%= lang %></a>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+      <% if current_page.data.search %>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <% end %>
+      <div id="toc" class="toc-list-h1">
+        <% toc_data(page_content).each do |h1| %>
+          <li>
+            <a href="#<%= h1[:id] %>" class="toc-h1 toc-link" data-title="<%= h1[:content_clean] %>"><%= h1[:content] %></a>
+            <% if h1[:children].length > 0 %>
+              <ul class="toc-list-subhead">
+                <% h1[:children].each do |h2| %>
+                  <li>
+                    <a href="#<%= h2[:id] %>" class="toc-h2 toc-link" data-title="<%= h2[:content_clean] %>"><%= h2[:content] %></a>
+                    <% if h2[:children].length > 0 %>
+                        <ul class="toc-list-subhead">
+                            <% h2[:children].each do |h3| %>
+                            <li>
+                                <a href="#<%= h3[:id] %>" class="toc-h3 toc-link" data-title="<%= h3[:content_clean] %>"><%= h3[:content] %></a>
+                            </li>
+                            <% end %>
+                        </ul>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </li>
+        <% end %>
+      </div>
+      <% if current_page.data.toc_footers %>
+        <ul class="toc-footer">
+          <% current_page.data.toc_footers.each do |footer| %>
+            <li><%= footer %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+    <div class="content_body">
     <div class="page-wrapper">
 		<div class="tocify-wrapper">
 		  <% if language_tabs %>
