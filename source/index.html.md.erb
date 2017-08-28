@@ -52,7 +52,7 @@ Updated 2017-08-23
 ```shell
 # The cURL code samples included in this API documentation demonstrate
 # how to execute operations using the command line data transfer
-# tool cURL: <https://curl.haxx.se/>.
+# tool cURL: https://curl.haxx.se/.
 ```
 
 ```javascript
@@ -91,7 +91,7 @@ You can view code examples in the programming language of your choice by clickin
 This documentation provides two [Getting Started](#getting-started) tutorials that walk you through making your first API call and interpreting the response to a GET sheet request. You may also want to bookmark or note the following resources:
 
 * [Smartsheet Developer Portal:](http://developers.smartsheet.com) If registering, use a different email address from your paid Smartsheet account so you can test the API and make API calls
-* Developer Newsletter (subscribe while at the Developer Portal using the <i>Get Developer Updates</i> form)
+* Developer Newsletter (subscribe while at the Developer Portal using the *Get Developer Updates* form)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/smartsheet-api) using the "smartsheet-api" tag
 * Additional [Getting Started documentation on GitHub](https://github.com/smartsheet-platform/getting-started)
 * Contact us at [api@smartsheet.com](mailto:api@smartsheet.com)
@@ -172,8 +172,8 @@ var smartsheet = client.createClient({accessToken:'ll352u9jujauoqz4gstvsae05'});
 
 // Get current user
 smartsheet.users.getCurrentUser()
-	.then(function(data) {
-		console.log(data);
+	.then(function(userProfile) {
+		console.log(userProfile);
 	})
 	.catch(function(error) {
     	console.log(error);
@@ -230,7 +230,7 @@ The access token must be sent with every API call in an HTTP authorization heade
 
 `Authorization: Bearer ll352u9jujauoqz4gstvsae05`
 
-The header name is <b>Authorization</b> and the value of the header is <b>Bearer ll352u9jujauoqz4gstvsae05</b>. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
+The header name is **Authorization** and the value of the header is **Bearer ll352u9jujauoqz4gstvsae05**. Since the access token is being transmitted in clear text, all API calls are done over HTTPS.
 
 <aside class="warning">The token generated runs with your credentials. Be sure to secure your tokens and do not share tokens with anyone.</aside>
 
@@ -387,6 +387,72 @@ Before you begin, you should already have an access token, which you used in the
 This core hierarchy of Sheet > Column > Row > Cell is essential to working with the Smartsheet API. As your user's sheets grow in complexity, the responses do too. This walkthrough has given you some navigational aid in finding the right value to plug into your API calls. Use the API Reference and the example language tabs to learn more.
 
 # Sample Code and SDKs
+
+> Install the SDK
+
+```javascript
+npm install smartsheet
+```
+
+```csharp
+// In the Visual Studio Package Manager Console
+Install-Package smartsheet-csharp-sdk
+```
+
+```java
+// Add the SDK as a dependency in your project
+<dependency>
+    <groupId>com.smartsheet</groupId>
+    <artifactId>smartsheet-sdk-java</artifactId>
+    <version>2.2.0</version>
+</dependency>
+```
+
+```python
+$ pip install smartsheet-python-sdk
+```
+
+> Load the client
+
+```javascript
+// Initialize client SDK
+var smartsheet = client.createClient({ accessToken: ll352u9jujauoqz4gstvsae05 });
+```
+
+```csharp
+using Smartsheet.Api;
+using Smartsheet.Api.Models;
+
+// Initialize client
+String accessToken = "ll352u9jujauoqz4gstvsae05";
+
+SmartsheetClient smartsheet = new SmartsheetBuilder()
+    .SetAccessToken(accessToken)
+    .Build();
+```
+
+```java
+import com.smartsheet.api.*;
+import com.smartsheet.api.models.*;
+import com.smartsheet.api.oauth.*;
+
+// Initialize client
+String accessToken = "ll352u9jujauoqz4gstvsae05";
+
+Smartsheet smartsheet = new SmartsheetBuilder()
+    .setAccessToken(accessToken)
+    .build();
+```
+
+```python
+import smartsheet
+
+# Initialize client
+ss_client = smartsheet.Smartsheet(access_token)
+
+# Make sure we don't miss any errors
+ss_client.errors_as_exceptions(True)
+```
 
 Smartsheet has SDKs providing a higher level interface for several languages.
 
@@ -872,18 +938,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```javascript
 // Set options
 var options = {
-    contentType: CONTENT_TYPE,
-    fileName: NAME_OF_FILE,
-    fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668,
-    commentId: 4293147074291588
-};
+   sheetId: 2252168947361668,
+   commentId: 4293147074291588,    
+   contentType: CONTENT_TYPE,
+   fileName: NAME_OF_FILE,
+   fileSize: SIZE_OF_FILE,
+   body: ATTACHMENT_DATA
+   };
 
 // Attach file to comment
 smartsheet.sheets.addCommentAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -980,18 +1046,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```javascript
 // Set options
 var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588,    
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
     fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588
-};
+    body: ATTACHMENT_DATA
+    };
 
 // Attach file to row
 smartsheet.sheets.addRowAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1085,17 +1151,17 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```javascript
 // Set options
 var options = {
-    contentType: CONTENT_TYPE,
-    fileName: NAME_OF_FILE,
-    fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668
-};
+   sheetId: 2252168947361668,
+   contentType: CONTENT_TYPE,
+   fileName: NAME_OF_FILE,
+   fileSize: SIZE_OF_FILE,
+   body: ATTACHMENT_DATA
+   };
 
 // Attach file to sheet
 smartsheet.sheets.addAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1166,15 +1232,15 @@ var attachment = {
 
 // Set options
 var options = {
-    body: attachment,
     sheetId: 2252168947361668,
-    commentId: 4445024629876612
+    commentId: 4445024629876612,
+    body: attachment
 };
 
 // Attach URL to comment
 smartsheet.sheets.addCommentAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedAttachment) {
+        console.log(updatedAttachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1259,15 +1325,15 @@ var attachment = {
 
 // Set options
 var options = {
-    body: attachment,
     sheetId: 2252168947361668,
-    rowId: 4293147074291588
+    rowId: 4293147074291588,
+    body: attachment
 };
 
 // Attach URL to row
 smartsheet.sheets.addRowAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedAttachment) {
+        console.log(updatedAttachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1355,14 +1421,14 @@ var attachment = {
 
 // Set options
 var options = {
-    body: attachment,
-    sheetId: 2252168947361668
+    sheetId: 2252168947361668,
+    body: attachment
 };
 
 // Attach URL to sheet
 smartsheet.sheets.addAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedAttachment) {
+        console.log(updatedAttachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1443,8 +1509,8 @@ var options = {
 
 // Delete attachment
 smartsheet.sheets.deleteAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -1510,8 +1576,8 @@ var options = {
 
 // Get attachment
 smartsheet.sheets.getAttachment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -1578,8 +1644,8 @@ var options = {
 
 // List attachments
 smartsheet.sheets.listAttachments(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -1678,8 +1744,8 @@ var options = {
 
 // List discussion attachments
 smartsheet.sheets.listDiscussionAttachments(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -1782,8 +1848,8 @@ var options = {
 
 // List row attachments
 smartsheet.sheets.getRowAttachments(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -1934,18 +2000,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```javascript
 // Set options
 var options = {
+    sheetId: 2252168947361668,
+    rowId: 4293147074291588,
     contentType: CONTENT_TYPE,
     fileName: NAME_OF_FILE,
     fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA,
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588
-};
+    body: ATTACHMENT_DATA
+    };
 
 // Attach new version of the file
 smartsheet.sheets.attachNewVersion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachment) {
+        console.log(attachment);
     })
     .catch(function (error) {
         console.log(error);
@@ -2030,8 +2096,8 @@ var options = {
 
 // Delete all versions of the attachment
 smartsheet.sheets.deleteAllAttachmentVersions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -2096,8 +2162,8 @@ var options = {
 
 // List versions of the attachment
 smartsheet.sheets.listAttachmentVersions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (attachmentsList) {
+        console.log(attachmentsList);
     })
     .catch(function (error) {
         console.log(error);
@@ -2205,7 +2271,7 @@ A collection of Cells comprises each Row in a Sheet.
 -----|-----|-----|
 **columnId** | number | The Id of the column that the cell is located in
 **columnType** | string | See type definition on the [Column Object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
-**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  See [Cell Reference](#cell-reference).
+**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  An empty cell returns no value. See [Cell Reference](#cell-reference).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Reference](#cell-reference).
 **objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set. Note: calculation errors or problems with a formula will not cause the API call to return an error code. Instead, the response will contain the same value as in the UI, such as cell.value = "#CIRCULAR REFERENCE".
@@ -2371,8 +2437,8 @@ var options = {
 
 // Get cell history
 smartsheet.sheets.getCellHistory(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -2517,14 +2583,14 @@ A cell may not contain both a hyperlink and a cell link, so **hyperlink** and **
 
 [Cell Objects](#cell-object) retrieved through the Smartsheet APIs have two main attributes representing cell values: **Cell.value**, and
 **Cell.displayValue**.  A third attribute, **Cell.objectValue** is currently used only for adding and updating predecessors.
-An empty cell is always represented by **null** for all of these attributes.
+An empty cell returns no value.
 
 **Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
 be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
 like 1234.5678, but its **displayValue** would be "$1,234.57".
 
 **Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **Boolean**,
-depending on the column type.  Complex types are represented as strings, formatted as described below:
+depending on the column type.  An empty cell returns no value. Complex types are represented as strings, formatted as described below:
 
 <% PROJECT_COLUMN_HELP_URL = "https://help.smartsheet.com/articles/765737-project-sheet-columns-start-date-end-date-duration-complete-and-predecessors" %>
 
@@ -2534,7 +2600,7 @@ depending on the column type.  Complex types are represented as strings, formatt
 | CONTACT_LIST	| **string**: an email address representing a contact, or a free-form text value.							| Yes: same as **value** for free-form strings; for contacts, the contact's name if any, else their email address.
 | DATE			| **string**: a date in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
 | PICKLIST		| **string**: one of the picklist's column options, or a free-form text value.<br/>**number**: numeric values| Yes: same as **value** for strings; for number values, the number with formatting applied.
-| CHECKBOX		| **Boolean**: `true` if the checkbox is checked, `false` otherwise.<br/>**string**: a free-form text value.| No.
+| CHECKBOX		| **Boolean**: `true` if the checkbox is checked, `false` if unchecked, no value if the cell hasn't been touched yet.<br/>**string**: a free-form text value.| No.
 | DURATION		| **string**: a duration value such as "4d 6h 30m" in the user's locale, or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on durations.| Yes: same as **value**
 | PREDECESSOR	| **string**: a comma-delimited predecessor list such as "12FS +3d 4h, 14SS", or a free-form text value.<br/>See the [Help Center](<%= PROJECT_COLUMN_HELP_URL %>) for more information on predecessors.| Yes: same as **value**
 | ABSTRACT_DATETIME | **string**: a project date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, or a free-form text value.<br/>**number**: see [Dates and Times](#dates-and-times) for how to request dates to be returned as numbers. | No.
@@ -2642,7 +2708,9 @@ When creating or updating cells for a contact list column, the **displayValue** 
 You can create and modify [hyperlinks](#hyperlink-object) by using any API operation that creates or updates cell data. 
 When creating or updating a hyperlink, **cell.value** may be set to a string value or null. 
 If null, the cell's value is derived from the hyperlink: 
-<ul><li>If the hyperlink is a URL link, the cell's value is set to the URL itself.</li><li>If the hyperlink is a sheet, report, or Sight link, the cell's value is set to the sheet, report, or Sight name.</li></ul>
+
+* If the hyperlink is a URL link, the cell's value is set to the URL itself.
+* If the hyperlink is a sheet, report, or Sight link, the cell's value is set to the sheet, report, or Sight name.
 
 ### Images in Cells
 
@@ -2742,6 +2810,146 @@ Uploads an image to the specified Cell within a Sheet.
 <%= REQUEST %> | Binary content for the file
 <%= RETURNS %> | [Result Object](#result-object)
 
+## Download Cell Image
+
+> Example Request: Download Cell Image
+
+```shell
+// Steps 1 and 2: Locate the cell and obtain the imageId
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+
+// In the response, note the columnId and ImageId
+// You might also save the altText for Step 4
+{
+	"cells": [{
+		"columnId": 6800865311909764,
+		"image": {
+			"id": "nQCn-Bm2ncwqsw_FX1XI_w",
+			"height": 932,
+			"width": 1562,
+			"altText": "stanley hotel.png"
+		}
+	}]
+}
+
+// Step 3: Obtain a temporary image URL
+curl https://api.smartsheet.com/2.0/imageurls \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"imageId": "nQCn-Bm2ncwqsw_FX1XI_w","height":40,"width": 20}]'
+
+// In the response, note the URL and its expiration time
+{
+    "urlExpiresInMillis": 1800000,
+    "imageUrls": [
+        {
+            "imageId": "nQCn-Bm2ncwqsw_FX1XI_w",
+            "url": "https://aws.smartsheet.com/storageProxy/image/images/OMB9hAConFbhUdJMQ5czQEkwAj1-ErW-sXz3Dr4nDfE?expirationDate=2017-07-25T22%3A13%3A07%2B0000&height=40&width=20&hmac=e%2BfIb0ffUK%2BZeA2hbGx%2Fj8YcWUY%3D"
+        }
+    ]
+}
+
+// Step 4: Download the image
+curl -o "stanley_hotel" "https://aws.smartsheet.com/storageProxy/image/images/OMB9hAConFbhUdJMQ5czQEkwAj1-ErW-sXz3Dr4nDfE?expirationDate=2017-07-25T22%3A01%3A33%2B0000&height=40&width=20&hmac=5t%2FHs9%2BXTk5cNhyDax9ZgcbepKI%3D"
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+```
+
+```javascript
+// [todo]
+```
+
+```csharp
+long sheetId = 1639534409607044;
+long rowId = 3344087179913092;
+long columnId = 1735559124150148;
+
+//  Step 1: Identify the cell that contains an image
+Row row = smartsheet.SheetResources.RowResources.GetRow(
+    sheetId,
+    rowId,
+    null,
+    null);
+Cell cell = row.Cells.First(c => c.ColumnId == columnId);
+
+// Step 2: Get image info from cell
+Image image = cell.Image;
+string imageId = image.Id;
+string localFileName = image.AltText;
+
+// Step 3: Build list of image urls
+ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = imageId } };
+
+string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).ImageUrls[0].Url;
+
+// Step 4: Download the image
+System.Net.WebClient client = new System.Net.WebClient();
+client.DownloadFile(temporaryUrl, localFileName);
+```
+
+```java
+long sheetId = 5670346721388420L;
+long rowId = 3344087179913092L;
+long columnId = 1735559124150148L;
+
+//  Step 1: Identify the cell that contains an image
+Row row = ss.sheetResources().rowResources().getRow(
+    sheetId,
+    rowId,
+    null,
+    null);
+Cell cell = row.getCells().stream().filter(c -> c.getColumnId() == columnId).findFirst().orElse(null);
+
+// Step 2: Get image info from cell
+Image image = cell.getImage();
+String imageId = image.getId();
+String localFileName = image.getAltText();
+
+// Step 3: Build list of image urls
+ImageUrl imageUrl = new ImageUrl();
+imageUrl.setImageId(imageId);
+List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
+
+String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
+
+// Step 4: Download the image
+CloseableHttpClient httpclient = HttpClients.createDefault();
+HttpGet httpget = new HttpGet(temporaryUrl);
+CloseableHttpResponse response = httpclient.execute(httpget);
+HttpEntity entity = response.getEntity();
+FileOutputStream fos = new FileOutputStream(localFileName);
+entity.writeTo(fos);
+fos.close();
+```
+
+```python
+# [todo]
+```
+
+Downloading a cell image is a multi-step process. This sample downloads a cell image to a local file. The cell is specified by sheet Id, row Id, and column Id.
+
+Click the appropriate language tab in the rightmost pane to see sample code.
+
+**Step 1. Locate the cell**
+
+Get the desired row, then locate the desired cell based on the column Id.
+
+**Step 2. Obtain the image Id**
+
+Cell images are identified by an image Id, which is stored in a cell Image Object. (The image Id is the "key" to the image and should be kept secure.)
+
+When a user uploads an image to a cell, Smartsheet uses the original file name as the image "Alt text." This example uses that Alt text value as the local file name.
+
+**Step 3. Obtain a temporary image URL**
+
+The POST /imageurls command creates a temporary URL that you can use to download the image. The URL expires after a short time, which is reported in the response.
+
+**Step 4. Download the image**
+
+Once you have the URL, issue a standard HTTP GET to download the image and save as a local file.  
+
 ## List Image URLs
 
 > Example Request: List Image URLs
@@ -2759,11 +2967,19 @@ curl https://api.smartsheet.com/2.0/imageurls \
 ```
 
 ```csharp
-// [todo]
+// Build list of image urls
+ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = imageId } };
+
+string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).ImageUrls[0].Url;
 ```
 
 ```java
-// [todo]
+// Build list of image urls
+ImageUrl imageUrl = new ImageUrl();
+imageUrl.setImageId(imageId);
+List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
+
+String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
 ```
 
 ```python
@@ -2925,14 +3141,14 @@ var column = [
 
 // Set options
 var options = {
-    body: column,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: column
+    };
 
 // Add columns to the sheet
 smartsheet.sheets.addColumn(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newColumns) {
+        console.log(newColumns);
     })
     .catch(function (error) {
         console.log(error);
@@ -3070,8 +3286,8 @@ var options = {
 
 // Delete column
 smartsheet.sheets.deleteColumn(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -3135,8 +3351,8 @@ var options = {
 
 // Get column
 smartsheet.sheets.getColumns(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (column) {
+        console.log(column);
     })
     .catch(function (error) {
         console.log(error);
@@ -3222,8 +3438,8 @@ var options = {
 
 // List columns
 smartsheet.sheets.getColumns(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (columnList) {
+        console.log(columnList);
     })
     .catch(function (error) {
         console.log(error);
@@ -3326,15 +3542,15 @@ var column = {
 
 // Set options
 var options = {
-    body: column,
     sheetId: 2252168947361668,
-    columnId: 5005385858869124
-};
+    columnId: 5005385858869124,
+    body: column
+    };
 
 // Update column
 smartsheet.sheets.updateColumn(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedColumn) {
+        console.log(updatedColumn);
     })
     .catch(function (error) {
         console.log(error);
@@ -3549,15 +3765,15 @@ var comment = { "text": "This is a new comment." };
 
 // Set options
 var options = {
-    body: comment,
     sheetId: 2252168947361668,
-    discussionId: 3962273862576004
-};
+    discussionId: 3962273862576004,
+    body: comment
+    };
 
 // Add comment to discussion
 smartsheet.sheets.addDiscussionComment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newComment) {
+        console.log(newComment);
     })
     .catch(function (error) {
         console.log(error);
@@ -3793,8 +4009,8 @@ var options = {
 
 // Delete comment
 smartsheet.sheets.deleteComment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -3859,8 +4075,8 @@ var options = {
 
 // Get comment
 smartsheet.sheets.getComment(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (comment) {
+        console.log(comment);
     })
     .catch(function (error) {
         console.log(error);
@@ -3951,6 +4167,20 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
+```javascript
+// Set options
+var args = {id: "AAcBgiYU54QAGfLS5hTnhA"};
+
+// Get contact
+smartsheet.contacts.getContact(args)
+.then(function(contact) {
+  console.log(contact);
+})
+.catch(function(error) {
+  console.log(error);
+});
+```
+
 ```csharp
 Contact contact = smartsheet.ContactResources.GetContact(
     "AAAAATYU54QAD7_fNhTnhA"      // string contactId
@@ -3995,6 +4225,16 @@ Gets the specified Contact.
 ```shell
 curl https://api.smartsheet.com/2.0/contacts \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+smartsheet.contacts.listContacts({})
+.then(function(contactsList) {
+  console.log(contactsList);
+})
+.catch(function(error) {
+  console.log(error);
+});
 ```
 
 ```csharp
@@ -4130,15 +4370,15 @@ var discussion = {
 
 // Set options
 var options = {
-    body: discussion,
     sheetId: 2252168947361668,
-    rowId: 4293147074291588
-};
+    rowId: 4293147074291588,
+    body: discussion
+    };
 
 // Add discussion to row
 smartsheet.sheets.createRowDiscussion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newDiscussion) {
+        console.log(newDiscussion);
     })
     .catch(function (error) {
         console.log(error);
@@ -4305,14 +4545,14 @@ var discussion = {
 
 // Set options
 var options = {
-    body: discussion,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: discussion
+    };
 
 // Add discussion to sheet
 smartsheet.sheets.createDiscussion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newDiscussion) {
+        console.log(newDiscussion);
     })
     .catch(function (error) {
         console.log(error);
@@ -4467,8 +4707,8 @@ var options = {
 
 // Delete discussion
 smartsheet.sheets.deleteDiscussion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -4531,8 +4771,8 @@ var options = {
 
 // List discussions
 smartsheet.sheets.getDiscussions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (discussionList) {
+        console.log(discussionList);
     })
     .catch(function (error) {
         console.log(error);
@@ -4622,8 +4862,8 @@ var options = {
 
 // Get discussion
 smartsheet.sheets.getDiscussions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (discussion) {
+        console.log(discussion);
     })
     .catch(function (error) {
         console.log(error);
@@ -4699,8 +4939,8 @@ var options = {
 
 // List row discussions
 smartsheet.sheets.getRowDiscussions(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (discussionList) {
+        console.log(discussionList);
     })
     .catch(function (error) {
         console.log(error);
@@ -4841,8 +5081,8 @@ var options = {
 
 // Add items to favorites
 smartsheet.favorites.addItemsToFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFavorite) {
+        console.log(newFavorite);
     })
     .catch(function (error) {
         console.log(error);
@@ -4924,8 +5164,8 @@ curl https://api.smartsheet.com/2.0/favorites \
 
 ```javascript
 smartsheet.favorites.listFavorites()
-    .then(function (data) {
-        console.log(data);
+    .then(function (favoritesList) {
+        console.log(favoritesList);
     })
     .catch(function (error) {
         console.log(error);
@@ -5005,8 +5245,8 @@ var options = {
 
 // Remove folder from list of favorites
 smartsheet.favorites.removeFolderFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5062,8 +5302,8 @@ var options = {
 
 // Remove report from list of favorites
 smartsheet.favorites.removeReportFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5119,8 +5359,8 @@ var options = {
 
 // Remove sheet from list of favorites
 smartsheet.favorites.removeSheetFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5223,8 +5463,8 @@ var options = {
 
 // Remove template from list of favorites
 smartsheet.favorites.removeTemplateFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5280,8 +5520,8 @@ var options = {
 
 // Remove workspace from list of favorites
 smartsheet.favorites.removeWorkspaceFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5342,8 +5582,8 @@ var options = {
 
 // Remove folders from list of favorites
 smartsheet.favorites.removeFoldersFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5401,8 +5641,8 @@ var options = {
 
 // Remove reports from list of favorites
 smartsheet.favorites.removeReportsFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5460,8 +5700,8 @@ var options = {
 
 // Remove sheets from list of favorites
 smartsheet.favorites.removeSheetsFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5558,8 +5798,8 @@ var options = {
 
 // Remove templates from list of favorites
 smartsheet.favorites.removeTemplatesFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5617,8 +5857,8 @@ var options = {
 
 // Remove workspaces from list of favorites
 smartsheet.favorites.removeWorkspacesFromFavorites(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -5684,6 +5924,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet Objects
 **folders** | [Folder](#folder-object)[] | Array of Folder Objects
 **reports** | [Report](#report-object)[] | Array of Report Objects
+**sights** | [Sight](#sight-object)[] | Array of Sight Objects
 **templates** | [Template](#template-object)[] | Array of Template Objects
 
 ## Copy Folder
@@ -5821,8 +6062,8 @@ var options = {
 
 // Create folder in "Sheets" folder (Home)
 smartsheet.home.createFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFolder) {
+        console.log(newFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -5879,14 +6120,14 @@ var folder = {
 
 // Set options
 var options = {
-    body: folder,
-    folderId: 7960873114331012
-};
+    folderId: 7960873114331012,
+    body: folder
+    };
 
 // Create folder in another folder
 smartsheet.folders.createChildFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFolder) {
+        console.log(newFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -5951,14 +6192,14 @@ var folder = {
 
 // Set options
 var options = {
-    body: folder,
-    workspaceId: 1656220827314052
-};
+    workspaceId: 1656220827314052,
+    body: folder
+    };
 
 // Create folder in a workspace
 smartsheet.workspaces.createFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newFolder) {
+        console.log(newFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6021,8 +6262,8 @@ var options = {
 
 // Delete folder
 smartsheet.folders.deleteFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -6082,8 +6323,8 @@ var options = {
 
 // Get folder
 smartsheet.folders.getFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (folder) {
+        console.log(folder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6140,6 +6381,24 @@ folder = ss_client.Folders.get_folder(
             "createdAt": "2015-06-05T20:05:29Z",
             "modifiedAt": "2015-06-05T20:05:43Z"
         }
+    ],
+    "reports": [
+        {
+            "id": 1653067851556740,
+            "name": "Weekly report",
+            "accessLevel": "OWNER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=v2DKrX6MH5zx2NEYHxbnlA"
+        }
+    ],
+    "sights": [
+        {
+            "id": 6327127650920324,
+            "name": "Employee Resource Center",
+            "accessLevel": "VIEWER",
+            "permalink": "https://app.smartsheet.com/b/home?lx=pgjANFWKnpXsljR6Nsts1SnUXphoZCJbZcV5Sw9DPzI",
+            "createdAt": "2016-06-16T22:35:53Z",
+            "modifiedAt": "2017-08-23T18:58:09Z"
+        }
     ]
 }
 ```
@@ -6171,8 +6430,8 @@ curl https://api.smartsheet.com/2.0/home/folders \
 
 ```javascript
 smartsheet.home.listFolders()
-    .then(function (data) {
-        console.log(data);
+    .then(function (folderList) {
+        console.log(folderList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6236,8 +6495,8 @@ var options = {
 
 // List folders in another folder
 smartsheet.folders.listChildFolders(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (folderList) {
+        console.log(folderList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6306,8 +6565,8 @@ var options = {
 
 // List folders in workspace
 smartsheet.workspaces.listWorkspaceFolders(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (folderList) {
+        console.log(folderList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6464,8 +6723,8 @@ var options = {
 
 // Update folder
 smartsheet.folders.updateFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedFolder) {
+        console.log(updatedFolder);
     })
     .catch(function (error) {
         console.log(error);
@@ -6589,8 +6848,8 @@ var options = {
 
 // Create group
 smartsheet.groups.createGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newGroup) {
+        console.log(newGroup);
     })
     .catch(function (error) {
         console.log(error);
@@ -6691,8 +6950,8 @@ var options = {
 
 // Delete group
 smartsheet.groups.deleteGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -6756,8 +7015,8 @@ var options = {
 
 // Get group
 smartsheet.groups.getGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (group) {
+        console.log(group);
     })
     .catch(function (error) {
         console.log(error);
@@ -6826,8 +7085,8 @@ curl https://api.smartsheet.com/2.0/groups \
 
 ```javascript
 smartsheet.groups.listGroups()
-    .then(function (data) {
-        console.log(data);
+    .then(function (groupList) {
+        console.log(groupList);
     })
     .catch(function (error) {
         console.log(error);
@@ -6917,14 +7176,14 @@ var group = {
 
 // Set options
 var options = {
-    body: group,
-    id: 2331373580117892 // Id of Group
-};
+    id: 2331373580117892, // Id of Group
+    body: group
+    };
 
 // Update group
 smartsheet.groups.updateGroup(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedGroup) {
+        console.log(updatedGroup);
     })
     .catch(function (error) {
         console.log(error);
@@ -7050,14 +7309,14 @@ var members = [{ "email": "jane.doe@smartsheet.com" }];
 
 // Set options
 var options = {
-    body: members,
-    groupId: 7917992160847748
-};
+    groupId: 7917992160847748,
+    body: members
+    };
 
 // Add members to group
 smartsheet.groups.addGroupMembers(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newMembers) {
+        console.log(newMembers);
     })
     .catch(function (error) {
         console.log(error);
@@ -7151,8 +7410,8 @@ var options = {
 
 // Remove member from group
 smartsheet.groups.removeGroupMember(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -7228,9 +7487,10 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet Objects
 **folders** | [Folder](#folder-object)[] | Array of Folder Objects
 **reports** | [Report](#report-object)[] | Array of Report Objects
+**sights** | [Sight](#sight-object)[] | Array of Sight Objects
 **templates** | [Template](#template-object)[] | Array of Template Objects
 **workspaces** | [Workspace](#workspace-object)[] | Array of Workspace Objects
-**Sights** | [Sight](#sight-object)[] | Array of Sight Objects
+
 
 ## List Contents
 
@@ -7243,8 +7503,8 @@ curl https://api.smartsheet.com/2.0/home?include=source \
 
 ```javascript
 smartsheet.home.listContents()
-	.then(function(data) {
-		console.log(data);
+	.then(function(contents) {
+		console.log(contents);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -7422,8 +7682,8 @@ var options = {
 
 // Get report
 smartsheet.reports.getReport(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (report) {
+        console.log(report);
     })
     .catch(function (error) {
         console.log(error);
@@ -7568,8 +7828,8 @@ var options = {
 
 // Get report as Excel
 smartsheet.reports.getReportAsExcel(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (report) {
+        console.log(report);
     })
     .catch(function (error) {
         console.log(error);
@@ -7727,8 +7987,8 @@ curl https://api.smartsheet.com/2.0/reports
 
 ```javascript
 smartsheet.reports.listReports()
-    .then(function (data) {
-        console.log(data);
+    .then(function (reportList) {
+        console.log(reportList);
     })
     .catch(function (error) {
         console.log(error);
@@ -8083,14 +8343,14 @@ var row = [
 
 // Set options
 var options = {
-    body: row,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: row
+    };
 
 // Add rows to sheet
 smartsheet.sheets.addRows(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newRows) {
+        console.log(newRows);
     })
     .catch(function (error) {
         console.log(error);
@@ -8302,14 +8562,14 @@ var copyRow = {
 
 // Set options
 var options = {
-    body: copyRow,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: copyRow
+    };
 
 // Copy rows
 smartsheet.sheets.copyRowToAnotherSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -8416,8 +8676,8 @@ var options = {
 
 // Delete row
 smartsheet.sheets.deleteRow(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -8498,8 +8758,8 @@ var options = {
 
 // Get row
 smartsheet.sheets.getRow(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (row) {
+        console.log(row);
     })
     .catch(function (error) {
         console.log(error);
@@ -8622,14 +8882,14 @@ var moveRow = {
 
 // Set options
 var options = {
-    body: moveRow,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: moveRow
+    };
 
 // Move rows
 smartsheet.sheets.moveRowToAnotherSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -8774,14 +9034,14 @@ var row = [
 
 // Set options
 var options = {
-    body: row,
-    sheetId: 2252168947361668
-};
+    sheetId: 2252168947361668,
+    body: row
+    };
 
 // Update rows in sheet
 smartsheet.sheets.updateRow(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedRows) {
+        console.log(updatedRows);
     })
     .catch(function (error) {
         console.log(error);
@@ -9066,9 +9326,9 @@ Use the *Search* operations to search a specific Sheet or to search across all S
 -----|-----|-----|
 **text** | string | Search result text excerpt
 **objectId** | number | Search result object Id
-**objectType** | string | Search result object type (row, sheet, report, template, discussion, attachment)
+**objectType** | string | Search result object type (row, sheet, attachment, discussion, folder, report, sight, template, workspace)
 **parentObjectId** | number | Search result parent object Id
-**parentObjectType** | string | Search result parent object type (workspace, folder, sheet, report, template)
+**parentObjectType** | string | Search result parent object type (workspace, folder, sheet, report, sight, template)
 **parentObjectName** | string | Search result parent object name
 **contextData** | array | Additional info on search result context (row num)
 
@@ -9089,8 +9349,8 @@ var options = {
 
 // Search everything
 smartsheet.search.searchAll(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -9321,8 +9581,8 @@ curl https://api.smartsheet.com/2.0/serverinfo
 
 ```javascript
 smartsheet.server.getInfo()
-    .then(function (data) {
-        console.log(data);
+    .then(function (serverInfo) {
+        console.log(serverInfo);
     })
     .catch(function (error) {
         console.log(error);
@@ -9420,8 +9680,8 @@ var options = {
 
 // Delete report share
 smartsheet.reports.deleteShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -9476,8 +9736,8 @@ var options = {
 
 // Get report share
 smartsheet.reports.getShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (share) {
+        console.log(share);
     })
     .catch(function (error) {
         console.log(error);
@@ -9531,8 +9791,8 @@ var options = {
 
 // List report shares
 smartsheet.reports.listShares(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (shareList) {
+        console.log(shareList);
     })
     .catch(function (error) {
         console.log(error);
@@ -9607,14 +9867,14 @@ var share = [
 
 // Set options
 var options = {
-    body: share,
-    reportId: 665829219035012
-};
+    reportId: 665829219035012,   
+    body: share
+    };
 
 // Share report
 smartsheet.reports.share(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (addressList) {
+        console.log(addressList);
     })
     .catch(function (error) {
         console.log(error);
@@ -9690,15 +9950,15 @@ var share = {"accessLevel": "VIEWER"};
 
 // Set options
 var options = {
-    body: share,
     reportId: 665829219035012,
-    shareId: "AAAFeF82FOeE"
-};
+    shareId: "AAAFeF82FOeE",
+    body: share
+    };
 
 // Update report share
 smartsheet.reports.updateShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedShare) {
+        console.log(updatedShare);
     })
     .catch(function (error) {
         console.log(error);
@@ -9771,8 +10031,8 @@ var options = {
 
 // Delete sheet share
 smartsheet.sheets.deleteShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -9827,8 +10087,8 @@ var options = {
 
 // Get sheet share
 smartsheet.sheets.getShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (share) {
+        console.log(share);
     })
     .catch(function (error) {
         console.log(error);
@@ -9882,8 +10142,8 @@ var options = {
 
 // List sheet shares
 smartsheet.sheets.listShares(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (shareList) {
+        console.log(shareList);
     })
     .catch(function (error) {
         console.log(error);
@@ -9960,14 +10220,14 @@ var share = [
 
 // Set options
 var options = {
-    body: share,
-    sheetId: 4583614634583940
-};
+    sheetId: 4583614634583940,
+    body: share
+    };
 
 // Share sheet
 smartsheet.sheets.share(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (addressList) {
+        console.log(addressList);
     })
     .catch(function (error) {
         console.log(error);
@@ -10040,19 +10300,19 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 
 ```javascript
 // Set access level to Viewer
-var share = {"accessLevel": "VIEWER"};
+var shareSpecification = {"accessLevel": "VIEWER"};
 
 // Set options
-var options = {
-    body: share,
-    sheetId: 4583614634583940,
-    shareId: "AAAFeF82FOeE"
+var args = {
+    sheetId: 1696801624483716,
+    shareId: "AAAHAYImFOeE",
+    body: shareSpecification
 };
 
 // Update sheet share
-smartsheet.sheets.updateShare(options)
-    .then(function (data) {
-        console.log(data);
+smartsheet.sheets.updateShare(args)
+    .then(function (updatedShare) {
+        console.log(updatedShare);
     })
     .catch(function (error) {
         console.log(error);
@@ -10114,7 +10374,20 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var args = {
+    sightId: 6327127650920324,
+    shareId: "AAABbMomFOeE"
+}
+
+// Delete Sight share
+smartsheet.sights.deleteShare(args)
+ .then(function(results) {
+   console.log(results);
+ })
+ .catch(function(error) {
+   console.log(error);
+ });
 ```
 
 ```csharp
@@ -10158,7 +10431,20 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var args = {
+    sightId: 6327127650920324,
+    shareId: "AAABbMomFOeE"
+}
+
+// Get Sight share
+smartsheet.sights.getShare(args)
+ .then(function(share) {
+   console.log(share);
+ })
+ .catch(function(error) {
+   console.log(error);
+ });
 ```
 
 ```csharp
@@ -10205,7 +10491,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var args = {
+    sightId: 6327127650920324
+}
+
+// List Sight shares
+smartsheet.sights.listShares(args)
+ .then(function(shareList) {
+   console.log(shareList);
+ })
+ .catch(function(error) {
+   console.log(error);
+ });
 ```
 
 ```csharp
@@ -10264,7 +10562,28 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
 ```
 
 ```javascript
-// [todo]
+// Specify share (to one user as Viewer)
+var share = [
+    {
+        "email": "jane.doe@smartsheet.com",
+        "accessLevel": "VIEWER"
+    }
+];
+
+// Set options
+var shareSpecification = {
+    sightId: 6327127650920324,
+    body: share
+};
+
+// Share Sight
+smartsheet.sights.share(shareSpecification)
+ .then(function(addressList) {
+   console.log(addressList);
+ })
+ .catch(function(error) {
+   console.log(error);
+ });
 ```
 
 ```csharp
@@ -10331,7 +10650,24 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 ```
 
 ```javascript
-// [todo]
+// Set access level to Viewer
+var shareSpecification = {"accessLevel": "VIEWER"};
+
+// Set options
+var args = {
+    sightId: 6327127650920324,
+    shareId: "AAALRqomFOeE",
+    body: shareSpecification
+};
+
+// Update Sight share
+smartsheet.sights.updateShare(args)
+    .then(function (updatedShare) {
+        console.log(updatedShare);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -10395,8 +10731,8 @@ var options = {
 
 // Delete workspace share
 smartsheet.workspaces.deleteShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -10455,8 +10791,8 @@ var options = {
 
 // Get workspace share
 smartsheet.workspaces.getShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (share) {
+        console.log(share);
     })
     .catch(function (error) {
         console.log(error);
@@ -10510,8 +10846,8 @@ var options = {
 
 // List workspace shares
 smartsheet.workspaces.listShares(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (shareList) {
+        console.log(shareList);
     })
     .catch(function (error) {
         console.log(error);
@@ -10597,8 +10933,8 @@ var options = {
 
 // Share workspace
 smartsheet.workspaces.share(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(addressList) {
+		console.log(addressList);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -10681,15 +11017,15 @@ var share = {"accessLevel": "VIEWER"};
 
 // Set options
 var options = {
-    body: share,
     workspaceId: 1656220827314052,
-    shareId: "AAAFeF82FOeE"
-};
+    shareId: "AAAFeF82FOeE",
+    body: share
+    };
 
 // Update workspace share
 smartsheet.workspaces.updateShare(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedShare) {
+        console.log(updatedShare);
     })
     .catch(function (error) {
         console.log(error);
@@ -10945,14 +11281,6 @@ Creates a copy of the specified Sheet.
 
 ## Create Sheet
 
-To create a Sheet from scratch, use one of the following operations (according to where you want to create the Sheet):
-<ul>
-<li>[Create Sheet](#create-sheet-in-quot-sheets-quot-folder)</li>
-<li>[Create Sheet in Folder](#create-sheet-in-folder)</li>
-<li>[Create Sheet in Workspace](#create-sheet-in-workspace)</li>
-</ul>
-<p>To create a Sheet from a Template, see [Create Sheet from Template](#create-sheet-from-template).</p>
-
 ### Create Sheet in "Sheets" folder
 
 > Example Request: Create Sheet in "Sheets" folder
@@ -10990,8 +11318,8 @@ var options = {
 
 // Create sheet in "Sheets" folder
 smartsheet.sheets.createSheet(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(newSheet) {
+		console.log(newSheet);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -11069,7 +11397,7 @@ new_sheet = response.result
 
 `POST /sheets`
 
-Creates a Sheet from scratch in the user's **Sheets** folder ([Home](#home)). To create a Sheet from scratch in a subfolder of the **Sheets** folder, use [Create Sheet in Folder](#create-sheet-in-folder). 
+Creates a Sheet from scratch in the user's **Sheets** folder ([Home](#home)). For subfolders, use [Create Sheet in Folder](#create-sheet-in-folder). 
 
 <%= partial "snippets/createSheet_table.md.erb" %>
 
@@ -11105,14 +11433,14 @@ var sheet = {
 
 // Set options
 var options = {
-    body: sheet,
-    folderId: 3734419270854532
-};
+    folderId: 3734419270854532,
+    body: sheet
+    };
 
 // Create sheet in folder
 smartsheet.sheets.createSheetInFolder(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newSheet) {
+        console.log(newSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -11230,14 +11558,14 @@ var sheet = {
 
 // Set options
 var options = {
-	body: sheet,
-	workspaceId: 1656220827314052
-};
+    workspaceId: 1656220827314052,
+    body: sheet
+	};
 
 // Create sheet in workspace
 smartsheet.sheets.createSheetInWorkspace(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(newSheet) {
+		console.log(newSheet);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -11318,19 +11646,11 @@ new_sheet = response.result
 
 `POST /workspaces/{workspaceId}/sheets`
 
-Creates a Sheet from scratch at the top-level of the specified Workspace. To create a Sheet from scratch in a Folder within a Workspace, use [Create Sheet in Folder](#create-sheet-in-folder).
+Creates a Sheet from scratch at the top-level of the specified Workspace. For subfolders, use [Create Sheet in Folder](#create-sheet-in-folder).
 
 <%= partial "snippets/createSheet_table.md.erb" %>
 
 ## Create Sheet from Template
-
-To create a Sheet from a Template, use one of the following operations (according to where you want to create the Sheet):
-<ul>
-<li>[Create Sheet in "Sheets" folder from Template](#create-sheet-in-quot-sheets-quot-folder-from-template)</li>
-<li>[Create Sheet in Folder from Template](#create-sheet-in-folder-from-template)</li>
-<li>[Create Sheet in Workspace from Template](#create-sheet-in-workspace-from-template)</li>
-</ul>
-<p>To create a Sheet from scratch, see [Create Sheet](#create-sheet).</p>
 
 ### Create Sheet in "Sheets" Folder From Template
 
@@ -11347,9 +11667,9 @@ curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions 
 ```javascript
 // Specify the directive
 var sheet = {
-    "name": "newsheet",
-    "fromId": 7679398137620356
-};
+    "fromId": 7679398137620356,
+    "name": "newsheet"
+    };
 
 // Set options
 var options = {
@@ -11358,8 +11678,8 @@ var options = {
 
 // Create sheet from template
 smartsheet.sheets.createSheetFromExisting(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newSheet) {
+        console.log(newSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -11427,7 +11747,7 @@ new_sheet = response.result
 
 `POST /sheets`
 
-Creates a Sheet in the user's **Sheets** folder ([Home](#home)), from the specified Template. To create a Sheet in a subfolder of the **Sheets** folder, use [Create Sheet in Folder from Template](#create-sheet-in-folder-from-template).
+Creates a Sheet in the user's **Sheets** folder ([Home](#home)), from the specified Template. For subfolders, use [Create Sheet in Folder from Template](#create-sheet-in-folder-from-template).
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
@@ -11551,20 +11871,20 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data
 ```javascript
 // Specify the directive
 var sheet = {
-    "name": "newsheet",
-    "fromId": 7679398137620356
-};
+    "fromId": 7679398137620356,
+    "name": "newsheet"
+    };
 
 // Set options
 var options = {
-    body: sheet,
-    workspaceId: 1656220827314052
-};
+    workspaceId: 1656220827314052,
+    body: sheet
+    };
 
 // Create sheet from template in the specified workspace
 smartsheet.sheets.createSheetFromExisting(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newSheet) {
+        console.log(newSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -11637,7 +11957,7 @@ response = ss_client.Workspaces.create_sheet_in_workspace_from_template(
 
 `POST /workspaces/{workspaceId}/sheets`
 
-Creates a Sheet at the top-level of the specified Workspace, from the specified Template. To create a Sheet in a Folder within a Workspace, use [Create Sheet in Folder from Template](#create-sheet-in-folder-from-template).
+Creates a Sheet at the top-level of the specified Workspace, from the specified Template. For subfolders, use [Create Sheet in Folder from Template](#create-sheet-in-folder-from-template).
 
 <%= partial "snippets/createSheetFromExisting_table.md.erb" %>
 
@@ -11659,8 +11979,8 @@ var options = {
 
 // Delete sheet
 smartsheet.sheets.deleteSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -11720,8 +12040,8 @@ var options = {
 
 // Get sheet version
 smartsheet.sheets.getSheetVersion(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (version) {
+        console.log(version);
     })
     .catch(function (error) {
         console.log(error);
@@ -11790,8 +12110,8 @@ var options = {
 
 // Get sheet
 smartsheet.sheets.getSheet(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(sheetInfo) {
+		console.log(sheetInfo);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -11886,7 +12206,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**filterDefinitions**: includes type of filter, operators used, and criteria</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
   | **rowIds** (optional): a comma-separated list of Row Ids on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
@@ -11914,8 +12234,8 @@ var options = {
 
 // Get sheet
 smartsheet.sheets.getSheetAsExcel(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(results) {
+		console.log(results);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12130,8 +12450,8 @@ curl https://api.smartsheet.com/2.0/sheets \
 
 ```javascript
 smartsheet.sheets.listSheets()
-	.then(function(data) {
-		console.log(data);
+	.then(function(sheetList) {
+		console.log(sheetList);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12322,8 +12642,8 @@ var options = {
 
 // Get sheet publish status
 smartsheet.sheets.getPublishStatus(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(status) {
+		console.log(status);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12395,14 +12715,14 @@ var publishStatus = {
 
 // Set options
 var options = {
-  body: publishStatus,
-  sheetId: 4583614634583940
-};
+    sheetId: 4583614634583940,
+    body: publishStatus
+    };
 
 // Set publish status
 smartsheet.sheets.setPublishStatus(options)
-	.then(function(data) {
-		console.log(data);
+	.then(function(updatedStatus) {
+		console.log(updatedStatus);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12530,14 +12850,14 @@ var sheet = {
 
 // Set options
 var options = {
-    body: sheet,
-    id: 7960873114331012 // Id of Sheet
-};
+    id: 7960873114331012, // Id of Sheet
+    body: sheet
+    };
 
 // Update sheet
 smartsheet.sheets.updateSheet(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedSheet) {
+        console.log(updatedSheet);
     })
     .catch(function (error) {
         console.log(error);
@@ -12890,7 +13210,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 ```
 ```javascript
-// [todo]
+// Set options
+var args = {
+    id: 5363568917931908 // Id of Sight
+};
+
+smartsheet.sights.deleteSight(args)
+.then(function(results) {
+  console.log(results);
+})
+.catch(function(error) {
+  console.log(error);
+});
 ```
 
 ```csharp
@@ -12938,7 +13269,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var args = {
+    id: 6327127650920324 // Id of Sight
+};
+
+// Get Sight
+smartsheet.sights.getSight(args)
+    .then(function(sight) {
+        console.log(sight.name);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13030,7 +13373,13 @@ curl https://api.smartsheet.com/2.0/sights \
 ```
 
 ```javascript
-// [todo]
+smartsheet.sights.listSights()
+.then(function(sights) {
+  console.log(sights.data);
+})
+.catch(function(error) {
+  console.log(error);
+})
 ```
 
 ```csharp
@@ -13403,8 +13752,8 @@ curl https://api.smartsheet.com/2.0/templates/public \
 
 ```javascript
 smartsheet.templates.listPublicTemplates()
-    .then(function (data) {
-        console.log(data);
+    .then(function (templateList) {
+        console.log(templateList);
     })
     .catch(function (error) {
         console.log(error);
@@ -13456,8 +13805,8 @@ curl https://api.smartsheet.com/2.0/templates \
 
 ```javascript
 smartsheet.templates.listUserCreatedTemplates()
-    .then(function (data) {
-        console.log(data);
+    .then(function (templateList) {
+        console.log(templateList);
     })
     .catch(function (error) {
         console.log(error);
@@ -13795,8 +14144,8 @@ var options = {
 };
 
 smartsheet.users.addUser(options)
-	.then(function(data) {
-		console.log(data)
+	.then(function(newUser) {
+		console.log(newUser)
 	}).catch(function(error) {
 		console.log(error);
 	});
@@ -14208,8 +14557,8 @@ curl https://api.smartsheet.com/2.0/users/me \
 
 ```javascript
 smartsheet.users.getCurrentUser()
-	.then(function(data) {
-		console.log(data);
+	.then(function(userProfile) {
+		console.log(userProfile);
 	})
 	.catch(function(error) {
     	console.log(error);
@@ -14280,8 +14629,8 @@ var options = {
 
 // Get user
 smartsheet.users.getUser(options)
-  	.then(function(data) {
-    	console.log(data)
+  	.then(function(userProfile) {
+    	console.log(userProfile)
   	})
   	.catch(function(error) {
     	console.log(error);
@@ -14356,8 +14705,8 @@ curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com&include=
 
 ```javascript 
 smartsheet.users.listAllUsers()
-	.then(function(data) {
-		console.log(data)
+	.then(function(userList) {
+		console.log(userList)
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -14469,8 +14818,8 @@ var options = {
 
 // Remove user
 smartsheet.users.removeUser(options)
-	.then(function(data) {
-		console.log(data)
+	.then(function(results) {
+		console.log(results)
 	})	
 	.catch(function(error) {
 		console.log(error);
@@ -14556,14 +14905,14 @@ var user = {
 
 // Set options
 var options = {
-	body: user,
-	id: 82349925918590 // Id of User
-};
+    id: 82349925918590, // Id of User
+    body: user
+	};
 
 // Update user
 smartsheet.users.updateUser(options)
-	.then(function(data) {
-		console.log(data)
+	.then(function(updatedUser) {
+		console.log(updatedUser)
 	}).catch(function(error) {
 		console.log(error);
 	});
@@ -14654,6 +15003,7 @@ Updates the User specified in the URL.
 **sheets** | [Sheet](#sheet-object)[] | Array of Sheet Objects
 **folders** | [Folder](#folder-object)[] | Array of Folder Objects
 **reports** | [Report](#report-object)[] | Array of Report Objects
+**sights** | [Sight](#sight-object)[] | Array of Sight Objects
 **templates** | [Template](#template-object)[] | Array of Template Objects
 
 ## Copy Workspace
@@ -14772,8 +15122,8 @@ var options = {
 
 // Create workspace
 smartsheet.workspaces.createWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (newWorkspace) {
+        console.log(newWorkspace);
     })
     .catch(function (error) {
         console.log(error);
@@ -14849,8 +15199,8 @@ var options = {
 
 // Delete workspace
 smartsheet.workspaces.deleteWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (results) {
+        console.log(results);
     })
     .catch(function (error) {
         console.log(error);
@@ -14910,8 +15260,8 @@ var options = {
 
 // Get workspace
 smartsheet.workspaces.getWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (workspace) {
+        console.log(workspace);
     })
     .catch(function (error) {
         console.log(error);
@@ -15003,8 +15353,8 @@ curl https://api.smartsheet.com/2.0/workspaces \
 
 ```javascript
 smartsheet.workspaces.listWorkspaces()
-	.then(function(data) {
-		console.log(data);
+	.then(function(workspaceList) {
+		console.log(workspaceList);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -15098,14 +15448,14 @@ var workspace = {"name": "Updated workspace"};
 
 // Set options
 var options = {
-    body: workspace,
-    workspaceId: 7960873114331012
-};
+    workspaceId: 7960873114331012,
+    body: workspace
+    };
 
 // Update workspace
 smartsheet.workspaces.updateWorkspace(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function (updatedWorkspace) {
+        console.log(updatedWorkspace);
     })
     .catch(function (error) {
         console.log(error);
@@ -15566,12 +15916,12 @@ Object | Deprecated Attribute | Replaced by
 
 Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
 
-1. Try executing the same API Request using a tool like <a href="https://curl.haxx.se/">cURL</a> or <a href="https://www.getpostman.com/">Postman</a>. By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
+1. Try executing the same API Request using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
   * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
   * If you can execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. Compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code generates. (See step #2 below.)
 2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
   * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-  * Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a> or <a href="https://www.charlesproxy.com/" target="_blank">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+  * Alternatively, you may choose to use a tool like [Fiddler](http://www.telerik.com/fiddler) or [Charles HTTP Proxy](https://www.charlesproxy.com/) to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
 
 # <span class="customTOCSectionHeading">Webhooks</span>
 
@@ -15888,20 +16238,12 @@ But, consider the following scenario:
 To protect against infinite loops like the one outlined above, Smartsheet introduced support for a new header that an API client can include with any API request that adds, updates, or deletes data in Smartsheet. 
 Here's how it works:
 
-<ul>
-<li>An API client includes the <b>Smartsheet-Change-Agent</b> header in any API request that adds, updates, or deletes data in Smartsheet.<br/><br/>
-	<ul>
-		<li>The header value should be set to a string that the API client recognizes as identifying itself.<br/><br/></li>
-	</ul>
-</li>
-<li>If any <a href="#event-callbacks">Event callbacks</a> fire as a result of an API request that contains the <b>Smartsheet-Change-Agent</b> header, the value of the <b>Smartsheet-Change-Agent</b> header is included in the <a href="#callbackevent-object">callback</a> in the value of the <b>changeAgent</b> attribute.<br/><br/></li>
-<li>If a webhook Subscriber receives a <a href="#callbackevent-object">callback</a> that contains the <b>changeAgent</b> attribute, it should evaluate the attribute value:<br/><br/> 
-	<ul>
-		<li>If the attribute value's comma-delimited list contains the Subscriber API client's change agent value, this indicates that the change which triggered the callback <b>WAS</b> caused by the Subscriber itself, and the Subscriber can choose to ignore the callback, thus preventing an infinite loop.<br/><br/></li>
-		<li>Else, the change which triggered the callback was <b>NOT</b> caused by the Subscriber itself, and if the Subscriber is going to subsequently react to the callback by making a change in Smartsheet (via API request), the API client should append a comma and its own identifier to the original attribute value, and pass that value through using the <b>Smartsheet-Change-Agent</b> header of the API request. Doing so protects against cross-system infinite loops.<br/><br/></li>
-	</ul>
-</li>
-</ul>
+* An API client includes the **Smartsheet-Change-Agent** header in any API request that adds, updates, or deletes data in Smartsheet.
+  * The header value should be set to a string that the API client recognizes as identifying itself.
+* If any [Event callbacks](#event-callbacks) fire as a result of an API request that contains the **Smartsheet-Change-Agent** header, the value of the **Smartsheet-Change-Agent** header is included in the [callback](#callbackevent-object) in the value of the **changeAgent** attribute.
+* If a webhook Subscriber receives a [callback](#callbackevent-object) that contains the **changeAgent** attribute, it should evaluate the attribute value:
+  * If the attribute value's comma-delimited list contains the Subscriber API client's change agent value, this indicates that the change which triggered the callback **WAS** caused by the Subscriber itself, and the Subscriber can choose to ignore the callback, thus preventing an infinite loop.
+  * Else, the change which triggered the callback was **NOT** caused by the Subscriber itself, and if the Subscriber is going to subsequently react to the callback by making a change in Smartsheet (via API request), the API client should append a comma and its own identifier to the original attribute value, and pass that value through using the **Smartsheet-Change-Agent** header of the API request. Doing so protects against cross-system infinite loops.
 
 <aside class="notice">The <b>Smartsheet-Change-Agent</b> header value has a maximum length of 512 characters. If its length exceeds 512 characters, the excess is trimmed from the front of the string, so that the most recent agent information remains.</aside>
 
