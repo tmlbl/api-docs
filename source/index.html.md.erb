@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-08-29
+Updated 2017-08-30
 
 # Overview
 ## Introduction
@@ -147,7 +147,7 @@ Header | Definition | Example |
 
 Many API calls can be modified by including one or more of these common query strings: 
 
-Query String | Type | Description | More Info |
+Query Parameter | Type | Description | More Info |
 -----|-----|-----|-----|
 pageSize | Number | Specifies the maximum number of items to return per page, for example, pageSize=25. | [Paging](#paging)
 page | String | Specifies which page to return, for example, page=4. | [Paging](#paging)
@@ -155,7 +155,6 @@ includeAll | Boolean | If true, includes all results, for example, includeAll=tr
 allowPartialSuccess | Boolean | If true, allows bulk operations to process even if one or more operations are invalid for some reason, for example, allowPartialSuccess=true. | [Bulk Operations](#bulk-operations)
 numericDates | Boolean | If true, allows you to input or receive dates in numeric format, for example, numericDates=true. | [Dates and Times](#dates-and-times)
 include/exclude | String | When applicable for a specific object, various include or exclude parameters are available, for example, include=formatting. | Object reference or [Formatting](#formatting)
-query | String | Specifies the text to search for, for example, query=stuff. | [Search](#search)
 
 <aside class="notice">Query strings are case sensitive. If you do not see the expected response, confirm that your query is formatted correctly.
 
@@ -9427,7 +9426,7 @@ Searches all Sheets that the User can access, for the specified text.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **query** (required): Case-sensitive text with which to perform the search.
+<%= PARAMETERS %> | **query** (required): Text with which to perform the search. Use double-quotes for an exact search.
 <%= RETURNS %> | [SearchResult Object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
 
 ## Search Sheet
@@ -15925,6 +15924,7 @@ Should you encounter issues with the Smartsheet API while building an integratio
 2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
   * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
   * Alternatively, you may choose to use a tool like [Fiddler](http://www.telerik.com/fiddler) or [Charles HTTP Proxy](https://www.charlesproxy.com/) to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+3. Check for capitalization errors, for instance, is the command camelcase? Did you use the correct case in a query string parameter? 
 
 # <span class="customTOCSectionHeading">Webhooks</span>
 
