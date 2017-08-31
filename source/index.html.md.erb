@@ -9270,18 +9270,9 @@ Include Flag | Notes |
 
 ### Row Location
 
-When using the [Add Rows](#add-rows) operation to insert new rows into a sheet or the [Update Rows](#update-rows) to move rows in a sheet, 
-the following "location-specifier" [Row](#row-object) attributes can be used to specify where the rows get added or moved to in the sheet:
+When you [add a row](#add-rows), the default behavior is for Smartsheet to put the row at the bottom of the sheet. And when you [update a row](#update-rows), the default behavior is to keep the row where it is.
 
-* toTop
-* toBottom
-* above
-* siblingId
-* parentId
-* indent (applicable when updating a row only)
-* outdent (applicable when updating a row only)
-
-The following table describes which *location-specifier* Row attributes should be set to implement various actions.
+If you want more precision about where the row is added or moved to in the sheet, Smartsheet provides the following "location-specifier" [Row](#row-object) attributes:
 
 Action | Row attributes
 -------|--------
@@ -9294,7 +9285,9 @@ Add or move the Row so that it is the last child row of the specified parent Row
 Indent an existing Row. | **indent** = (number of level to indent, minimum of 1)
 Outdent an existing Row. | **outdent** = (number of level to outdent, minimum of 1)
 
-<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Rows in a single request, try achieving the objective by using two separate requests: 1) Move parent Row. 2) Move child Rows.</aside>
+<aside class="notice">To avoid conflicts, you cannot set the toTop or toBottom attribute to true when you set a siblingId attribute. With a parentId attribute, you can use a toBottom attribute, but the behavior changes to push the row to the bottom of the set of child rows associated with that parentId (instead of to the bottom of the sheet).</aside>
+
+<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Rows in a single request, try achieving the objective by using two separate requests: (1) Move parent Row. (2) Move child Rows.</aside>
 
 # Search
 
