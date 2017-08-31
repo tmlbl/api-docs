@@ -259,7 +259,9 @@ Cell | A Cell is a location within a Sheet that may contain a value. A collectio
 
 ## Object Details vs Summary Information
 
-A List All command and a Get command for the same object will have different return values. A List All command will return an abbreviated set of objects so you can scan the values more quickly. A Get command will return all associated objects. For instance, if you List All Discussions (without using the associated include query parameter), you will only get Discussion Ids and information about that top-level of the Discussion. If you do a Get on a specific Discussion, you'll see the related Comment Ids too. List All Sheets will return a top-level summary of the sheets you have access to. Get a specific sheet will return detailed information about that sheet.
+As you work with the various API calls, it is helpful to understand the logic behind when Smartsheet returns object details vs summary information. For scannability and performance improvement, a List All command returns only summary-level information about an object. A Get command with an object Id returns the object details.
+
+For instance, if you List All Discussions (without using the associated include query parameter), the return contains Discussion Ids and top-level information about the Discussion. If you do a Get on a specific Discussion, you'll see the related Comment Ids too. As another example, List All Sheets returns a top-level summary of the sheets you have access to. Get a specific sheet returns detailed information about that sheet.
 
 <aside class="notice">The objects returned depend on the language you make the request in. With strongly typed languages, such as Java, C#, and Python, you will see empty object arrays in the return for any objects that might not be present, such as folders or reports. With cURL and Node.js, Smartsheet is able to abbreviate the return by leaving out any array that is empty.</aside>
 
