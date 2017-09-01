@@ -2700,8 +2700,10 @@ The parsing rules for the various column types are as follows:
 
 **PREDECESSOR**:
 
-The Smartsheet API doesn't support parsing of predecessor strings, so strict and lenient parsing don't apply to predecessors.  Instead, you can set the **objectValue** attribute to a [PredecessorList Object](#predecessorlist-object) containing
-[Predecessor Objects](#predecessor-object). To set a cell in a predecessor column to a non-predecessor string value, simply set **objectValue** to a string.
+     |     |
+-----|-----|
+*Strict* | Set using the objectValue attribute for the Cell Object, which is inherently strict. See [Cell Reference](#cell-reference).
+*Lenient* | N/A
 
 **ABSTRACT_DATETIME**:
 
@@ -3672,8 +3674,8 @@ Date			| DATE			|
 Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
 Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
 Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.)
-Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type, or updating data in a column of this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) 
-Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
+Predecessor		| PREDECESSOR	| **Only for dependency-enabled project sheets** 
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance.
 Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
 
 <aside class="notice">See the <a href="#cell-reference">Cell Reference</a> section for information on getting and setting cell values for the different column types.</aside>
@@ -9282,18 +9284,18 @@ Include Flag | Description |
 
 When you [add a row](#add-rows), the default behavior is for Smartsheet to put the new row at the bottom of the sheet. And when you [update a row](#update-rows), the default behavior is to keep the row where it is.
 
-If you want to specify where the row is added or moved to in the sheet, Smartsheet provides the following "location-specifier" [row](#row-object) attributes:
+If you want to specify where the row is added or moved to in the sheet, Smartsheet provides the following "location-specifier" [row](#row-object) attributes. Boolean attributes only take effect if the value is `true`.
 
 Row Attribute | Type | Description
 -------|--------|--------
 **toTop** | Boolean | Add or move the row to the top of the sheet.
 **toBottom** | Boolean | Add or move the row to the bottom of the sheet.
-**parentId** | String | Add or move the row so that it is the first child row of the specified parent row. 
-**parentId** +<br/>**toBottom** | String + Boolean | Add or move the row so that it is the last child row of the specified parent row. 
-**siblingId** | String | Add or move the row directly below the sibling row (at the same indent level as the specified row). 
-**siblingId** +<br/>**above** | String + Boolean | Add or move the row directly above the sibling row (at the same indent level as the specified row). 
-**indent** | Num | Number of levels to indent an existing row.
-**outdent** | Num | Number of levels to outdent an existing row.
+**parentId** | Number | Add or move the row so that it is the first child row of the specified parent row. 
+**parentId** +<br/>**toBottom** | Number + Boolean | Add or move the row so that it is the last child row of the specified parent row. 
+**siblingId** | Number | Add or move the row directly below the sibling row (at the same indent level as the specified row). 
+**siblingId** +<br/>**above** | Number + Boolean | Add or move the row directly above the sibling row (at the same indent level as the specified row). 
+**indent** | Number | Number of levels to indent an existing row.
+**outdent** | Number | Number of levels to outdent an existing row.
 
 <aside class="notice">If you set a siblingId, you cannot also set the toTop or toBottom attribute.</aside>
 
