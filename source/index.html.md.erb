@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-08-31
+Updated 2017-09-01
 
 # Overview
 ## Introduction
@@ -9250,14 +9250,14 @@ For details about working with images in cells, see [Cell Images](#cell-images).
 
 ### Row Discussions
 
-For details about working with a Row's discussions, see [Discussions](#discussions).
+For details about working with a row's discussions, see [Discussions](#discussions).
 
 ### Row Include Flags
 
 Endpoints which return rows (for example, [get sheet](#get-sheet), [get row](#get-row)) support the optional **include** query string parameter. If specified, the value of the **include** parameter is 
 a comma-delimited list of flags that indicate additional attributes to be included in each [Row Object](#row-object) within the response.
 
-Include Flag | Notes |
+Include Flag | Description |
 -------------|-------|
 **discussions**	| Includes row **discussions** array.<br/>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.
 **attachments**	| Includes row **attachments** array.<br/>To include discussion attachments, both **attachments** and **discussions** must be present in the include list.
@@ -9272,22 +9272,22 @@ Include Flag | Notes |
 
 When you [add a row](#add-rows), the default behavior is for Smartsheet to put the row at the bottom of the sheet. And when you [update a row](#update-rows), the default behavior is to keep the row where it is.
 
-If you want more precision about where the row is added or moved to in the sheet, Smartsheet provides the following "location-specifier" [Row](#row-object) attributes:
+If you want more precision about where the row is added or moved to in the sheet, Smartsheet provides the following "location-specifier" [row](#row-object) attributes:
 
-Action | Row attributes
+Row Attribute | Description
 -------|--------
-Add or move the Row to the top of the Sheet. | **toTop** = `true`
-Add or move the Row to the bottom of the Sheet. | **toBottom** = `true`
-Add or move the Row directly above the specified sibling Row (at the same hierarchical level). | **above** = `true`<br/>**siblingId** = (Id of sibling row)
-Add or move the Row directly below the specified sibling Row (at the same hierarchical level). | **siblingId** = (Id of sibling row)
-Add or move the Row so that it is the first child row of the specified parent Row. | **parentId** = (Id of parent row)
-Add or move the Row so that it is the last child row of the specified parent Row. | **parentId** = (Id of parent row)<br/>**toBottom** = `true`
-Indent an existing Row. | **indent** = (number of level to indent, minimum of 1)
-Outdent an existing Row. | **outdent** = (number of level to outdent, minimum of 1)
+**toTop** = `true` | Add or move the row to the top of the sheet.
+**toBottom** = `true` | Add or move the row to the bottom of the sheet.
+**above** = `true`<br/>**siblingId** = (Id of sibling row) | Add or move the row directly above the specified sibling row (at the same hierarchical level). 
+**siblingId** = (Id of sibling row) | Add or move the row directly below the specified sibling row (at the same hierarchical level). 
+**parentId** = (Id of parent row) | Add or move the row so that it is the first child row of the specified parent row. 
+**parentId** = (Id of parent row)<br/>**toBottom** = `true` | Add or move the row so that it is the last child row of the specified parent row. 
+**indent** = (number of levels to indent, minimum of 1) | Indent an existing row.
+**outdent** = (number of levels to outdent, minimum of 1) | Outdent an existing row.
 
-<aside class="notice">To avoid conflicts, you cannot set the toTop or toBottom attribute to true when you set a siblingId attribute. With a parentId attribute, you can use a toBottom attribute, but the behavior changes to push the row to the bottom of the set of child rows associated with that parentId (instead of to the bottom of the sheet).</aside>
+<aside class="notice">To avoid conflicts, if you set a siblingId, you cannot also set the toTop or toBottom attribute. With a parentId attribute, you can use a toBottom attribute, but the behavior changes to push the row to the bottom of the set of child rows associated with that parentId (instead of to the bottom of the sheet).</aside>
 
-<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an Error response when attempting to (individually) move both a parent Row and its child Rows in a single request, try achieving the objective by using two separate requests: (1) Move parent Row. (2) Move child Rows.</aside>
+<aside class="notice"><b>Troubleshooting errors:</b>&#160;&#160;If you receive an error response when attempting to (individually) move both a parent row and its child rows in a single request, try achieving the objective by using two separate requests: (1) Move parent row. (2) Move child rows.</aside>
 
 # Search
 
