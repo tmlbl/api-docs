@@ -9272,20 +9272,18 @@ Include Flag | Description |
 
 When you [add a row](#add-rows), the default behavior is for Smartsheet to put the new row at the bottom of the sheet. And when you [update a row](#update-rows), the default behavior is to keep the row where it is.
 
-Smartsheet uses a family metaphor to show hierarchy or relationships between rows, for instance, a top-level header is a parent row and the sub-headers beneath it are child rows. Each group of rows at the same hierarchical level, for instance parent rows are siblings to other parent rows. You can change a row's hierarchical level by indenting or outdenting it.
-
 If you want to specify where the row is added or moved to in the sheet, Smartsheet provides the following "location-specifier" [row](#row-object) attributes:
 
-Row Attribute | Description
--------|--------
-**toTop** = `true` | Add or move the row to the top of the sheet.
-**toBottom** = `true` | Add or move the row to the bottom of the sheet.
-**parentId** = (Id of parent row) | Add or move the row so that it is the first child row of the specified parent row. 
-**parentId** = (Id of parent row)<br/>**toBottom** = `true` | Add or move the row so that it is the last child row of the specified parent row. 
-**siblingId** = (Id of sibling row) | Add or move the row directly below the specified sibling row (at the same hierarchical level). 
-**above** = `true`<br/>**siblingId** = (Id of sibling row) | Add or move the row directly above the specified sibling row (at the same hierarchical level). 
-**indent** = (number of levels to indent, minimum of 1) | Indent an existing row.
-**outdent** = (number of levels to outdent, minimum of 1) | Outdent an existing row.
+Row Attribute | Type | Description
+-------|--------|--------
+**toTop** | Boolean | Add or move the row to the top of the sheet.
+**toBottom** | Boolean | Add or move the row to the bottom of the sheet.
+**parentId** | String | Add or move the row so that it is the first child row of the specified parent row. 
+**parentId** +<br/>**toBottom** | String + Boolean | Add or move the row so that it is the last child row of the specified parent row. 
+**siblingId** | String | Add or move the row directly below the sibling row (at the same indent level as the specified row). 
+**siblingId** +<br/>**above** | String + Boolean | Add or move the row directly above the sibling row (at the same indent level as the specified row). 
+**indent** | Num | Number of levels to indent an existing row.
+**outdent** | Num | Number of levels to outdent an existing row.
 
 <aside class="notice">If you set a siblingId, you cannot also set the toTop or toBottom attribute.</aside>
 
