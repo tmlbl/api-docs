@@ -263,7 +263,7 @@ As you work with the various API calls, it is helpful to understand the logic be
 
 For instance, if you List All Discussions (without using the associated include query parameter), the return contains Discussion Ids and top-level information about the Discussion. If you do a Get on a specific Discussion, you'll see the related Comment Ids too. As another example, List All Sheets returns a top-level summary of the sheets you have access to. Get a specific sheet returns detailed information about that sheet.
 
-<aside class="notice">The objects returned depend on the language you make the request in. With strongly typed languages, such as Java, C#, and Python, you will see empty object arrays in the return for any objects that might not be present, such as folders or reports. With cURL and Node.js, Smartsheet is able to abbreviate the return by leaving out any array that is empty.</aside>
+<aside class="notice">The objects returned depend on the language you make the request in. Strongly typed languages, such as Java, C#, and Python, return empty object arrays for any objects that might not be present, such as folders or reports. With cURL and Node.js, Smartsheet is able to abbreviate the return by leaving out any array that is empty.</aside>
 
 ## Versioning and Changes
 
@@ -576,11 +576,11 @@ redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) 
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 
-Here is an example of a URL to which you would send your user as a `GET` request:
+Here is an example of a URL to send your user as a `GET` request:
  
 `https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
  
-If your user has not logged in to Smartsheet, he/she will first be directed to the Smartsheet login page. 
+If your user has not logged in to Smartsheet, he/she is first directed to the Smartsheet login page. 
 After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested.
 
 ### Obtain the Authorization Code
@@ -2294,7 +2294,7 @@ A collection of Cells comprises each Row in a Sheet.
 **value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  An empty cell returns no value. See [Cell Reference](#cell-reference).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Reference](#cell-reference).
 **objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
-**formula** | string | The  formula for a cell, if set. Note: calculation errors or problems with a formula will not cause the API call to return an error code. Instead, the response will contain the same value as in the UI, such as cell.value = "#CIRCULAR REFERENCE".
+**formula** | string | The  formula for a cell, if set. Note: calculation errors or problems with a formula do not cause the API call to return an error code. Instead, the response contains the same value as in the UI, such as cell.value = "#CIRCULAR REFERENCE".
 **hyperlink** | [Hyperlink](#hyperlink-object) | A hyperlink to a URL, sheet, or report
 **linkInFromCell** | [CellLink](#celllink-object) | An inbound link from a cell in another sheet.  This cell's value mirrors the linked cell's value.
 **linksOutToCells** | [CellLink](#celllink-object)[] | An array of [CellLink objects](#celllink-object).  Zero or more outbound links from this cell to cells in other sheets whose values mirror this cell's value.
@@ -2607,7 +2607,7 @@ An empty cell returns no value.
 
 **Cell.displayValue** is always a **string** and is only returned for certain column types (see below).  It represents the formatted value as it should
 be displayed to an end-user.  For example, if a TEXT_NUMBER column is formatted as a US Dollar currency, its **value** may be a number
-like 1234.5678, but its **displayValue** would be "$1,234.57".
+like 1234.5678, but its **displayValue** is "$1,234.57".
 
 **Cell.value** represents a cell's raw value and can be one of the following primitive JSON types: **string**, **number**, or **Boolean**,
 depending on the column type.  An empty cell returns no value. Complex types are represented as strings, formatted as described below:
@@ -2632,7 +2632,7 @@ It provides a more "programmer friendly" format for assembling predecessors. To 
 #### Cell Value Parsing
 
 The flexibility in cell value data types is a powerful feature in the Smartsheet application, but at the same time, it poses a challenge
-for an API in terms of parsing. Being too flexible will likely result in unexpected behavior. For instance, if you write code
+for an API in terms of parsing. Being too flexible might result in unexpected behavior. For instance, if you write code
 to post a Date value to a Smartsheet and the API operation succeeds,  you might assume that the date value you sent was interpreted
 as date. What happens if you posted your date in the wrong format? Do you really want Smartsheet to keep the malformed date
 as a Text value? Probably not.
@@ -15890,7 +15890,7 @@ Because the amount of format data in a large sheet can potentially be very large
 
 Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
  
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) would be to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.  This will be addressed in a future version of the API.
+The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) is to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.
 
 ## Format Descriptor
 
@@ -15915,7 +15915,7 @@ The format descriptor contains 16 comma-separated numeric indexes.  Each index r
 14 | Number format | numberFormat
 15 | Text wrap | textWrap
 
-<aside class="notice">Formats which have not been explicitly set are omitted in the descriptor string.  For example, a cell which has been set to bold and italic, but has no other formats applied to it, would have a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
+<aside class="notice">Formats which have not been explicitly set are omitted in the descriptor string.  For example, a cell which has been set to bold and italic, but has no other formats applied to it, has a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
 
 <aside class="notice">As a convenience, the FormatTables Object contains a <b>defaults</b> property which is a format descriptor that describes which formats the Smartsheet Web app displays for unset formats.  Your application can use these values to display unformatted cells identically to the Smartsheet Web app.</aside>
 
@@ -16077,13 +16077,11 @@ A webhook monitors the specified **scope** for the specified **events**.
 A [Webhook's](#webhook-object) **scope** attribute indicates the scope of the subscription. It is specified when [creating a webhook](#create-webhook), and cannot subsequently be changed. 
 
 * Currently, "sheet" is the only supported value for the **scope** attribute. 
-* Future releases of webhooks will support additional scopes such as "org", "folder", "workspace", etc.
 
 A [Webhook's](#webhook-object) **event** attribute indicates the set of events that a webhook is subscribed to (that is, which events trigger a callback).
 
 * Events are represented as a dot-separated string in the format "*object*.*event*", where an asterisk (&#42;) can be used to represent "all objects" or "all events".
 * Currently, "&#42;.&#42;" is the only supported value for the **events** attribute. This indicates a subscription to all objects in the scope, and all events for those objects.
-* Future releases of webhooks will support more specific events such as "sheet.updated", "row.deleted", "column.created", etc.
 
 <span class="customSubHeading">Example</span>
 
@@ -16093,7 +16091,7 @@ Consider a [Webhook](#webhook-object) with the following attribute values:
 * **scope** = "sheet" 
 * **events** = "&#42;.&#42;" 
 
-This webhook monitors the specified Sheet (id: 12345678901234) for all types of events. For example, if a row is added to the sheet, cell values are updated in the sheet, a column is deleted from the sheet, etc., a callback would be sent to the webhook's **callbackUrl**.
+This webhook monitors the specified Sheet (id: 12345678901234) for all types of events. For example, if a row is added to the sheet, cell values are updated in the sheet, a column is deleted from the sheet, etc., a callback is sent to the webhook's **callbackUrl**.
 
 # Creating a Webhook
 
@@ -16168,7 +16166,7 @@ false | NEW_NOT_VERIFIED | Webhook has been created but is not enabled because i
 false  | DISABLED_BY_OWNER | Webhook has been disabled by the owner. | Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_VERIFICATION_FAILED | Webhook verification has failed. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
 false  | DISABLED_CALLBACK_FAILED | Webhook has been disabled because callback was not successfully delivered to the Callback URL. |  Owner can re-enable the webhook by using the [Update Webhook](#update-webhook) operation to set **enabled** to `true`. Once the subscriber successfully acknowledges the [verification request](#webhook-verification), the webhook is enabled.
-false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so will result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
+false  | DISABLED_APP_REVOKED | Webhook has been disabled because the third-party app associated with the webhook has had its access revoked. | This is a terminal state (that is, webhook in this state cannot be re-enabled, and attempts to do so result in error code 1153). If the third-party app's access is subsequently restored, it must create new webhooks.
 false  | DISABLED_SCOPE_INACCESSIBLE | Webhook has been disabled because its owner lost access to the corresponding data in Smartsheet (either because the object was deleted or sharing permissions were revoked). | Webhook is automatically re-enabled if access to data is restored (for example, if deleted object is restored or sharing permissions are restored).
 false  | DISABLED_ADMINISTRATIVE | Webhook has been disabled by Smartsheet support. | A webhook in this state can only be re-enabled by Smartsheet (contact <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>).  Attempting to re-enable a webhook in this state results in error code 1154.
 
@@ -16225,7 +16223,7 @@ The Subscriber must respond to an event callback with a 200 [HTTP status code](h
 
 If the Subscriber fails to respond with a 200 status, depending on the response, Smartsheet may retry delivery up to 14 times. (The first 7 retry attempts occur with a frequency that's determined using exponential backoff; thereafter, retry attempts occur once every three hours until all retries have been exhausted.)
 
-Subscriber response | Will be retried?
+Subscriber response | Is retried?
 ----- | -----
 HTTP 201 through 299 | No
 HTTP 309 through 399 | No
