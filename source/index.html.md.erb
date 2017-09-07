@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-09-06
+Updated 2017-09-07
 
 # Overview
 ## Introduction
@@ -15572,7 +15572,15 @@ Object that describes how the the System Column type of "AUTO_NUMBER" is auto-ge
 > Example BulkItemFailure Object:
 
 ```json
-[todo]
+{
+    "index": 0,
+    "rowId": 564480076736388,
+    "error": {
+        "errorCode": 1042,
+        "message": "The value for cell in column 647615814625156, Mad Hatter, did not conform to the strict requirements for type PICKLIST.",
+        "refId": "136g6zxtcekx2"
+    }
+}
 ```
 
 Object that contains information about an item that failed to be added or updated as specified by a bulk request.
@@ -15580,8 +15588,9 @@ Object that contains information about an item that failed to be added or update
      |     |     |
 -----|-----|-----|
 **index** | number | The index of the failed item in the bulk request array
-**error** | [Error Object](#error-object) | The error caused by the failed item
 **rowId** | number | The id of the [Row](#row-object) that failed.<br/>*Applicable only to bulk row operations* 
+**error** | [Error Object](#error-object) | The error caused by the failed item
+
 
 ## ContainerDestination Object
 
@@ -15644,15 +15653,21 @@ Object returned for all `GET` operations against index endpoints.  This object p
 > Example Result Object:
 
 ```json
-[todo]
+{
+    "message": "PARTIAL_SUCCESS",
+    "resultCode": 3,
+    "result": [],
+    "version": 14,
+    "failedItems": []
+}
 ```
 
 Object returned for all `PUT` operations and `POST` operations (and for some other operations). 
 
      |     |     |
 -----|-----|-----|
-**resultCode** | number | 0 (zero) if successful, 3 for partial success of a bulk operation.
 **message** | string | Message that indicates the outcome of the request. (One of SUCCESS or PARTIAL_SUCCESS)
+**resultCode** | number | 0 (zero) if successful, 3 for partial success of a bulk operation.
 **result** | Object | Object that was created or updated (if applicable)
 **version** | number | New version of the Sheet.<br/>*Applicable only for operations which update sheet data* 
 **failedItems** | [BulkItemFailure](#bulkitemfailure-object)[] | Array of BulkItemFailure Objects which represents the items that failed to be added or updated. See [Partial Success](#partial-success) for more information.<br/>*Applicable only for bulk operations that support partial success*
