@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-09-08
+Updated 2017-09-11
 
 # Overview
 ## Introduction
@@ -8008,6 +8008,7 @@ curl https://api.smartsheet.com/2.0/reports
 ```
 
 ```javascript
+// Sample 1: Omit pagination parameters
 smartsheet.reports.listReports()
     .then(function (reportList) {
         console.log(reportList);
@@ -8015,6 +8016,23 @@ smartsheet.reports.listReports()
     .catch(function (error) {
         console.log(error);
     });
+
+// Sample 2: Specify query parameters for pagination
+// Set options
+var options = {
+    queryParameters: {
+        page: 2,
+        pageSize: 25
+    }
+};
+
+smartsheet.reports.listReports(options)
+.then(function (reportList) {
+    console.log(reportList);
+})
+.catch(function (error) {
+    console.log(error);
+});
 ```
 
 ```csharp
