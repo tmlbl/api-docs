@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-09-11
+Updated 2017-09-12
 
 # Overview
 ## Introduction
@@ -8008,7 +8008,6 @@ curl https://api.smartsheet.com/2.0/reports
 ```
 
 ```javascript
-// Sample 1: Omit pagination parameters
 smartsheet.reports.listReports()
     .then(function (reportList) {
         console.log(reportList);
@@ -8016,65 +8015,24 @@ smartsheet.reports.listReports()
     .catch(function (error) {
         console.log(error);
     });
-
-// Sample 2: Specify query parameters for pagination
-// Set options
-var options = {
-    queryParameters: {
-        page: 2,
-        pageSize: 25
-    }
-};
-
-smartsheet.reports.listReports(options)
-.then(function (reportList) {
-    console.log(reportList);
-})
-.catch(function (error) {
-    console.log(error);
-});
 ```
 
 ```csharp
-// Sample 1: Omit pagination parameters
 PaginatedResult<Report> reports = smartsheet.ReportResources.ListReports(
     null,               // PaginationParameters
     null                // Nullable<DateTime> modifiedSince = null
 );
-
-// Sample 2: Specify 'includeAll' parameter with value of 'true'
-PaginatedResult<Report> reports = smartsheet.ReportResources.ListReports(
-    new PaginationParameters(
-        true,           // includeAll
-        null,           // int pageSize
-        null)           // int page
-);
 ```
 
 ```java
-// Sample 1: Omit pagination parameters
 PagedResult<Report> reports = smartsheet.reportResources().listReports(
     null,               // PaginationParameters
     null                // Date modifiedSince
 );
-
-// Sample 2: Specify pagination parameter 'includeAll' 
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
-
-// Specify 'includeAll' parameter with value of 'true'
-PagedResult<Report> reports = smartsheet.reportResources().listReports(parameters, modifiedSince);
 ```
 
 ```python
-# Sample 1: List all
 response = ss_client.Reports.list_reports(include_all=True)
-reports = response.data
-
-# Sample 2: Paginate the list
-response = ss_client.Reports.list_reports(
-    page_size=5,
-    page=1)
-pages = response.total_pages
 reports = response.data
 ```
 
@@ -8104,18 +8062,15 @@ reports = response.data
 
 `GET /reports`
 
-Gets a summarized list of all Reports that the User has access to in alphabetical order by name.
+Gets a summarized list of all Reports that the User has access to in alphabetical order by name. This index API does not support pagination.
 
 <aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
-
-<aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | <%= PARAMETER_MODIFIEDSINCE %>
- | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Report Objects](#report-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
 ## Publish Report
