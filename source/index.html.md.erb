@@ -27,7 +27,7 @@ search: false
 <% HEADER_AUTH = "**Authorization**: Bearer ll352u9jujauoqz4gstvsae05" %>
 <% HEADER_CT_JSON = "**Content-Type**: application/json" %>
 <% PARAMETER_ALLOW_PARTIAL_SUCCESS = "**allowPartialSuccess** (optional): when specified with a value of `true`, enables partial success for this bulk operation.  See [Partial Success](#partial-success) for more information." %>
-<% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response only includes the objects that are modified on or after the date and time specified. The return value is only accurate within 1-2 hours because of lag time. If you need more precise information about updates, use [Get Sheet Version](#get-sheet-version)." %>
+<% PARAMETER_MODIFIEDSINCE = "**modifiedSince** (optional): when specified with a <a href='#dates-and-times'>date and time</a> value, response only includes the objects that are modified on or after the date and time specified. If you need to keep track of frequent changes, it may be more useful to use [Get Sheet Version](#get-sheet-version)." %>
 <% PARAMETER_OVERRIDE_VALIDATION = "**overrideValidation** (optional): You may use the query string parameter <b>overrideValidation</b> with a value of <code>true</code> to allow a cell value outside of the validation limits. You must specify **strict** with a value of `false` to bypass value type checking."  %>
 <% PAGING_PARAMETERS = "This operation supports query string parameters for pagination of results. For more information, see [Paging Query String Parameters](#paging-query-string-parameters)." %>
 <% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-09-21
+Updated 2017-09-22
 
 # Overview
 ## Introduction
@@ -1735,7 +1735,7 @@ attachments = response.data
 
 `GET /sheets/{sheetId}/attachments`
 
-Gets a summarized list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion-level Attachments.
+Gets a list of all Attachments that are on the Sheet, including Sheet, Row, and Discussion-level Attachments. 
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -1839,7 +1839,7 @@ attachments = response.data
 
 `GET /sheets/{sheetId}/discussions/{discussionId}/attachments`
 
-Gets a summarized list of all Attachments that are in the Discussion.
+Gets a list of all Attachments that are in the Discussion.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -1943,7 +1943,7 @@ attachments = response.data
 
 `GET /sheets/{sheetId}/rows/{rowId}/attachments`
 
-Gets a summarized list of all Attachments that are on the Row, including Row and Discussion-level Attachments.
+Gets a list of all Attachments that are on the Row, including Row and Discussion-level Attachments.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -2255,7 +2255,7 @@ versions = response.data
 
 `GET /sheets/{sheetId}/attachments/{attachmentId}/versions`
 
-Gets a summarized list of all versions of the given Attachment Id in order from newest to oldest.
+Gets a list of all versions of the given Attachment Id in order from newest to oldest.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -3031,7 +3031,7 @@ String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrl
 
 `POST /imageurls`
 
-Gets a summarized list of URLs that can be used to retrieve the specified cell images.
+Gets a list of URLs that can be used to retrieve the specified cell images.
 
 <aside class="notice">The HTTP verb for this operation is <code>POST</code> (to provide support for specifying request body).</aside>
 
@@ -3531,7 +3531,7 @@ columns = response.data
 
 `GET /sheets/{sheetId}/columns`
 
-Gets a summarized list of all Columns belonging to the Sheet specified in the URL.
+Gets a list of all Columns belonging to the Sheet specified in the URL.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -4311,7 +4311,7 @@ contacts = response.data
 
 `GET /contacts`
 
-Gets a summarized list of the user's Smartsheet Contacts.
+Gets a list of the user's Smartsheet Contacts.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -4860,7 +4860,7 @@ discussions = response.data
 
 `GET /sheets/{sheetId}/discussions`
 
-Gets a summarized list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
+Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -5034,7 +5034,7 @@ discussions = response.data
 
 `GET /sheets/{sheetId}/rows/{rowId}/discussions`
 
-Gets a summarized list of all Discussions associated with the specified Row.
+Gets a list of all Discussions associated with the specified Row.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -5236,7 +5236,7 @@ faves = response.data
 
 `GET /favorites`
 
-Gets a summarized list of all of the user's Favorite items.
+Gets a list of all of the user's Favorite items.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -6438,7 +6438,7 @@ Gets the specified Folder (and lists its contents).
 
 ## Get All Child Folders
 
-Gets a summarized list of top-level child Folders from the user's **Sheets** folder ([Home](#home)), from another Folder, or from a Workspace.
+Gets a list of top-level child Folders from the user's **Sheets** folder ([Home](#home)), from another Folder, or from a Workspace.
 
 ### List Folders
 
@@ -6493,7 +6493,7 @@ folders = response.data
 
 `GET /home/folders`
 
-Gets a summarized list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
+Gets a list of the top-level child Folders within the user's **Sheets** folder ([Home](#home)).
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -6563,7 +6563,7 @@ folders = response.data
 
 `GET /folders/{folderId}/folders`
 
-Gets a summarized list of the top-level child Folders within the specified Folder.
+Gets a list of the top-level child Folders within the specified Folder.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -6633,7 +6633,7 @@ folders = response.data
 
 `GET /workspaces/{workspaceId}/folders`
 
-Gets a summarized list of the top-level child Folders within the specified Workspace.
+Gets a list of the top-level child Folders within the specified Workspace.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -7166,7 +7166,7 @@ groups = response.data
 
 `GET /groups`
 
-Gets a summarized list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
+Gets a list of all Groups in an organization. To fetch the members of an individual group, use the [Get Group](#get-group) operation.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -8062,7 +8062,7 @@ reports = response.data
 
 `GET /reports`
 
-Gets a summarized list of all Reports that the User has access to in alphabetical order by name. This index API does not support pagination.
+Gets a list of all Reports that the User has access to in alphabetical order by name. The list contains only summary details for each Report. This index API does not support pagination.
 
 <aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
 
@@ -9822,7 +9822,7 @@ shares = response.result
 
 `GET /reports/{reportId}/shares`
 
-Gets a summarized list of all Users and Groups to whom the specified Report is shared, and their access level. 
+Gets a list of all Users and Groups to whom the specified Report is shared, and their access level. 
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
@@ -10175,7 +10175,7 @@ shares = response.data
 
 `GET /sheets/{sheetId}/shares`
 
-Gets a summarized list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
+Gets a list of all Users and Groups to whom the specified Sheet is shared, and their access level. 
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
@@ -10522,7 +10522,7 @@ shares = response.data
 
 `GET /sights/{sightId}/shares`
 
-Gets a summarized list of all Users and Groups to whom the specified Sight is shared, and their access level. 
+Gets a list of all Users and Groups to whom the specified Sight is shared, and their access level. 
 
 <aside class="notice"><%= LIST_SHARES_RESPONSE_DESC %></aside>
 
@@ -10879,7 +10879,7 @@ shares = response.data
 
 `GET /workspaces/{workspaceId}/shares`
 
-Gets a summarized list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
+Gets a list of all Users and Groups to whom the specified Workspace is shared, and their access level. 
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -12513,7 +12513,7 @@ sheets = response.data
 
 `GET /sheets`
 
-Gets a summarized list of all Sheets that the User has access to in alphabetical order by name.
+Gets a list of all Sheets that the User has access to in alphabetical order by name. The list contains only summary details for each Sheet.
 
 <aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
 
@@ -13418,7 +13418,7 @@ sights = response.data
 
 `GET /sights`
 
-Gets a summarized list of all Sights that the User has access to.
+Gets a list of all Sights that the User has access to.
 
 <aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
 
@@ -13774,7 +13774,7 @@ templates = response.data
 
 `GET /templates/public`
 
-Gets a summarized list of public Templates that the user has access to.
+Gets a list of public Templates that the user has access to.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -13827,7 +13827,7 @@ templates = response.data
 
 `GET /templates`
 
-Gets a summarized list of user-created Templates that the user has access to.
+Gets a list of user-created Templates that the user has access to.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -14524,7 +14524,7 @@ emails = response.data
 
 `GET /users/{userId}/alternateemails`
 
-Gets a summarized list of the Alternate Emails for the specified User. 
+Gets a list of the Alternate Emails for the specified User. 
 
      |     |
 -----|-----|
@@ -14772,7 +14772,7 @@ users = response.data
 
 `GET /users`
 
-Gets a summarized list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
+Gets a list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -15401,7 +15401,7 @@ workspaces = response.data
 
 `GET /workspaces`
 
-Gets a summarized list of Workspaces that the user has access to.
+Gets a list of Workspaces that the user has access to. The list contains only summary details for each Workspaces.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
