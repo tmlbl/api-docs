@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-09-22
+Updated 2017-09-27
 
 # Overview
 ## Introduction
@@ -257,13 +257,11 @@ Column | A Column Object *defines* the type of the column, but does not actually
 Row | A Row is a component of a Sheet or Report. Each Row is composed of a collection of Cells, and may optionally contain Attachments and/or Discussions. | [Row Object](#row-object)
 Cell | A Cell is a location within a Sheet that may contain a value. A collection of Cells comprises each Row in a Sheet. | [Cell Object,](#cell-object) [Cell reference](#cell-reference)
 
-## Object Details vs Summary Information
+## Object Details vs List Summaries
 
-As you work with the various API calls, it is helpful to understand the logic behind when Smartsheet returns object details vs summary information. For scannability and performance improvement, a List All command returns only summary-level information about an object. A Get command with an object Id returns the object details.
+Many of the List All commands, for example, GET /sheets, return only an abbreviated object for each object returned. For full details, read a single item, such as GET /sheets/{sheetId}. In many cases, you can refine the exact object properties to be returned by using include= and exclude= query parameters.
 
-For instance, if you List All Discussions (without using the associated include query parameter), the return contains Discussion Ids and top-level information about the Discussion. If you do a Get on a specific Discussion, you'll see the related Comment Ids too. As another example, List All Sheets returns a top-level summary of the sheets you have access to. Get a specific sheet returns detailed information about that sheet.
-
-<aside class="notice">The objects returned depend on the language you make the request in. Strongly typed languages, such as Java, C#, and Python, return empty object arrays for any objects that might not be present, such as folders or reports. With cURL and Node.js, Smartsheet is able to abbreviate the return by leaving out any array that is empty.</aside>
+The JSON representation of the objects returned from the List All REST endpoints will only include a subset of the properties documented here. However, the objects returned from the Java and C# SDKs will represent the omitted properties with NULLs.
 
 ## Versioning and Changes
 
@@ -2291,7 +2289,7 @@ A collection of Cells comprises each Row in a Sheet.
 -----|-----|-----|
 **columnId** | number | The Id of the column that the cell is located in
 **columnType** | string | See type definition on the [Column Object](#column-object).<br/>Only returned if the [**include**](#row-include-flags) query string parameter contains **columnType**.
-**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  Max length for a cell value is 4000 characters after which truncation occurs without warning. An empty cell returns no value. See [Cell Reference](#cell-reference).
+**value** | string,<br/>number,<br/>or Boolean | A string, a number or a Boolean value -- depending on the cell type and the data in the cell.  Cell values larger than 4000 characters are silently truncated. An empty cell returns no value. See [Cell Reference](#cell-reference).
 **displayValue** | string | Visual representation of cell contents, as presented to the user in the UI.  See [Cell Reference](#cell-reference).
 **objectValue** | [ObjectValue](#objectvalue-object) | [Optionally included](#row-include-flags) object representation of the cell's value. Used for updating predecessor cell values.
 **formula** | string | The  formula for a cell, if set. Note: calculation errors or problems with a formula do not cause the API call to return an error code. Instead, the response contains the same value as in the UI, such as cell.value = "#CIRCULAR REFERENCE".
@@ -2702,7 +2700,7 @@ The parsing rules for the various column types are as follows:
 
      |     |
 -----|-----|
-*Strict* | Set using the objectValue attribute for the Cell Object, which is inherently strict. See [Cell Reference](#cell-reference).
+*Strict* | N/A
 *Lenient* | N/A
 
 **ABSTRACT_DATETIME**:
@@ -3675,7 +3673,7 @@ Dropdown List	| PICKLIST		| Custom, RYG, Harvey Ball, Priority types, etc.
 Checkbox 		| CHECKBOX		| Checkbox, star, and flag types
 Duration		| DURATION		| **Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.)
 Predecessor		| PREDECESSOR	| Defines what must happen first in a project flow. For more information, see the [Predecessor Object](#predecessor-object). **Only for dependency-enabled project sheets** 
-Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance.
+Date/Time 		| ABSTRACT_DATETIME | Represents a project sheet's Start and End dates.<br/>**Only for dependency-enabled project sheets**<br/>The API does not support setting a Column to this type. (This can only be done through the Smartsheet Web app when configuring a project sheet.) Additionally, the API does not support updating data in the End Date column under any circumstance, and does not support updating data in the Start Date column if Predecessor is set for that row.
 Date/Time		| DATETIME		| Used only by the following System-generated columns: <ul><li>Created (Date) (**Column.systemColumnType** = "CREATED_DATE")</li><li>Modified (Date) (**Column.systemColumnType** = "MODIFIED_DATE")</li></ul>
 
 <aside class="notice">See the <a href="#cell-reference">Cell Reference</a> section for information on getting and setting cell values for the different column types.</aside>
@@ -8062,7 +8060,7 @@ reports = response.data
 
 `GET /reports`
 
-Gets a list of all Reports that the User has access to in alphabetical order by name. The list contains only summary details for each Report. This index API does not support pagination.
+Gets a list of all Reports that the User has access to in alphabetical order by name. The list contains an abbreviated Report Object for each Report.
 
 <aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
 
@@ -9410,7 +9408,7 @@ Searches all Sheets that the User can access, for the specified text.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **query** (required): Text with which to perform the search. Use double-quotes for an exact search.
+<%= PARAMETERS %> | **query** (required): Text with which to perform the search. Enclose in double-quotes for an exact search.
 <%= RETURNS %> | [SearchResult Object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
 
 ## Search Sheet
@@ -12513,7 +12511,7 @@ sheets = response.data
 
 `GET /sheets`
 
-Gets a list of all Sheets that the User has access to in alphabetical order by name. The list contains only summary details for each Sheet.
+Gets a list of all Sheets that the User has access to in alphabetical order by name. The list contains an abbreviated Sheet Object for each Sheet.
 
 <aside class="notice"><%= SUPPORTS_NUMERICDATES %></aside>
 
@@ -14294,7 +14292,7 @@ Adds one or more alternate email addresses for the specified User.
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= REQUEST %> | Array of [AlternateEmail Objects](#alternateemail-object), each limited to only the **email** attribute
 <%= RETURNS %> | [Result Object](#result-object) containing an array of the newly created [AlternateEmail Objects](#alternateemail-object).
-<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response contains the typical [Error Object](#error-object).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the Error Object returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#complete-error-code-list)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response contains an [Error Object](#error-object).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the Error Object returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#complete-error-code-list)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
 ### Make Alternate Email Primary
 
@@ -15401,7 +15399,7 @@ workspaces = response.data
 
 `GET /workspaces`
 
-Gets a list of Workspaces that the user has access to. The list contains only summary details for each Workspaces.
+Gets a list of Workspaces that the user has access to. The list contains an abbreviated Workspace Object for each Workspaces.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -15601,7 +15599,7 @@ Object that describes the destination container when a Sheet or Folder is moved,
 -----|-----|-----|
 **errorCode** | number | Custom error code from Smartsheet. See the <a href="#complete-error-code-list">Complete Error Code List</a>.
 **message** | string | Descriptive message.
-**refId** | string | Id of the specific error.
+**refId** | string | Id of the specific error occurrence. Please include this information when contacting Smartsheet support.
 
 ## IndexResult Object
 
@@ -15985,7 +15983,7 @@ Should you encounter issues with the Smartsheet API while building an integratio
 2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
   * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
   * Alternatively, you may choose to use a tool like [Fiddler](http://www.telerik.com/fiddler) or [Charles HTTP Proxy](https://www.charlesproxy.com/) to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-3. Check for capitalization errors, for instance, is the command camelCase? Did you use the correct case in a query string parameter? 
+3. Check for capitalization errors. Note that URL endpoints are all lower case, while object properties and query parameters are camelCase.
 
 # <span class="customTOCSectionHeading">Webhooks</span>
 
