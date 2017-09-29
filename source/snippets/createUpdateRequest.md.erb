@@ -47,7 +47,37 @@ UpdateRequest newUpdateRequest = smartsheet.SheetResources.UpdateRequestResource
 ```
 
 ```javascript
-// [todo]
+var body = {
+    rowIds: [
+        1123834706323332,
+        5627434333693828
+    ],
+    includeAttachments: true,
+    includeDiscussions: false,
+    layout: "HORIZONTAL",
+    sendTo: [
+        {
+            email: "recipient1@smartsheet.com"    
+        }
+    ],
+    schedule: {
+        type: "ONCE",
+        startAt: "2017-08-27T15:00:00-07:00"
+    }
+};
+
+var options = {
+    sheetId: 3285357287499652,
+    body: body
+};
+
+smartsheet.sheets.createUpdateRequest(options)
+    .then(function (result) {
+        console.log(result);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```java
@@ -98,7 +128,7 @@ new_update_request = ss_client.Sheets.send_update_request(
 
 > Example Response:
 
-<%= partial "snippets/createImmediateUpdateRequest_response.md.erb" %>
+<%= partial "snippets/createScheduledUpdateRequest_response.md.erb" %>
 
 > Example Request: Create Immediate Update Request
 
@@ -130,7 +160,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 
 > Example Response:
 
-<%= partial "snippets/createScheduledUpdateRequest_response.md.erb" %> 
+<%= partial "snippets/createImmediateUpdateRequest_response.md.erb" %>
 
 `POST /sheets/{sheetId}/updaterequests`
 
