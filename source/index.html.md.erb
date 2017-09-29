@@ -616,7 +616,21 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+// Create hash
+var hash =
+    crypto.createHash('sha256')
+          .update('Your App Secret' + '|' + 'Received Authorization Code')
+          .digest('hex');
+ 
+// Set options
+var options = {
+    queryParameters: {
+        client_id: 'Your App Client ID',
+        code: 'Received Authorization Code',
+        hash: hash
+    },
+    contentType: 'application/x-www-form-urlencoded'
+};
 ```
 
 ```csharp
@@ -635,11 +649,11 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```json
 {
-   "ll352u9jujauoqz4gstvsae05": "Access Token Value",
-   "token_type": "bearer",
-   "refresh_token": "Refresh Token Value",
-   "expires_in": "# of seconds before token expires"
-}
+    "access_token": "ll352u9jujauoqz4gstvsae05",
+    "token_type": "bearer",
+    "refresh_token": "e9x352a9mp4151le2505",
+    "expires_in": 604799
+ }
 ```
 
 > Error Response:
@@ -687,7 +701,26 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+// Create hash
+var hash =
+    crypto.createHash('sha256')
+          .update('Your App Secret' + '|' + 'Your App Refresh Token')
+          .digest('hex');
+ 
+// Set options
+var options = {
+    queryParameters: {
+        client_id: 'Your App Client ID',
+        refresh_token: 'Your App Refresh Token',
+        hash: hash
+    },
+    contentType: 'application/x-www-form-urlencoded'    
+};
+ 
+// Refresh access token
+smartsheet.tokens.refreshAccessToken(options)
+    .then(console.log)
+    .catch(console.log);
 ```
 
 ```csharp
@@ -706,10 +739,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```json
 {
-   "1": "Newly refreshed Access Token",
-   "expires_in": "# of seconds before token expires",
-   "token_type": "bearer",
-   "refresh_token": "New refresh token"
+    "access_token": "ll352u9jujauoqz4gstvsae05",
+    "token_type": "bearer",
+    "refresh_token": "e9x352a9mp4151le2505",
+    "expires_in": 604799
 }
 ```
 
