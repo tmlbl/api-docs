@@ -2160,8 +2160,8 @@ ss_client.Attachments.delete_attachment_versions(
 ```json
 {
     "message": "SUCCESS",
-    "version": 12,
-    "resultCode": 0
+    "resultCode": 0,
+    "version": 12
 }
 ```
 
@@ -2376,38 +2376,32 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?include=objectValue \
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 6572427401553796,
-            "rowNumber": 2,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [	
-				{
-					"columnId": 7518312134403972,
-					"value": "1FS +2d 4h",
-					"objectValue": {
-						"objectType": "PREDECESSOR_LIST",
-						"predecessors": [
-							{
-								"rowId": 567735454328708,
-								"rowNumber": 1,
-								"type": "FS",
-								"lag": {
-									"objectType": "DURATION",
-									"days": 2,
-									"hours": 4
-								}
-							}
-						]
-					},
-					"displayValue": "1FS +2d 4h"
-				}
-			]
-		}
-	]
+	"message": "SUCCESS",
+	"result": [{
+		"id": 6572427401553796,
+		"rowNumber": 2,
+		"expanded": true,
+		"createdAt": "2015-01-09T11:41:55-08:00",
+		"modifiedAt": "2015-02-23T15:36:07-08:00",
+		"cells": [{
+			"columnId": 7518312134403972,
+			"value": "1FS +2d 4h",
+			"objectValue": {
+				"objectType": "PREDECESSOR_LIST",
+				"predecessors": [{
+					"rowId": 567735454328708,
+					"rowNumber": 1,
+					"type": "FS",
+					"lag": {
+						"objectType": "DURATION",
+						"days": 2,
+						"hours": 4
+					}
+				}]
+			},
+			"displayValue": "1FS +2d 4h"
+		}]
+	}]
 }
 ```
 
@@ -2839,20 +2833,19 @@ smartsheet.sheets.addImageToCell(options)
 > Example Response:
 
 ```json
-{ 
-    "message": "SUCCESS",
-    "resultCode": 0,
-    "result":
-    [{
-        "id": 6039340093597572,
-        "rowNumber": 6,
-        "siblingId": 1535740466227076,
-        "expanded": true,
-        "createdAt": "2017-08-28T21:29:16Z",
-        "modifiedAt": "2017-08-30T08:10:47Z",
-        "cells": [Object] 
-    }],
-    "version": 19
+{
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 6039340093597572,
+		"rowNumber": 6,
+		"siblingId": 1535740466227076,
+		"expanded": true,
+		"createdAt": "2017-08-28T21:29:16Z",
+		"modifiedAt": "2017-08-30T08:10:47Z",
+		"cells": [Object]
+	}],
+	"version": 19
 }
 ```
 
@@ -3061,19 +3054,19 @@ String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrl
 ```json
 {
 	"urlExpiresInMillis": 1800000,
-    "imageUrls":
-    [{
-        "imageId": "e1znCxhuZo_soEJtUmmX_A",
-        "url": "https://urltoimage1.com?qs1=foo"
-	},
-	{
-        "imageId": "g2jdKdfhQa_abKJmPnhC_B",
-        "error": {
-            "errorCode": 5001,
-            "message": "localized_error_message"
-    }
-    }]
-}  
+	"imageUrls": [{
+			"imageId": "e1znCxhuZo_soEJtUmmX_A",
+			"url": "https://urltoimage1.com?qs1=foo"
+		},
+		{
+			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
+			"error": {
+				"errorCode": 5001,
+				"message": "localized_error_message"
+			}
+		}
+	]
+}
 ```
 
 `POST /imageurls`
@@ -3293,6 +3286,7 @@ new_columns = ss_client.Sheets.add_columns(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": [
         {
@@ -3316,8 +3310,7 @@ new_columns = ss_client.Sheets.add_columns(
             "validation": true,
             "width": 150
         }
-    ],
-    "message": "SUCCESS"
+    ]
 }
 ```
 
@@ -4130,9 +4123,9 @@ ss_client.Discussions.delete_discussion_comment(
 
 ```json
 {
-   "resultCode": 0,
-   "version": 12,
-   "message" : "SUCCESS"
+    "message" : "SUCCESS",   
+    "resultCode": 0,
+    "version": 12
 }
 ```
 
@@ -4828,8 +4821,8 @@ ss_client.Discussions.delete_discussion(
 
 ```json
 {
-   "resultCode": 0,
-   "message" : "SUCCESS"
+    "message" : "SUCCESS",   
+    "resultCode": 0
 }
 ```
 
@@ -5216,14 +5209,12 @@ response = ss_client.Favorites.add_favorites([
 
 ```json
 {
-    "resultCode": 0,
-    "result": [
-        {
-            "type": "sheet",
-            "objectId": 8400677765441412
-        }
-    ],
-    "message": "SUCCESS"
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"type": "sheet",
+		"objectId": 8400677765441412
+	}]
 }
 ```
 
@@ -6417,8 +6408,8 @@ ss_client.Folders.delete_folder(
 
 ```json
 {
-    "resultCode": 0,
-    "message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -6911,11 +6902,11 @@ updated_folder = ss_client.Folders.update_folder(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "id": 1486948649985924,
         "name": "New name for folder"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -7043,26 +7034,24 @@ new_group = ss_client.Groups.create_group(
 
 ```json
 {
-    "resultCode": 0,
-    "result": {
-        "id": 2331373580117892,
-        "name": "API-created Group",
-        "description": "Group created via API",
-        "owner": "john.doe@smartsheet.com",
-        "ownerId": 4583173393803140,
-        "members": [
-            {
-                "id": 4583173393803140,
-                "email": "john.doe@smartsheet.com",
-                "firstName": "John",
-                "lastName": "Doe",
-                "name": "John Doe"
-            }
-        ],
-        "createdAt": "2014-05-29T16:28:49-07:00",
-        "modifiedAt": "2014-05-29T16:28:49-07:00"
-    },
-    "message": "SUCCESS"
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": {
+		"id": 2331373580117892,
+		"name": "API-created Group",
+		"description": "Group created via API",
+		"owner": "john.doe@smartsheet.com",
+		"ownerId": 4583173393803140,
+		"members": [{
+			"id": 4583173393803140,
+			"email": "john.doe@smartsheet.com",
+			"firstName": "John",
+			"lastName": "Doe",
+			"name": "John Doe"
+		}],
+		"createdAt": "2014-05-29T16:28:49-07:00",
+		"modifiedAt": "2014-05-29T16:28:49-07:00"
+	}
 }
 ```
 
@@ -7375,6 +7364,7 @@ updated_group = ss_client.Groups.update_group(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 2331373580117892,
@@ -7384,8 +7374,7 @@ updated_group = ss_client.Groups.update_group(
         "ownerId": 4583173393803140,
         "createdAt": "2014-05-29T16:28:49-07:00",
         "modifiedAt": "2014-05-29T17:00:23-07:00"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -7503,17 +7492,15 @@ new_members = ss_client.Groups.add_members(
 
 ```json
 {
-    "resultCode": 0,
-    "result": [
-        {
-            "id": 1539725208119172,
-            "email": "jane.doe@smartsheet.com",
-            "firstName": "Jane",
-            "lastName": "Doe",
-            "name": "Jane Doe"
-        }
-    ],
-    "message": "SUCCESS"
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 1539725208119172,
+		"email": "jane.doe@smartsheet.com",
+		"firstName": "Jane",
+		"lastName": "Doe",
+		"name": "Jane Doe"
+	}]
 }
 ```
 
@@ -8606,53 +8593,50 @@ response = ss_client.Sheets.add_rows(
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 7670198317672324,
-            "sheetId": 2331373580117892,
-            "rowNumber": 1,
-            "expanded": true,
-            "createdAt": "2013-02-28T17:45:13-08:00",
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "cells": [
-                {
-                    "columnId": 7960873114331012,
-                    "type": "CHECKBOX",
-                    "value": true
-                },
-                {
-                    "columnId": 642523719853956,
-                    "displayValue": "New status",
-                    "type": "TEXT_NUMBER",
-                    "value": "New status"
-                }
-            ]
-        },
-        {
-            "id": 2040698783459204,
-            "sheetId": 2331373580117892,
-            "rowNumber": 2,
-            "expanded": true,
-            "createdAt": "2013-02-28T17:45:13-08:00",
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "cells": [
-                {
-                    "columnId": 7960873114331012,
-                    "type": "CHECKBOX",
-                    "value": true
-                },
-                {
-                    "columnId": 642523719853956,
-                    "displayValue": "New status",
-                    "type": "TEXT_NUMBER",
-                    "value": "New status"
-                }
-            ]
-        }
-    ],
-	"version": 14, 
-    "resultCode": 0
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+			"id": 7670198317672324,
+			"sheetId": 2331373580117892,
+			"rowNumber": 1,
+			"expanded": true,
+			"createdAt": "2013-02-28T17:45:13-08:00",
+			"modifiedAt": "2013-02-28T17:45:13-08:00",
+			"cells": [{
+					"columnId": 7960873114331012,
+					"type": "CHECKBOX",
+					"value": true
+				},
+				{
+					"columnId": 642523719853956,
+					"displayValue": "New status",
+					"type": "TEXT_NUMBER",
+					"value": "New status"
+				}
+			]
+		},
+		{
+			"id": 2040698783459204,
+			"sheetId": 2331373580117892,
+			"rowNumber": 2,
+			"expanded": true,
+			"createdAt": "2013-02-28T17:45:13-08:00",
+			"modifiedAt": "2013-02-28T17:45:13-08:00",
+			"cells": [{
+					"columnId": 7960873114331012,
+					"type": "CHECKBOX",
+					"value": true
+				},
+				{
+					"columnId": 642523719853956,
+					"displayValue": "New status",
+					"type": "TEXT_NUMBER",
+					"value": "New status"
+				}
+			]
+		}
+	],
+	"version": 14
 }
 ```
 
@@ -9278,69 +9262,66 @@ updated_row = ss_client.Sheets.update_rows(
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 2068827774183300,
-            "rowNumber": 2,
-            "parentRowNumber": 1,
-            "parentId": 4624744004773764,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [
-                {
-                    "columnId": 7518312134403972,
-                    "type": "TEXT_NUMBER",
-                    "value": "desc_updated",
-                    "displayValue": "desc_updated"
-                },
-                {
-                    "columnId": 1888812600190852,
-                    "type": "PICKLIST",
-                    "value": "B",
-                    "displayValue": "B"
-                },
-                {
-                    "columnId": 6392412227561348,
-                    "type": "TEXT_NUMBER",
-                    "value": 1,
-                    "displayValue": "1"
-                }
-            ]
-        },
-        {
-            "id": 6572427401553796,
-            "rowNumber": 3,
-            "parentRowNumber": 1,
-            "parentId": 4624744004773764,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [
-                {
-                    "columnId": 7518312134403972,
-                    "type": "TEXT_NUMBER",
-                    "value": "new value",
-                    "displayValue": "new value"
-                },
-                {
-                    "columnId": 1888812600190852,
-                    "type": "PICKLIST",
-                    "value": "A",
-                    "displayValue": "A"
-                },
-                {
-                    "columnId": 6392412227561348,
-                    "type": "TEXT_NUMBER",
-                    "value": 1,
-                    "displayValue": "1"
-                }
-            ]
-        }
-    ],
-    "version": 8,
-    "resultCode": 0
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+			"id": 2068827774183300,
+			"rowNumber": 2,
+			"parentRowNumber": 1,
+			"parentId": 4624744004773764,
+			"expanded": true,
+			"createdAt": "2015-01-09T11:41:55-08:00",
+			"modifiedAt": "2015-02-23T15:36:07-08:00",
+			"cells": [{
+					"columnId": 7518312134403972,
+					"type": "TEXT_NUMBER",
+					"value": "desc_updated",
+					"displayValue": "desc_updated"
+				},
+				{
+					"columnId": 1888812600190852,
+					"type": "PICKLIST",
+					"value": "B",
+					"displayValue": "B"
+				},
+				{
+					"columnId": 6392412227561348,
+					"type": "TEXT_NUMBER",
+					"value": 1,
+					"displayValue": "1"
+				}
+			]
+		},
+		{
+			"id": 6572427401553796,
+			"rowNumber": 3,
+			"parentRowNumber": 1,
+			"parentId": 4624744004773764,
+			"expanded": true,
+			"createdAt": "2015-01-09T11:41:55-08:00",
+			"modifiedAt": "2015-02-23T15:36:07-08:00",
+			"cells": [{
+					"columnId": 7518312134403972,
+					"type": "TEXT_NUMBER",
+					"value": "new value",
+					"displayValue": "new value"
+				},
+				{
+					"columnId": 1888812600190852,
+					"type": "PICKLIST",
+					"value": "A",
+					"displayValue": "A"
+				},
+				{
+					"columnId": 6392412227561348,
+					"type": "TEXT_NUMBER",
+					"value": 1,
+					"displayValue": "1"
+				}
+			]
+		}
+	],
+	"version": 8
 }
 ```
 
@@ -12164,8 +12145,8 @@ ss_client.Sheets.delete_sheet(
 
 ```json
 {
-    "resultCode": 0,
-    "message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -12953,14 +12934,14 @@ updated_status = ss_client.Sheets.set_publish_status(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "icalEnabled": false,
         "readOnlyFullEnabled": false,
         "readOnlyLiteEnabled": true,
         "readOnlyLiteUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d",
         "readWriteEnabled": false
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -13081,6 +13062,7 @@ updated_sheet = ss_client.Sheets.update_sheet(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "id": 7960873114331012,
         "name": "New Sheet Name",
@@ -13094,8 +13076,7 @@ updated_sheet = ss_client.Sheets.update_sheet(
             "lengthOfDay": 6
         },
         "permalink": "https://app.smartsheet.com/b/home?lx=RE8LkzA48kPRWTzcgEYOga"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -13437,8 +13418,8 @@ ss_client.Sights.delete_sight(3404239197235076)     # sight_id
 
 ```json
 {
-    "resultCode": 0,
-    "message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -14487,14 +14468,14 @@ new_user = ss_client.Users.add_user(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "admin": false,
         "email": "john.doe@smartsheet.com",
         "name": "John Doe",
         "id": 1768423626696580,
         "licensedSheetCreator": true
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -14579,13 +14560,12 @@ response = ss_client.Users.add_alternate_email(
 
 ```json
 {
-    "message": "SUCCESS",
-    "resultCode": 0,
-    "result": 
-    [{
-        "id": 4495214342629252,
-        "email": "John.Doe@smartsheet.com",
-        "confirmed": false
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 4495214342629252,
+		"email": "John.Doe@smartsheet.com",
+		"confirmed": false
 	}]
 }
 ```
@@ -14653,14 +14633,13 @@ response = ss_client.Users.promote_alternate_email(
 
 ```json
 {
-    "message": "SUCCESS",
-    "resultCode": 0,
-    "result":
-    {
-        "id": 123456789012345,
-        "email": "John.Doe@smartsheet.com",
-        "confirmed": true
-    }
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": {
+		"id": 123456789012345,
+		"email": "John.Doe@smartsheet.com",
+		"confirmed": true
+	}
 }
 ```
 
@@ -15289,11 +15268,11 @@ updated_user = ss_client.Users.update_user(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "admin": true,
         "licensedSheetCreator": true
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -15517,13 +15496,13 @@ workspace = ss_client.Workspaces.create_workspace(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "accessLevel": "OWNER",
         "id": 7960873114331012,
         "name": "New workspace",
         "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -15856,13 +15835,13 @@ updated_workspace = ss_client.Workspaces.update_workspace(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "accessLevel": "OWNER",
         "id": 7960873114331012,
         "name": "Updated workspace",
         "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
