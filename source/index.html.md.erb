@@ -15856,46 +15856,81 @@ HTTP status code | Smartsheet errorCode | Smartsheet message
 
 # Formatting
 
-Formatting data can optionally be included for columns, rows, and cells by adding the "include=format" query string parameter to any API operation that returns any of those objects (for example, `GET /sheets/{sheetId}`, `GET sheets/{sheetId}/rows/{rowId}`, etc.).  When this parameter is included, objects that contain non-default formatting include a **format** property.  Objects that do not have any non-default format settings applied exclude this property.
+You can format data in cells, columns, or rows by using the optional "include=format" query-string parameter with API operations that return any of those objects (for example, `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`). When you include this parameter, and if there is formatting other than default settings, the return includes a **format** property.
  
-Because the amount of format data in a large sheet can potentially be very large in itself, for bandwidth reasons, format data is represented by a compact format descriptor string.  The format descriptor takes the form of a comma-separated list of numeric values.  These values represent indexes into pre-defined format lookup tables which can be retrieved using the `GET /serverinfo` operation.
+Because the amount of format data in a large sheet can potentially be very large in itself, for bandwidth reasons, format data is represented by a compact format descriptor string. The format descriptor takes the form of a comma-separated list of numeric values, for example, ",,1,1,,,,,,,,,,,,".  These values represent indexes into predefined format lookup tables.
+
+## Workflow for Formatting
+
+1. Use `GET /serverinfo` to retrieve the predefined format lookup table.
+2. Look through the [FormatTables Object](#formattables-object) to map the format property to the value you need, for instance, fontFamily is the first position. If you want to change the font to Tahoma, you need to make a note that Tahoma is the 2nd value for fontFamily, so it has a value of 1 (the default or first value is 0).
+3. Go to the [Format Descriptor](#format-descriptor) section for quick reference.
 
 ## Row & Column Format
 
 Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
  
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) is to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.
+To do something similar to highlighting an entire row or column in the UI and changing the format to bold, use the following API calls:
+
+* PUT /sheets/{sheetId}/rows/{rowId}
+* PUT /sheets/{sheetId}/columns/{columnId}
+    
+Use a loop to change the formatting for each cell in a row or column.
 
 ## Format Descriptor
 
 The format descriptor contains 16 comma-separated numeric indexes.  Each index represents a format style whose value can be found in one of the lookup tables in the [FormatTables Object](#formattables-object).
 
-**Format Descriptor Element #** | **Format Style** | **FormatTables Lookup Table Property** |
------|-----|-----|
-0 | Font Family | fontFamily
-1 | Font size | fontSize
-2 | Bold | bold
-3 | Italic | italic
-4 | Underline | underline
-5 | Strikethrough | strikethrough
-6 | Horizontal alignment | horizontalAlign
-7 | Vertical alignment | verticalAlign
-8 | Text color | color
-9 | Background color | color
-10 | Taskbar color | color
-11 | Currency | currency
-12 | Decimal count | decimalCount
-13 | Thousands separator | thousandsSeparator
-14 | Number format | numberFormat
-15 | Text wrap | textWrap
+**Position** | **Style** | **Lookup Property** | **Example Value** |
+-----|-----|-----|-----|
+0 | Font Family | fontFamily | 0 = Arial, default
+1 | Font size | fontSize | 0 = 8 pt, default
+2 | Bold | bold | 1 = bold
+3 | Italic | italic | 1 = italic
+4 | Underline | underline | 1 = underline
+5 | Strikethrough | strikethrough | 1 = strikethrough
+6 | Horizontal alignment | horizontalAlign | 0 = left
+7 | Vertical alignment | verticalAlign | 0 = top
+8 | Text color | color | 0 = app-defined default
+9 | Background color | color | 0 = app-defined default 
+10 | Taskbar color | color | 0 = app-defined default
+11 | Currency | currency | 0 = default
+12 | Decimal count | decimalCount | 3 = three decimal places
+13 | Thousands separator | thousandsSeparator | 1 = on
+14 | Number format | numberFormat | 2 = currency
+15 | Text wrap | textWrap | 1 = text wraps
 
-<aside class="notice">Formats which have not been explicitly set are omitted in the descriptor string.  For example, a cell which has been set to bold and italic, but has no other formats applied to it, has a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
+<aside class="notice">Formats that have not been explicitly set are omitted in the descriptor string. For example, a cell that has been set to bold and italic, but has no other formats applied to it, has a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
 
-<aside class="notice">As a convenience, the FormatTables Object contains a <b>defaults</b> property which is a format descriptor that describes which formats the Smartsheet Web app displays for unset formats.  Your application can use these values to display unformatted cells identically to the Smartsheet Web app.</aside>
+<aside class="notice">As a convenience, the FormatTables Object contains a <b>defaults</b> property that shows the default formatting for your Smartsheet Web app. Your application can use these values to make the same types of changes that a user can set in the UI.</aside>
 
 ## FormatTables Object
 
-The FormatTables Object is retrieved via the `GET /serverinfo` operation and contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet Web app displays for unset formats.
+> Example FormatTables Object:
+
+```json
+{
+	"formats": {
+		"defaults": "0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+		"fontFamily": [],
+		"fontSize": [],
+		"bold": [],
+		"italic": [],
+		"underline": [],
+		"strikethrough": [],
+		"horizontalAlign": [],
+		"verticalAlign": [],
+		"color": [],    // 3 positions: text color, background color, and taskbar color
+		"currency": [],
+		"decimalCount": [],
+		"thousandsSeparator": [],
+		"numberFormat": [],
+		"textWrap": []
+	}
+}
+```
+
+Use `GET /serverinfo` to retrieve the FormatTables Object, which contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet Web app displays for unset formats.
  
 <aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
 
@@ -15919,6 +15954,19 @@ The FormatTables Object is retrieved via the `GET /serverinfo` operation and con
 
 ## FontFamily Object
 
+> Example FontFamily Object:
+
+```json
+{
+	"fontFamily": [{
+		"name": "Arial",
+		"traits": [
+			"sans-serif"
+		]
+	}]
+}
+```
+
      |     |     |
 -----|-----|-----|
 **name** | string | Name of the font family (for example, "Arial")
@@ -15926,9 +15974,20 @@ The FormatTables Object is retrieved via the `GET /serverinfo` operation and con
 
 ## Currency Object
 
+> Example Currency Object:
+
+```json
+{
+	"currency": [{
+		"code": "USD",
+		"symbol": "$"
+	}]
+}
+```
+
      |     |     |
 -----|-----|-----|
-**code** | string | The ISO 4217 currency code (for example, "EUR")
+**code** | string | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code (for example, "EUR")
 **symbol** | string | The currency symbol (for example, "€")
 
 # <span class="customTOCSectionHeading">Deprecations</span>
