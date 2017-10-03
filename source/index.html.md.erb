@@ -503,7 +503,7 @@ VIEWER | The user has read-only access to the resource.
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
  
-As a developer, you may be building applications that allow any Smartsheet user to access his or her Smartsheet data. The following sub-sections describe next steps.
+As a developer, you may be building applications that allow any Smartsheet user to access their Smartsheet data. The following sub-sections describe next steps.
 
 ## Developer Registration
 
@@ -526,6 +526,8 @@ To build a third-party app, you must first register it with Smartsheet using Dev
 2. Click the **Account** button in the upper-left corner of your Smartsheet screen and click **Developer Tools**.
 3. Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
 4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
+
+<aside class="notice">App registration and OAuth flow require HTTPS.</aside>
 
 ## Access Scopes
 
@@ -562,6 +564,8 @@ WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions,
 Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
 The following sub-sections describe next steps.
 
+<aside class="notice">App registration and OAuth flow require HTTPS.</aside>
+
 ### Request Authorization From the User
 
 To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
@@ -570,7 +574,7 @@ Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
-redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) for your app (including protocol, for example, "http://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) for your app (including protocol, for example, "https://"); if not provided, the redirect URL set during registration is used.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 
@@ -660,7 +664,7 @@ Value | Description |
 grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app.
 code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
-redirect_uri<br/>(optional) | Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(optional) | Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
 hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -723,7 +727,7 @@ Value | Description |
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
-redirect_uri<br/>(optional)| Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "http://").
+redirect_uri<br/>(optional)| Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "https://").
 hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
