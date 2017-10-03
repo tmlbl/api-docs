@@ -6434,7 +6434,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of the sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (for example, "folders", "sheets") is not present in the response.
 
 ## Get All Child Folders
@@ -12495,7 +12495,8 @@ sheets = response.data
 		{
 			"accessLevel": "OWNER",
 			"id": 4583173393803140,
-			"name": "sheet 1",
+            "name": "sheet 1",
+            "version": 5,
 			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
             "createdAt": "2015-06-05T20:05:29Z",
             "modifiedAt": "2015-06-05T20:05:43Z"
@@ -12503,7 +12504,8 @@ sheets = response.data
 		{
 			"accessLevel": "OWNER",
 			"id": 2331373580117892,
-			"name": "sheet 2",
+            "name": "sheet 2",
+            "version": 86,
 			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
             "createdAt": "2015-06-05T20:05:29Z",
             "modifiedAt": "2015-06-05T20:05:43Z"
@@ -12524,7 +12526,7 @@ Gets a list of all Sheets that the User has access to in alphabetical order by n
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of the sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
  | <%= PARAMETER_MODIFIEDSINCE %>
  | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Sheet Objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
@@ -15410,7 +15412,7 @@ Gets a list of Workspaces that the user has access to. The list contains an abbr
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>sheetVersion - current version number of the sheet, should not be combined with pagination</li></ul><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Workspace Objects](#workspace-object)
 
 ## Share Workspace
