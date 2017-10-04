@@ -3658,7 +3658,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
 
 ## <%= RELATED %>
@@ -10420,7 +10420,7 @@ Deletes the Share specified in the URL.
 > Example Request: Get Sight Share
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId}
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" 
 ```
 
@@ -10477,10 +10477,10 @@ Gets the Share specified in the URL.
 
 ### List Sight Shares
 
-> Example Request:
+> Example Request: List Sight Shares
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" 
 ```
 
@@ -10548,10 +10548,10 @@ Gets a list of all Users and Groups to whom the specified Sight is shared, and t
 > Example Request: Share Sight
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
--X POST \
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+-H "Content-Type: application/json"
+-X POST
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
