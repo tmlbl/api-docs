@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-10-03
+Updated 2017-10-04
 
 # Overview
 ## Introduction
@@ -9411,7 +9411,13 @@ Searches all Sheets that the User can access, for the specified text.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **query** (required): Text with which to perform the search. Enclose in double-quotes for an exact search.
+<%= PARAMETERS %> | **query** (required): text with which to perform the search. Enclose in double-quotes for an exact search.
+ | **include** (optional): when specified with a value of "favoriteFlag", response includes:<ul><li>favorite -- Folders, Reports, Sheets, Sights, Templates, and Workspaces will have the property "favorite": true</li><li>parentObjectFavorite -- Attachments, Discussions, Profile Fields, and Rows will have the property "parentObjectFavorite": true</li></ul>
+ | **level** (optional): when specified with one of the following values, temporarily disables filters:<ul><li>0 -- allows all filters except for Dashboard, Folder, or Workspace</li><li>1 -- allows all filters except for Folder or Workspace</li><li>2 -- allows all filters</li></ul>
+ | **location** (optional): when specified with a value of "personalWorkspace", limits the response to only those items in the user's Workspaces.
+ | <%= PARAMETER_MODIFIEDSINCE %>
+ | **owner** (optional): uses a primary email address, such as "Jane.Roe@smartsheet.com", to filter responses to only those items owned by that user.
+ | **scopes** (optional): a comma-separated list of the following values limits the response to those items:<ul><li>attachments</li><li>cellData</li><li>comments</li><li>folderNames</li><li>profileFields</li><li>reportNames</li><li>sheetNames</li><li>sightNames</li><li>templateNames</li><li>workspaceNames</li></ul>
 <%= RETURNS %> | [SearchResult Object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
 
 ## Search Sheet
