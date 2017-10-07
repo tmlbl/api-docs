@@ -3994,13 +3994,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 
 ```javascript
 var body = {
-    text: "This is the updated comment text.",
+    text: "This is the updated comment text."
 };
 
 var options = {
     sheetId: 3285357287499652,
     commentId: 7144101943502724,
-    body: body,
+    body: body
 };
 
 smartsheet.sheets.editComment(options)
@@ -6758,8 +6758,7 @@ var body = {
 
 var options = {
     folderId: 7960873114331012,
-    body: body,
-
+    body: body
 };
 
 smartsheet.folders.moveFolder(options)
@@ -12702,7 +12701,7 @@ var body = {
 
 var options = {
     sheetId: 4583173393803140,
-    body: body,
+    body: body
 };
 
 smartsheet.sheets.moveSheet(options)
@@ -13451,7 +13450,7 @@ var args = {
 // Get Sight
 smartsheet.sights.getSight(args)
     .then(function(sight) {
-        console.log(sight.name);
+        console.log(sight);
     })
     .catch(function(error) {
         console.log(error);
@@ -13734,16 +13733,11 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 ```
 
 ```javascript
-var body = {
-    readOnlyFullEnabled: false
-};
-
 var options = {
-    sightId: 5363568917931908,
-    body: body
+    sightId: 970160971507588
 };
 
-smartsheet.sights.setSightPublishStatus(options)
+smartsheet.sights.getSightPublishStatus(options)
     .then(function (result) {
         console.log(result);
     })
@@ -13889,7 +13883,7 @@ var options = {
     body: body
 };
 
-smartsheet.sights.getSight(options)
+smartsheet.sights.updateSight(options)
     .then(function (result) {
         console.log(result);
     })
@@ -16788,9 +16782,7 @@ Webhook = ss_client.Webhooks.create_webhook(
 		"name": "Webhook #4",
 		"scope": "sheet",
 		"scopeObjectId": 3285357287499652,
-		"events": [
-			"*.*"
-		],
+		"events": [	"*.*" ],
 		"callbackUrl": "http://www.myApp.com/webhooks",
 		"sharedSecret": "3qo29mvjou6xt5fujukjtwzhj0",
 		"enabled": false,
@@ -16827,7 +16819,7 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 
 ```javascript
 var options = {
-    webhookId: 401090454808452,
+    webhookId: 401090454808452
 };
 
 smartsheet.webhooks.deleteWebhook(options)
@@ -16925,9 +16917,7 @@ Webhook = ss_client.Webhooks.get_webhook(
 	"name": "Webhook #5",
 	"scope": "sheet",
 	"scopeObjectId": 6761855684241284,
-	"events": [
-		"*.*"
-	],
+	"events": [ "*.*" ],
 	"callbackUrl": "http://www.myApp.com/webhooks",
 	"sharedSecret": "216ejjzdnq17mq1q8xs7d4hu8b",
 	"enabled": false,
@@ -17005,16 +16995,28 @@ IndexResult = ss_client.Webhooks.list_webhooks(
         "name": "Webhook #5",
         "scope": "sheet",
         "scopeObjectId": 6761855684241284,
-        "events": [
-            "*.*"
-        ],
+        "events": [ "*.*" ],
         "callbackUrl": "http://www.myApp.com/webhooks",
-        "sharedSecret": "216ejjzdnq17mq1q8xs7d4hu8b",
+        "sharedSecret": "216ejjzfoo17mq1q8xs7d4hu8b",
         "enabled": true,
         "status": "ENABLED",
         "version": 1,
         "createdAt": "2015-11-03T14:52:21Z",
         "modifiedAt": "2015-11-04T19:05:40Z"
+    },
+    {
+        "id": 8740042258811204,
+        "name": "Webhook #6",
+        "scope": "sheet",
+        "scopeObjectId": 7254197655660356,
+        "events": [ "*.*" ],
+        "callbackUrl": "http://www.myApp.com/webhooks",
+        "sharedSecret": "qxxk02j0bar8c9kaukgkpg430",
+        "enabled": true,
+        "status": "ENABLED",
+        "version": 1,
+        "createdAt": "2016-11-03T14:52:21Z",
+        "modifiedAt": "2017-11-04T19:05:40Z"
     }]
 }
 ```
@@ -17044,7 +17046,7 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
 
 ```javascript
 var options = {
-    webhookId: 401090454808452,
+    webhookId: 401090454808452
 };
 
 smartsheet.webhooks.resetSharedSecret(options)
@@ -17079,7 +17081,7 @@ Webhook = ss_client.Webhooks.reset_shared_secret(
 {
     "message": "SUCCESS",
     "resultCode": 0,
-	"result": { "sharedSecret": "5nua69a56es57qdr97g9bcg8f3" }
+	"result": { "sharedSecret": "5nua69a5foo57qdr9barbcg8f3" }
 }
 ```
 
