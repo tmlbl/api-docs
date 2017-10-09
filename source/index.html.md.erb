@@ -2798,24 +2798,27 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-   sheetId: 1421228469708676,
-   rowId: 6039340093597572,
-   columnId: 7489396711679876,
-   fileSize: 8427,
-   fileName: "Company_logo.jpg",
-   fileStream: fs.createReadStream("Company_logo.jpg"),
-   queryParameters: {
-       "altText": "Thumbnail of company logo",
-       "overrideValidation": true
-   }
-};
-
-// Add image to cell
-smartsheet.sheets.addImageToCell(options)
-   .then(console.log)
-   .catch(console.log);
+    sheetId: 1696831624483716,
+    rowId: 1049441315358596,
+    columnId: 74761903175665540,
+    fileSize: 458,
+    fileName: "/Users/jroe/Documents/images/img_pl_decisionshapesHold.png",
+    fileStream: fs.createReadStream("/Users/jroe/Documents/images/img_pl_decisionshapesHold.png"),
+    queryParameters: {
+        "altText": "Caution sign",
+        "overrideValidation": true
+    }
+ };
+ 
+ // Add image to cell
+ smartsheet.sheets.addImageToCell(options)
+    .then(console.log)
+    .catch(console.log);
 ```
 
 ```csharp
@@ -3881,9 +3884,10 @@ response = ss_client.Discussions.add_comment_to_discussion(
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: multipart/form-data"
 -X POST \
 -F "comment=<comment.json;type=application/json" \
--F "file=@file_to_attach;type=application/octet-stream"
+-F "file=@datafile;type=application/octet-stream"
 
     #
     # Content of the comment.json file:
@@ -4515,7 +4519,7 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
+-H "Content-Type: multipart/form-data" \
 -X POST \
 -F "discussion=<discussion.json;type=application/json" \
 -F "file=@datafile;type=application/octet-stream"
@@ -5840,7 +5844,19 @@ curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{fold
 ```
 
 ```javascript
-// [todo]
+var options = {
+    queryParameters: {
+        objectIds: '970160371507588,6327427650920324'
+    }
+};
+
+smartsheet.favorites.removeSightsFromFavorites(options)
+    .then(function (result) {
+        console.log(result);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -8255,7 +8271,7 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 ```javascript
 // Set options
 var options = {
-    reportId: 1653067851556740,
+    reportId: 1653087851556740,
     body: {
         readOnlyFullEnabled: true,
         readOnlyFullAccessibleBy: "ALL"
