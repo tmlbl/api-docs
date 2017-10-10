@@ -4009,16 +4009,19 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 ```
 
 ```javascript
+// Specify text
 var body = {
     text: "This is the updated comment text."
 };
 
+// Set options
 var options = {
     sheetId: 3285357287499652,
     commentId: 7144101943502724,
     body: body
 };
 
+// Edit comment
 smartsheet.sheets.editComment(options)
     .then(function (result) {
         console.log(result);
@@ -4267,10 +4270,10 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 
 ```javascript
 // Set options
-var args = {id: "AAcBgiYU54QAGfLS5hTnhA"};
+var options = {id: "AAcBgiYU54QAGfLS5hTnhA"};
 
 // Get contact
-smartsheet.contacts.getContact(args)
+smartsheet.contacts.getContact(options)
     .then(function(contact) {
     console.log(contact);
     })
@@ -5462,6 +5465,7 @@ smartsheet.favorites.removeSheetFromFavorites(options)
         console.log(error);
     });	
 ```
+
 ```csharp
 smartsheet.FavoriteResources.RemoveFavorites(
     ObjectType.SHEET,
@@ -5504,10 +5508,12 @@ curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
 ```
 
 ```javascript
+// Set options
 var options = {
     objectId: 6327127650920324
 };
 
+// Remove Sight from list of favorites
 smartsheet.favorites.removeSightFromFavorites(options)
     .then(function (result) {
         console.log(result);
@@ -5682,7 +5688,7 @@ curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{fold
 // Set options
 var options = {
     queryParameters: {
-        objectIds: "2252168947361668, 2252168947361669"
+        objectIds: "2252168947361668,2252168947361669"
     }
 };
 
@@ -5741,7 +5747,7 @@ curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{repo
 // Set options
 var options = {
     queryParameters: {
-        objectIds: "2252168947361668, 2252168947361669"
+        objectIds: "2252168947361668,2252168947361669"
     }
 };
 
@@ -5800,7 +5806,7 @@ curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetI
 // Set options
 var options = {
     queryParameters: {
-        objectIds: "2252168947361668, 2252168947361669"
+        objectIds: "2252168947361668,2252168947361669"
     }
 };
 
@@ -5856,12 +5862,14 @@ curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{fold
 ```
 
 ```javascript
+// Set options
 var options = {
     queryParameters: {
         objectIds: '970160371507588,6327427650920324'
     }
 };
 
+// Remove Sights from list of favorites
 smartsheet.favorites.removeSightsFromFavorites(options)
     .then(function (result) {
         console.log(result);
@@ -6062,23 +6070,27 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 ```
 
 ```javascript
+// Specify destination information
 var body = {
     destinationType: "folder",
     destinationId: 6327127650920324,
     newName: "Folder Copy"
 };
 
+// Specify elements to copy
 var params = {
     include: "data,discussions",
     skipRemap: "cellLinks"
 };
 
+// Set options
 var options = {
     folderId: 2252168947361668,
     body: body,
     queryParameters: params
 };
 
+// Copy folder
 smartsheet.folders.copyFolder(options)
     .then(function (result) {
         console.log(result);
@@ -6779,16 +6791,19 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 ```
 
 ```javascript
+// Set destination information
 var body = {
     destinationType: "folder",
     destinationId: 4509918431602564
 };
 
+// Set options
 var options = {
     folderId: 7960873114331012,
     body: body
 };
 
+// Move folder
 smartsheet.folders.moveFolder(options)
     .then(function (result) {
         console.log(result);
@@ -10442,14 +10457,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 var shareSpecification = {"accessLevel": "VIEWER"};
 
 // Set options
-var args = {
+var options = {
     sheetId: 1696801624483716,
     shareId: "AAAHAYImFOeE",
     body: shareSpecification
 };
 
 // Update sheet share
-smartsheet.sheets.updateShare(args)
+smartsheet.sheets.updateShare(options)
     .then(function (updatedShare) {
         console.log(updatedShare);
     })
@@ -10514,13 +10529,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324,
     shareId: "AAABbMomFOeE"
 }
 
 // Delete Sight share
-smartsheet.sights.deleteShare(args)
+smartsheet.sights.deleteShare(options)
     .then(function(results) {
     console.log(results);
     })
@@ -10571,13 +10586,13 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324,
     shareId: "AAABbMomFOeE"
 }
 
 // Get Sight share
-smartsheet.sights.getShare(args)
+smartsheet.sights.getShare(options)
     .then(function(share) {
     console.log(share);
     })
@@ -10631,12 +10646,12 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324
 }
 
 // List Sight shares
-smartsheet.sights.listShares(args)
+smartsheet.sights.listShares(options)
     .then(function(shareList) {
     console.log(shareList);
     })
@@ -10710,13 +10725,13 @@ var share = [
 ];
 
 // Set options
-var shareSpecification = {
+var options = {
     sightId: 6327127650920324,
     body: share
 };
 
 // Share Sight
-smartsheet.sights.share(shareSpecification)
+smartsheet.sights.share(options)
     .then(function(addressList) {
     console.log(addressList);
     })
@@ -10793,14 +10808,14 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 var shareSpecification = {"accessLevel": "VIEWER"};
 
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324,
     shareId: "AAALRqomFOeE",
     body: shareSpecification
 };
 
 // Update Sight share
-smartsheet.sights.updateShare(args)
+smartsheet.sights.updateShare(options)
     .then(function (updatedShare) {
         console.log(updatedShare);
     })
@@ -11335,21 +11350,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 ```
 
 ```javascript
+// Set destination information
 var body = {
     destinationType: "home",
     newName: "newSheetName"
 };
 
+// Set elements to copy
 var params = {
     include: "attachments,data"
 };
 
+// Set options
 var options = {
     sheetId: 7254137655060356,
     body: body,
     queryParameters: params
 };
 
+// Copy sheet
 smartsheet.sheets.copySheet(options)
     .then(function (result) {
         console.log(result);
@@ -12722,16 +12741,19 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 ```
 
 ```javascript
+// Set destination information
 var body = {
     destinationType: "folder",
     destinationId: 7960873114331012
 };
 
+// Set options
 var options = {
     sheetId: 4583173393803140,
     body: body
 };
 
+// Move sheet
 smartsheet.sheets.moveSheet(options)
     .then(function (result) {
         console.log(result);
@@ -13313,16 +13335,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 ```
 
 ```javascript
+// Specify new Sight properties
 var body = {
     destinationType: "home",
     newName: "newSightName"
 };
 
+// Set options
 var options = {
     sightId: 6327127650920324,
     body: body
 };
 
+// Copy Sight
 smartsheet.sights.copySight(options)
     .then(function (result) {
         console.log(result);
@@ -13412,11 +13437,12 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 5363568917931908
 };
 
-smartsheet.sights.deleteSight(args)
+// Delete Sight
+smartsheet.sights.deleteSight(options)
     .then(function(results) {
     console.log(results);
     })
@@ -13471,12 +13497,12 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324
 };
 
 // Get Sight
-smartsheet.sights.getSight(args)
+smartsheet.sights.getSight(options)
     .then(function(sight) {
         console.log(sight);
     })
@@ -13663,16 +13689,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 ```
 
 ```javascript
+// Set destination
 var body = {
     destinationType: "folder",
     destinationId: 8460057768683396
 };
 
+// Set options
 var options = {
     sightId: 5077532685952900,
     body: body
 };
 
+// Move Sight
 smartsheet.sights.moveSight(options)
     .then(function (result) {
         console.log(result);
@@ -13761,10 +13790,12 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 ```
 
 ```javascript
+// Set options
 var options = {
     sightId: 970160971507588
 };
 
+// Get Sight publish status
 smartsheet.sights.getSightPublishStatus(options)
     .then(function (result) {
         console.log(result);
@@ -13823,15 +13854,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 ```
 
 ```javascript
+// Specify property to change
 var body = {
     readOnlyFullEnabled: false
 };
 
+// Set options
 var options = {
     sightId: 5363568917931908,
     body: body
 };
 
+// Set Sight publish status
 smartsheet.sights.setSightPublishStatus(options)
     .then(function (result) {
         console.log(result);
@@ -13902,15 +13936,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```javascript
+// Set property to change
 var body = {
     name: "New Sight Name"
 };
 
+// Set options
 var options = {
     sightId: 5363568917931908,
     body: body
 };
 
+// Update Sight
 smartsheet.sights.updateSight(options)
     .then(function (result) {
         console.log(result);
@@ -14439,6 +14476,7 @@ var options = {
 	body: user
 };
 
+// Add user
 smartsheet.users.addUser(options)
 	.then(function(newUser) {
 		console.log(newUser)
@@ -14544,17 +14582,20 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```javascript
+// Specify email addresses to add
 var body = [
     {
         email: "John.Doe@smartsheet.com"
     }
 ];
 
+// Set options
 var options = {
     userId: 4495214342629252,
     body: body
 };
 
+// Add alternate email address
 smartsheet.users.addAlternateEmail(options)
     .then(function (result) {
         console.log(result);
@@ -14625,11 +14666,13 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```javascript
+// Set options
 var options = {
     userId: 401090454808452,
     alternateEmailId: 123456789012345
 };
 
+// Make alternate email primary
 smartsheet.users.makeAlternateEmailPrimary(options)
     .then(function (result) {
         console.log(result);
@@ -14696,11 +14739,13 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```javascript
+// Set options
 var options = {
     userId: 401090454808452,
     alternateEmailId: 123456789012345
 };
 
+// Delete alternate email address
 smartsheet.users.deleteAlternateEmail(options)
     .then(function (result) {
         console.log(result);
@@ -14759,11 +14804,13 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEma
 ```
 
 ```javascript
+// Set options
 var options = {
     userId: 401090454808452,
     alternateEmailId: 123456789012345
 };
 
+// Get alternate email address
 smartsheet.users.getAlternateEmail(options)
     .then(function (result) {
         console.log(result);
@@ -14823,10 +14870,12 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```javascript
+// Set options
 var options = {
     userId: 4495214342629252
 };
 
+// List alternate email addresses
 smartsheet.users.listAlternateEmails(options)
     .then(function (result) {
         console.log(result);
@@ -15358,21 +15407,25 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
 ```
 
 ```javascript
+// Specify new workspace name
 var body = {
     newName: "newWorkspaceName"
 };
 
+// Set elements to copy
 var params = {
     include: "data,discussions",
     skipRemap: "cellLinks"
 };
 
+// Set options
 var options = {
     workspaceId: 7116448184199044,
     body: body,
     queryParameters: params
 };
 
+// Copy workspace
 smartsheet.workspaces.copyWorkspace(options)
     .then(function (result) {
         console.log(result);
@@ -16739,6 +16792,7 @@ curl https://api.smartsheet.com/2.0/webhooks \
 ```
 
 ```javascript
+// Specify webhook details
 var body = {
     name: "Webhook #4",
     callbackUrl: "https://www.myApp.com/webhooks",
@@ -16748,10 +16802,12 @@ var body = {
     version: 1,
 };
 
+// Set options
 var options = {
     body: body,
 };
 
+// Create webhook
 smartsheet.webhooks.createWebhook(options)
     .then(function (result) {
         console.log(result);
@@ -16851,10 +16907,12 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 ```
 
 ```javascript
+// Set options
 var options = {
     webhookId: 401090454808452
 };
 
+// Delete webhook
 smartsheet.webhooks.deleteWebhook(options)
     .then(function (result) {
         console.log(result);
@@ -16912,10 +16970,12 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 ```
 
 ```javascript
+// Set options
 var options = {
     webhookId: 401090454808452
 };
 
+// Get webhook
 smartsheet.webhooks.getWebhook(options)
     .then(function (result) {
         console.log(result);
@@ -16981,9 +17041,11 @@ curl https://api.smartsheet.com/2.0/webhooks \
 ```
 
 ```javascript
+// Set options
 var options = {
     };
-    
+
+// List webhooks
 smartsheet.webhooks.listWebhooks(options)
     .then(function (result) {
         console.log(result);
@@ -17078,10 +17140,12 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
 ```
 
 ```javascript
+// Get options
 var options = {
     webhookId: 401090454808452
 };
 
+// Reset shared secret
 smartsheet.webhooks.resetSharedSecret(options)
     .then(function (result) {
         console.log(result);
@@ -17144,15 +17208,18 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 ```
 
 ```javascript
+// Specify changed values
 var body = {
     enabled: true
 };
 
+// Set options
 var options = {
     webhookId: 8444254503626628,
     body: body
 };
 
+// Update webhook
 smartsheet.webhooks.updateWebhook(options)
     .then(function (result) {
         console.log(result);
