@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-10-02
+Updated 2017-10-10
 
 # Overview
 ## Introduction
@@ -987,13 +987,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-    sheetId: 9283173393803140,
-    commentId: 1234567890234568,
-    fileSize: 17298,
-    fileName: "ProgressReport.docx",
-    fileStream: fs.createReadStream("ProgressReport.docx")
+    sheetId: 1696803624483716,
+    commentId: 7722333183016324,
+    fileSize: 20765,
+    fileName: "expense_report_sample.png",
+    fileStream: fs.createReadStream("/Users/jdoe/Documents/expense_report_sample.png")
 };
 
 // Attach file to comment
@@ -1090,19 +1093,22 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-    sheetId: 9283173393803140,
-    rowId: 0123456789012345,
-    fileSize: 17298,
-    fileName: "ProgressReport.docx",
-    fileStream: fs.createReadStream("ProgressReport.docx")
+   sheetId: 1696803624483716,
+   rowId: 1049041355358596,
+   fileSize: 20765,
+   fileName: "expense_report_sample.png",
+   fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
 };
 
 // Attach file to row
 smartsheet.sheets.addRowFileAttachment(options)
-    .then(console.log)
-    .catch(console.log);
+   .then(console.log)
+   .catch(console.log);
 ```
 	
 ```csharp
@@ -1190,15 +1196,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-    sheetId: 9283173393803140,
-    fileSize: 17298,
-    fileName: "ProgressReport.docx",
-    fileStream: fs.createReadStream("ProgressReport.docx")
+    sheetId: 1694401624483716,
+    fileSize: 20765,
+    fileName: "expense_report_sample.png",
+    fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
 };
 
-// Attach file to sheet
+// Attach file to comment
 smartsheet.sheets.addFileAttachment(options)
     .then(console.log)
     .catch(console.log);
@@ -2034,6 +2043,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
     sheetId: 9283173393803140,
@@ -14121,6 +14133,11 @@ var options = {
     },
     contentType: 'application/x-www-form-urlencoded'
 };
+
+// Get access token
+smartsheet.tokens.getAccessToken(options)
+    .then(console.log)
+    .catch(console.log);
 ```
 
 ```csharp
