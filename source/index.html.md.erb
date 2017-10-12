@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-09-27
+Updated 2017-10-12
 
 # Overview
 ## Introduction
@@ -616,7 +616,30 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+// Create hash
+var hash =
+    crypto.createHash('sha256')
+          .update('Your App Secret' + '|' + 'Received Authorization Code')
+          .digest('hex');
+ 
+// Set options
+var options = {
+    queryParameters: {
+        client_id: 'Your App Client ID',
+        code: 'Received Authorization Code',
+        hash: hash
+    },
+    contentType: 'application/x-www-form-urlencoded'
+};
+
+// Get access token
+smartsheet.tokens.getAccessToken(options)
+    .then(function(token) {
+		console.log(token);
+	})
+	.catch(function(error) {
+    	console.log(error);
+  	});
 ```
 
 ```csharp
@@ -635,11 +658,11 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```json
 {
-   "ll352u9jujauoqz4gstvsae05": "Access Token Value",
-   "token_type": "bearer",
-   "refresh_token": "Refresh Token Value",
-   "expires_in": "# of seconds before token expires"
-}
+    "access_token": "ll352u9jujauoqz4gstvsae05",
+    "token_type": "bearer",
+    "refresh_token": "e9x352a9mp4151le2505",
+    "expires_in": 604799
+ }
 ```
 
 > Error Response:
@@ -687,7 +710,30 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+// Create hash
+var hash =
+    crypto.createHash('sha256')
+          .update('Your App Secret' + '|' + 'Your App Refresh Token')
+          .digest('hex');
+ 
+// Set options
+var options = {
+    queryParameters: {
+        client_id: 'Your App Client ID',
+        refresh_token: 'Your App Refresh Token',
+        hash: hash
+    },
+    contentType: 'application/x-www-form-urlencoded'    
+};
+ 
+// Refresh access token
+smartsheet.tokens.refreshAccessToken(options)
+    .then(function(updatedToken) {
+        console.log(updatedToken);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -706,10 +752,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```json
 {
-   "1": "Newly refreshed Access Token",
-   "expires_in": "# of seconds before token expires",
-   "token_type": "bearer",
-   "refresh_token": "New refresh token"
+    "access_token": "ll352u9jujauoqz4gstvsae05",
+    "token_type": "bearer",
+    "refresh_token": "e9x352a9mp4151le2505",
+    "expires_in": 604799
 }
 ```
 
@@ -954,24 +1000,26 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-   sheetId: 2252168947361668,
-   commentId: 4293147074291588,    
-   contentType: CONTENT_TYPE,
-   fileName: NAME_OF_FILE,
-   fileSize: SIZE_OF_FILE,
-   body: ATTACHMENT_DATA
-   };
+    sheetId: 1696803624483716,
+    commentId: 7722333183016324,
+    fileSize: 20765,
+    fileName: "expense_report_sample.png",
+    fileStream: fs.createReadStream("/Users/jdoe/Documents/expense_report_sample.png")
+};
 
 // Attach file to comment
-smartsheet.sheets.addCommentAttachment(options)
-    .then(function (attachment) {
+smartsheet.sheets.addCommentFileAttachment(options)
+    .then(function(attachment) {
         console.log(attachment);
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
-    })
+    });
 ```
 
 ```csharp
@@ -1062,24 +1110,26 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588,    
-    contentType: CONTENT_TYPE,
-    fileName: NAME_OF_FILE,
-    fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA
-    };
+   sheetId: 1696803624483716,
+   rowId: 1049041355358596,
+   fileSize: 20765,
+   fileName: "expense_report_sample.png",
+   fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
+};
 
 // Attach file to row
-smartsheet.sheets.addRowAttachment(options)
-    .then(function (attachment) {
+smartsheet.sheets.addRowFileAttachment(options)
+    .then(function(attachment) {
         console.log(attachment);
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
-    })
+    });
 ```
 	
 ```csharp
@@ -1167,23 +1217,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-   sheetId: 2252168947361668,
-   contentType: CONTENT_TYPE,
-   fileName: NAME_OF_FILE,
-   fileSize: SIZE_OF_FILE,
-   body: ATTACHMENT_DATA
-   };
+    sheetId: 1694401624483716,
+    fileSize: 20765,
+    fileName: "expense_report_sample.png",
+    fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
+};
 
-// Attach file to sheet
-smartsheet.sheets.addAttachment(options)
-    .then(function (attachment) {
+// Attach file to comment
+smartsheet.sheets.addFileAttachment(options)
+    .then(function(attachment) {
         console.log(attachment);
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
-    })
+    });
 ```
 
 ```csharp
@@ -2016,24 +2068,26 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/
 ```
 
 ```javascript
+// Enable FileStream
+var fs = require("fs")
+
 // Set options
 var options = {
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588,
-    contentType: CONTENT_TYPE,
-    fileName: NAME_OF_FILE,
-    fileSize: SIZE_OF_FILE,
-    body: ATTACHMENT_DATA
-    };
+    sheetId: 9283173393803140,
+    attachmentId: 0123456789123456,
+    fileSize: 17291,
+    fileName: "ProgressReport.docx",
+    fileStream: fs.createReadStream("ProgressReport.docx")
+};
 
-// Attach new version of the file
+// Attach new version
 smartsheet.sheets.attachNewVersion(options)
-    .then(function (attachment) {
-        console.log(attachment);
+    .then(function(updatedAttachment) {
+        console.log(updatedAttachment);
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
-    })
+    });
 ```
 
 ```csharp
@@ -2075,15 +2129,15 @@ updated_attachment = response.result
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
+        "id": 4583173393803140,    
+        "name": "ProgressReport.docx",
         "attachmentType": "FILE",
-        "createdAt": "2013-02-28T21:04:56-08:00",
-        "id": 4583173393803140,
         "mimeType": "application/msword",
-        "name": "ProgressReport.docx"
+        "createdAt": "2013-02-28T21:04:56-08:00"
     },
-    "version": 12,
-    "resultCode": 0
+    "version": 12
 }
 ```
 
@@ -2147,8 +2201,8 @@ ss_client.Attachments.delete_attachment_versions(
 ```json
 {
     "message": "SUCCESS",
-    "version": 12,
-    "resultCode": 0
+    "resultCode": 0,
+    "version": 12
 }
 ```
 
@@ -2180,8 +2234,8 @@ var options = {
 
 // List versions of the attachment
 smartsheet.sheets.listAttachmentVersions(options)
-    .then(function (attachmentsList) {
-        console.log(attachmentsList);
+    .then(function (versionList) {
+        console.log(versionList);
     })
     .catch(function (error) {
         console.log(error);
@@ -2363,38 +2417,32 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?include=objectValue \
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 6572427401553796,
-            "rowNumber": 2,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [	
-				{
-					"columnId": 7518312134403972,
-					"value": "1FS +2d 4h",
-					"objectValue": {
-						"objectType": "PREDECESSOR_LIST",
-						"predecessors": [
-							{
-								"rowId": 567735454328708,
-								"rowNumber": 1,
-								"type": "FS",
-								"lag": {
-									"objectType": "DURATION",
-									"days": 2,
-									"hours": 4
-								}
-							}
-						]
-					},
-					"displayValue": "1FS +2d 4h"
-				}
-			]
-		}
-	]
+	"message": "SUCCESS",
+	"result": [{
+		"id": 6572427401553796,
+		"rowNumber": 2,
+		"expanded": true,
+		"createdAt": "2015-01-09T11:41:55-08:00",
+		"modifiedAt": "2015-02-23T15:36:07-08:00",
+		"cells": [{
+			"columnId": 7518312134403972,
+			"value": "1FS +2d 4h",
+			"objectValue": {
+				"objectType": "PREDECESSOR_LIST",
+				"predecessors": [{
+					"rowId": 567735454328708,
+					"rowNumber": 1,
+					"type": "FS",
+					"lag": {
+						"objectType": "DURATION",
+						"days": 2,
+						"hours": 4
+					}
+				}]
+			},
+			"displayValue": "1FS +2d 4h"
+		}]
+	}]
 }
 ```
 
@@ -2455,8 +2503,8 @@ var options = {
 
 // Get cell history
 smartsheet.sheets.getCellHistory(options)
-    .then(function (results) {
-        console.log(results);
+    .then(function (history) {
+        console.log(history);
     })
     .catch(function (error) {
         console.log(error);
@@ -2791,7 +2839,31 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 ```
 
 ```javascript
-// [todo]
+// Enable FileStream
+var fs = require("fs")
+
+// Set options
+var options = {
+    sheetId: 1696831624483716,
+    rowId: 1049441315358596,
+    columnId: 74761903175665540,
+    fileSize: 458,
+    fileName: "/Users/jroe/Documents/images/img_pl_decisionshapesHold.png",
+    fileStream: fs.createReadStream("/Users/jroe/Documents/images/img_pl_decisionshapesHold.png"),
+    queryParameters: {
+        "altText": "Caution sign",
+        "overrideValidation": true
+    }
+ };
+ 
+ // Add image to cell
+ smartsheet.sheets.addImageToCell(options)
+    .then(function(image) {
+        console.log(image);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -2810,10 +2882,18 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": {
-    },
-    "resultCode": 0
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 6039340093597572,
+		"rowNumber": 6,
+		"siblingId": 1535740466227076,
+		"expanded": true,
+		"createdAt": "2017-08-28T21:29:16Z",
+		"modifiedAt": "2017-08-30T08:10:47Z",
+		"cells": [Object]
+	}],
+	"version": 19
 }
 ```
 
@@ -2982,7 +3062,23 @@ curl https://api.smartsheet.com/2.0/imageurls \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    body: [{
+        imageId: "jpbGklqdfZuL4Jw-kZhdZA",
+        width: 256,
+        height: 256
+    }]
+};
+
+// List image URLs
+smartsheet.images.listImageUrls(options)
+    .then(function(temporaryUrls) {
+        console.log(temporaryUrls);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -3010,8 +3106,7 @@ String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrl
 ```json
 {
 	"urlExpiresInMillis": 1800000,
-	"imageUrls":  [
-		{
+	"imageUrls": [{
 			"imageId": "e1znCxhuZo_soEJtUmmX_A",
 			"url": "https://urltoimage1.com?qs1=foo"
 		},
@@ -3023,7 +3118,7 @@ String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrl
 			}
 		}
 	]
-}  
+}
 ```
 
 `POST /imageurls`
@@ -3243,6 +3338,7 @@ new_columns = ss_client.Sheets.add_columns(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": [
         {
@@ -3266,8 +3362,7 @@ new_columns = ss_client.Sheets.add_columns(
             "validation": true,
             "width": 150
         }
-    ],
-    "message": "SUCCESS"
+    ]
 }
 ```
 
@@ -3833,14 +3928,15 @@ response = ss_client.Discussions.add_comment_to_discussion(
 )
 ```
 
-> Example Request (with attachment):
+> Example Request (with attachment): Add Comment
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: multipart/form-data"
 -X POST \
 -F "comment=<comment.json;type=application/json" \
--F "file=@file_to_attach;type=application/octet-stream"
+-F "file=@datafile;type=application/octet-stream"
 
     #
     # Content of the comment.json file:
@@ -3949,6 +4045,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId} \
 -d '{"text":"This is the updated comment text."}'
 ```
 
+```javascript
+// Specify text
+var body = {
+    text: "This is the updated comment text."
+};
+
+// Set options
+var options = {
+    sheetId: 3285357287499652,
+    commentId: 7144101943502724,
+    body: body
+};
+
+// Edit comment
+smartsheet.sheets.editComment(options)
+    .then(function (updatedComment) {
+        console.log(updatedComment);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 // Specify edited comment properties
 Comment commentSpecification = new Comment();
@@ -3968,8 +4087,8 @@ Comment updatedComment = smartsheet.SheetResources.DiscussionResources.CommentRe
 
 ```python
 comment = ss_client.Discussions.update_comment(
-    1639534409607044,       # sheet_id
-    2285164807120772,       # comment_id
+    3285357287499652,       # sheet_id
+    7144101943502724,       # comment_id
     ss_client.models.Comment({
         'text': 'This is the updated comment text'}))
 ```
@@ -3979,8 +4098,9 @@ comment = ss_client.Discussions.update_comment(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
-        "id": 4503677744506756,
+        "id": 7144101943502724,
         "discussionId": 4503677744506756,
         "text": "This is the updated comment text.",
         "createdBy": {
@@ -3990,8 +4110,7 @@ comment = ss_client.Discussions.update_comment(
       "createdAt": "2013-01-10T13:43:26Z",
       "modifiedAt": "2013-01-12T19:00:26Z"
     },
-    "version": 18,
-    "resultCode": 0
+    "version": 18
 }
 ```
 
@@ -4060,9 +4179,9 @@ ss_client.Discussions.delete_discussion_comment(
 
 ```json
 {
-   "resultCode": 0,
-   "version": 12,
-   "message" : "SUCCESS"
+    "message" : "SUCCESS",   
+    "resultCode": 0,
+    "version": 12
 }
 ```
 
@@ -4188,16 +4307,16 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 
 ```javascript
 // Set options
-var args = {id: "AAcBgiYU54QAGfLS5hTnhA"};
+var options = {id: "AAcBgiYU54QAGfLS5hTnhA"};
 
 // Get contact
-smartsheet.contacts.getContact(args)
-.then(function(contact) {
-  console.log(contact);
-})
-.catch(function(error) {
-  console.log(error);
-});
+smartsheet.contacts.getContact(options)
+    .then(function(contact) {
+    console.log(contact);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -4248,12 +4367,12 @@ curl https://api.smartsheet.com/2.0/contacts \
 
 ```javascript
 smartsheet.contacts.listContacts({})
-.then(function(contactsList) {
-  console.log(contactsList);
-})
-.catch(function(error) {
-  console.log(error);
-});
+    .then(function(contactsList) {
+    console.log(contactsList);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -4447,12 +4566,12 @@ response = ss_client.Discussions.create_discussion_on_row(
 )
 ```
 
-> Example Request (with attachment):
+> Example Request (with attachment): Create Discussion on Row
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
+-H "Content-Type: multipart/form-data" \
 -X POST \
 -F "discussion=<discussion.json;type=application/json" \
 -F "file=@datafile;type=application/octet-stream"
@@ -4758,8 +4877,8 @@ ss_client.Discussions.delete_discussion(
 
 ```json
 {
-   "resultCode": 0,
-   "message" : "SUCCESS"
+    "message" : "SUCCESS",   
+    "resultCode": 0
 }
 ```
 
@@ -5146,14 +5265,12 @@ response = ss_client.Favorites.add_favorites([
 
 ```json
 {
-    "resultCode": 0,
-    "result": [
-        {
-            "type": "sheet",
-            "objectId": 8400677765441412
-        }
-    ],
-    "message": "SUCCESS"
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"type": "sheet",
+		"objectId": 8400677765441412
+	}]
 }
 ```
 
@@ -5385,6 +5502,7 @@ smartsheet.favorites.removeSheetFromFavorites(options)
         console.log(error);
     });	
 ```
+
 ```csharp
 smartsheet.FavoriteResources.RemoveFavorites(
     ObjectType.SHEET,
@@ -5427,7 +5545,19 @@ curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    objectId: 6327127650920324
+};
+
+// Remove Sight from list of favorites
+smartsheet.favorites.removeSightFromFavorites(options)
+    .then(function (results) {
+        console.log(results);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -5595,7 +5725,7 @@ curl https://api.smartsheet.com/2.0/favorites/folder?objectIds={folderId1},{fold
 // Set options
 var options = {
     queryParameters: {
-        objectIds: "2252168947361668, 2252168947361669"
+        objectIds: "2252168947361668,2252168947361669"
     }
 };
 
@@ -5654,7 +5784,7 @@ curl https://api.smartsheet.com/2.0/favorites/report?objectIds={reportId1},{repo
 // Set options
 var options = {
     queryParameters: {
-        objectIds: "2252168947361668, 2252168947361669"
+        objectIds: "2252168947361668,2252168947361669"
     }
 };
 
@@ -5713,7 +5843,7 @@ curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds={sheetId1},{sheetI
 // Set options
 var options = {
     queryParameters: {
-        objectIds: "2252168947361668, 2252168947361669"
+        objectIds: "2252168947361668,2252168947361669"
     }
 };
 
@@ -5769,7 +5899,21 @@ curl https://api.smartsheet.com/2.0/favorites/sights?objectIds={folderId1},{fold
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    queryParameters: {
+        objectIds: '970160371507588,6327427650920324'
+    }
+};
+
+// Remove Sights from list of favorites
+smartsheet.favorites.removeSightsFromFavorites(options)
+    .then(function (results) {
+        console.log(results);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -5962,10 +6106,41 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
 -X POST
 ```
 
+```javascript
+// Specify destination information
+var body = {
+    destinationType: "folder",
+    destinationId: 6327127650920324,
+    newName: "Folder Copy"
+};
+
+// Specify elements to copy
+var params = {
+    include: "data,discussions",
+    skipRemap: "cellLinks"
+};
+
+// Set options
+var options = {
+    folderId: 2252168947361668,
+    body: body,
+    queryParameters: params
+};
+
+// Copy folder
+smartsheet.folders.copyFolder(options)
+    .then(function (folder) {
+        console.log(folder);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
-    DestinationId = destinationFolderId,
+    DestinationId = 6327127650920324,
     DestinationType = DestinationType.FOLDER,
     NewName = "newFolderName"
 };
@@ -5993,7 +6168,7 @@ Folder folder = smartsheet.FolderResources.CopyFolder(
 // Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
     .setDestinationType(DestinationType.FOLDER)
-    .setDestinationId(2252168947361668L)    // long destinationFolderId
+    .setDestinationId(6327127650920324L)    // long destinationFolderId
     .setNewName("newFolderName")
     .build();
 
@@ -6029,13 +6204,13 @@ response = ss_client.Folders.copy_folder(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 7116448184199044,
         "name": "newFolderName",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -6310,8 +6485,8 @@ ss_client.Folders.delete_folder(
 
 ```json
 {
-    "resultCode": 0,
-    "message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -6568,7 +6743,7 @@ Gets a list of the top-level child Folders within the specified Folder.
 
 ### List Folders (Workspace)
 
-> Example Request:
+> Example Request: List Folders (Workspace)
 
 ```shell
 curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/folders \
@@ -6652,6 +6827,29 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 -X POST
 ```
 
+```javascript
+// Set destination information
+var body = {
+    destinationType: "folder",
+    destinationId: 4509918431602564
+};
+
+// Set options
+var options = {
+    folderId: 7960873114331012,
+    body: body
+};
+
+// Move folder
+smartsheet.folders.moveFolder(options)
+    .then(function (folder) {
+        console.log(folder);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
@@ -6694,13 +6892,13 @@ folder = ss_client.Folders.move_folder(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 4509918431602564,
         "name": "moved_folder_name",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -6783,11 +6981,11 @@ updated_folder = ss_client.Folders.update_folder(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "id": 1486948649985924,
         "name": "New name for folder"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -6915,26 +7113,24 @@ new_group = ss_client.Groups.create_group(
 
 ```json
 {
-    "resultCode": 0,
-    "result": {
-        "id": 2331373580117892,
-        "name": "API-created Group",
-        "description": "Group created via API",
-        "owner": "john.doe@smartsheet.com",
-        "ownerId": 4583173393803140,
-        "members": [
-            {
-                "id": 4583173393803140,
-                "email": "john.doe@smartsheet.com",
-                "firstName": "John",
-                "lastName": "Doe",
-                "name": "John Doe"
-            }
-        ],
-        "createdAt": "2014-05-29T16:28:49-07:00",
-        "modifiedAt": "2014-05-29T16:28:49-07:00"
-    },
-    "message": "SUCCESS"
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": {
+		"id": 2331373580117892,
+		"name": "API-created Group",
+		"description": "Group created via API",
+		"owner": "john.doe@smartsheet.com",
+		"ownerId": 4583173393803140,
+		"members": [{
+			"id": 4583173393803140,
+			"email": "john.doe@smartsheet.com",
+			"firstName": "John",
+			"lastName": "Doe",
+			"name": "John Doe"
+		}],
+		"createdAt": "2014-05-29T16:28:49-07:00",
+		"modifiedAt": "2014-05-29T16:28:49-07:00"
+	}
 }
 ```
 
@@ -7247,6 +7443,7 @@ updated_group = ss_client.Groups.update_group(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 2331373580117892,
@@ -7256,8 +7453,7 @@ updated_group = ss_client.Groups.update_group(
         "ownerId": 4583173393803140,
         "createdAt": "2014-05-29T16:28:49-07:00",
         "modifiedAt": "2014-05-29T17:00:23-07:00"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -7375,17 +7571,15 @@ new_members = ss_client.Groups.add_members(
 
 ```json
 {
-    "resultCode": 0,
-    "result": [
-        {
-            "id": 1539725208119172,
-            "email": "jane.doe@smartsheet.com",
-            "firstName": "Jane",
-            "lastName": "Doe",
-            "name": "Jane Doe"
-        }
-    ],
-    "message": "SUCCESS"
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 1539725208119172,
+		"email": "jane.doe@smartsheet.com",
+		"firstName": "Jane",
+		"lastName": "Doe",
+		"name": "Jane Doe"
+	}]
 }
 ```
 
@@ -8082,7 +8276,19 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    reportId: 3901932860401540
+};
+
+// Get report publish status
+smartsheet.reports.getReportPublishStatus(options)
+    .then(function(status) {
+        console.log(status);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -8102,9 +8308,9 @@ status = ss_client.Reports.get_publish_status(
 
 ```json
 {
-	"readOnlyFullEnabled": true,
-	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065",
-	"readOnlyFullAccessibleBy": "ALL"
+    "readOnlyFullEnabled": true,
+    "readOnlyFullAccessibleBy": "ALL",
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
 }
 ```
 
@@ -8131,7 +8337,23 @@ curl https://api.smartsheet.com/2.0/reports/{reportId}/publish \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    reportId: 1653087851556740,
+    body: {
+        readOnlyFullEnabled: true,
+        readOnlyFullAccessibleBy: "ALL"
+    }
+};
+
+// Set report publish status
+smartsheet.reports.setReportPublishStatus(options)
+    .then(function(status) {
+        console.log(status);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -8156,12 +8378,12 @@ response = ss_client.Reports.set_publish_status(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "readOnlyFullEnabled": true,
 		"readOnlyFullAccessibleBy": "ORG",
         "readOnlyFullUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -8458,53 +8680,50 @@ response = ss_client.Sheets.add_rows(
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 7670198317672324,
-            "sheetId": 2331373580117892,
-            "rowNumber": 1,
-            "expanded": true,
-            "createdAt": "2013-02-28T17:45:13-08:00",
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "cells": [
-                {
-                    "columnId": 7960873114331012,
-                    "type": "CHECKBOX",
-                    "value": true
-                },
-                {
-                    "columnId": 642523719853956,
-                    "displayValue": "New status",
-                    "type": "TEXT_NUMBER",
-                    "value": "New status"
-                }
-            ]
-        },
-        {
-            "id": 2040698783459204,
-            "sheetId": 2331373580117892,
-            "rowNumber": 2,
-            "expanded": true,
-            "createdAt": "2013-02-28T17:45:13-08:00",
-            "modifiedAt": "2013-02-28T17:45:13-08:00",
-            "cells": [
-                {
-                    "columnId": 7960873114331012,
-                    "type": "CHECKBOX",
-                    "value": true
-                },
-                {
-                    "columnId": 642523719853956,
-                    "displayValue": "New status",
-                    "type": "TEXT_NUMBER",
-                    "value": "New status"
-                }
-            ]
-        }
-    ],
-	"version": 14, 
-    "resultCode": 0
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+			"id": 7670198317672324,
+			"sheetId": 2331373580117892,
+			"rowNumber": 1,
+			"expanded": true,
+			"createdAt": "2013-02-28T17:45:13-08:00",
+			"modifiedAt": "2013-02-28T17:45:13-08:00",
+			"cells": [{
+					"columnId": 7960873114331012,
+					"type": "CHECKBOX",
+					"value": true
+				},
+				{
+					"columnId": 642523719853956,
+					"displayValue": "New status",
+					"type": "TEXT_NUMBER",
+					"value": "New status"
+				}
+			]
+		},
+		{
+			"id": 2040698783459204,
+			"sheetId": 2331373580117892,
+			"rowNumber": 2,
+			"expanded": true,
+			"createdAt": "2013-02-28T17:45:13-08:00",
+			"modifiedAt": "2013-02-28T17:45:13-08:00",
+			"cells": [{
+					"columnId": 7960873114331012,
+					"type": "CHECKBOX",
+					"value": true
+				},
+				{
+					"columnId": 642523719853956,
+					"displayValue": "New status",
+					"type": "TEXT_NUMBER",
+					"value": "New status"
+				}
+			]
+		}
+	],
+	"version": 14
 }
 ```
 
@@ -8707,14 +8926,14 @@ ss_client.Sheets.delete_rows(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": [
         145417762563972,
         4508365800925060,
         8026717110462340,
         2256565987239812 
-    ],
-    "message": "SUCCESS"
+    ]
 }
 ```
 
@@ -8880,8 +9099,8 @@ var options = {
 
 // Move rows
 smartsheet.sheets.moveRowToAnotherSheet(options)
-    .then(function (results) {
-        console.log(results);
+    .then(function (movedRow) {
+        console.log(movedRow);
     })
     .catch(function (error) {
         console.log(error);
@@ -9130,69 +9349,66 @@ updated_row = ss_client.Sheets.update_rows(
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-        {
-            "id": 2068827774183300,
-            "rowNumber": 2,
-            "parentRowNumber": 1,
-            "parentId": 4624744004773764,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [
-                {
-                    "columnId": 7518312134403972,
-                    "type": "TEXT_NUMBER",
-                    "value": "desc_updated",
-                    "displayValue": "desc_updated"
-                },
-                {
-                    "columnId": 1888812600190852,
-                    "type": "PICKLIST",
-                    "value": "B",
-                    "displayValue": "B"
-                },
-                {
-                    "columnId": 6392412227561348,
-                    "type": "TEXT_NUMBER",
-                    "value": 1,
-                    "displayValue": "1"
-                }
-            ]
-        },
-        {
-            "id": 6572427401553796,
-            "rowNumber": 3,
-            "parentRowNumber": 1,
-            "parentId": 4624744004773764,
-            "expanded": true,
-            "createdAt": "2015-01-09T11:41:55-08:00",
-            "modifiedAt": "2015-02-23T15:36:07-08:00",
-            "cells": [
-                {
-                    "columnId": 7518312134403972,
-                    "type": "TEXT_NUMBER",
-                    "value": "new value",
-                    "displayValue": "new value"
-                },
-                {
-                    "columnId": 1888812600190852,
-                    "type": "PICKLIST",
-                    "value": "A",
-                    "displayValue": "A"
-                },
-                {
-                    "columnId": 6392412227561348,
-                    "type": "TEXT_NUMBER",
-                    "value": 1,
-                    "displayValue": "1"
-                }
-            ]
-        }
-    ],
-    "version": 8,
-    "resultCode": 0
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+			"id": 2068827774183300,
+			"rowNumber": 2,
+			"parentRowNumber": 1,
+			"parentId": 4624744004773764,
+			"expanded": true,
+			"createdAt": "2015-01-09T11:41:55-08:00",
+			"modifiedAt": "2015-02-23T15:36:07-08:00",
+			"cells": [{
+					"columnId": 7518312134403972,
+					"type": "TEXT_NUMBER",
+					"value": "desc_updated",
+					"displayValue": "desc_updated"
+				},
+				{
+					"columnId": 1888812600190852,
+					"type": "PICKLIST",
+					"value": "B",
+					"displayValue": "B"
+				},
+				{
+					"columnId": 6392412227561348,
+					"type": "TEXT_NUMBER",
+					"value": 1,
+					"displayValue": "1"
+				}
+			]
+		},
+		{
+			"id": 6572427401553796,
+			"rowNumber": 3,
+			"parentRowNumber": 1,
+			"parentId": 4624744004773764,
+			"expanded": true,
+			"createdAt": "2015-01-09T11:41:55-08:00",
+			"modifiedAt": "2015-02-23T15:36:07-08:00",
+			"cells": [{
+					"columnId": 7518312134403972,
+					"type": "TEXT_NUMBER",
+					"value": "new value",
+					"displayValue": "new value"
+				},
+				{
+					"columnId": 1888812600190852,
+					"type": "PICKLIST",
+					"value": "A",
+					"displayValue": "A"
+				},
+				{
+					"columnId": 6392412227561348,
+					"type": "TEXT_NUMBER",
+					"value": 1,
+					"displayValue": "1"
+				}
+			]
+		}
+	],
+	"version": 8
 }
 ```
 
@@ -10182,7 +10398,7 @@ Gets a list of all Users and Groups to whom the specified Sheet is shared, and t
 
 ### Share Sheet
 
-> Example Request: 
+> Example Request: Share Sheet
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
@@ -10286,14 +10502,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares/{shareId} \
 var shareSpecification = {"accessLevel": "VIEWER"};
 
 // Set options
-var args = {
+var options = {
     sheetId: 1696801624483716,
     shareId: "AAAHAYImFOeE",
     body: shareSpecification
 };
 
 // Update sheet share
-smartsheet.sheets.updateShare(args)
+smartsheet.sheets.updateShare(options)
     .then(function (updatedShare) {
         console.log(updatedShare);
     })
@@ -10358,19 +10574,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324,
     shareId: "AAABbMomFOeE"
 }
 
 // Delete Sight share
-smartsheet.sights.deleteShare(args)
- .then(function(results) {
-   console.log(results);
- })
- .catch(function(error) {
-   console.log(error);
- });
+smartsheet.sights.deleteShare(options)
+    .then(function(results) {
+    console.log(results);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -10415,19 +10631,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324,
     shareId: "AAABbMomFOeE"
 }
 
 // Get Sight share
-smartsheet.sights.getShare(args)
- .then(function(share) {
-   console.log(share);
- })
- .catch(function(error) {
-   console.log(error);
- });
+smartsheet.sights.getShare(options)
+    .then(function(share) {
+    console.log(share);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -10466,7 +10682,7 @@ Gets the Share specified in the URL.
 
 ### List Sight Shares
 
-> Example Request:
+> Example Request: List Sight Shares
 
 ```shell
 curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
@@ -10475,18 +10691,18 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
 
 ```javascript
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324
 }
 
 // List Sight shares
-smartsheet.sights.listShares(args)
- .then(function(shareList) {
-   console.log(shareList);
- })
- .catch(function(error) {
-   console.log(error);
- });
+smartsheet.sights.listShares(options)
+    .then(function(shareList) {
+    console.log(shareList);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -10554,19 +10770,19 @@ var share = [
 ];
 
 // Set options
-var shareSpecification = {
+var options = {
     sightId: 6327127650920324,
     body: share
 };
 
 // Share Sight
-smartsheet.sights.share(shareSpecification)
- .then(function(addressList) {
-   console.log(addressList);
- })
- .catch(function(error) {
-   console.log(error);
- });
+smartsheet.sights.share(options)
+    .then(function(addressList) {
+    console.log(addressList);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -10637,14 +10853,14 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
 var shareSpecification = {"accessLevel": "VIEWER"};
 
 // Set options
-var args = {
+var options = {
     sightId: 6327127650920324,
     shareId: "AAALRqomFOeE",
     body: shareSpecification
 };
 
 // Update Sight share
-smartsheet.sights.updateShare(args)
+smartsheet.sights.updateShare(options)
     .then(function (updatedShare) {
         console.log(updatedShare);
     })
@@ -11178,6 +11394,35 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
 -X POST
 ```
 
+```javascript
+// Set destination information
+var body = {
+    destinationType: "home",
+    newName: "newSheetName"
+};
+
+// Set elements to copy
+var params = {
+    include: "attachments,data"
+};
+
+// Set options
+var options = {
+    sheetId: 7254137655060356,
+    body: body,
+    queryParameters: params
+};
+
+// Copy sheet
+smartsheet.sheets.copySheet(options)
+    .then(function (copiedSheet) {
+        console.log(copiedSheet);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
@@ -11239,14 +11484,14 @@ response = ss_client.Sheets.copy_sheet(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
-        "id": 4583173393803140,
+        "id": 4366633289443204,
         "name": "newSheetName",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -11991,8 +12236,8 @@ ss_client.Sheets.delete_sheet(
 
 ```json
 {
-    "resultCode": 0,
-    "message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -12217,8 +12462,8 @@ var options = {
 
 // Get sheet
 smartsheet.sheets.getSheetAsExcel(options)
-	.then(function(results) {
-		console.log(results);
+	.then(function(data) {
+		console.log(data);
 	})
 	.catch(function(error) {
 		console.log(error);
@@ -12279,7 +12524,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```javascript
 // Set options
 var options = {
-  id: 4583173393803140 // Id of Sheet
+    id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet
@@ -12349,7 +12594,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```javascript
 // Set options
 var options = {
-  id: 4583173393803140 // Id of Sheet
+    id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet
@@ -12540,6 +12785,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 -X POST
 ```
 
+```javascript
+// Set destination information
+var body = {
+    destinationType: "folder",
+    destinationId: 7960873114331012
+};
+
+// Set options
+var options = {
+    sheetId: 4583173393803140,
+    body: body
+};
+
+// Move sheet
+smartsheet.sheets.moveSheet(options)
+    .then(function (movedSheet) {
+        console.log(movedSheet);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
@@ -12570,7 +12838,7 @@ Sheet sheet = smartsheet.sheetResources().moveSheet(
 
 ```python
 sheet = ss_client.Sheets.move_sheet(
-    1531988831168388,                       # sheet_id
+    4583173393803140,                       # sheet_id
     ss_client.models.ContainerDestination({
         'destination_type': 'folder',       # folder, workspace, or home
         'destination_id': 7960873114331012  # folder_id
@@ -12582,14 +12850,14 @@ sheet = ss_client.Sheets.move_sheet(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 4583173393803140,
         "name": "moved_sheet_name",
         "accessLevel": "OWNER",
         "permalink": "https://{base_url}?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -12620,7 +12888,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 ```javascript
 // Set options
 var options = {
-  sheetId: 4583614634583940
+    sheetId: 4583614634583940
 };
 
 // Get sheet publish status
@@ -12690,10 +12958,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/publish \
 ```javascript
 // Specify publish status
 var publishStatus = {
-  "readOnlyLiteEnabled": true,
-  "readOnlyFullEnabled": false,
-  "readWriteEnabled": false,
-  "icalEnabled": false
+    "readOnlyLiteEnabled": true,
+    "readOnlyFullEnabled": false,
+    "readWriteEnabled": false,
+    "icalEnabled": false
 };
 
 // Set options
@@ -12760,14 +13028,14 @@ updated_status = ss_client.Sheets.set_publish_status(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "icalEnabled": false,
         "readOnlyFullEnabled": false,
         "readOnlyLiteEnabled": true,
         "readOnlyLiteUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d",
         "readWriteEnabled": false
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -12888,6 +13156,7 @@ updated_sheet = ss_client.Sheets.update_sheet(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "id": 7960873114331012,
         "name": "New Sheet Name",
@@ -12901,8 +13170,7 @@ updated_sheet = ss_client.Sheets.update_sheet(
             "lengthOfDay": 6
         },
         "permalink": "https://app.smartsheet.com/b/home?lx=RE8LkzA48kPRWTzcgEYOga"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -13112,7 +13380,26 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 ```
 
 ```javascript
-// [todo]
+// Specify new Sight properties
+var body = {
+    destinationType: "home",
+    newName: "newSightName"
+};
+
+// Set options
+var options = {
+    sightId: 6327127650920324,
+    body: body
+};
+
+// Copy Sight
+smartsheet.sights.copySight(options)
+    .then(function (copiedSight) {
+        console.log(copiedSight);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13161,14 +13448,14 @@ new_sight = ss_client.Sights.copy_sight(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 4583173393803140,
         "name": "newSightName",
         "accessLevel": "OWNER",
         "permalink": "https://app.smartsheet.com/b/home?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -13192,19 +13479,21 @@ Creates a copy of the specified Sight.
 curl https://api.smartsheet.com/2.0/sights/{sightId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 ```
+
 ```javascript
 // Set options
-var args = {
-    id: 5363568917931908 // Id of Sight
+var options = {
+    sightId: 5363568917931908
 };
 
-smartsheet.sights.deleteSight(args)
-.then(function(results) {
-  console.log(results);
-})
-.catch(function(error) {
-  console.log(error);
-});
+// Delete Sight
+smartsheet.sights.deleteSight(options)
+    .then(function(results) {
+    console.log(results);
+    })
+    .catch(function(error) {
+    console.log(error);
+    });
 ```
 
 ```csharp
@@ -13227,8 +13516,8 @@ ss_client.Sights.delete_sight(3404239197235076)     # sight_id
 
 ```json
 {
-    "resultCode": 0,
-    "message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -13253,14 +13542,14 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 
 ```javascript
 // Set options
-var args = {
-    id: 6327127650920324 // Id of Sight
+var options = {
+    sightId: 6327127650920324
 };
 
 // Get Sight
-smartsheet.sights.getSight(args)
+smartsheet.sights.getSight(options)
     .then(function(sight) {
-        console.log(sight.name);
+        console.log(sight);
     })
     .catch(function(error) {
         console.log(error);
@@ -13357,12 +13646,12 @@ curl https://api.smartsheet.com/2.0/sights \
 
 ```javascript
 smartsheet.sights.listSights()
-.then(function(sights) {
-  console.log(sights.data);
-})
-.catch(function(error) {
-  console.log(error);
-})
+    .then(function(sights) {
+    console.log(sights.data);
+    })
+    .catch(function(error) {
+    console.log(error);
+    })
 ```
 
 ```csharp
@@ -13445,7 +13734,26 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 ```
 
 ```javascript
-// [todo]
+// Set destination
+var body = {
+    destinationType: "folder",
+    destinationId: 8460057768683396
+};
+
+// Set options
+var options = {
+    sightId: 5077532685952900,
+    body: body
+};
+
+// Move Sight
+smartsheet.sights.moveSight(options)
+    .then(function (movedSight) {
+        console.log(movedSight);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13491,14 +13799,14 @@ response = ss_client.Sights.move_sight(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
         "id": 4583173393803140,
         "name": "moved_Sight_name",
         "accessLevel": "OWNER",
         "permalink": "https://app.smartsheet.com/b/home?lx=lB0JaOh6AX1wGwqxsQIMaA"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -13527,7 +13835,19 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    sightId: 970160971507588
+};
+
+// Get Sight publish status
+smartsheet.sights.getSightPublishStatus(options)
+    .then(function (status) {
+        console.log(status);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13547,9 +13867,9 @@ status = ss_client.Sights.get_publish_status(
 
 ```json
 {
-	"readOnlyFullEnabled": true,
-	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065",
-	"readOnlyFullAccessibleBy": "ALL"
+    "readOnlyFullEnabled": true,
+    "readOnlyFullAccessibleBy": "ALL",
+	"readOnlyFullUrl": "https://publish.smartsheet.com/6d35fa6c99334d4892f9591cf6065"
 }
 ```
 
@@ -13579,7 +13899,25 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 ```
 
 ```javascript
-// [todo]
+// Specify property to change
+var body = {
+    readOnlyFullEnabled: false
+};
+
+// Set options
+var options = {
+    sightId: 5363568917931908,
+    body: body
+};
+
+// Set Sight publish status
+smartsheet.sights.setSightPublishStatus(options)
+    .then(function (newStatus) {
+        console.log(newStatus);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13604,14 +13942,13 @@ response = ss_client.Sights.set_publish_status(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "readOnlyFullEnabled": true,
         "readOnlyFullAccessibleBy": "ORG",
         "readOnlyFullUrl": "http://publish.smartsheet.com/9862638d9c444014b5d7a114d436e99d"
-    },
-    "resultCode": 0
+    }
 }
-
 ```
 
 `PUT /sights/{sightId}/publish`
@@ -13644,7 +13981,25 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 ```
 
 ```javascript
-// [todo]
+// Set property to change
+var body = {
+    name: "New Sight Name"
+};
+
+// Set options
+var options = {
+    sightId: 5363568917931908,
+    body: body
+};
+
+// Update Sight
+smartsheet.sights.updateSight(options)
+    .then(function (updatedSight) {
+        console.log(updatedSight);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13669,13 +14024,13 @@ updated_sight = ss_client.Sights.update_sight(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
-        "accessLevel": "OWNER",
-        "id": 7960873114331012,
+        "id": 5363568917931908,
         "name": "New Sight name",
+        "accessLevel": "OWNER",
         "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -13845,7 +14200,30 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+// Create hash
+var hash =
+    crypto.createHash('sha256')
+          .update('Your App Secret' + '|' + 'Received Authorization Code')
+          .digest('hex');
+ 
+// Set options
+var options = {
+    queryParameters: {
+        client_id: 'Your App Client ID',
+        code: 'Received Authorization Code',
+        hash: hash
+    },
+    contentType: 'application/x-www-form-urlencoded'
+};
+
+// Get access token
+smartsheet.tokens.getAccessToken(options)
+    .then(function(token) {
+        console.log(token);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13864,10 +14242,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```json
 {
-   "ll352u9jujauoqz4gstvsae05": "Access Token Value",
+   "access_token": "ll352u9jujauoqz4gstvsae05",
    "token_type": "bearer",
-   "refresh_token": "Refresh Token Value",
-   "expires_in": "#_of_seconds_before_token_expires"
+   "refresh_token": "e9x352a9mp4151le2505",
+   "expires_in": 604799
 }
 ```
 
@@ -13896,7 +14274,30 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+// Create hash
+var hash =
+    crypto.createHash('sha256')
+          .update('Your App Secret' + '|' + 'Your App Refresh Token')
+          .digest('hex');
+ 
+// Set options
+var options = {
+    queryParameters: {
+        client_id: 'Your App Client ID',
+        refresh_token: 'Your App Refresh Token',
+        hash: hash
+    },
+    contentType: 'application/x-www-form-urlencoded'    
+};
+ 
+// Refresh access token
+smartsheet.tokens.refreshAccessToken(options)
+    .then(function(updatedToken) {
+        console.log(updatedToken);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -13915,10 +14316,10 @@ curl https://api.smartsheet.com/2.0/token \
 
 ```json
 {
-   "ll352u9jujauoqz4gstvsae05": "Newly refreshed Access Token",
-   "expires_in": "#_of_seconds_before_token_expires",
-   "token_type": "bearer",
-   "refresh_token": "New refresh token"
+    "access_token": "ll352u9jujauoqz4gstvsae05",
+    "token_type": "bearer",
+    "refresh_token": "e9x352a9mp4151le2505",
+    "expires_in": 604799
 }
 ```
 
@@ -13945,7 +14346,13 @@ curl https://api.smartsheet.com/2.0/token \
 ```
 
 ```javascript
-// [todo]
+smartsheet.tokens.revokeAccessToken({})
+    .then(function(results) {
+        console.log(results);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -14126,6 +14533,7 @@ var options = {
 	body: user
 };
 
+// Add user
 smartsheet.users.addUser(options)
 	.then(function(newUser) {
 		console.log(newUser)
@@ -14182,14 +14590,14 @@ new_user = ss_client.Users.add_user(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "admin": false,
         "email": "john.doe@smartsheet.com",
         "name": "John Doe",
         "id": 1768423626696580,
         "licensedSheetCreator": true
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -14231,7 +14639,27 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```javascript
-// [todo]
+// Specify email addresses to add
+var body = [
+    {
+        email: "John.Doe@smartsheet.com"
+    }
+];
+
+// Set options
+var options = {
+    userId: 4495214342629252,
+    body: body
+};
+
+// Add alternate email address
+smartsheet.users.addAlternateEmail(options)
+    .then(function (results) {
+        console.log(results);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -14244,13 +14672,10 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 
 ```python
 response = ss_client.Users.add_alternate_email(
-    12345,          # user_id
+    4495214342629252,          # user_id
     [
         ss_client.models.AlternateEmail({
-            'email': 'altEmail1@smartsheet.com'
-        }),
-        ss_client.models.AlternateEmail({
-            'email': 'altEmail2@smartsheet.com'
+            'email': 'John.Doe@smartsheet.com'
         })
     ]
 )
@@ -14260,20 +14685,13 @@ response = ss_client.Users.add_alternate_email(
 
 ```json
 {
-    "message": "SUCCESS",
-    "result": [
-		{
-			"id": 12345,
-			"email": "altEmail1@smartsheet.com",
-			"confirmed": false
-		},
-		{
-			"id": 67890,
-			"email": "altEmail2@smartsheet.com",
-			"confirmed": false
-		}
-    ],
-    "resultCode": 0
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 4495214342629252,
+		"email": "John.Doe@smartsheet.com",
+		"confirmed": false
+	}]
 }
 ```
 
@@ -14305,13 +14723,26 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    userId: 401090454808452,
+    alternateEmailId: 123456789012345
+};
+
+// Make alternate email primary
+smartsheet.users.makeAlternateEmailPrimary(options)
+    .then(function (results) {
+        console.log(results);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
 AlternateEmail primaryEmail = smartsheet.UserResources.PromoteAlternateEmail(
     401090454808452,        // long userId
-    12345                   // long altEmailId
+    123456789012345         // long altEmailId
 );
 ```
 
@@ -14322,21 +14753,20 @@ AlternateEmail primaryEmail = smartsheet.UserResources.PromoteAlternateEmail(
 ```python
 response = ss_client.Users.promote_alternate_email(
     401090454808452,        # user_id
-    12345)                  # alt_id
+    123456789012345)        # alt_id
 ```
 
 > Example Response:
 
 ```json
 {
-    "message": "SUCCESS",
-    "resultCode": 0,
-    "result":
-    {
-        "id": 12345,
-        "email": "altEmail1@smartsheet.com",
-        "confirmed": false
-    }
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": {
+		"id": 123456789012345,
+		"email": "John.Doe@smartsheet.com",
+		"confirmed": true
+	}
 }
 ```
 
@@ -14366,7 +14796,20 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmai
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    userId: 401090454808452,
+    alternateEmailId: 123456789012345
+};
+
+// Delete alternate email address
+smartsheet.users.deleteAlternateEmail(options)
+    .then(function (results) {
+        console.log(results);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -14418,7 +14861,20 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEma
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    userId: 401090454808452,
+    alternateEmailId: 123456789012345
+};
+
+// Get alternate email address
+smartsheet.users.getAlternateEmail(options)
+    .then(function (email) {
+        console.log(email);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -14445,8 +14901,8 @@ alt_email = ss_client.Users.get_alternate_email(
 
 ```json
 {
-	"id": 12345,
-	"email": "altEmail1@smartsheet.com",
+	"id": 123456789012345,
+	"email": "John.Doe@smartsheet.com",
 	"confirmed": true
 }
 ```
@@ -14471,7 +14927,19 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```
 
 ```javascript
-// [todo]
+// Set options
+var options = {
+    userId: 4495214342629252
+};
+
+// List alternate email addresses
+smartsheet.users.listAlternateEmails(options)
+    .then(function (emailList) {
+        console.log(emailList);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -14504,18 +14972,12 @@ emails = response.data
     "pageSize": 100,
     "totalPages": 1,
     "totalCount": 1,
-	"data": [
-		{
-			"id": 12345,
-			"email": "altEmail1@smartsheet.com",
-			"confirmed": true
-		},
-		{
-			"id": 67890,
-			"email": "altEmail2@smartsheet.com",
-			"confirmed": false
-		}
-	]
+    "data": 
+    [{
+        "id": 123456789012345,
+        "email": "John.Doe@smartsheet.com",
+        "confirmed": true
+	}]
 }
 ```
 
@@ -14939,11 +15401,11 @@ updated_user = ss_client.Users.update_user(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "admin": true,
         "licensedSheetCreator": true
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -14999,6 +15461,35 @@ curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
 -H "Content-Type: application/json" \
 -d '{"newName": "newWorkspaceName"}' \
 -X POST
+```
+
+```javascript
+// Specify new workspace name
+var body = {
+    newName: "newWorkspaceName"
+};
+
+// Set elements to copy
+var params = {
+    include: "data,discussions",
+    skipRemap: "cellLinks"
+};
+
+// Set options
+var options = {
+    workspaceId: 7116448184199044,
+    body: body,
+    queryParameters: params
+};
+
+// Copy workspace
+smartsheet.workspaces.copyWorkspace(options)
+    .then(function (copiedWorkspace) {
+        console.log(copiedWorkspace);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -15058,14 +15549,14 @@ new_workspace = ss_client.Workspaces.copy_workspace(
 
 ```json
 {
+    "message": "SUCCESS",    
     "resultCode": 0,
     "result": {
-        "id": 7116448184199044,
+        "id": 6282479888820100,
         "name": "newWorkspaceName",
         "accessLevel": "OWNER",
         "permalink": "https://{url}?lx=VL4YlIUnyYgASeX02grbLQ"
-    },
-    "message": "SUCCESS"
+    }
 }
 ```
 
@@ -15142,13 +15633,13 @@ workspace = ss_client.Workspaces.create_workspace(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "accessLevel": "OWNER",
         "id": 7960873114331012,
         "name": "New workspace",
         "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -15481,13 +15972,13 @@ updated_workspace = ss_client.Workspaces.update_workspace(
 ```json
 {
     "message": "SUCCESS",
+    "resultCode": 0,
     "result": {
         "accessLevel": "OWNER",
         "id": 7960873114331012,
         "name": "Updated workspace",
         "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
-    },
-    "resultCode": 0
+    }
 }
 ```
 
@@ -15927,51 +16418,6 @@ The FormatTables Object is retrieved via the `GET /serverinfo` operation and con
 **code** | string | The ISO 4217 currency code (for example, "EUR")
 **symbol** | string | The currency symbol (for example, "€")
 
-# <span class="customTOCSectionHeading">Deprecations</span>
-
-Smartsheet occasionally deprecates APIs to indicate that those APIs should no longer be used in active development. 
-Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
-You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, Smartsheet recommends that you update that code as soon as possible. 
-
-# Endpoints
-
-This section specifies the endpoints and parameters that have been deprecated in version 2.0 of the Smartsheet API.
-
-## Deprecated Endpoints
-
-The following endpoints have been deprecated in version 2.0 of the Smartsheet API.
-
-Operation | Deprecated Endpoint | Replaced by 
--------- | -------- | ----- | -----------------
- Delete Row (singular) | DELETE /sheets/{sheetId}/rows/{rowId} | new endpoint for [Delete Rows](#delete-rows)
- Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Rows](#send-rows-via-email)
- 
-## Deprecated Parameters
-
-Operation | Deprecated Parameter | Replaced by
--------- | -------- | --------
-[Create Child Folder](#create-child-folder) | include | new endpoint for [Copy Folder](#copy-folder)
-[Create Sheet](#create-sheet) | include | new endpoint for [Copy Sheet](#copy-sheet)
-[Create Workspace](#create-workspace) | include | new endpoint for [Copy Workspace](#copy-workspace)
-
-# Objects
-
-This section specifies the objects and attributes that have been deprecated in version 2.0 of the Smartsheet API.
-
-## Deprecated Objects
-
-No objects have been deprecated in version 2.0 of the Smartsheet API.
-
-## Deprecated Attributes
-
-The following attributes have been deprecated in version 2.0 of the Smartsheet API.
-
-Object | Deprecated Attribute | Replaced by
--------- | -------- | --------
-[Folder Object](#folder-object) | fromId | new endpoint for [Copy Folder](#copy-folder)
-[Sheet Object](#sheet-object) | fromId | new endpoint for [Copy Sheet](#copy-sheet)
-[Workspace Object](#workspace-object) | fromId | new endpoint for [Copy Workspace](#copy-workspace)
-
 # Troubleshooting
 
 Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
@@ -16402,6 +16848,32 @@ curl https://api.smartsheet.com/2.0/webhooks \
 -d '{ "name": "Webhook #4", "callbackUrl": "https://www.myApp.com/webhooks", "scope": "sheet", "scopeObjectId": 2258256056870788, "version": 1, "events": [ "*.*" ]}'
 ```
 
+```javascript
+// Specify webhook details
+var body = {
+    name: "Webhook #4",
+    callbackUrl: "https://www.myApp.com/webhooks",
+    scope: "sheet",
+    scopeObjectId: 3285357287499652,
+    events: ["*.*"],
+    version: 1,
+};
+
+// Set options
+var options = {
+    body: body,
+};
+
+// Create webhook
+smartsheet.webhooks.createWebhook(options)
+    .then(function (newWebhook) {
+        console.log(newWebhook);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 // Webhook specification
 Webhook webhook = new Webhook();
@@ -16440,7 +16912,7 @@ Webhook = ss_client.Webhooks.create_webhook(
         'name': 'Webhook #4',
         'callbackUrl': 'https://www.myApp.com/webhooks',
         'scope': 'sheet',
-        'scopeObjectId': 5190835902932868,
+        'scopeObjectId': 3285357287499652,
         'events': ['*.*'],
         'version': 1}))
 ```
@@ -16449,15 +16921,14 @@ Webhook = ss_client.Webhooks.create_webhook(
 
 ```json
 {
-	"resultCode": 0,
+    "message": "SUCCESS",    
+    "resultCode": 0,
 	"result": {
 		"id": 8444254503626628,
 		"name": "Webhook #4",
 		"scope": "sheet",
-		"scopeObjectId": 2258256056870788,
-		"events": [
-			"*.*"
-		],
+		"scopeObjectId": 3285357287499652,
+		"events": [	"*.*" ],
 		"callbackUrl": "http://www.myApp.com/webhooks",
 		"sharedSecret": "3qo29mvjou6xt5fujukjtwzhj0",
 		"enabled": false,
@@ -16465,8 +16936,7 @@ Webhook = ss_client.Webhooks.create_webhook(
 		"version": 1,
 		"createdAt": "2015-11-03T22:25:51Z",
 		"modifiedAt": "2015-11-03T22:25:51Z"
-	},
-	"message": "SUCCESS"
+	}
 }
 ```
 
@@ -16493,6 +16963,22 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -X DELETE
 ```
 
+```javascript
+// Set options
+var options = {
+    webhookId: 401090454808452
+};
+
+// Delete webhook
+smartsheet.webhooks.deleteWebhook(options)
+    .then(function (results) {
+        console.log(results);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 smartsheet.WebhookResources.DeleteWebhook(
     401090454808452     // long webhookId
@@ -16507,15 +16993,15 @@ smartsheet.webhookResources().deleteWebhook(
 
 ```python
 ss_client.Webhooks.delete_webhook(
-    4632730873948036)       # webhook_id
+    401090454808452)       # webhook_id
 ```
 
 > Example Response:
 
 ```json
 {
-	"resultCode": 0,
-	"message": "SUCCESS"
+    "message": "SUCCESS",    
+    "resultCode": 0
 }
 ```
 
@@ -16540,6 +17026,22 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
+```javascript
+// Set options
+var options = {
+    webhookId: 401090454808452
+};
+
+// Get webhook
+smartsheet.webhooks.getWebhook(options)
+    .then(function (webhook) {
+        console.log(webhook);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 Webhook webhook = smartsheet.WebhookResources.GetWebhook(
     401090454808452     // long webhookId
@@ -16548,31 +17050,28 @@ Webhook webhook = smartsheet.WebhookResources.GetWebhook(
 
 ```java
 Webhook webhook = smartsheet.webhookResources().getWebhook(
-    3285357287499652L     // long webhookId
+    401090454808452L     // long webhookId
 );
 ```
 
 ```python
 Webhook = ss_client.Webhooks.get_webhook(
-    4632730873948036)       # webhook_id
+    401090454808452)       # webhook_id
 ```
 
 > Example Response:
 
 ```json
 {
-	"id": 4503604829677444,
+	"id": 401090454808452,
 	"name": "Webhook #5",
 	"scope": "sheet",
 	"scopeObjectId": 6761855684241284,
-	"events": [
-		"*.*"
-	],
+	"events": [ "*.*" ],
 	"callbackUrl": "http://www.myApp.com/webhooks",
 	"sharedSecret": "216ejjzdnq17mq1q8xs7d4hu8b",
 	"enabled": false,
-	"status": "DISABLED_CALLBACK_FAILED",
-	"disabledDetails": "Request returned HTTP status code 500",
+	"status": "NEW_NOT_VERIFIED",
 	"version": 1,
 	"createdAt": "2015-11-03T22:25:51Z",
 	"modifiedAt": "2015-11-04T20:12:42Z" 
@@ -16596,6 +17095,21 @@ Gets the Webhook specified in the URL.
 ```shell
 curl https://api.smartsheet.com/2.0/webhooks \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+    };
+
+// List webhooks
+smartsheet.webhooks.listWebhooks(options)
+    .then(function (webhookList) {
+        console.log(webhookList);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });    
 ```
 
 ```csharp
@@ -16627,24 +17141,21 @@ IndexResult = ss_client.Webhooks.list_webhooks(
 	"pageSize": 100,
 	"totalPages": 1,
 	"totalCount": 1,
-	"data": [
-		{
-			"id": 4503604829677444,
-			"name": "Webhook #5",
-			"scope": "sheet",
-			"scopeObjectId": 6761855684241284,
-			"events": [
-				"*.*"
-			],
-			"callbackUrl": "http://www.myApp.com/webhooks",
-			"sharedSecret": "216ejjzdnq17mq1q8xs7d4hu8b",
-			"enabled": true,
-			"status": "ENABLED",
-			"version": 1,
-			"createdAt": "2015-11-03T14:52:21Z",
-			"modifiedAt": "2015-11-04T19:05:40Z"
-		}
-	]
+    "data": 
+    [{
+        "id": 4503604829677444,
+        "name": "Webhook #5",
+        "scope": "sheet",
+        "scopeObjectId": 6761855684241284,
+        "events": [ "*.*" ],
+        "callbackUrl": "http://www.myApp.com/webhooks",
+        "sharedSecret": "216ejjzfoo17mq1q8xs7d4hu8b",
+        "enabled": true,
+        "status": "ENABLED",
+        "version": 1,
+        "createdAt": "2015-11-03T14:52:21Z",
+        "modifiedAt": "2015-11-04T19:05:40Z"
+    }]
 }
 ```
 
@@ -16671,6 +17182,22 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId}/resetsharedsecret \
 -X POST
 ```
 
+```javascript
+// Get options
+var options = {
+    webhookId: 401090454808452
+};
+
+// Reset shared secret
+smartsheet.webhooks.resetSharedSecret(options)
+    .then(function (newSecret) {
+        console.log(newSecret);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+```
+
 ```csharp
 WebhookSharedSecret newSecret = smartsheet.WebhookResources.ResetSharedSecret(
     401090454808452     // long webhookId
@@ -16685,16 +17212,16 @@ WebhookSharedSecret newSecret = smartsheet.webhookResources().ResetSharedSecret(
 
 ```python
 Webhook = ss_client.Webhooks.reset_shared_secret(
-    2403299249940356)       # webhook_id
+    401090454808452)       # webhook_id
 ```
 
 > Example Response:
 
 ```json
 {
-	"resultCode": 0,
-	"result": { "sharedSecret": "5nua69a56es57qdr97g9bcg8f3" },
-	"message": "SUCCESS"
+    "message": "SUCCESS",
+    "resultCode": 0,
+	"result": { "sharedSecret": "5nua69a5foo57qdr9barbcg8f3" }
 }
 ```
 
@@ -16721,6 +17248,28 @@ curl https://api.smartsheet.com/2.0/webhooks/{webhookId} \
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{ "enabled": true }'
+```
+
+```javascript
+// Specify changed values
+var body = {
+    enabled: true
+};
+
+// Set options
+var options = {
+    webhookId: 8444254503626628,
+    body: body
+};
+
+// Update webhook
+smartsheet.webhooks.updateWebhook(options)
+    .then(function (updatedWebhook) {
+        console.log(updatedWebhook);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -16751,7 +17300,7 @@ Webhook updatedWebhook = smartsheet.webhookResources().updateWebhook(
 
 ```python
 Webhook = ss_client.Webhooks.update_webhook(
-    2403299249940356,       # webhook_id
+    8444254503626628,       # webhook_id
     ss_client.models.Webhook({
         'enabled': True}))
 ```
@@ -16760,7 +17309,8 @@ Webhook = ss_client.Webhooks.update_webhook(
 
 ```json
 {
-	"resultCode": 0,
+    "message": "SUCCESS",    
+    "resultCode": 0,
 	"result": {
 		"id": 8444254503626628,
 		"name": "Webhook #4",
@@ -16776,8 +17326,7 @@ Webhook = ss_client.Webhooks.update_webhook(
 		"version": 1,
 		"createdAt": "2015-11-03T14:52:21Z",
 		"modifiedAt": "2015-11-04T19:05:40Z"
-	},
-	"message": "SUCCESS"
+    }
 }
 ```
 
