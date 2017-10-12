@@ -221,14 +221,14 @@ user_profile = ss_client.Users.get_current_user()
 }
 ```
 
-The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
+The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTPS header containing an Access Token is required to authenticate each request. 
 
 If you want to get started quickly, or are developing a standalone application that can run with your credentials, follow these instructions:
 
 1. Open the Account/Personal Settings form and click the "API Access" tab.
 2. Click the "Generate new access token" button to obtain an access token.
 
-The access token must be sent with every API call in an HTTP authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
+The access token must be sent with every API call in an HTTPS authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
 
 `Authorization: Bearer ll352u9jujauoqz4gstvsae05`
 
@@ -527,8 +527,6 @@ To build a third-party app, you must first register it with Smartsheet using Dev
 3. Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
 4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
 
-<aside class="notice">App registration and OAuth flow require HTTPS.</aside>
-
 ## Access Scopes
 
 To access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
@@ -576,7 +574,7 @@ response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
 redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) for your app (including protocol, for example, "https://"); if not provided, the redirect URL set during registration is used.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
-state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
+state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated. State may also be used to distinguish between multiple authorization flows.
 
 Here is an example of a URL to send your user as a `GET` request:
  
@@ -585,7 +583,7 @@ Here is an example of a URL to send your user as a `GET` request:
 If your user has not logged in to Smartsheet, they are first directed to the Smartsheet login page. 
 After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested.
 
-<aside class="notice">At the end of this process, your redirect URL must match what you set at the start of this flow. One trick for remembering that or if you have multiple requests is to pass the `state` value to list what redirect URL you plan to use.</aside>
+<aside class="notice">If you have multiple authorization flows, one possible way to track them is to use the `state` value to differentiate which redirect URL you want to take which customer to.</aside>
 
 ### Obtain the Authorization Code
 
@@ -3056,7 +3054,7 @@ String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).get
 			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
 			"error": {
 				"errorCode": 5001,
-				"message": "customizable error message"
+				"message": "You do not have permission to view this image."
 			}
 		}
 	]
@@ -3067,7 +3065,7 @@ String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).get
 
 Gets a list of URLs that can be used to retrieve the specified cell images.
 
-<aside class="notice">If an error is encountered for any of the requested images, the corresponding <b>ImageUrl</b> Object in the Response contains an <b>error</b> attribute that describes the error. (See Example Response.) In addition, some errors only appear when you try to reference the URL.</aside>
+<aside class="notice">If an error is encountered for any of the requested images, the corresponding <b>ImageUrl</b> Object in the Response contains an <b>error</b> attribute that describes the error. (See Example Response.) Certain errors are not detected until the returned URL is referenced.</aside>
 
      |     |
 -----|-----|
@@ -6464,7 +6462,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of the sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (for example, "folders", "sheets") is not present in the response.
 
 ## Get All Child Folders
@@ -7717,7 +7715,7 @@ Extends the [Row Object](#row-object), adding the following:
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published report. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
 **readOnlyFullEnabled** | Boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
-**readOnlyFullShowToolbar** | Boolean | If `true`, shows the left nav toolbar.
+**readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 
 ## Get Report
@@ -9444,11 +9442,9 @@ Searches all Sheets that the User can access, for the specified text.
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **query** (required): text with which to perform the search. Enclose in double-quotes for an exact search.
- | **include** (optional): when specified with a value of "favoriteFlag", response includes:<ul><li>favorite -- Folders, Reports, Sheets, Sights, Templates, and Workspaces will have the property "favorite": true</li><li>parentObjectFavorite -- Attachments, Discussions, Profile Fields, and Rows will have the property "parentObjectFavorite": true</li></ul>
- | **level** (optional): when specified with one of the following values, temporarily disables filters:<ul><li>0 -- allows all filters except for Dashboard, Folder, or Workspace</li><li>1 -- allows all filters except for Folder or Workspace</li><li>2 -- allows all filters</li></ul>
+ | **include** (optional): when specified with a value of "favoriteFlag", response indicates which returned items are favorites:<ul><li>favorite -- Folders, Reports, Sheets, Sights, Templates, and Workspaces will have the property "favorite": true</li><li>parentObjectFavorite -- Attachments, Discussions, Profile Fields, and Rows will have the property "parentObjectFavorite": true</li></ul>
  | **location** (optional): when specified with a value of "personalWorkspace", limits the response to only those items in the user's Workspaces.
  | <%= PARAMETER_MODIFIEDSINCE %>
- | **owner** (optional): uses a primary email address, such as "Jane.Roe@smartsheet.com", to filter responses to only those items owned by that user.
  | **scopes** (optional): comma-separated list of search filters:<ul><li>attachments</li><li>cellData</li><li>comments</li><li>folderNames</li><li>profileFields</li><li>reportNames</li><li>sheetNames</li><li>sightNames</li><li>templateNames</li><li>workspaceNames</li></ul>
 <%= RETURNS %> | [SearchResult Object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
 
@@ -11172,7 +11168,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published sheet. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
 **readOnlyFullEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
-**readOnlyFullShowToolbar** | Boolean | If `true`, shows the left nav toolbar.
+**readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyLiteEnabled** | Boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
 **readOnlyLiteSSslUrl** | string | If `true`, returns an SSL link.
@@ -11180,7 +11176,7 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
 **readWriteDefaultView** | enum | Indicates which view the user has set for a read-write, default view of the published sheet. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
 **readWriteEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
-**readWriteShowToolbar** | Boolean | If `true`, shows the left nav toolbar.
+**readWriteShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
 
 ### SheetUserSettings Object
@@ -12570,7 +12566,7 @@ Gets a list of all Sheets that the User has access to in alphabetical order by n
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of the sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
  | <%= PARAMETER_MODIFIEDSINCE %>
  | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Sheet Objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
@@ -13882,7 +13878,7 @@ Gets a list of user-created Templates that the user has access to.
 
 # Token
 
-The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTPS header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
 
 ## Get Access Token
 
@@ -13930,7 +13926,7 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned in the previous step
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 ## Refresh Access Token
@@ -13981,7 +13977,7 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "http://")
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://")
  | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the refresh token value
 
 ## Revoke Access Token
@@ -15457,7 +15453,7 @@ Gets a list of Workspaces that the user has access to. The list contains an abbr
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>sheetVersion - current version number of the sheet, should not be combined with pagination</li></ul><%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li></ul><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Workspace Objects](#workspace-object)
 
 ## Share Workspace
