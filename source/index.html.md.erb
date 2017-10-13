@@ -11166,15 +11166,15 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **icalEnabled** | Boolean | If `true`, a webcal is available for the calendar in the sheet.
 **icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published sheet. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
+**readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
 **readOnlyFullEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
 **readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyLiteEnabled** | Boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
-**readOnlyLiteSSslUrl** | string | If `true`, returns an SSL link.
+**readOnlyLiteSslUrl** | string | URL for 'Read-Only' view of the published sheet when SSL is enabled. 
 **readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
 **readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
-**readWriteDefaultView** | enum | Indicates which view the user has set for a read-write, default view of the published sheet. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
+**readWriteDefaultView** | enum | Indicates which view the user has set for a read-write, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
 **readWriteEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
 **readWriteShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
@@ -15899,7 +15899,9 @@ HTTP status code | Smartsheet errorCode | Smartsheet message
 
 # Formatting
 
-You can format data in cells, columns, or rows by using the optional "include=format" query-string parameter with API operations that return any of those objects (for example, `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`). When you include this parameter, and if there is formatting other than default settings, the return includes a **format** property.
+You can format data in cells, columns, or rows programmatically in a multistep process, which is outlined below. 
+
+If you are just looking up formatting on an object, you can use the optional "include=format" query-string parameter with API operations that return any of those objects (for example, `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`). When you include this parameter, and if there is formatting other than default settings, the return includes a **format** property.
  
 Because the amount of format data in a large sheet can potentially be very large in itself, for bandwidth reasons, format data is represented by a compact format descriptor string. The format descriptor takes the form of a comma-separated list of numeric values, for example, ",,1,1,,,,,,,,,,,,".  These values represent indexes into predefined format lookup tables.
 
