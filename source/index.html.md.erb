@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-10-12
+Updated 2017-10-16
 
 # Overview
 ## Introduction
@@ -513,7 +513,7 @@ Follow the instructions on the registration form to add Developer Tools to an ex
  
 Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
 
-1. Click the **Account** button in the upper-left corner of your Smartsheet screen.
+1. Click the **Account** button in the upper-right corner of your Smartsheet screen.
 2. Now that you are registered as a Smartsheet developer, click the new **Developer Tools** option in the dropdown menu to open Developer Tools.
 3. Before you can register your first app, you must complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.
 4. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
@@ -523,8 +523,8 @@ Once you complete the developer registration, log in to Smartsheet to access Dev
 To build a third-party app, you must first register it with Smartsheet using Developer Tools:
 
 1. Login to Smartsheet.
-2. Click the **Account** button in the upper-left corner of your Smartsheet screen and click **Developer Tools**.
-3. Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
+2. Click the **Account** button in the upper-right corner of your Smartsheet screen and click **Developer Tools**.
+3. Create a new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
 4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
 
 ## Access Scopes
@@ -572,7 +572,7 @@ Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
-redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) for your app (including protocol, for example, "https://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated. State may also be used to distinguish between multiple authorization flows.
 
@@ -587,7 +587,7 @@ After a successful login, Smartsheet prompts your user to allow or deny the acce
 
 ### Obtain the Authorization Code
 
-During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the **redirect_uri** with the following parameters:
+During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the Redirect URL with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -595,7 +595,7 @@ code | Authorization code required to obtain access token.
 expires_in | Number of seconds code is valid once issued; this is always four minutes - you must obtain an access token within that time.
 state | **state** string specified earlier.
 
-If the user clicks "Deny", Smartsheet redirects the user to the **redirect_uri** with the following parameters:
+If the user clicks "Deny", Smartsheet redirects the user to the Redirect URL with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -615,7 +615,7 @@ invalid_scope | One or more of the requested access scopes are invalid. Please c
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&hash={SHA_256(app_secret|code)}' \
 -X POST
 ```
 
@@ -664,7 +664,7 @@ Value | Description |
 grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app.
 code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
-redirect_uri<br/>(optional) | Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -686,7 +686,7 @@ unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|refresh_token)}' \
+-d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&hash={SHA_256(app_secret|refresh_token)}' \
 -X POST
 ```
 
@@ -727,7 +727,7 @@ Value | Description |
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
-redirect_uri<br/>(optional)| Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "https://").
+redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
