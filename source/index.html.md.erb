@@ -43,7 +43,7 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-10-17
+Updated 2017-10-18
 
 # Overview
 ## Introduction
@@ -221,7 +221,7 @@ user_profile = ss_client.Users.get_current_user()
 }
 ```
 
-The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTPS header containing an Access Token is required to authenticate each request. 
+The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP header containing an Access Token is required to authenticate each request. 
 
 If you want to get started quickly, or are developing a standalone application that can run with your credentials, follow these instructions:
 
@@ -13876,7 +13876,7 @@ Gets a list of user-created Templates that the user has access to.
 
 # Token
 
-The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTPS header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
 
 ## Get Access Token
 
@@ -15897,36 +15897,28 @@ HTTP status code | Smartsheet errorCode | Smartsheet message
 
 # Formatting
 
-> Example defaults value:
-
-```json
-{
-	"defaults": "0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
-}
-```
-
-To set or read formatting programmatically, Smartsheet uses a compact format string, **cell.format**, which looks something like this: ",,1,1,,,,,,,,,,,,". The position and sample values in this string are explained in the following format descriptor table:
+To set or read formatting programmatically, Smartsheet uses a compact format string, **cell.format**, which looks something like this: `",,1,1,,,,,,,,,,,,"`. The position and sample values in this string are explained in the following format descriptor table:
 
 ## Format Descriptor Table
 
-**Position** | **Lookup Property** | **Example Value** | **Model**
+**Position** | **Lookup Property** | **Example Value** | **Format String**
 -----|-----|-----|-----|
-0 | fontFamily | 0 = Arial, default | "0,,,,,,,,,,,,,,,"
-1 | fontSize | 0 = 8 pt, default | ",0,,,,,,,,,,,,,,"
-2 | bold | 1 = bold | ",,1,,,,,,,,,,,,,"
-3 | italic | 1 = italic | ",,,1,,,,,,,,,,,,"
-4 | underline | 1 = underline | ",,,,1,,,,,,,,,,,"
-5 | strikethrough | 1 = strikethrough | ",,,,,1,,,,,,,,,,"
-6 | horizontalAlign | 0 = left | ",,,,,,1,,,,,,,,,"
-7 | verticalAlign | 0 = top | ",,,,,,,1,,,,,,,,"
-8 | color (text) | 0 = app-defined default | ",,,,,,,,23,,,,,,,"
-9 | color (background) | 0 = app-defined default | ",,,,,,,,,12,,,,,," 
-10 | color (taskbar) | 0 = app-defined default | ",,,,,,,,,,16,,,,,"
-11 | currency | 0 = default | ",,,,,,,,,,,14,,,,"
-12 | decimalCount | 3 = three decimal places | ",,,,,,,,,,,,3,,,"
-13 | thousandsSeparator | 1 = on | ",,,,,,,,,,,,,1,,"
-14 | numberFormat | 2 = currency | ",,,,,,,,,,,,,,2,"
-15 | textWrap | 1 = text wraps | ",,,,,,,,,,,,,,,1"
+0 | fontFamily | 0 = Arial, default | `"0,,,,,,,,,,,,,,,"`
+1 | fontSize | 0 = 8 pt, default | `",0,,,,,,,,,,,,,,"`
+2 | bold | 1 = on | `",,1,,,,,,,,,,,,,"`
+3 | italic | 1 = on | `",,,1,,,,,,,,,,,,"`
+4 | underline | 1 = on | `",,,,1,,,,,,,,,,,"`
+5 | strikethrough | 1 = on | `",,,,,1,,,,,,,,,,"`
+6 | horizontalAlign | 2 = center | `",,,,,,2,,,,,,,,,"`
+7 | verticalAlign | 2 = middle | `",,,,,,,2,,,,,,,,"`
+8 | color (text) | 4 = #FEEEF0 | `",,,,,,,,4,,,,,,,"`
+9 | color (background) | 8 = #E6F5FE | `",,,,,,,,,8,,,,,,"` 
+10 | color (taskbar) | 9 = #F3E5FA | `",,,,,,,,,,9,,,,,"`
+11 | currency | 13 = USD | `",,,,,,,,,,,13,,,,"`
+12 | decimalCount | 3 = three decimal places | `",,,,,,,,,,,,3,,,"`
+13 | thousandsSeparator | 1 = on | `",,,,,,,,,,,,,1,,"`
+14 | numberFormat | 2 = currency | `",,,,,,,,,,,,,,2,"`
+15 | textWrap | 1 = on | `",,,,,,,,,,,,,,,1"`
 
 <aside class="notice">Formats that have not been explicitly set are omitted in the descriptor string. For example, a cell that has been set to bold and italic, but has no other formats applied to it, has a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
 
