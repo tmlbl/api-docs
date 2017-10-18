@@ -9576,11 +9576,6 @@ For developer convenience, the Smartsheet API provides access to application con
 		"thousandsSeparator": [],
 		"numberFormat": [],
 		"textWrap": []
-	},
-	"azureAuthInfo": {
-		"clientId": "2029d2eb-e902-43ed-bbe8-a3a102490fba",
-		"resource": "00000002-0000-0000-c000-000000000000",
-		"authority": "https://login.microsoftonline.com/common"
 	}
 }
 ```
@@ -15920,7 +15915,7 @@ To set or read formatting programmatically, Smartsheet uses a compact format str
 14 | numberFormat | 2 = currency | `",,,,,,,,,,,,,,2,"`
 15 | textWrap | 1 = on | `",,,,,,,,,,,,,,,1"`
 
-<aside class="notice">Formats that have not been explicitly set are omitted in the descriptor string. For example, a cell that has been set to bold and italic, but has no other formats applied to it, has a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
+<aside class="notice">Formats that have not been explicitly set are omitted in the descriptor string. For example, a cell that has been set to bold and italic, but has no other formats applied to it, has a format descriptor of <code>",,1,1,,,,,,,,,,,,"</code>.</aside>
 
 <aside class="notice">Use <b>GET /serverinfo</b> to return the <a href="#formattables-object">FormatTables Object</a>, which tells you both the default settings and what formatting options are available.</aside>
 
@@ -15942,7 +15937,7 @@ To set or read formatting programmatically, Smartsheet uses a compact format str
 		"strikethrough": [],
 		"horizontalAlign": [],
 		"verticalAlign": [],
-		"color": [],    // 3 positions: text color, background color, and taskbar color
+		"color": [],    // List of colors available, used in 3 positions of the format string
 		"currency": [],
 		"decimalCount": [],
 		"thousandsSeparator": [],
@@ -16014,20 +16009,18 @@ Contains all of the lookup tables that the format descriptor indexes refer to.
 
 ## Get Formatting
 
-Use the "include=format" query-string parameter on API operations that return detailed objects, such as `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`. If there is formatting other than default settings, the return includes a **format** property.
-
-## Get Conditional Formatting
-
-Use the "include=format" query-string parameter. If an object has conditional formatting, the **format** property returned will have a **conditionalFormat** value.
+Use the "include=format" query-string parameter on API operations that return detailed objects, such as `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`. If there is formatting other than default settings, the return includes a **format** property. If an object has conditional formatting, the **format** property returned will have a **conditionalFormat** value.
 
 ## Set Formatting for a Row or Column
 
-Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
+Setting the format of a row or column through the API simply sets the baseline format for new or blank cells in that row or column.  It does not affect cells that already have a value.
  
 To do something similar to highlighting an entire row or column in the UI and changing the format to bold, use one of the following API calls:
 
 * `PUT /sheets/{sheetId}/rows/{rowId}`
 * `PUT /sheets/{sheetId}/columns/{columnId}`
+
+If the row or column already has data in it and you want to change the formatting, for instance you want to highlight a row, then you have to loop through cell by cell.
 
 # <span class="customTOCSectionHeading">Deprecations</span>
 
