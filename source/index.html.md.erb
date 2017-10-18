@@ -43,7 +43,8 @@ search: false
 <% USER_AUTO_PROVISIONING_URL = "https://help.smartsheet.com/articles/2072731-user-auto-provisioning-enterprise-only-" %>
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
-Updated 2017-10-12
+
+Updated 2017-10-18
 
 # Overview
 ## Introduction
@@ -228,7 +229,7 @@ If you want to get started quickly, or are developing a standalone application t
 1. Open the Account/Personal Settings form and click the "API Access" tab.
 2. Click the "Generate new access token" button to obtain an access token.
 
-The access token must be sent with every API call in an HTTP authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
+The access token must be sent with every API call in an HTTPS authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
 
 `Authorization: Bearer ll352u9jujauoqz4gstvsae05`
 
@@ -503,7 +504,7 @@ VIEWER | The user has read-only access to the resource.
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
  
-As a developer, you may be building applications that allow any Smartsheet user to access his or her Smartsheet data. The following sub-sections describe next steps.
+As a developer, you may be building applications that allow any Smartsheet user to access their Smartsheet data. The following sub-sections describe next steps.
 
 ## Developer Registration
 
@@ -513,7 +514,7 @@ Follow the instructions on the registration form to add Developer Tools to an ex
  
 Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
 
-1. Click the **Account** button in the upper-left corner of your Smartsheet screen.
+1. Click the **Account** button in the upper-right corner of your Smartsheet screen.
 2. Now that you are registered as a Smartsheet developer, click the new **Developer Tools** option in the dropdown menu to open Developer Tools.
 3. Before you can register your first app, you must complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.
 4. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
@@ -523,8 +524,8 @@ Once you complete the developer registration, log in to Smartsheet to access Dev
 To build a third-party app, you must first register it with Smartsheet using Developer Tools:
 
 1. Login to Smartsheet.
-2. Click the **Account** button in the upper-left corner of your Smartsheet screen and click **Developer Tools**.
-3. Create new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
+2. Click the **Account** button in the upper-right corner of your Smartsheet screen and click **Developer Tools**.
+3. Create a new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
 4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
 
 ## Access Scopes
@@ -562,6 +563,8 @@ WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions,
 Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
 The following sub-sections describe next steps.
 
+<aside class="notice">App registration and OAuth flow require HTTPS.</aside>
+
 ### Request Authorization From the User
 
 To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
@@ -570,7 +573,7 @@ Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
-redirect_uri<br/>(optional) | Redirect URL you [registered](#register-your-app) for your app (including protocol, for example, "http://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 
@@ -583,7 +586,7 @@ After a successful login, Smartsheet prompts your user to allow or deny the acce
 
 ### Obtain the Authorization Code
 
-During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the **redirect_uri** with the following parameters:
+During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the Redirect URL with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -591,7 +594,7 @@ code | Authorization code required to obtain access token.
 expires_in | Number of seconds code is valid once issued; this is always four minutes - you must obtain an access token within that time.
 state | **state** string specified earlier.
 
-If the user clicks "Deny", Smartsheet redirects the user to the **redirect_uri** with the following parameters:
+If the user clicks "Deny", Smartsheet redirects the user to the Redirect URL with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -611,7 +614,7 @@ invalid_scope | One or more of the requested access scopes are invalid. Please c
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&hash={SHA_256(app_secret|code)}' \
 -X POST
 ```
 
@@ -683,7 +686,7 @@ Value | Description |
 grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app.
 code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
-redirect_uri<br/>(optional) | Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -705,7 +708,7 @@ unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|refresh_token)}' \
+-d 'grant_type=refresh_token&refresh_token={your_refresh_token}&client_id={your_client_id}&hash={SHA_256(app_secret|refresh_token)}' \
 -X POST
 ```
 
@@ -769,7 +772,7 @@ Value | Description |
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
-redirect_uri<br/>(optional)| Redirect URL [registered](#register-your-app) for your app, including the protocol (for example, "http://").
+redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
@@ -2867,15 +2870,46 @@ var options = {
 ```
 
 ```csharp
-// [todo]
+// Set options
+Image image = new Image
+    { 
+        AltText = "Caution Sign",
+        Height = 16,
+        Width = 16
+    };
+
+smartsheet.SheetResources.RowResources.CellResources.AddImageToCell(
+    3285357287499652, // sheetId
+    1123834706323332, // rowId
+    4549065498224516, // columnId
+    "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png",
+    "image"
+);
 ```
 
 ```java
-// [todo]
+// Set options
+Image image = new Image();
+image.setAltText("Caution sign");
+image.setHeight(16L);
+image.setWidth(16L);
+
+smartsheet.sheetResources().rowResources().cellResources().addImageToCell(
+    1639534409607044L,      // sheetId
+    3344087179913092L,      // rowId
+    1735559124150148L,      // columnId
+    "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png",
+    "image"
+);
 ```
 
 ```python
-# [todo]
+sheet_id = 3285357287499652
+column_id = 4549065498224516
+row_id = 1123834706323332
+caution_pic = "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png"
+file_type = "png"
+ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file_type)
 ```
 
 > Example Response:
@@ -2994,7 +3028,7 @@ long rowId = 3344087179913092L;
 long columnId = 1735559124150148L;
 
 //  Step 1: Identify the cell that contains an image
-Row row = ss.sheetResources().rowResources().getRow(
+Row row = smartsheet.sheetResources().rowResources().getRow(
     sheetId,
     rowId,
     null,
@@ -3011,7 +3045,7 @@ ImageUrl imageUrl = new ImageUrl();
 imageUrl.setImageId(imageId);
 List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
 
-String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
+String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
 
 // Step 4: Download the image
 CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -3094,7 +3128,7 @@ ImageUrl imageUrl = new ImageUrl();
 imageUrl.setImageId(imageId);
 List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
 
-String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
+String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
 ```
 
 ```python
@@ -3114,7 +3148,7 @@ String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrl
 			"imageId": "g2jdKdfhQa_abKJmPnhC_B",
 			"error": {
 				"errorCode": 5001,
-				"message": "localized_error_message"
+				"message": "You do not have permission to view this image."
 			}
 		}
 	]
@@ -3125,11 +3159,7 @@ String temporaryUrl = ss.imageUrlResources().getImageUrls(imageUrls).getImageUrl
 
 Gets a list of URLs that can be used to retrieve the specified cell images.
 
-<aside class="notice">The HTTP verb for this operation is <code>POST</code> (to provide support for specifying request body).</aside>
-
-<aside class="notice">The number and sequence of <a href="#imageurl-object">ImageUrl Objects</a> in the Response corresponds exactly to the number and sequence of objects specified by the Request.</aside>
-
-<aside class="notice">If an error is encountered for any of the requested images, the corresponding <b>ImageUrl</b> Object in the Response contains an <b>error</b> attribute that describes the error. (See Example Response.)</aside>
+<aside class="notice">If an error is encountered for any of the requested images, the corresponding <b>ImageUrl</b> Object in the Response contains an <b>error</b> attribute that describes the error. (See Example Response.) Certain errors are not detected until the returned URL is referenced.</aside>
 
      |     |
 -----|-----|
@@ -3749,7 +3779,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li></ul>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
 
 ## <%= RELATED %>
@@ -6095,14 +6125,14 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 > Example Request: Copy Folder
 
 ```shell
-curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=all \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
--d '{ \
-    "destinationType": "folder", \
-    "destinationId": 7960873114331012, \
-    "newName": "newFolderName" \
-}' \
+curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=data
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+-H "Content-Type: application/json"
+-d '{
+    "destinationType": "folder",
+    "destinationId": 7960873114331012,
+    "newName": "newFolderName"
+}'
 -X POST
 ```
 
@@ -6153,12 +6183,12 @@ Folder folder = smartsheet.FolderResources.CopyFolder(
     null                            // IEnumerable<FolderRemapExclusion> skipRemap
 );
 
-// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS"
+// Sample 2: Specify 'include' parameter with value of "DATA", and 'skipRemap' parameter with value of "CELL_LINKS"
 Folder folder = smartsheet.FolderResources.CopyFolder(
     2252168947361668,               // long folderId
     destination,
     new FolderCopyInclusion[] {
-        FolderCopyInclusion.ALL },
+        FolderCopyInclusion.DATA },
     new FolderRemapExclusion[] {
         FolderRemapExclusion.CELL_LINKS }
 );
@@ -6180,11 +6210,11 @@ Folder folder = smartsheet.folderResources().copyFolder(
     null                                    // EnumSet<FolderRemapExclusion> skipRemap
 );
 
-// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS"
+// Sample 2: Specify 'include' parameter with value of "DATA", and 'skipRemap' parameter with value of "CELLLINKS"
 Folder folder = smartsheet.folderResources().copyFolder(
     2252168947361668L,                      // long folderId
     destination,
-    EnumSet.of(FolderCopyInclusion.ALL),
+    EnumSet.of(FolderCopyInclusion.DATA),
     EnumSet.of(FolderRemapExclusion.CELLLINKS)
 );
 ```
@@ -6222,8 +6252,9 @@ Creates a copy of the specified Folder.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source folder are re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created folder continue to point to the original source sheets / reports.</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+ | **omit** (optional) -- when specified with a value of "sheetHyperlinks", excludes this category from the response
+ | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source folder are re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created folder continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination Object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result Object](#result-object) containing a [Folder Object](#folder-object) for the newly created Folder
 
@@ -6605,7 +6636,7 @@ Gets the specified Folder (and lists its contents).
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (for example, "folders", "sheets") is not present in the response.
 
 ## Get All Child Folders
@@ -7874,9 +7905,11 @@ Extends the [Row Object](#row-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
-**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published report. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
+**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
+**readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 
 ## Get Report
 
@@ -9063,7 +9096,7 @@ Gets the Row specified in the URL.
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which adds a columns array that specifies all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column [filters](#filter-object) with the columns.
-  | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
+  | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**include=format&exclude=nonexistentCells**: excludes cells that have never contained data yet returns those cells if they have formatting or conditional formatting</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
 <%= RETURNS %> | [Row Object](#row-object), populated according to the specified parameters
 
 ## List Rows
@@ -9209,7 +9242,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '[{"id": "6572427401553796", "cells": [{"columnId": 7518312134403972,"value": "new value"}, {"columnId": 1888812600190852,"value": "A"}]}, {"id": "2068827774183300", "cells": [{"columnId": 7518312134403972,"value": "desc_updated"}, {"columnId": 1888812600190852,"value": "B"}]}]'
+-d '[{"id": "6572427401553796", "cells": [{"columnId": 7518312134403972,"image": {"altText": "New Alt Text"},"value": "new value"}, {"columnId": 1888812600190852,"value": "A"}]}, {"id": "2068827774183300", "cells": [{"columnId": 7518312134403972,"value": "desc_updated"}, {"columnId": 1888812600190852,"value": "B"}]}]'
 ```
 
 ```javascript
@@ -9623,7 +9656,11 @@ Searches all Sheets that the User can access, for the specified text.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **query** (required): Text with which to perform the search. Enclose in double-quotes for an exact search.
+<%= PARAMETERS %> | **query** (required): text with which to perform the search. Enclose in double-quotes for an exact search.
+ | **include** (optional): when specified with a value of "favoriteFlag", response indicates which returned items are favorites:<ul><li>favorite -- Folders, Reports, Sheets, Sights, Templates, and Workspaces will have the property "favorite": true</li><li>parentObjectFavorite -- Attachments, Discussions, Profile Fields, and Rows will have the property "parentObjectFavorite": true</li></ul>
+ | **location** (optional): when specified with a value of "personalWorkspace", limits the response to only those items in the user's Workspaces.
+ | <%= PARAMETER_MODIFIEDSINCE %>
+ | **scopes** (optional): comma-separated list of search filters:<ul><li>attachments</li><li>cellData</li><li>comments</li><li>folderNames</li><li>profileFields</li><li>reportNames</li><li>sheetNames</li><li>sightNames</li><li>templateNames</li><li>workspaceNames</li></ul>
 <%= RETURNS %> | [SearchResult Object](#searchresult-object) that contains a maximum of 100 [SearchResultems](#searchresultitem-object)
 
 ## Search Sheet
@@ -9756,11 +9793,6 @@ For developer convenience, the Smartsheet API provides access to application con
 		"thousandsSeparator": [],
 		"numberFormat": [],
 		"textWrap": []
-	},
-	"azureAuthInfo": {
-		"clientId": "2029d2eb-e902-43ed-bbe8-a3a102490fba",
-		"resource": "00000002-0000-0000-c000-000000000000",
-		"authority": "https://login.microsoftonline.com/common"
 	}
 }
 ```
@@ -10625,7 +10657,7 @@ Deletes the Share specified in the URL.
 > Example Request: Get Sight Share
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId} \
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares/{shareId}
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" 
 ```
 
@@ -10685,7 +10717,7 @@ Gets the Share specified in the URL.
 > Example Request: List Sight Shares
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares \
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" 
 ```
 
@@ -10753,10 +10785,10 @@ Gets a list of all Users and Groups to whom the specified Sight is shared, and t
 > Example Request: Share Sight
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
--X POST \
+curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+-H "Content-Type: application/json"
+-X POST
 -d '[{"email": "jane.doe@smartsheet.com", "accessLevel": "EDITOR"}]'
 ```
 
@@ -11341,16 +11373,21 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**readOnlyLiteEnabled** | Boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
-**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
-**readWriteEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
 **icalEnabled** | Boolean | If `true`, a webcal is available for the calendar in the sheet.
-**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
-**readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
-**readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
-**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
-**readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
 **icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
+**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
+**readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
+**readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyLiteEnabled** | Boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
+**readOnlyLiteSslUrl** | string | URL for 'Read-Only' view of the published sheet when SSL is enabled. 
+**readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
+**readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
+**readWriteDefaultView** | enum | Indicates which view the user has set for a read-write, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
+**readWriteEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
+**readWriteShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
+**readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
 
 ### SheetUserSettings Object
 
@@ -11383,14 +11420,14 @@ Represents the project settings dependencies for a specific sheet.  Project sett
 > Example Request: Copy Sheet
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=all \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
--d '{ \
-    "destinationType": "folder", \
-    "destinationId": 7960873114331012, \
-    "newName": "newSheetName" \
-}' \
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=data,attachments
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+-H "Content-Type: application/json"
+-d '{
+    "destinationType": "folder",
+    "destinationId": 7960873114331012,
+    "newName": "newSheetName"
+}'
 -X POST
 ```
 
@@ -11438,11 +11475,11 @@ Sheet sheet = smartsheet.SheetResources.CopySheet(
     null                                            // IEnumerable<SheetCopyInclusion> include
 );
 
-// Sample 2: Specify 'include' parameter with value of "all"
+// Sample 2: Specify 'include' parameter with value of "data"
 Sheet sheet = smartsheet.SheetResources.CopySheet(
     9283173393803140,                               // long sheetId
     destination,
-    new SheetCopyInclusion[] { SheetCopyInclusion.ALL }
+    new SheetCopyInclusion[] { SheetCopyInclusion.DATA }
 );
 ```
 
@@ -11461,11 +11498,11 @@ Sheet sheet = smartsheet.sheetResources().copySheet(
     null                                        // EnumSet<SheetCopyInclusion> includes
 );
 
-// Sample 2: Specify 'include' parameter with value of "all"
+// Sample 2: Specify 'include' parameter with value of "data"
 Sheet sheet = smartsheet.sheetResources().copySheet(
     4583173393803140L,                         // long sheetId
     destination,
-    EnumSet.of(SheetCopyInclusion.ALL)
+    EnumSet.of(SheetCopyInclusion.DATA)
 );
 ```
 
@@ -11503,7 +11540,8 @@ Creates a copy of the specified Sheet.
 -----|-----|
 <%= SCOPE %> | CREATE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, and forms)</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+ | **omit** (optional) -- when specified with a value of "sheetHyperlinks", excludes this category from the response
 <%= REQUEST %> | [ContainerDestination Object](#containerdestination-object)
 <%= RETURNS %> | [Result Object](#result-object) containing a [Sheet Object](#sheet-object) for the newly created Sheet, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
 
@@ -12435,7 +12473,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**filterDefinitions**: includes type of filter, operators used, and criteria</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
-  | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
+  | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**include=format&exclude=nonexistentCells**: excludes cells that have never contained data yet returns those cells if they have formatting or conditional formatting</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
   | **rowIds** (optional): a comma-separated list of Row Ids on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
   | **columnIds** (optional): a comma-separated list of Column Ids. The response contains only the specified columns in the "columns" array, and individual rows' "cells" array only contains cells in the specified columns.
@@ -12691,7 +12729,7 @@ smartsheet.sheets.listSheets()
 PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
     null,               // IEnumerable<SheetInclusion> includes
     null,               // PaginationParameters
-    null                // Nullable<DateTime> modifiedSince = null
+    null                // Nullable<DateTime> modifiedSince
 );
 
 // Sample 2: Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
@@ -12736,7 +12774,8 @@ sheets = response.data
 		{
 			"accessLevel": "OWNER",
 			"id": 4583173393803140,
-			"name": "sheet 1",
+            "name": "sheet 1",
+            "version": 5,
 			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJesvSHCQ",
             "createdAt": "2015-06-05T20:05:29Z",
             "modifiedAt": "2015-06-05T20:05:43Z"
@@ -12744,7 +12783,8 @@ sheets = response.data
 		{
 			"accessLevel": "OWNER",
 			"id": 2331373580117892,
-			"name": "sheet 2",
+            "name": "sheet 2",
+            "version": 86,
 			"permalink": "https://app.smartsheet.com/b/home?lx=xUefSOIYmn07iJJrthEFTG",
             "createdAt": "2015-06-05T20:05:29Z",
             "modifiedAt": "2015-06-05T20:05:43Z"
@@ -12765,7 +12805,7 @@ Gets a list of all Sheets that the User has access to in alphabetical order by n
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
  | <%= PARAMETER_MODIFIEDSINCE %>
  | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Sheet Objects](#sheet-object) limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li><li>source (included only if "source" is specified with the **include** parameter)</li><li>owner (included only if "ownerInfo" is specified with the **include** parameter)</li><li>ownerId (included only if "ownerInfo" is specified with the **include** parameter)</li><li>createdAt</li><li>modifiedAt</li></ul>
@@ -14258,7 +14298,7 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned in the previous step
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "http://"); if not provided, the redirect URL set during registration is used.
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
 
 ## Refresh Access Token
@@ -14332,7 +14372,7 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "http://")
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://")
  | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the refresh token value
 
 ## Revoke Access Token
@@ -14612,7 +14652,7 @@ Adds a User to the organization.
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
 <%= PARAMETERS %> | **sendEmail** (optional): A Boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
-<%= REQUEST %> | [User Object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceViewer (optional)</li></ul>
+<%= REQUEST %> | [User Object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>groupAdmin (optional)</li><li>resourceViewer (optional)</li></ul>
 <%= RETURNS %> | [Result Object](#result-object) containing the newly created [User Object](#user-object).
 <%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-addresses) (that is, not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error Object](#error-object) returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
 
@@ -14774,7 +14814,7 @@ response = ss_client.Users.promote_alternate_email(
 
 Makes the specified alternate email address to become the primary email address for the specified user.
 
-<aside class="notice">This operation is only available to system administrators of an Enterprise account. <a href="https://www.smartsheet.com/enterprise/scale">Learn more</a> about the Enterprise platform.</aside>
+<aside class="notice">This operation is only available to system administrators of an Enterprise account. <a href="https://www.smartsheet.com/product/enterprise-deployment">Learn more</a> about the Enterprise platform.</aside>
 
 <aside class="notice">The alternate email address can only be made primary if both conditions are met:<ul><li>The primary email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a></li><li>The alternate email address is confirmed <b>OR</b> the alternate email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a></li></ul></aside>
 
@@ -15417,7 +15457,7 @@ Updates the User specified in the URL.
 -----|-----|
 <%= SCOPE %> | ADMIN_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [User Object](#user-object) containing at least one of the following attributes:<ul><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>resourceViewer (optional)</li></ul>
+<%= REQUEST %> | [User Object](#user-object) containing at least one of the following attributes:<ul><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>groupAdmin (optional)</li><li>resourceViewer (optional)</li></ul>
 <%= RETURNS %> | [Result Object](#result-object) containing the [User Object](#user-object) for the updated User
 
 # Workspaces
@@ -15456,10 +15496,10 @@ Updates the User specified in the URL.
 > Example Request: Copy Workspace
 
 ```shell
-curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=all \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
--d '{"newName": "newWorkspaceName"}' \
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=data
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+-H "Content-Type: application/json"
+-d '{"newName": "newWorkspaceName"}'
 -X POST
 ```
 
@@ -15506,11 +15546,11 @@ Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
     null                       // IEnumerable<WorkspaceRemapExclusion> skipRemap
 );
 
-// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELL_LINKS"
+// Sample 2: Specify 'include' parameter with value of "DATA", and 'skipRemap' parameter with value of "CELL_LINKS"
 Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
     7116448184199044,           // long workspaceId
     destination,
-    new WorkspaceCopyInclusion[] { WorkspaceCopyInclusion.ALL },
+    new WorkspaceCopyInclusion[] { WorkspaceCopyInclusion.DATA },
     new WorkspaceRemapExclusion[] { WorkspaceRemapExclusion.CELL_LINKS }
 );
 ```
@@ -15527,11 +15567,11 @@ Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
     null                        // EnumSet<WorkspaceRemapExclusion> skipRemap
 );
 
-// Sample 2: Specify 'include' parameter with value of "ALL", and 'skipRemap' parameter with value of "CELLLINKS"
+// Sample 2: Specify 'include' parameter with value of "DATA", and 'skipRemap' parameter with value of "CELLLINKS"
 Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
     7116448184199044L,          // long workspaceId
     destination,
-    EnumSet.of(WorkspaceCopyInclusion.ALL),
+    EnumSet.of(WorkspaceCopyInclusion.DATA),
     EnumSet.of(WorkspaceRemapExclusion.CELLLINKS)
 );
 ```
@@ -15568,8 +15608,9 @@ Creates a copy of the specified Workspace.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to copy:<ul><li>data</li><li>attachments</li><li>discussions</li><li>cellLinks</li><li>forms</li><li>brand</li><li>shares</li><li>**all** - specify a value of "all" to include everything (data, attachments, discussions, cellLinks, forms, brand, and shares)</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified. 
- | **skipRemap** (optional) --  -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source workspace are re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created workspace continue to point to the original source sheets / reports.</li></ul>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+ | **omit** (optional) -- when specified with a value of "sheetHyperlinks", excludes this category from the response
+ | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source workspace are re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created workspace continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination Object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
 <%= RETURNS %> | [Result Object](#result-object) containing a [Workspace Object](#workspace-object) for the newly created Workspace
 
@@ -15897,7 +15938,7 @@ Gets a list of Workspaces that the user has access to. The list contains an abbr
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li></ul><%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Workspace Objects](#workspace-object)
 
 ## Share Workspace
@@ -16343,48 +16384,62 @@ HTTP status code | Smartsheet errorCode | Smartsheet message
 
 # Formatting
 
-Formatting data can optionally be included for columns, rows, and cells by adding the "include=format" query string parameter to any API operation that returns any of those objects (for example, `GET /sheets/{sheetId}`, `GET sheets/{sheetId}/rows/{rowId}`, etc.).  When this parameter is included, objects that contain non-default formatting include a **format** property.  Objects that do not have any non-default format settings applied exclude this property.
- 
-Because the amount of format data in a large sheet can potentially be very large in itself, for bandwidth reasons, format data is represented by a compact format descriptor string.  The format descriptor takes the form of a comma-separated list of numeric values.  These values represent indexes into pre-defined format lookup tables which can be retrieved using the `GET /serverinfo` operation.
+To set or read formatting programmatically, Smartsheet uses a compact format string, **cell.format**, which looks something like this: `",,1,1,,,,,,,,,,,,"`. The position and sample values in this string are explained in the following format descriptor table:
 
-## Row & Column Format
+## Format Descriptor Table
 
-Setting the format of a row or column through the API simply sets the baseline format for new cells in that row or column.  It does not affect existing cells.
- 
-The equivalent API action for what happens when you highlight a column or row in the Smartsheet Webapp and set a format (for example, bold) is to update the format of a column or row (via `PUT /sheets/{sheetId}/rows/{rowId}` or `PUT /sheets/{sheetId}/columns/{columnId}`), and update the format for every cell in that row or column.  All of the cells in a row can be updated in one operation (`PUT /sheets/{sheetId}/rows/{rowId}`), but there is currently no way to update all of the cells in a column in one operation.
+**Position** | **Lookup Property** | **Example Value** | **Format String**
+-----|-----|-----|-----|
+0 | fontFamily | 0 = Arial, default | `"0,,,,,,,,,,,,,,,"`
+1 | fontSize | 0 = 8 pt, default | `",0,,,,,,,,,,,,,,"`
+2 | bold | 1 = on | `",,1,,,,,,,,,,,,,"`
+3 | italic | 1 = on | `",,,1,,,,,,,,,,,,"`
+4 | underline | 1 = on | `",,,,1,,,,,,,,,,,"`
+5 | strikethrough | 1 = on | `",,,,,1,,,,,,,,,,"`
+6 | horizontalAlign | 2 = center | `",,,,,,2,,,,,,,,,"`
+7 | verticalAlign | 2 = middle | `",,,,,,,2,,,,,,,,"`
+8 | color (text) | 4 = #FEEEF0 | `",,,,,,,,4,,,,,,,"`
+9 | color (background) | 8 = #E6F5FE | `",,,,,,,,,8,,,,,,"` 
+10 | color (taskbar) | 9 = #F3E5FA | `",,,,,,,,,,9,,,,,"`
+11 | currency | 13 = USD | `",,,,,,,,,,,13,,,,"`
+12 | decimalCount | 3 = three decimal places | `",,,,,,,,,,,,3,,,"`
+13 | thousandsSeparator | 1 = on | `",,,,,,,,,,,,,1,,"`
+14 | numberFormat | 2 = currency | `",,,,,,,,,,,,,,2,"`
+15 | textWrap | 1 = on | `",,,,,,,,,,,,,,,1"`
 
-## Format Descriptor
+<aside class="notice">Formats that have not been explicitly set are omitted in the descriptor string. For example, a cell that has been set to bold and italic, but has no other formats applied to it, has a format descriptor of <code>",,1,1,,,,,,,,,,,,"</code>.</aside>
 
-The format descriptor contains 16 comma-separated numeric indexes.  Each index represents a format style whose value can be found in one of the lookup tables in the [FormatTables Object](#formattables-object).
+<aside class="notice">Use <b>GET /serverinfo</b> to return the <a href="#formattables-object">FormatTables Object</a>, which tells you both the default settings and what formatting options are available.</aside>
 
-**Format Descriptor Element #** | **Format Style** | **FormatTables Lookup Table Property** |
------|-----|-----|
-0 | Font Family | fontFamily
-1 | Font size | fontSize
-2 | Bold | bold
-3 | Italic | italic
-4 | Underline | underline
-5 | Strikethrough | strikethrough
-6 | Horizontal alignment | horizontalAlign
-7 | Vertical alignment | verticalAlign
-8 | Text color | color
-9 | Background color | color
-10 | Taskbar color | color
-11 | Currency | currency
-12 | Decimal count | decimalCount
-13 | Thousands separator | thousandsSeparator
-14 | Number format | numberFormat
-15 | Text wrap | textWrap
+## <%= OBJECTS %>
 
-<aside class="notice">Formats which have not been explicitly set are omitted in the descriptor string.  For example, a cell which has been set to bold and italic, but has no other formats applied to it, has a format descriptor of ",,1,1,,,,,,,,,,,,".</aside>
+### FormatTables Object
 
-<aside class="notice">As a convenience, the FormatTables Object contains a <b>defaults</b> property which is a format descriptor that describes which formats the Smartsheet Web app displays for unset formats.  Your application can use these values to display unformatted cells identically to the Smartsheet Web app.</aside>
+> Example FormatTables Object:
 
-## FormatTables Object
+```json
+{
+	"formats": {
+		"defaults": "0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+		"fontFamily": [],
+		"fontSize": [],
+		"bold": [],
+		"italic": [],
+		"underline": [],
+		"strikethrough": [],
+		"horizontalAlign": [],
+		"verticalAlign": [],
+		"color": [],    // List of colors available, used in 3 positions of the format string
+		"currency": [],
+		"decimalCount": [],
+		"thousandsSeparator": [],
+		"numberFormat": [],
+		"textWrap": []
+	}
+}
+```
 
-The FormatTables Object is retrieved via the `GET /serverinfo` operation and contains all of the lookup tables that the [Format Descriptor](#format-descriptor) indexes refer to, as well as a property called **defaults**, which is a Format Descriptor that describes which formats the Smartsheet Web app displays for unset formats.
- 
-<aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
+Contains all of the lookup tables that the format descriptor indexes refer to.
 
      |     |     |
 -----|-----|-----|
@@ -16404,19 +16459,100 @@ The FormatTables Object is retrieved via the `GET /serverinfo` operation and con
 **numberFormat** | array of strings | Possible values:<ul><li>none</li><li>NUMBER</li><li>CURRENCY</li><li>PERCENT</li></ul>
 **textWrap** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
 
-## FontFamily Object
+<aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
+
+### FontFamily Object
+
+> Example FontFamily Object:
+
+```json
+{
+	"fontFamily": [{
+		"name": "Arial",
+		"traits": [
+			"sans-serif"
+		]
+	}]
+}
+```
 
      |     |     |
 -----|-----|-----|
 **name** | string | Name of the font family (for example, "Arial")
 **traits** | array | Platform-independent traits of the font family. One of the following values:<ul><li>serif</li><li>sans-serif</li>
 
-## Currency Object
+### Currency Object
+
+> Example Currency Object:
+
+```json
+{
+	"currency": [{
+		"code": "USD",
+		"symbol": "$"
+	}]
+}
+```
 
      |     |     |
 -----|-----|-----|
-**code** | string | The ISO 4217 currency code (for example, "EUR")
+**code** | string | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code (for example, "EUR")
 **symbol** | string | The currency symbol (for example, "€")
+
+## Get Formatting
+
+Use the "include=format" query-string parameter on API operations that return detailed objects, such as `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`. If there is formatting other than default settings, the return includes a **format** property. If an object has conditional formatting, the **format** property returned will have a **conditionalFormat** value.
+
+## Set Formatting for a Row or Column
+
+Setting the format of a row object or column object through the API simply sets the baseline format for new or blank cells in that row or column.  It does not affect cells that already have a value.
+ 
+If you want to change the formatting of cells that already have content, for instance you want to make a row bold, then you have to set the format for each cell individually.
+
+# <span class="customTOCSectionHeading">Deprecations</span>
+
+Smartsheet occasionally deprecates APIs to indicate that those APIs should no longer be used in active development. 
+Deprecated APIs typically remain present and usable for a reasonable period of time following the release in which they were deprecated, but may be removed entirely from a future version of the API. 
+You should never use deprecated APIs in new development, and if you have existing code that uses deprecated APIs, Smartsheet recommends that you update that code as soon as possible. 
+
+# Endpoints
+
+This section specifies the endpoints and parameters that have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Endpoints
+
+The following endpoints have been deprecated in version 2.0 of the Smartsheet API.
+
+Operation | Deprecated Endpoint | Replaced by 
+-------- | -------- | ----- | -----------------
+ Delete Row (singular) | DELETE /sheets/{sheetId}/rows/{rowId} | new endpoint for [Delete Rows](#delete-rows)
+ Send Row (singular) | POST /sheets/{sheetId}/rows/{rowId}/emails | new endpoint for [Send Rows](#send-rows-via-email)
+ 
+## Deprecated Parameters
+
+Operation | Deprecated Parameter | Replaced by
+-------- | -------- | --------
+[Create Child Folder](#create-child-folder) | include | new endpoint for [Copy Folder](#copy-folder)
+[Create Sheet](#create-sheet) | include | new endpoint for [Copy Sheet](#copy-sheet)
+[Create Workspace](#create-workspace) | include | new endpoint for [Copy Workspace](#copy-workspace)
+
+# Objects
+
+This section specifies the objects and attributes that have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Objects
+
+No objects have been deprecated in version 2.0 of the Smartsheet API.
+
+## Deprecated Attributes
+
+The following attributes have been deprecated in version 2.0 of the Smartsheet API.
+
+Object | Deprecated Attribute | Replaced by
+-------- | -------- | --------
+[Folder Object](#folder-object) | fromId | new endpoint for [Copy Folder](#copy-folder)
+[Sheet Object](#sheet-object) | fromId | new endpoint for [Copy Sheet](#copy-sheet)
+[Workspace Object](#workspace-object) | fromId | new endpoint for [Copy Workspace](#copy-workspace)
 
 # Troubleshooting
 
