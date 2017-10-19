@@ -44,7 +44,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-10-18
+Updated 2017-10-19
 
 # Overview
 ## Introduction
@@ -8067,17 +8067,23 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 3882962191181700 // Id of Report
+  id: 3882962191181700 // Id of Report
 };
 
-// Get report as Excel
+// Get sheet
 smartsheet.reports.getReportAsExcel(options)
-    .then(function (report) {
-        console.log(report);
+    .then(function(fileContents) {
+        // Write report to file
+        fs.writeFile('output.xlsx', fileContents, 'binary', (err) => {
+            if (err) throw err;
+            console.log('The report has been saved!');
+        });
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
     });
 ```
@@ -8118,7 +8124,7 @@ ss_client.Reports.get_report_as_excel(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.xlsx"
 ```
 
 ```csharp
@@ -8143,17 +8149,23 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 3882962191181700 // Id of Report
+  id: 3882962191181700 // Id of Report
 };
 
-// Get report as CSV
+// Get sheet
 smartsheet.reports.getReportAsCSV(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function(fileContents) {
+        // Write report to file
+        fs.writeFile('output.csv', fileContents, (err) => {
+            if (err) throw err;
+            console.log('The report has been saved!');
+        });
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
     });
 ```
@@ -8194,7 +8206,7 @@ ss_client.Reports.get_report_as_csv(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.csv"
 ```
 
 ```csharp
@@ -12493,19 +12505,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-  id: 4583173393803140 // Id of Sheet
+  id: 169681224483716 // Id of Sheet
 };
 
 // Get sheet
 smartsheet.sheets.getSheetAsExcel(options)
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
+    .then(function(fileContents) {
+        // Write sheet to file
+        fs.writeFile('output.xlsx', fileContents, 'binary', (err) => {
+            if (err) throw err;
+            console.log('The sheet has been saved!');
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -12535,7 +12553,7 @@ ss_client.Sheets.get_sheet_as_excel(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.xlsx"
 ```
 
 ```csharp
@@ -12560,19 +12578,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 4583173393803140 // Id of Sheet
+  id: 169681224483716 // Id of Sheet
 };
 
 // Get sheet
 smartsheet.sheets.getSheetAsPDF(options)
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
+    .then(function(fileContents) {
+        // Write sheet to file
+        fs.writeFile('output.pdf', fileContents, 'binary', (err) => {
+            if (err) throw err;
+            console.log('The sheet has been saved!');
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -12605,7 +12629,7 @@ ss_client.Sheets.get_sheet_as_pdf(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.pdf"
 ```
 
 ```csharp
@@ -12630,19 +12654,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 4583173393803140 // Id of Sheet
+  id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet
 smartsheet.sheets.getSheetAsCSV(options)
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
+    .then(function(fileContents) {
+        // Write sheet to file
+        fs.writeFile('output.csv', fileContents, (err) => {
+            if (err) throw err;
+            console.log('The sheet has been saved!');
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -12672,7 +12702,7 @@ ss_client.Sheets.get_sheet_as_csv(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.csv"
 ```
 
 ```csharp
