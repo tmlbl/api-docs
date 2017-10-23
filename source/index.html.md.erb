@@ -44,7 +44,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-10-18
+Updated 2017-10-23
 
 # Overview
 ## Introduction
@@ -79,6 +79,7 @@ Updated 2017-10-18
 # how to execute operations using the Smartsheet Python SDK:
 # https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
+
 [Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. The API allows you to do the following:
 
 * Read and update sheets
@@ -244,8 +245,7 @@ The header name is **Authorization** and the value of the header is **Bearer ll3
 The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, that is, YYYY-MM-DDTHH:MM:SSZ.  If a date/time needs to be
 displayed to an end-user in their local time zone, you must do the conversion using the user's time zone, which you can obtain by [getting the current user](#get-current-user).
 
-You can optionally choose to receive and send dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
-This flag works for any API request. 
+You can optionally choose to receive and send dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`. This query parameter works for any API request. 
 
 ## Sheets/Columns/Rows/Cells
 
@@ -2717,10 +2717,8 @@ The parsing rules for the various column types are as follows:
 
      |     |
 -----|-----|
-*Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
+*Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD). Alternatively, if Unix time (also known as epoch time) is used, you can use the query parameter of `numericDates` set to `true` to have Smartsheet convert epoch time to human readable dates. See [Dates and Times](#dates-and-times) for more information. 
 *Lenient* | Smartsheet attempts to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet recognizes the date and stores it as such. All other values are simply text values.
-
-<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 
 **CONTACT_LIST**:
 
@@ -2757,10 +2755,8 @@ N/A | Set using the objectValue attribute for the Cell Object, which is inherent
 
      |     |
 -----|-----|
-*Strict* | The value must be a string value and a valid ISO 8601 date and time.
+*Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD). Alternatively, if Unix time (also known as epoch time) is used, you can use the query parameter of `numericDates` set to `true` to have Smartsheet convert epoch time to human readable dates. See [Dates and Times](#dates-and-times) for more information.
 *Lenient* | Smartsheet attempts to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet recognizes the date and stores it as such. All other values are simply text values.
-
-<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 
 #### Contact List Columns
 
@@ -3963,7 +3959,7 @@ response = ss_client.Discussions.add_comment_to_discussion(
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: multipart/form-data"
+-H "Content-Type: multipart/form-data" \
 -X POST \
 -F "comment=<comment.json;type=application/json" \
 -F "file=@datafile;type=application/octet-stream"
@@ -3977,7 +3973,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 ```
 
 ```javascript
-// [todo]
+// n/a
 ```
 
 ```csharp
@@ -5000,6 +4996,7 @@ response = ss_client.Discussions.get_all_discussions(
 pages = response.total_pages
 discussions = response.data
 ```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -5727,7 +5724,6 @@ ss_client.Favorites.remove_favorites(
     2252168947361668        # workspace_id
 )
 ```
-
 
 > Example Response:
 
@@ -6842,7 +6838,6 @@ Gets a list of the top-level child Folders within the specified Workspace.
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
-
 ## Move Folder
 
 > Example Request: Move Folder
@@ -7906,8 +7901,8 @@ Extends the [Row Object](#row-object), adding the following:
      |     |     |
 -----|-----|-----|
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published report. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
-**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
+**readOnlyFullDefaultView** | string | Indicates which view the user has set for a read-only, default view of the published report. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
+**readOnlyFullEnabled** | Boolean | (Required) If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
 **readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 
@@ -8067,17 +8062,23 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 3882962191181700 // Id of Report
+  id: 3882962191181700 // Id of Report
 };
 
-// Get report as Excel
+// Get sheet
 smartsheet.reports.getReportAsExcel(options)
-    .then(function (report) {
-        console.log(report);
+    .then(function(fileContents) {
+        // Write report to file
+        fs.writeFile('output.xlsx', fileContents, 'binary', (err) => {
+            if (err) throw err;
+            console.log('The report has been saved!');
+        });
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
     });
 ```
@@ -8118,7 +8119,7 @@ ss_client.Reports.get_report_as_excel(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.xlsx"
 ```
 
 ```csharp
@@ -8143,17 +8144,23 @@ curl https://api.smartsheet.com/2.0/reports/{reportId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 3882962191181700 // Id of Report
+  id: 3882962191181700 // Id of Report
 };
 
-// Get report as CSV
+// Get sheet
 smartsheet.reports.getReportAsCSV(options)
-    .then(function (data) {
-        console.log(data);
+    .then(function(fileContents) {
+        // Write report to file
+        fs.writeFile('output.csv', fileContents, (err) => {
+            if (err) throw err;
+            console.log('The report has been saved!');
+        });
     })
-    .catch(function (error) {
+    .catch(function(error) {
         console.log(error);
     });
 ```
@@ -8194,7 +8201,7 @@ ss_client.Reports.get_report_as_csv(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.csv"
 ```
 
 ```csharp
@@ -8428,7 +8435,7 @@ Sets the publish status of the Report and returns the new status, including the 
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [ReportPublish Object](#reportpublish-object) limited to the following attributes:<ul><li>**readOnlyFullEnabled** (required)</li><li>**readOnlyFullAccessibleBy** (optional) - set to either "ALL" or "ORG", when **readOnlyFullEnabled**=true.</li></ul>To publish the Report, set **readOnlyFullEnabled** to `true`. To unpublish the Report, set **readOnlyFullEnabled** to `false`.
+<%= REQUEST %> | [ReportPublish Object](#reportpublish-object)
 <%= RETURNS %> | [Result Object](#result-object) containing a [ReportPublish Object](#reportpublish-object)
 
 <aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, the value of <b>readOnlyFullAccessibleBy</b> is defaulted to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
@@ -8885,7 +8892,6 @@ response = ss_client.Sheets.copy_rows(
     })
 )
 ```
-
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
@@ -11373,19 +11379,19 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
      |     |     |
 -----|-----|-----|
-**icalEnabled** | Boolean | If `true`, a webcal is available for the calendar in the sheet.
+**icalEnabled** | Boolean | (Required) If `true`, a webcal is available for the calendar in the sheet.
 **icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
 **readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyFullDefaultView** | enum | Indicates which view the user has set for a read-only, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
-**readOnlyFullEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
+**readOnlyFullDefaultView** | string | Indicates which view the user has set for a read-only, default view of the published sheet. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
+**readOnlyFullEnabled** | Boolean | (Required) If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
 **readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyLiteEnabled** | Boolean | If `true`, a lightweight version of the sheet is published without row attachments or discussions.
+**readOnlyLiteEnabled** | Boolean | (Required) If `true`, a lightweight version of the sheet is published without row attachments or discussions.
 **readOnlyLiteSslUrl** | string | URL for 'Read-Only' view of the published sheet when SSL is enabled. 
 **readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
 **readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
-**readWriteDefaultView** | enum | Indicates which view the user has set for a read-write, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.
-**readWriteEnabled** | Boolean | If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
+**readWriteDefaultView** | string | Indicates which view the user has set for a read-write, default view of the published sheet. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
+**readWriteEnabled** | Boolean | (Required) If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
 **readWriteShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
 
@@ -12493,19 +12499,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-  id: 4583173393803140 // Id of Sheet
+  id: 169681224483716 // Id of Sheet
 };
 
 // Get sheet
 smartsheet.sheets.getSheetAsExcel(options)
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
+    .then(function(fileContents) {
+        // Write sheet to file
+        fs.writeFile('output.xlsx', fileContents, 'binary', (err) => {
+            if (err) throw err;
+            console.log('The sheet has been saved!');
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -12535,7 +12547,7 @@ ss_client.Sheets.get_sheet_as_excel(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.xlsx"
 ```
 
 ```csharp
@@ -12560,19 +12572,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 4583173393803140 // Id of Sheet
+  id: 169681224483716 // Id of Sheet
 };
 
 // Get sheet
 smartsheet.sheets.getSheetAsPDF(options)
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
+    .then(function(fileContents) {
+        // Write sheet to file
+        fs.writeFile('output.pdf', fileContents, 'binary', (err) => {
+            if (err) throw err;
+            console.log('The sheet has been saved!');
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -12605,7 +12623,7 @@ ss_client.Sheets.get_sheet_as_pdf(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.pdf"
 ```
 
 ```csharp
@@ -12630,19 +12648,25 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 ```
 
 ```javascript
+var fs = require("fs")
+
 // Set options
 var options = {
-    id: 4583173393803140 // Id of Sheet
+  id: 4583173393803140 // Id of Sheet
 };
 
 // Get sheet
 smartsheet.sheets.getSheetAsCSV(options)
-	.then(function(data) {
-		console.log(data);
-	})
-	.catch(function(error) {
-		console.log(error);
-	});
+    .then(function(fileContents) {
+        // Write sheet to file
+        fs.writeFile('output.csv', fileContents, (err) => {
+            if (err) throw err;
+            console.log('The sheet has been saved!');
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 ```
 
 ```csharp
@@ -12672,7 +12696,7 @@ ss_client.Sheets.get_sheet_as_csv(
 ```
 
 ```javascript
-// [todo]
+// See local file named "output.csv"
 ```
 
 ```csharp
@@ -13087,7 +13111,7 @@ Sets the publish status of the Sheet and returns the new status, including the U
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [SheetPublish Object](#sheetpublish-object) limited to the following attributes:<ul><li>readOnlyLiteEnabled (required)</li><li>readOnlyFullEnabled (required)</li><li>readOnlyFullAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readOnlyFullEnabled</b>=true</li><li>readWriteEnabled (required)</li><li>readWriteAccessibleBy (optional) - set to either "ALL" or "ORG", when <b>readWriteEnabled</b>=true</li><li>icalEnabled (required)</li></ul>To enable one or more of the Publish Options for the Sheet (for example, to publish the Sheet), set the corresponding "Enabled" attributes to `true`. To disable one or more of the Publish Options for the Sheet (for example, to unpublish the Sheet), set the corresponding "Enabled" attributes to `false`.
+<%= REQUEST %> | [SheetPublish Object](#sheetpublish-object)
 <%= RETURNS %> | [Result Object](#result-object) containing a [SheetPublish Object](#sheetpublish-object)
 
 <aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, the value of <b>readOnlyFullAccessibleBy</b> defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
@@ -16509,24 +16533,6 @@ Setting the format of a row object or column object through the API simply sets 
  
 If you want to change the formatting of cells that already have content, for instance you want to make a row bold, then you have to set the format for each cell individually.
 
-# Objects
-
-This section specifies the objects and attributes that have been deprecated in version 2.0 of the Smartsheet API.
-
-## Deprecated Objects
-
-No objects have been deprecated in version 2.0 of the Smartsheet API.
-
-## Deprecated Attributes
-
-The following attributes have been deprecated in version 2.0 of the Smartsheet API.
-
-Object | Deprecated Attribute | Replaced by
--------- | -------- | --------
-[Folder Object](#folder-object) | fromId | new endpoint for [Copy Folder](#copy-folder)
-[Sheet Object](#sheet-object) | fromId | new endpoint for [Copy Sheet](#copy-sheet)
-[Workspace Object](#workspace-object) | fromId | new endpoint for [Copy Workspace](#copy-workspace)
-
 # Troubleshooting
 
 Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
@@ -16536,7 +16542,7 @@ Should you encounter issues with the Smartsheet API while building an integratio
   * If you can execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. Compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code generates. (See step #2 below.)
 2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
   * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
-  * Alternatively, you may choose to use a tool like [Fiddler](http://www.telerik.com/fiddler) or [Charles HTTP Proxy](https://www.charlesproxy.com/) to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+  * Alternatively, you may choose to use a tool like [Fiddler](https://www.telerik.com/fiddler) or [Charles HTTP Proxy](https://www.charlesproxy.com/) to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
 3. Check for capitalization errors. Note that URL endpoints are all lower case, while object properties and query parameters are camelCase.
 
 # <span class="customTOCSectionHeading">Webhooks</span>
@@ -17218,7 +17224,7 @@ smartsheet.webhooks.listWebhooks(options)
     })
     .catch(function (error) {
         console.log(error);
-    });    
+    });
 ```
 
 ```csharp
