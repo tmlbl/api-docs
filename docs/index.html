@@ -1657,17 +1657,6 @@
               </ul>
           </li>
           <li>
-            <a href="#objects-26" class="toc-h1 toc-link" data-title="Objects">Objects</a>
-              <ul class="toc-list-subhead">
-                  <li>
-                    <a href="#deprecated-objects" class="toc-h2 toc-link" data-title="Deprecated Objects">Deprecated Objects</a>
-                  </li>
-                  <li>
-                    <a href="#deprecated-attributes" class="toc-h2 toc-link" data-title="Deprecated Attributes">Deprecated Attributes</a>
-                  </li>
-              </ul>
-          </li>
-          <li>
             <a href="#troubleshooting" class="toc-h1 toc-link" data-title="Troubleshooting">Troubleshooting</a>
           </li>
           <li>
@@ -1722,7 +1711,7 @@
             <a href="#webhooks-reference" class="toc-h1 toc-link" data-title="Webhooks Reference"><span class="customTOCSectionHeading">Webhooks Reference</span></a>
           </li>
           <li>
-            <a href="#objects-27" class="toc-h1 toc-link" data-title="Objects">Objects</a>
+            <a href="#objects-26" class="toc-h1 toc-link" data-title="Objects">Objects</a>
               <ul class="toc-list-subhead">
                   <li>
                     <a href="#callback-object" class="toc-h2 toc-link" data-title="Callback Object">Callback Object</a>
@@ -1766,7 +1755,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='smartsheet-api-2-0'><span class="customTOCSectionHeading">Smartsheet API 2.0</span></h1>
-<p>Updated 2017-10-18</p>
+<p>Updated 2017-10-23</p>
 <h1 id='overview'>Overview</h1><h2 id='introduction'>Introduction</h2>
 <blockquote>
 <p>Click the corresponding tab above to see sample code in the language of your choice. For more detail, see <a href="#sample-code-and-sdks">Sample Code and SDKs</a>)</p>
@@ -2020,8 +2009,7 @@
 <p>The Smartsheet API returns all dates and times in the <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a> time zone in <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a> format, that is, YYYY-MM-DDTHH:MM:SSZ.  If a date/time needs to be
 displayed to an end-user in their local time zone, you must do the conversion using the user&#39;s time zone, which you can obtain by <a href="#get-current-user">getting the current user</a>.</p>
 
-<p>You can optionally choose to receive and send dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter <strong>numericDates</strong> with a value of <code>true</code>.
-This flag works for any API request. </p>
+<p>You can optionally choose to receive and send dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter <strong>numericDates</strong> with a value of <code>true</code>. This query parameter works for any API request. </p>
 <h2 id='sheets-columns-rows-cells'>Sheets/Columns/Rows/Cells</h2>
 <p>Sheets are composed of rows, columns, and cells. A cell is identified by the Id of its row and column. The following table defines these terms and points you to places in this documentation where you can find more information:</p>
 
@@ -5163,15 +5151,13 @@ sense of it. To enable lenient parsing simply include <code>&quot;strict&quot; :
 </thead><tbody>
 <tr>
 <td><em>Strict</em></td>
-<td>The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).</td>
+<td>The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD). Alternatively, if Unix time (also known as epoch time) is used, you can use the query parameter of <code>numericDates</code> set to <code>true</code> to have Smartsheet convert epoch time to human readable dates. See <a href="#dates-and-times">Dates and Times</a> for more information.</td>
 </tr>
 <tr>
 <td><em>Lenient</em></td>
 <td>Smartsheet attempts to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet recognizes the date and stores it as such. All other values are simply text values.</td>
 </tr>
 </tbody></table>
-
-<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 
 <p><strong>CONTACT_LIST</strong>:</p>
 
@@ -5255,15 +5241,13 @@ sense of it. To enable lenient parsing simply include <code>&quot;strict&quot; :
 </thead><tbody>
 <tr>
 <td><em>Strict</em></td>
-<td>The value must be a string value and a valid ISO 8601 date and time.</td>
+<td>The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD). Alternatively, if Unix time (also known as epoch time) is used, you can use the query parameter of <code>numericDates</code> set to <code>true</code> to have Smartsheet convert epoch time to human readable dates. See <a href="#dates-and-times">Dates and Times</a> for more information.</td>
 </tr>
 <tr>
 <td><em>Lenient</em></td>
 <td>Smartsheet attempts to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet recognizes the date and stores it as such. All other values are simply text values.</td>
 </tr>
 </tbody></table>
-
-<aside class="notice">You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 <h4 id='contact-list-columns'>Contact List Columns</h4>
 <p>With columns of type CONTACT_LIST, cells’ &quot;value&quot; and &quot;displayValue&quot; attributes are treated independently. 
 The contact’s email address is represented by <strong>value</strong>, while the contact’s name (and the value displayed in the cell in the Smartsheet app) is represented by <strong>displayValue</strong>.</p>
@@ -6783,7 +6767,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </blockquote>
 <pre class="highlight shell tab-shell"><code>curl https://api.smartsheet.com/2.0/sheets/<span class="o">{</span>sheetId<span class="o">}</span>/discussions/<span class="o">{</span>discussionId<span class="o">}</span>/comments <span class="se">\</span>
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
--H <span class="s2">"Content-Type: multipart/form-data"</span>
+-H <span class="s2">"Content-Type: multipart/form-data"</span> <span class="se">\</span>
 -X POST <span class="se">\</span>
 -F <span class="s2">"comment=&lt;comment.json;type=application/json"</span> <span class="se">\</span>
 -F <span class="s2">"file=@datafile;type=application/octet-stream"</span>
@@ -6794,7 +6778,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
     <span class="o">{</span>
         <span class="s2">"text"</span>:<span class="s2">"This text is the body of the new comment"</span>
     <span class="o">}</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create comment</span>
 <span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span><span class="p">.</span><span class="nf">AddCommentBuilder</span><span class="p">(</span><span class="s">"This is a new comment."</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
 
@@ -11359,13 +11343,13 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 </tr>
 <tr>
 <td><strong>readOnlyFullDefaultView</strong></td>
-<td>enum</td>
-<td>Indicates which view the user has set for a read-only, default view of the published report. 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.</td>
+<td>string</td>
+<td>Indicates which view the user has set for a read-only, default view of the published report. Must be one of the following values: &quot;CALENDAR&quot;, &quot;CARD&quot;, or &quot;GRID&quot;.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullEnabled</strong></td>
 <td>Boolean</td>
-<td>If <code>true</code>, a rich version of the report is published with the ability to download row attachments and discussions.</td>
+<td>(Required) If <code>true</code>, a rich version of the report is published with the ability to download row attachments and discussions.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullShowToolbar</strong></td>
@@ -11540,17 +11524,23 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Accept: application/vnd.ms-excel"</span> <span class="se">\</span>
 -o output.xlsx
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Set options</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"fs"</span><span class="p">)</span>
+
+<span class="c1">// Set options</span>
 <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">id</span><span class="p">:</span> <span class="mi">3882962191181700</span> <span class="c1">// Id of Report</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">3882962191181700</span> <span class="c1">// Id of Report</span>
 <span class="p">};</span>
 
-<span class="c1">// Get report as Excel</span>
+<span class="c1">// Get sheet</span>
 <span class="nx">smartsheet</span><span class="p">.</span><span class="nx">reports</span><span class="p">.</span><span class="nx">getReportAsExcel</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">report</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">report</span><span class="p">);</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fileContents</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Write report to file</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="s1">'output.xlsx'</span><span class="p">,</span> <span class="nx">fileContents</span><span class="p">,</span> <span class="s1">'binary'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'The report has been saved!'</span><span class="p">);</span>
+        <span class="p">});</span>
     <span class="p">})</span>
-    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="n">smartsheet</span><span class="p">.</span><span class="n">ReportResources</span><span class="p">.</span><span class="nf">GetReportAsExcel</span><span class="p">(</span>
@@ -11578,7 +11568,7 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 <p>Example Response:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code><span class="c"># See local file named "output.xlsx"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// See local file named "output.xlsx"</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Contents of Excel file is written to "outputStream"</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Contents of Excel file is written to "outputStream"</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># download folder contains the downloaded Excel file</span>
@@ -11590,17 +11580,23 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Accept: text/csv"</span> <span class="se">\</span>
 -o output.csv
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Set options</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"fs"</span><span class="p">)</span>
+
+<span class="c1">// Set options</span>
 <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">id</span><span class="p">:</span> <span class="mi">3882962191181700</span> <span class="c1">// Id of Report</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">3882962191181700</span> <span class="c1">// Id of Report</span>
 <span class="p">};</span>
 
-<span class="c1">// Get report as CSV</span>
+<span class="c1">// Get sheet</span>
 <span class="nx">smartsheet</span><span class="p">.</span><span class="nx">reports</span><span class="p">.</span><span class="nx">getReportAsCSV</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fileContents</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Write report to file</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="s1">'output.csv'</span><span class="p">,</span> <span class="nx">fileContents</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'The report has been saved!'</span><span class="p">);</span>
+        <span class="p">});</span>
     <span class="p">})</span>
-    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="n">smartsheet</span><span class="p">.</span><span class="n">ReportResources</span><span class="p">.</span><span class="nf">GetReportAsCSV</span><span class="p">(</span>
@@ -11628,7 +11624,7 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 <p>Example Response:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code><span class="c"># See local file named "output.csv"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// See local file named "output.csv"</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Contents of CSV file is written to "outputStream"</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Contents of CSV file is written to "outputStream"</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># download folder contains the downloaded CSV file</span>
@@ -11862,7 +11858,7 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td><a href="#reportpublish-object">ReportPublish Object</a> limited to the following attributes:<ul><li><strong>readOnlyFullEnabled</strong> (required)</li><li><strong>readOnlyFullAccessibleBy</strong> (optional) - set to either &quot;ALL&quot; or &quot;ORG&quot;, when <strong>readOnlyFullEnabled</strong>=true.</li></ul>To publish the Report, set <strong>readOnlyFullEnabled</strong> to <code>true</code>. To unpublish the Report, set <strong>readOnlyFullEnabled</strong> to <code>false</code>.</td>
+<td><a href="#reportpublish-object">ReportPublish Object</a></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -16571,7 +16567,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <tr>
 <td><strong>icalEnabled</strong></td>
 <td>Boolean</td>
-<td>If <code>true</code>, a webcal is available for the calendar in the sheet.</td>
+<td>(Required) If <code>true</code>, a webcal is available for the calendar in the sheet.</td>
 </tr>
 <tr>
 <td><strong>icalUrl</strong></td>
@@ -16585,13 +16581,13 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 </tr>
 <tr>
 <td><strong>readOnlyFullDefaultView</strong></td>
-<td>enum</td>
-<td>Indicates which view the user has set for a read-only, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.</td>
+<td>string</td>
+<td>Indicates which view the user has set for a read-only, default view of the published sheet. Must be one of the following values: &quot;CALENDAR&quot;, &quot;CARD&quot;, or &quot;GRID&quot;.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullEnabled</strong></td>
 <td>Boolean</td>
-<td>If <code>true</code>, a rich version of the sheet is published with the ability to download row attachments and discussions.</td>
+<td>(Required) If <code>true</code>, a rich version of the sheet is published with the ability to download row attachments and discussions.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullShowToolbar</strong></td>
@@ -16606,7 +16602,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <tr>
 <td><strong>readOnlyLiteEnabled</strong></td>
 <td>Boolean</td>
-<td>If <code>true</code>, a lightweight version of the sheet is published without row attachments or discussions.</td>
+<td>(Required) If <code>true</code>, a lightweight version of the sheet is published without row attachments or discussions.</td>
 </tr>
 <tr>
 <td><strong>readOnlyLiteSslUrl</strong></td>
@@ -16625,13 +16621,13 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 </tr>
 <tr>
 <td><strong>readWriteDefaultView</strong></td>
-<td>enum</td>
-<td>Indicates which view the user has set for a read-write, default view of the published sheet. Can be one of several values: 0 or null = GRID, 1 = CARD, and 2 = CALENDAR.</td>
+<td>string</td>
+<td>Indicates which view the user has set for a read-write, default view of the published sheet. Must be one of the following values: &quot;CALENDAR&quot;, &quot;CARD&quot;, or &quot;GRID&quot;.</td>
 </tr>
 <tr>
 <td><strong>readWriteEnabled</strong></td>
 <td>Boolean</td>
-<td>If <code>true</code>, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.</td>
+<td>(Required) If <code>true</code>, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.</td>
 </tr>
 <tr>
 <td><strong>readWriteShowToolbar</strong></td>
@@ -17973,15 +17969,21 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Accept: application/vnd.ms-excel"</span> <span class="se">\</span>
 -o output.xlsx
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Set options</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"fs"</span><span class="p">)</span>
+
+<span class="c1">// Set options</span>
 <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="na">id</span><span class="p">:</span> <span class="mi">4583173393803140</span> <span class="c1">// Id of Sheet</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">169681224483716</span> <span class="c1">// Id of Sheet</span>
 <span class="p">};</span>
 
 <span class="c1">// Get sheet</span>
 <span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">getSheetAsExcel</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fileContents</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Write sheet to file</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="s1">'output.xlsx'</span><span class="p">,</span> <span class="nx">fileContents</span><span class="p">,</span> <span class="s1">'binary'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'The sheet has been saved!'</span><span class="p">);</span>
+        <span class="p">});</span>
     <span class="p">})</span>
     <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
@@ -18002,7 +18004,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <p>Example Response:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code><span class="c"># See local file named "output.xlsx"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// See local file named "output.xlsx"</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Contents of Excel file are written to "outputStream"</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Contents of Excel file are written to "outputStream"</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># download directory contains the downloaded Excel file</span>
@@ -18014,15 +18016,21 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Accept: application/pdf"</span> 
 -o  output.pdf
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Set options</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"fs"</span><span class="p">)</span>
+
+<span class="c1">// Set options</span>
 <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">id</span><span class="p">:</span> <span class="mi">4583173393803140</span> <span class="c1">// Id of Sheet</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">169681224483716</span> <span class="c1">// Id of Sheet</span>
 <span class="p">};</span>
 
 <span class="c1">// Get sheet</span>
 <span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">getSheetAsPDF</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fileContents</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Write sheet to file</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="s1">'output.pdf'</span><span class="p">,</span> <span class="nx">fileContents</span><span class="p">,</span> <span class="s1">'binary'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'The sheet has been saved!'</span><span class="p">);</span>
+        <span class="p">});</span>
     <span class="p">})</span>
     <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
@@ -18046,7 +18054,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <p>Example Response:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code><span class="c"># See local file named "output.pdf"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// See local file named "output.pdf"</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Contents of PDF file are written to "outputStream"</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Contents of PDF file are written to "outputStream"</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># download directory contains the downloaded PDF file</span>
@@ -18058,15 +18066,21 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Accept: text/csv"</span> <span class="se">\</span>
 -o output.csv
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Set options</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"fs"</span><span class="p">)</span>
+
+<span class="c1">// Set options</span>
 <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">id</span><span class="p">:</span> <span class="mi">4583173393803140</span> <span class="c1">// Id of Sheet</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">4583173393803140</span> <span class="c1">// Id of Sheet</span>
 <span class="p">};</span>
 
 <span class="c1">// Get sheet</span>
 <span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">getSheetAsCSV</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fileContents</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Write sheet to file</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="s1">'output.csv'</span><span class="p">,</span> <span class="nx">fileContents</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'The sheet has been saved!'</span><span class="p">);</span>
+        <span class="p">});</span>
     <span class="p">})</span>
     <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
@@ -18087,7 +18101,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <p>Example Response:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code><span class="c"># See local file named "output.csv"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// See local file named "output.csv"</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Contents of CSV file are written to "outputStream"</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Contents of CSV file are written to "outputStream"</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># download directory contains the downloaded CSV file</span>
@@ -18588,7 +18602,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td><a href="#sheetpublish-object">SheetPublish Object</a> limited to the following attributes:<ul><li>readOnlyLiteEnabled (required)</li><li>readOnlyFullEnabled (required)</li><li>readOnlyFullAccessibleBy (optional) - set to either &quot;ALL&quot; or &quot;ORG&quot;, when <b>readOnlyFullEnabled</b>=true</li><li>readWriteEnabled (required)</li><li>readWriteAccessibleBy (optional) - set to either &quot;ALL&quot; or &quot;ORG&quot;, when <b>readWriteEnabled</b>=true</li><li>icalEnabled (required)</li></ul>To enable one or more of the Publish Options for the Sheet (for example, to publish the Sheet), set the corresponding &quot;Enabled&quot; attributes to <code>true</code>. To disable one or more of the Publish Options for the Sheet (for example, to unpublish the Sheet), set the corresponding &quot;Enabled&quot; attributes to <code>false</code>.</td>
+<td><a href="#sheetpublish-object">SheetPublish Object</a></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -25070,36 +25084,6 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <p>Setting the format of a row object or column object through the API simply sets the baseline format for new or blank cells in that row or column.  It does not affect cells that already have a value.</p>
 
 <p>If you want to change the formatting of cells that already have content, for instance you want to make a row bold, then you have to set the format for each cell individually.</p>
-<h1 id='objects-26'>Objects</h1>
-<p>This section specifies the objects and attributes that have been deprecated in version 2.0 of the Smartsheet API.</p>
-<h2 id='deprecated-objects'>Deprecated Objects</h2>
-<p>No objects have been deprecated in version 2.0 of the Smartsheet API.</p>
-<h2 id='deprecated-attributes'>Deprecated Attributes</h2>
-<p>The following attributes have been deprecated in version 2.0 of the Smartsheet API.</p>
-
-<table><thead>
-<tr>
-<th>Object</th>
-<th>Deprecated Attribute</th>
-<th>Replaced by</th>
-</tr>
-</thead><tbody>
-<tr>
-<td><a href="#folder-object">Folder Object</a></td>
-<td>fromId</td>
-<td>new endpoint for <a href="#copy-folder">Copy Folder</a></td>
-</tr>
-<tr>
-<td><a href="#sheet-object">Sheet Object</a></td>
-<td>fromId</td>
-<td>new endpoint for <a href="#copy-sheet">Copy Sheet</a></td>
-</tr>
-<tr>
-<td><a href="#workspace-object">Workspace Object</a></td>
-<td>fromId</td>
-<td>new endpoint for <a href="#copy-workspace">Copy Workspace</a></td>
-</tr>
-</tbody></table>
 <h1 id='troubleshooting'>Troubleshooting</h1>
 <p>Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.</p>
 
@@ -25114,7 +25098,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 
 <ul>
 <li>If you&#39;ve implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.</li>
-<li>Alternatively, you may choose to use a tool like <a href="http://www.telerik.com/fiddler">Fiddler</a> or <a href="https://www.charlesproxy.com/">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.</li>
+<li>Alternatively, you may choose to use a tool like <a href="https://www.telerik.com/fiddler">Fiddler</a> or <a href="https://www.charlesproxy.com/">Charles HTTP Proxy</a> to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.</li>
 </ul></li>
 <li>Check for capitalization errors. Note that URL endpoints are all lower case, while object properties and query parameters are camelCase.</li>
 </ol>
@@ -25540,7 +25524,7 @@ Use this information to implement error handling logic according to the followin
 <p>Webhooks provide a way for Smartsheet to automatically notify your external application or service when certain events occur in Smartsheet. Webhooks offer a more efficient alternative to using the API to periodically <i>poll</i> for changes.</p>
 
 <p>For more information, see <a href="#intro-to-webhooks">Intro to Webhooks</a>.</p>
-<h1 id='objects-27'>Objects</h1><h2 id='callback-object'>Callback Object</h2>
+<h1 id='objects-26'>Objects</h1><h2 id='callback-object'>Callback Object</h2>
 <table><thead>
 <tr>
 <th></th>
@@ -26026,7 +26010,7 @@ Use this information to implement error handling logic according to the followin
     <span class="p">})</span>
     <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
-    <span class="p">});</span>    
+    <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Omit pagination parameters</span>
 <span class="n">PaginatedResult</span><span class="p">&lt;</span><span class="n">Webhook</span><span class="p">&gt;</span> <span class="n">webhooks</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WebhookResources</span><span class="p">.</span><span class="nf">ListWebhooks</span><span class="p">(</span>
     <span class="k">null</span>            <span class="c1">// PaginationParameters</span>
