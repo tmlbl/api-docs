@@ -33,7 +33,7 @@ search: false
 <% SUPPORTS_PAGING = "This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>." %>
 <% SUPPORTS_BULK_INSERT = "This operation supports both single-object and bulk semantics." %>
 <% SUPPORTS_OPTIONAL_BULK = "This operation supports both single-object and bulk semantics.  For more information, see <a href='#optional-bulk-operations'>Optional Bulk Operations</a>." %>
-<% SUPPORTS_NUMERICDATES = "To receive or send epoch dates, use the query string parameter <b>numericDates</b> with a value of <code>true</code>. To have an epoch date display as human readable in the sheet, you must also set <code>strict</code> to <code>true</code>. See <a href="#dates-and-times">Dates and Times</a> for more information. %>
+<% SUPPORTS_NUMERICDATES = "You may use the query string parameter <b>numericDates</b> with a value of <code>true</code> to enable strict parsing of dates in numeric format.  See <a href='#dates-and-times'>Dates and Times</a> for more information." %>
 <% REQUEST_ONLY_ATTRIBUTE = "This attribute can be specified in a request, but is never present in a response." %>
 <% PARTIAL_SUCCESS = "When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard [Result Object](#result-object) is returned, but with a **message** of 'PARTIAL_SUCCESS' (instead of 'SUCCESS'), and a **resultCode** of 3. Additionally, the object contains a **failedItems** attribute -- an array of [BulkItemFailure Objects](#bulkitemfailure-object) that contains an item for each object in the request that failed to be added/updated/deleted." %>
 <% SHARING_ERRORS = "If called with a single [Share Object](#share-object), and that user or group share already exists, [error code](#complete-error-code-list) **1025** is returned.  If called with an array of Share Objects, and one or more user or group shares in the array already exist, they are ignored and omitted from the response." %>
@@ -79,6 +79,7 @@ Updated 2017-10-23
 # how to execute operations using the Smartsheet Python SDK:
 # https://github.com/smartsheet-platform/smartsheet-python-sdk.
 ```
+
 [Smartsheet](https://www.smartsheet.com/) API 2.0 allows you to programmatically access and manage your organization's Smartsheet data and account information. The API allows you to do the following:
 
 * Read and update sheets
@@ -154,7 +155,7 @@ pageSize | Number | Specifies the maximum number of items to return per page, fo
 page | String | Specifies which page to return, for example, page=4. | [Paging](#paging)
 includeAll | Boolean | If true, includes all results, for example, includeAll=true. | [Paging](#paging)
 allowPartialSuccess | Boolean | If true, allows bulk operations to process even if one or more operations are invalid for some reason, for example, allowPartialSuccess=true. | [Bulk Operations](#bulk-operations)
-numericDates | Boolean | If true, allows you to input or receive dates by using an epoch timestamp instead of a human readable date, for example, numericDates=true. | [Dates and Times](#dates-and-times)
+numericDates | Boolean | If true, allows you to input or receive dates in numeric format, for example, numericDates=true. | [Dates and Times](#dates-and-times)
 include/exclude | String | When applicable for a specific object, various include or exclude parameters are available, for example, include=formatting. | Object reference or [Formatting](#formatting)
 
 <aside class="notice">Query strings are case sensitive. If you do not see the expected response, confirm that your query is formatted correctly.</aside>
@@ -244,8 +245,7 @@ The header name is **Authorization** and the value of the header is **Bearer ll3
 The Smartsheet API returns all dates and times in the [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time zone in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format, that is, YYYY-MM-DDTHH:MM:SSZ.  If a date/time needs to be
 displayed to an end-user in their local time zone, you must do the conversion using the user's time zone, which you can obtain by [getting the current user](#get-current-user).
 
-You can optionally choose to receive and send dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`.
-This query parameter works for any API request. 
+You can optionally choose to receive and send dates/times in numeric format, as milliseconds since the UNIX epoch (midnight on January 1, 1970 in UTC time), using the query string parameter **numericDates** with a value of `true`. This query parameter works for any API request. 
 
 ## Sheets/Columns/Rows/Cells
 
@@ -2720,7 +2720,7 @@ The parsing rules for the various column types are as follows:
 *Strict* | The value must be a string value and a valid ISO 8601 date (YYYY-MM-DD).
 *Lenient* | Smartsheet attempts to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet recognizes the date and stores it as such. All other values are simply text values.
 
-<aside class="notice">To receive or send epoch dates, use the query string parameter <b>numericDates</b> with a value of <code>true</code>. To have an epoch date display as human readable in the sheet, you must also set <code>strict</code> to <code>true</code>. See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
+<aside class="notice">When setting a cell value to a date specified in UNIX time (also known as epoch time), you must use strict parsing. See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 
 **CONTACT_LIST**:
 
@@ -2760,7 +2760,7 @@ N/A | Set using the objectValue attribute for the Cell Object, which is inherent
 *Strict* | The value must be a string value and a valid ISO 8601 date and time.
 *Lenient* | Smartsheet attempts to convert the string value to date using ISO 8601 date format, as well as several locale-specific date formats. If the value is a parsable date format, Smartsheet recognizes the date and stores it as such. All other values are simply text values.
 
-<aside class="notice">To receive or send epoch dates, use the query string parameter <b>numericDates</b> with a value of <code>true</code>. To have an epoch date display as human readable in the sheet, you must also set <code>strict</code> to <code>true</code>. See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
+<aside class="notice">When setting a cell value to a date specified in UNIX time (also known as epoch time), you must use strict parsing. See <a href="#dates-and-times">Dates and Times</a> for more information.</aside>
 
 #### Contact List Columns
 
@@ -3963,7 +3963,7 @@ response = ss_client.Discussions.add_comment_to_discussion(
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/comments \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: multipart/form-data"
+-H "Content-Type: multipart/form-data" \
 -X POST \
 -F "comment=<comment.json;type=application/json" \
 -F "file=@datafile;type=application/octet-stream"
@@ -5000,6 +5000,7 @@ response = ss_client.Discussions.get_all_discussions(
 pages = response.total_pages
 discussions = response.data
 ```
+
 > Example Response:
 
 <%= partial "snippets/getDiscussions_response.md.erb" %>
@@ -5727,7 +5728,6 @@ ss_client.Favorites.remove_favorites(
     2252168947361668        # workspace_id
 )
 ```
-
 
 > Example Response:
 
@@ -6841,7 +6841,6 @@ Gets a list of the top-level child Folders within the specified Workspace.
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
 <%= partial "snippets/listFolders_table.md.erb" %>
-
 
 ## Move Folder
 
@@ -8897,7 +8896,6 @@ response = ss_client.Sheets.copy_rows(
     })
 )
 ```
-
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
 
