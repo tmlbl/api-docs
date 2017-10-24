@@ -127,7 +127,37 @@ new_update_request = ss_client.Sheets.send_update_request(
 ```
 
 ```ruby
-# [todo]
+body = {
+    send_to: [
+        {
+            email: 'john.doe@smartsheet.com'
+        }
+    ],
+    row_ids: [
+        409840559384452,
+        2661640373069700
+    ],
+    column_ids: [
+        495660408563588,
+        4999260035934084
+    ],
+    include_attachments: true,
+    include_discussions: true,
+    layout: 'VERTICAL',
+    subject: 'Update these rows!',
+    message: 'I have two rows awaiting your approval!',
+    cc_me: true,
+    schedule: {
+        type: 'DAILY',
+        start_at: '2017-10-09T20:00:00Z',
+        end_at: '2017-10-23T00:00:00Z',
+        day_descriptors: [
+            'WEEKDAY'
+        ]
+    }
+}
+
+smartsheet.update_requests.create(sheet_id: 3294745817573252, body: body)
 ```
 
 > Example Response:

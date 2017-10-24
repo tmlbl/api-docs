@@ -691,7 +691,8 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```ruby
-# [todo]
+hash = Digest::SHA256.hexdigest '{your_app_secret}|{your_code}'
+smartsheet.token.get(client_id: '{your_client_id}', code: '{your_code}', hash: hash)
 ```
 
 
@@ -790,7 +791,12 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```ruby
-# [todo]
+hash = Digest::SHA256.hexdigest '{your_app_secret}|{refresh_token}'
+smartsheet.token.refresh(
+    client_id: '{your_client_id}',
+    refresh_token: '{refresh_token}',
+    hash: hash
+)
 ```
 
 > Successful Response:
@@ -1104,7 +1110,25 @@ updated_attachment = ss_client.Attachments.attach_file_to_comment(
 ```
 
 ```ruby
-# [todo]
+# Sample 1: attach file
+filename = 'some_file.txt'
+file = File.open(filename)
+file_length = File.size(filename)
+
+smartsheet.sheets.comments.attachments.attach_file(
+    sheet_id: 4583173393803140,
+    comment_id: 4293147074291588,
+    file: file,
+    filename: filename,
+    file_length: file_length
+)
+
+# Sample 2: attach file from path
+smartsheet.sheets.comments.attachments.attach_file_from_path(
+    sheet_id: 4583173393803140,
+    comment_id: 4293147074291588,
+    path: 'file'
+)
 ```
 
 > Example Response:
@@ -1222,7 +1246,25 @@ updated_attachment = ss_client.Attachments.attach_file_to_row(
 ```
 
 ```ruby
-# [todo]
+# Sample 1: Attach file
+filename = 'some_file.txt'
+file = File.open(filename)
+file_length = File.size(filename)
+
+smartsheet.sheets.rows.attachments.attach_file(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    file: file,
+    filename: filename,
+    file_length: file_length
+)
+
+# Sample 2: Attach file from path
+smartsheet.sheets.rows.attachments.attach_file_from_path(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    path: 'file'
+)
 ```
 
 > Example Response:
@@ -1332,7 +1374,20 @@ updated_attachment = ss_client.Attachments.attach_file_to_sheet(
 ```
 
 ```ruby
-# [todo]
+# Sample 1: Attach file
+filename = 'some_file.txt'
+file = File.open(filename)
+file_length = File.size(filename)
+
+smartsheet.sheets.attachments.attach_file(
+    sheet_id: 4583173393803140,
+    file: file,
+    filename: filename,
+    file_length: file_length
+)
+
+# Sample 2: Attach file from path
+smartsheet.sheets.attachments.attach_file_from_path(sheet_id: 4583173393803140, path: 'file')
 ```
 
 > Example Response:
@@ -1430,7 +1485,17 @@ updated_attachment = ss_client.Attachments.attach_url_to_comment(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'A URL',
+    url: 'https://google.com',
+    attachment_type: 'LINK'
+}
+
+smartsheet.sheets.comments.attachments.attach_url(
+    sheet_id: 4583173393803140,
+    comment_id: 4293147074291588,
+    body: body
+)
 ```
 
 > Example Response:
@@ -1530,7 +1595,18 @@ updated_attachment = ss_client.Attachments.attach_url_to_row(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Search here',
+    description: 'A search engine',
+    url: 'https://google.com',
+    attachment_type: 'LINK'
+}
+
+smartsheet.sheets.rows.attachments.attach_url(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    body: body
+)
 ```
 
 > Example Response:
@@ -1626,7 +1702,14 @@ updated_attachment = ss_client.Attachments.attach_url_to_sheet(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'a link',
+    description: 'some cool website',
+    url: 'https://www.smartsheet.com/',
+    attachment_type: 'LINK'
+}
+
+smartsheet.sheets.attachments.attach_url(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -1687,7 +1770,7 @@ ss_client.Attachments.delete_attachment(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.attachments.delete(sheet_id: 4583173393803140, attachment_id: 7169782752536452)
 ```
 
 > Example Response:
@@ -1758,7 +1841,7 @@ attachment = ss_client.Attachments.get_attachment(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.attachments.get(sheet_id: 4583173393803140, attachment_id: 7169782752536452)
 ```
 
 > Example Response:
@@ -1842,7 +1925,7 @@ attachments = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.attachments.list(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -1950,7 +2033,10 @@ attachments = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.discussions.attachments.list(
+    sheet_id: 4583173393803140,
+    discussion_id: 3962273862576004
+)
 ```
 
 > Example Response:
@@ -2058,7 +2144,7 @@ attachments = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.rows.attachments.list(sheet_id: 4583173393803140, row_id: 4293147074291588)
 ```
 
 > Example Response:
@@ -2228,7 +2314,25 @@ updated_attachment = response.result
 ```
 
 ```ruby
-# [todo]
+# Sample 1: Attach new version
+filename = 'some_file.txt'
+file = File.open(filename)
+file_length = File.size(filename)
+
+smartsheet.sheets.attachments.attach_new_version(
+    sheet_id: 4583173393803140,
+    attachment_id: 7169782752536452,
+    file: file,
+    filename: filename,
+    file_length: file_length
+)
+
+# Sample 2: Attach new version from path
+smartsheet.sheets.attachments.attach_new_version_from_path(
+    sheet_id: 4583173393803140,
+    attachment_id: 7169782752536452,
+    path: 'file'
+)
 ```
 
 > Example Response:
@@ -2304,7 +2408,10 @@ ss_client.Attachments.delete_attachment_versions(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.attachments.delete_all_versions(
+    sheet_id: 4583173393803140,
+    attachment_id: 7169782752536452
+)
 ```
 
 > Example Response:
@@ -2390,7 +2497,10 @@ versions = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.attachments.list_versions(
+    sheet_id: 4583173393803140,
+    attachment_id: 7169782752536452
+)
 ```
 
 > Example Response:
@@ -2680,7 +2790,11 @@ revisions = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.cells.get_history(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    column_id: 495660408563588
+)
 ```
 
 > Example Response:
@@ -3025,7 +3139,26 @@ ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file
 ```
 
 ```ruby
-# [todo]
+# Sample 1: add image
+filename = 'some_file.txt'
+file = File.open(filename)
+file_length = File.size(filename)
+
+smartsheet.sheets.cells.add_image(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    column_id: 495660408563588,
+    file: file,
+    filename: filename,
+    file_length: file_length
+)
+
+# Sample 2: add image from path
+smartsheet.sheets.cells.add_image_from_path(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    column_id: 495660408563588, path: 'file'
+)
 ```
 
 > Example Response:
@@ -3256,7 +3389,15 @@ String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).get
 ```
 
 ```ruby
-# [todo]
+body = [
+    {
+        image_id: 'e1znCxhuZo_soEJtUmmX_A',
+        height: 100,
+        width: 100
+    }
+]
+
+smartsheet.sheets.list_image_urls(body: body)
 ```
 
 > Example Response:
@@ -3489,7 +3630,13 @@ new_columns = ss_client.Sheets.add_columns(
 ```
 
 ```ruby
-# [todo]
+body = {
+    title: 'new column',
+    type: 'TEXT_NUMBER',
+    index: 3
+}
+
+smartsheet.sheets.columns.add(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -3587,7 +3734,7 @@ ss_client.Sheets.delete_column(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.columns.delete(sheet_id: 4583173393803140, column_id: 495660408563588)
 ```
 
 > Example Response:
@@ -3674,7 +3821,7 @@ column = ss_client.Sheets.get_column(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.columns.get(sheet_id: 4583173393803140, column_id: 495660408563588)
 ```
 
 > Example Response:
@@ -3752,7 +3899,7 @@ columns = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.columns.list(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -3888,7 +4035,11 @@ updated_column = response.result
 ```
 
 ```ruby
-# [todo]
+body = {
+    title: 'updated column'
+}
+
+smartsheet.sheets.columns.update(sheet_id: 4583173393803140, column_id: 495660408563588, body: body)
 ```
 
 > Example Response:
@@ -4103,7 +4254,15 @@ response = ss_client.Discussions.add_comment_to_discussion(
 ```
 
 ```ruby
-# [todo]
+body = {
+    text: 'This is cool!'
+}
+
+smartsheet.sheets.comments.add(
+    sheet_id: 4583173393803140,
+    discussion_id: 3962273862576004,
+    body: body
+)
 ```
 
 > Example Request (with attachment): Add Comment
@@ -4276,7 +4435,15 @@ comment = ss_client.Discussions.update_comment(
 ```
 
 ```ruby
-# [todo]
+body = {
+    text: 'Updated text!'
+}
+
+smartsheet.sheets.comments.update(
+    sheet_id: 4583173393803140,
+    comment_id: 4293147074291588,
+    body: body
+)
 ```
 
 > Example Response:
@@ -4362,7 +4529,7 @@ ss_client.Discussions.delete_discussion_comment(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.comments.delete(sheet_id: 4583173393803140, comment_id: 4293147074291588)
 ```
 
 > Example Response:
@@ -4432,7 +4599,7 @@ comment = ss_client.Discussions.get_discussion_comment(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.comments.get(sheet_id: 4583173393803140, comment_id: 4293147074291588)
 ```
 
 > Example Response:
@@ -4531,7 +4698,7 @@ contact = ss_client.Contacts.get_contact(
 ```
 
 ```ruby
-# [todo]
+smartsheet.contacts.get(contact_id: 'AAAAATYU54QAD7_fNhTnhA')
 ```
 
 > Example Response:
@@ -4601,7 +4768,7 @@ contacts = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.contacts.list
 ```
 
 > Example Response:
@@ -4769,7 +4936,18 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```
 
 ```ruby
-# [todo]
+body = {
+    title: 'New row discussion',
+    comment: {
+        text: 'First!'
+    }
+}
+
+smartsheet.sheets.discussions.create_on_row(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588,
+    body: body
+)
 ```
 
 > Example Request (with attachment): Create Discussion on Row
@@ -4948,7 +5126,14 @@ response = ss_client.Discussions.create_discussion_on_sheet(
 ```
 
 ```ruby
-# [todo]
+body = {
+    title: 'New sheet discussion',
+    comment: {
+        text: 'First!'
+    }
+}
+
+smartsheet.sheets.discussions.create_on_sheet(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Request (with attachment): Create Discussion on Sheet
@@ -5091,7 +5276,7 @@ ss_client.Discussions.delete_discussion(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.discussions.delete(sheet_id: 4583173393803140, discussion_id: 3962273862576004)
 ```
 
 > Example Response:
@@ -5193,7 +5378,7 @@ discussions = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.discussions.list(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -5256,7 +5441,7 @@ discussion = ss_client.Discussions.get_discussion(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.discussions.get(sheet_id: 4583173393803140, discussion_id: 3962273862576004)
 ```
 
 > Example Response:
@@ -5375,7 +5560,10 @@ discussions = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.discussions.list_row_discussions(
+    sheet_id: 4583173393803140,
+    row_id: 4293147074291588
+)
 ```
 
 > Example Response:
@@ -5496,7 +5684,12 @@ response = ss_client.Favorites.add_favorites([
 ```
 
 ```ruby
-# [todo]
+body = {
+    type: 'sight',
+    object_id: 8400677765441412
+}
+
+smartsheet.favorites.add(body: body)
 ```
 
 > Example Response:
@@ -5566,7 +5759,7 @@ faves = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.list
 ```
 
 > Example Response:
@@ -5653,7 +5846,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_folder(folder_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -5714,7 +5907,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_report(report_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -5775,7 +5968,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_sheet(sheet_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -5830,7 +6023,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_sight(sight_id: 6327127650920324)
 ```
 
 > Example Response:
@@ -5900,7 +6093,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_template(template_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -5961,7 +6154,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_workspace(workspace_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -6026,7 +6219,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_folders(folder_ids: [2252168947361668, 2252168947361669])
 ```
 
 > Example Response:
@@ -6089,7 +6282,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_reports(report_ids: [2252168947361668, 2252168947361669])
 ```
 
 > Example Response:
@@ -6152,7 +6345,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_sheets(sheet_ids: [2252168947361668, 2252168947361669])
 ```
 
 > Example Response:
@@ -6209,7 +6402,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_sights(sight_ids: [6327127650920324, 2591554075418573])
 ```
 
 > Example Response:
@@ -6272,7 +6465,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_templates(template_ids: [2252168947361668, 2252168947361669])
 ```
 
 > Example Response:
@@ -6335,7 +6528,7 @@ ss_client.Favorites.remove_favorites(
 ```
 
 ```ruby
-# [todo]
+smartsheet.favorites.remove_workspaces(workspace_ids: [2252168947361668, 2252168947361669])
 ```
 
 > Example Response:
@@ -6490,7 +6683,13 @@ response = ss_client.Folders.copy_folder(
 ```
 
 ```ruby
-# [todo]
+body = {
+    destination_type: 'workspace',
+    destination_id: 2252168947361668,
+    new_name: 'Copy of Folder'
+}
+
+smartsheet.folders.copy(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -6579,7 +6778,11 @@ new_folder = ss_client.Home.create_folder('New Folder')
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Folder'
+}
+
+smartsheet.folders.create(body: body)
 ```
 
 > Example Response:
@@ -6655,7 +6858,11 @@ response = ss_client.Folders.create_folder_in_folder(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Folder'
+}
+
+smartsheet.folders.create_in_folder(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -6731,7 +6938,11 @@ new_workspace = ss_client.Workspaces.create_folder_in_workspace(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Folder'
+}
+
+smartsheet.folders.create_in_workspace(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -6788,7 +6999,7 @@ ss_client.Folders.delete_folder(
 ```
 
 ```ruby
-# [todo]
+smartsheet.folders.delete(folder_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -6870,7 +7081,7 @@ folder = ss_client.Folders.get_folder(
 ```
 
 ```ruby
-# [todo]
+smartsheet.folders.get(folder_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -6974,7 +7185,7 @@ folders = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.folders.list
 ```
 
 > Example Response:
@@ -7048,7 +7259,7 @@ folders = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.folders.list_in_folder(folder_id: 2252168947361668)
 ```
 
 > Example Response:
@@ -7122,7 +7333,7 @@ folders = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.folders.list_in_workspace(workspace_id: 7116448184199044)
 ```
 
 > Example Response:
@@ -7214,7 +7425,12 @@ folder = ss_client.Folders.move_folder(
 ```
 
 ```ruby
-# [todo]
+body = {
+    destination_type: 'workspace',
+    destination_id: 7116448184199044
+}
+
+smartsheet.folders.move(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -7306,7 +7522,11 @@ updated_folder = ss_client.Folders.update_folder(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Updated Folder'
+}
+
+smartsheet.folders.update(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -7443,7 +7663,17 @@ new_group = ss_client.Groups.create_group(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Group',
+    description: 'A new group',
+    members: [
+        {
+            email: 'john.doe@smartsheet.com'
+        }
+    ]
+}
+
+smartsheet.groups.create(body: body)
 ```
 
 > Example Response:
@@ -7528,7 +7758,7 @@ ss_client.Groups.delete_group(
 ```
 
 ```ruby
-# [todo]
+smartsheet.groups.delete(group_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -7598,7 +7828,7 @@ group = ss_client.Groups.get_group(
 ```
 
 ```ruby
-# [todo]
+smartsheet.groups.get(group_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -7681,7 +7911,7 @@ groups = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.groups.list
 ```
 
 > Example Response:
@@ -7789,7 +8019,13 @@ updated_group = ss_client.Groups.update_group(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Updated Group',
+    description: 'An updated group',
+    owner_id: 4583173393803140
+}
+
+smartsheet.groups.update(group_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -7921,7 +8157,11 @@ new_members = ss_client.Groups.add_members(
 ```
 
 ```ruby
-# [todo]
+body = {
+    email: 'john.doe@smartsheet.com'
+}
+
+smartsheet.groups.add_members(group_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -8009,7 +8249,7 @@ ss_client.Groups.remove_member(
 ```
 
 ```ruby
-# [todo]
+smartsheet.groups.remove_member(group_id: 4583173393803140, user_id: 48569348493401200)
 ```
 
 > Example Response:
@@ -8112,7 +8352,7 @@ contents = ss_client.Home.list_all_contents(include='source')
 ```
 
 ```ruby
-# [todo]
+smartsheet.home.list
 ```
 
 > Example Response:
@@ -8317,7 +8557,7 @@ report = ss_client.Reports.get_report(
 ```
 
 ```ruby
-# [todo]
+smartsheet.reports.get(report_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -8456,7 +8696,9 @@ ss_client.Reports.get_report_as_excel(
 ```
 
 ```ruby
-# [todo]
+file_contents = smartsheet.reports.get_as_excel(report_id: 4583173393803140)
+
+File.open('report.xlsx', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -8546,7 +8788,9 @@ ss_client.Reports.get_report_as_csv(
 ```
 
 ```ruby
-# [todo]
+file_contents = smartsheet.reports.get_as_csv(report_id: 4583173393803140)
+
+File.open('report.csv', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -8627,7 +8871,7 @@ reports = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.reports.list
 ```
 
 > Example Response:
@@ -8708,7 +8952,7 @@ status = ss_client.Reports.get_publish_status(
 ```
 
 ```ruby
-# [todo]
+smartsheet.reports.get_publish_status(report_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -8781,7 +9025,12 @@ response = ss_client.Reports.set_publish_status(
 ```
 
 ```ruby
-# [todo]
+body = {
+    read_only_full_enabled: true,
+    read_only_full_accessible_by: 'ORG'
+}
+
+smartsheet.reports.set_publish_status(report_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -9088,7 +9337,18 @@ response = ss_client.Sheets.add_rows(
 ```
 
 ```ruby
-# [todo]
+body = {
+    to_bottom: true,
+    cells: [
+        {
+            column_id: 495660408563588,
+            value: '123'
+        }
+    ],
+    locked: false
+}
+
+smartsheet.sheets.rows.add(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -9269,7 +9529,17 @@ response = ss_client.Sheets.copy_rows(
 ```
 
 ```ruby
-# [todo]
+body = {
+    row_ids: [
+        4293147074291588,
+        567735454328708
+    ],
+    to: {
+        sheet_id: 4583173393803140
+    }
+}
+
+smartsheet.sheets.rows.copy_to_another_sheet(sheet_id: 4583173393803140, body: body)
 ```
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
@@ -9341,7 +9611,10 @@ ss_client.Sheets.delete_rows(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.rows.delete(
+    sheet_id: 4583173393803140,
+    row_ids: [4293147074291588, 567735454328708]
+)
 ```
 
 > Example Response:
@@ -9450,7 +9723,7 @@ row = ss_client.Sheets.get_row(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.rows.get(sheet_id: 4583173393803140, row_id: 4293147074291588)
 ```
 
 > Example Response:
@@ -9603,7 +9876,17 @@ response = ss_client.Sheets.move_rows(
 ```
 
 ```ruby
-# [todo]
+body = {
+    row_ids: [
+        4293147074291588,
+        567735454328708
+    ],
+    to: {
+        sheet_id: 4583173393803140
+    }
+}
+
+smartsheet.sheets.rows.move_to_another_sheet(sheet_id: 4583173393803140, body: body)
 ```
 
 <%= partial "snippets/rowCopyMove_response.md.erb" %>
@@ -9776,7 +10059,15 @@ updated_row = ss_client.Sheets.update_rows(
 ```
 
 ```ruby
-# [todo]
+body = {
+    id: 4293147074291588,
+    cells: [
+        column_id: 4583173393803140,
+        value: '456'
+    ]
+}
+
+smartsheet.sheets.rows.update(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -10016,7 +10307,7 @@ result = ss_client.Search.search(query)
 ```
 
 ```ruby
-# [todo]
+smartsheet.search.search_all(query: 'query')
 ```
 
 > Example Response:
@@ -10238,7 +10529,7 @@ info = ss_client.Server.server_info()
 ```
 
 ```ruby
-# [todo]
+smartsheet.server_info.get
 ```
 
 > Example Response: (*too long to list in its entirety*)
@@ -10349,7 +10640,7 @@ ss_client.Reports.delete_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.reports.share.delete(report_id: 4583173393803140, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -10409,7 +10700,7 @@ share = ss_client.Reports.get_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.reports.share.get(report_id: 4583173393803140, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -10479,7 +10770,7 @@ shares = response.result
 ```
 
 ```ruby
-# [todo]
+smartsheet.reports.share.list(report_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -10571,7 +10862,14 @@ response = ss_client.Reports.share_report(
 ```
 
 ```ruby
-# [todo]
+body = {
+    group_id: 3051008235464580,
+    access_level: 'VIEWER',
+    subject: 'This report has been shared with you!',
+    message: 'This Smartsheet report is ready for your inspection.'
+}
+
+smartsheet.reports.share.create(report_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -10657,7 +10955,11 @@ updated_share = ss_client.Reports.update_share(
 ```
 
 ```ruby
-# [todo]
+body = {
+    access_level: 'EDITOR_SHARE'
+}
+
+smartsheet.reports.share.update(report_id: 4583173393803140, share_id: 'AAABbMomFOeE', body: body)
 ```
 
 > Example Response:
@@ -10720,7 +11022,7 @@ ss_client.Sheets.delete_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.share.delete(sheet_id: 4583173393803140, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -10780,7 +11082,7 @@ share = ss_client.Sheets.get_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.share.get(sheet_id: 4583173393803140, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -10852,7 +11154,7 @@ shares = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.share.list(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -10945,7 +11247,15 @@ response = ss_client.Sheets.share_sheet(
 ```
 
 ```ruby
-# [todo]
+body =
+    {
+        group_id: 3051008235464580,
+        access_level: 'VIEWER',
+        subject: 'This sheet has been shared with you!',
+        message: 'This Smartsheet is ready for your inspection.'
+    }
+
+smartsheet.sheets.share.create(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -11028,7 +11338,12 @@ updated_share = ss_client.Sheets.update_share(
 ```
 
 ```ruby
-# [todo]
+body =
+    {
+        access_level: 'EDITOR_SHARE'
+    }
+
+smartsheet.sheets.share.update(sheet_id: 4583173393803140, share_id: 'AAABbMomFOeE', body: body)
 ```
 
 > Example Response:
@@ -11088,7 +11403,7 @@ ss_client.Sights.delete_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.share.delete(sight_id: 6327127650920324, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -11152,7 +11467,7 @@ share = ss_client.Sights.get_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.share.get(sight_id: 6327127650920324, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -11219,7 +11534,7 @@ shares = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.share.list(sight_id: 6327127650920324)
 ```
 
 > Example Response:
@@ -11309,7 +11624,14 @@ response = ss_client.Sights.share_sight(
 ```
 
 ```ruby
-# [todo]
+body = {
+    group_id: 3051008235464580,
+    access_level: 'VIEWER',
+    subject: 'This sight has been shared with you!',
+    message: 'This Smartsheet sight is ready for your inspection.'
+}
+
+smartsheet.sights.share.create(sight_id: 6327127650920324, body: body)
 ```
 
 > Example Response:
@@ -11392,7 +11714,11 @@ updated_share = ss_client.Sights.update_share(
 ```
 
 ```ruby
-# [todo]
+body = {
+    access_level: 'EDITOR'
+}
+
+smartsheet.sights.share.update(sight_id: 6327127650920324, share_id: 'AAABbMomFOeE', body: body)
 ```
 
 > Example Response:
@@ -11460,7 +11786,7 @@ ss_client.Workspaces.delete_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.workspaces.share.delete(workspace_id: 7116448184199044, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -11524,7 +11850,7 @@ share = ss_client.Sheets.get_share(
 ```
 
 ```ruby
-# [todo]
+smartsheet.workspaces.share.get(workspace_id: 7116448184199044, share_id: 'AAABbMomFOeE')
 ```
 
 > Example Response:
@@ -11596,7 +11922,7 @@ shares = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.workspaces.share.list(workspace_id: 7116448184199044)
 ```
 
 > Example Response:
@@ -11691,7 +12017,14 @@ response = ss_client.Workspaces.share_workspace(
 ```
 
 ```ruby
-# [todo]
+body = {
+    group_id: 3051008235464580,
+    access_level: 'VIEWER',
+    subject: 'This workspace has been shared with you!',
+    message: 'This Smartsheet workspace is ready for your inspection.'
+}
+
+smartsheet.workspaces.share.create(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -11784,7 +12117,15 @@ updated_share = ss_client.Workspaces.update_share(
 ```
 
 ```ruby
-# [todo]
+body = {
+    access_level: 'EDITOR_SHARE'
+}
+
+smartsheet.workspaces.share.update(
+    workspace_id: 7116448184199044,
+    share_id: 'AAABbMomFOeE',
+    body: body
+)
 ```
 
 > Example Response:
@@ -12007,7 +12348,13 @@ response = ss_client.Sheets.copy_sheet(
 ```
 
 ```ruby
-# [todo]
+body = {
+    destination_type: 'folder',
+    destination_id: 8964300887877508,
+    new_name: 'Copy of Sheet'
+}
+
+smartsheet.sheets.copy(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -12151,7 +12498,40 @@ new_sheet = response.result
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Sheet',
+    columns: [
+        {
+            title: 'Internal ID',
+            type: 'TEXT_NUMBER',
+            system_column_type: 'AUTO_NUMBER',
+            auto_number_format: {
+                starting_number: 9001,
+                prefix: '{YYYY}{MM}{DD}-',
+                fill: '00',
+                suffix: '{DD}{MM}{YYYY}'
+            }
+        },
+        {
+            title: 'ID',
+            primary: true,
+            type: 'TEXT_NUMBER'
+        },
+        {
+            title: 'Favorite?',
+            type: 'CHECKBOX',
+            symbol: 'STAR',
+            width: 10
+        },
+        {
+            title: 'Completion Status',
+            type: 'PICKLIST',
+            options: ['Not Started', 'In Progress', 'Complete']
+        }
+    ]
+}
+
+smartsheet.sheets.create(body: body)
 ```
 
 > Example Response:
@@ -12280,7 +12660,40 @@ new_sheet = response.result
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Sheet',
+    columns: [
+        {
+            title: 'Internal ID',
+            type: 'TEXT_NUMBER',
+            system_column_type: 'AUTO_NUMBER',
+            auto_number_format: {
+                starting_number: 9001,
+                prefix: '{YYYY}{MM}{DD}-',
+                fill: '00',
+                suffix: '{DD}{MM}{YYYY}'
+            }
+        },
+        {
+            title: 'ID',
+            primary: true,
+            type: 'TEXT_NUMBER'
+        },
+        {
+            title: 'Favorite?',
+            type: 'CHECKBOX',
+            symbol: 'STAR',
+            width: 10
+        },
+        {
+            title: 'Completion Status',
+            type: 'PICKLIST',
+            options: ['Not Started', 'In Progress', 'Complete']
+        }
+    ]
+}
+
+smartsheet.sheets.create_in_folder(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -12408,7 +12821,40 @@ new_sheet = response.result
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Sheet',
+    columns: [
+        {
+            title: 'Internal ID',
+            type: 'TEXT_NUMBER',
+            system_column_type: 'AUTO_NUMBER',
+            auto_number_format: {
+                starting_number: 9001,
+                prefix: '{YYYY}{MM}{DD}-',
+                fill: '00',
+                suffix: '{DD}{MM}{YYYY}'
+            }
+        },
+        {
+            title: 'ID',
+            primary: true,
+            type: 'TEXT_NUMBER'
+        },
+        {
+            title: 'Favorite?',
+            type: 'CHECKBOX',
+            symbol: 'STAR',
+            width: 10
+        },
+        {
+            title: 'Completion Status',
+            type: 'PICKLIST',
+            options: ['Not Started', 'In Progress', 'Complete']
+        }
+    ]
+}
+
+smartsheet.sheets.create_in_workspace(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -12513,7 +12959,12 @@ new_sheet = response.result
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Sheet from Template',
+    from_id: 8713620155590532
+}
+
+smartsheet.sheets.create_from_template(body: body)
 ```
 
 > Example Response:
@@ -12622,7 +13073,12 @@ response = ss_client.Folders.create_sheet_in_folder_from_template(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Sheet from Template',
+    from_id: 8713620155590532
+}
+
+smartsheet.sheets.create_in_folder_from_template(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -12731,7 +13187,12 @@ response = ss_client.Workspaces.create_sheet_in_workspace_from_template(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Sheet from Template',
+    from_id: 8713620155590532
+}
+
+smartsheet.sheets.create_in_workspace_from_template(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -12788,7 +13249,7 @@ ss_client.Sheets.delete_sheet(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.delete(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -12853,7 +13314,7 @@ version = ss_client.Sheets.get_sheet_version(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.get_version(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -12943,7 +13404,7 @@ sheet = ss_client.Sheets.get_sheet(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.get(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -13064,7 +13525,9 @@ ss_client.Sheets.get_sheet_as_excel(
 ```
 
 ```ruby
-# [todo]
+file_contents = smartsheet.sheets.get_as_excel(sheet_id: 4583173393803140)
+
+File.open('sheet.xlsx', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -13148,7 +13611,9 @@ ss_client.Sheets.get_sheet_as_pdf(
 ```
 
 ```ruby
-# [todo]
+file_contents = smartsheet.sheets.get_as_pdf(sheet_id: 4583173393803140)
+
+File.open('sheet.pdf', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -13229,7 +13694,9 @@ ss_client.Sheets.get_sheet_as_csv(
 ```
 
 ```ruby
-# [todo]
+file_contents = smartsheet.sheets.get_as_csv(sheet_id: 4583173393803140)
+
+File.open('sheet.csv', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -13334,7 +13801,7 @@ sheets = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.list
 ```
 
 > Example Response:
@@ -13462,7 +13929,12 @@ sheet = ss_client.Sheets.move_sheet(
 ```
 
 ```ruby
-# [todo]
+body = {
+    destination_type: 'folder',
+    destination_id: 8964300887877508
+}
+
+smartsheet.sheets.move(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -13540,7 +14012,7 @@ status = response.result
 ```
 
 ```ruby
-# [todo]
+smartsheet.sheets.get_publish_status(sheet_id: 4583173393803140)
 ```
 
 > Example Response:
@@ -13647,7 +14119,16 @@ updated_status = ss_client.Sheets.set_publish_status(
 ```
 
 ```ruby
-# [todo]
+body = {
+    read_only_lite_enabled: true,
+    read_only_full_enabled: true,
+    read_only_full_accessible_by: 'ALL',
+    read_write_enabled: true,
+    read_write_accessible_by: 'ORG',
+    ical_enabled: true
+}
+
+smartsheet.sheets.set_publish_status(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -13779,7 +14260,20 @@ updated_sheet = ss_client.Sheets.update_sheet(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Sample Project Updated',
+    user_settings: {
+        critical_path_enabled: true,
+        display_summary_tasks: false
+    },
+    project_settings: {
+        working_days: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
+        non_working_days: ['2017-10-09'],
+        length_of_day: 23
+    }
+}
+
+smartsheet.sheets.update(sheet_id: 4583173393803140, body: body)
 ```
 
 > Example Response:
@@ -14076,7 +14570,13 @@ new_sight = ss_client.Sights.copy_sight(
 ```
 
 ```ruby
-# [todo]
+body = {
+    destination_type: 'folder',
+    destination_id: 8964300887877508,
+    new_name: 'Copy of Sight'
+}
+
+smartsheet.sights.copy(sight_id: 6327127650920324, body: body)
 ```
 
 > Example Response:
@@ -14148,7 +14648,7 @@ ss_client.Sights.delete_sight(3404239197235076)     # sight_id
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.delete(sight_id: 6327127650920324)
 ```
 
 > Example Response:
@@ -14212,7 +14712,7 @@ Sight sight = smartsheet.sightResources().getSight(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.get(sight_id: 6327127650920324)
 ```
 
 > Example Response:
@@ -14317,7 +14817,7 @@ sights = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.list
 ```
 
 > Example Response:
@@ -14443,7 +14943,12 @@ response = ss_client.Sights.move_sight(
 ```
 
 ```ruby
-# [todo]
+body = {
+    destination_type: 'folder',
+    destination_id: 8964300887877508
+}
+
+smartsheet.sights.move(sight_id: 6327127650920324, body: body)
 ```
 
 > Example Response:
@@ -14515,7 +15020,7 @@ status = ss_client.Sights.get_publish_status(
 ```
 
 ```ruby
-# [todo]
+smartsheet.sights.get_publish_status(sight_id: 6327127650920324)
 ```
 
 > Example Response:
@@ -14593,7 +15098,12 @@ response = ss_client.Sights.set_publish_status(
 ```
 
 ```ruby
-# [todo]
+body = {
+    read_only_full_enabled: true,
+    read_only_full_accessible_by: 'ALL'
+}
+
+smartsheet.sights.set_publish_status(sight_id: 6327127650920324, body: body)
 ```
 
 > Example Response:
@@ -14679,7 +15189,11 @@ updated_sight = ss_client.Sights.update_sight(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Updated Sight'
+}
+
+smartsheet.sights.update(sight_id: 6327127650920324, body: body)
 ```
 
 > Example Response:
@@ -14784,7 +15298,7 @@ templates = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.templates.list_public
 ```
 
 > Example Response:
@@ -14841,7 +15355,7 @@ templates = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.templates.list
 ```
 
 > Example Response:
@@ -14910,7 +15424,8 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```ruby
-# [todo]
+hash = Digest::SHA256.hexdigest '{your_app_secret}|{your_code}'
+smartsheet.token.get(client_id: '{your_client_id}', code: '{your_code}', hash: hash)
 ```
 
 > Example Response:
@@ -14988,7 +15503,12 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```ruby
-# [todo]
+hash = Digest::SHA256.hexdigest '{your_app_secret}|{refresh_token}'
+smartsheet.token.refresh(
+    client_id: '{your_client_id}',
+    refresh_token: '{refresh_token}',
+    hash: hash
+)
 ```
 
 > Example Response:
@@ -15047,7 +15567,7 @@ ss_client.Token.revoke_access_token()
 ```
 
 ```ruby
-# [todo]
+smartsheet.token.revoke
 ```
 
 > Example Response:
@@ -15269,7 +15789,16 @@ new_user = ss_client.Users.add_user(
 ```
 
 ```ruby
-# [todo]
+body = {
+    email: 'jimmy.doe@smartsheet.com',
+    admin: false,
+    licensed_sheet_creator: false,
+    first_name: 'Jimmy',
+    last_name: 'Doe',
+    resource_viewer: false
+}
+
+smartsheet.users.add(body: body)
 ```
 
 > Example Response:
@@ -15369,7 +15898,16 @@ response = ss_client.Users.add_alternate_email(
 ```
 
 ```ruby
-# [todo]
+body = [
+    {
+        email: 'not.john.doe@smartsheet.com'
+    },
+    {
+        email: 'not.john.doe2@smartsheet.com'
+    }
+]
+
+smartsheet.users.alternate_emails.add(user_id: 48569348493401200, body: body)
 ```
 
 > Example Response:
@@ -15448,7 +15986,10 @@ response = ss_client.Users.promote_alternate_email(
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.alternate_emails.make_primary(
+    user_id: 48569348493401200,
+    alternate_email_id: 12345
+)
 ```
 
 > Example Response:
@@ -15528,7 +16069,7 @@ ss_client.Users.delete_alternate_email(
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.alternate_emails.delete(user_id: 48569348493401200, alternate_email_id: 12345)
 ```
 
 > Example Response:
@@ -15597,7 +16138,7 @@ alt_email = ss_client.Users.get_alternate_email(
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.alternate_emails.get(user_id: 48569348493401200, alternate_email_id: 12345)
 ```
 
 > Example Response:
@@ -15668,7 +16209,7 @@ emails = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.alternate_emails.list(user_id: 48569348493401200)
 ```
 
 > Example Response:
@@ -15730,7 +16271,7 @@ user_profile = ss_client.Users.get_current_user()
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.get_current
 ```
 
 > Example Response:
@@ -15811,7 +16352,7 @@ user_profile = ss_client.Users.get_user(
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.get(user_id: 48569348493401200)
 ```
 
 > Example Response:
@@ -15849,10 +16390,6 @@ Gets the User specified in the URL.
 <%= SCOPE %> | READ_USERS
 <%= HEADERS %> | <%= HEADER_AUTH %>
 <%= RETURNS %> | [UserProfile Object](#userprofile-object)<br/><br/><b>Note</b>: For system administrators, the following UserProfile attributes are included in the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (only returned if the user has logged in)</li><li>sheetCount (only returned if the status attribute is ACTIVE)</li><li>customWelcomeScreenViewed (only returned when an Enterprise user has viewed the [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>))</li></ul>
-
-## Get All Org Sheets
-
-<%= partial "snippets/listAllOrgSheets.md.erb" %>
 
 ## List Users
 
@@ -15918,7 +16455,7 @@ users = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.list
 ```
 
 > Example Response:
@@ -16021,7 +16558,7 @@ ss_client.Users.remove_user(
 ```
 
 ```ruby
-# [todo]
+smartsheet.users.remove(user_id: 48569348493401200)
 ```
 
 > Example Response:
@@ -16120,7 +16657,15 @@ updated_user = ss_client.Users.update_user(
 ```
 
 ```ruby
-# [todo]
+body = {
+    admin: false,
+    licensed_sheet_creator: true,
+    first_name: 'Johnny',
+    last_name: 'Doeford',
+    resource_viewer: true
+}
+
+smartsheet.users.update(user_id: 48569348493401200, body: body)
 ```
 
 > Example Response:
@@ -16273,7 +16818,11 @@ new_workspace = ss_client.Workspaces.copy_workspace(
 ```
 
 ```ruby
-# [todo]
+body = {
+    new_name: 'Copied Workspace'
+}
+
+smartsheet.workspaces.copy(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -16361,7 +16910,11 @@ workspace = ss_client.Workspaces.create_workspace(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'New Workspace'
+}
+
+smartsheet.workspaces.create(body: body)
 ```
 
 > Example Response:
@@ -16435,7 +16988,7 @@ ss_client.Workspaces.delete_workspace(
 ```
 
 ```ruby
-# [todo]
+smartsheet.workspaces.delete(workspace_id: 7116448184199044)
 ```
 
 > Example Response:
@@ -16520,7 +17073,7 @@ workspace = ss_client.Workspaces.get_workspace(
 ```
 
 ```ruby
-# [todo]
+smartsheet.workspaces.get(workspace_id: 7116448184199044)
 ```
 
 > Example Response:
@@ -16607,7 +17160,7 @@ workspaces = response.data
 ```
 
 ```ruby
-# [todo]
+smartsheet.workspaces.list
 ```
 
 > Example Response:
@@ -16716,7 +17269,11 @@ updated_workspace = ss_client.Workspaces.update_workspace(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Updated Workspace'
+}
+
+smartsheet.workspaces.update(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -17720,7 +18277,18 @@ Webhook = ss_client.Webhooks.create_webhook(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Webhook #4',
+    callback_url: 'https://www.myApp.com/webhooks',
+    scope: 'sheet',
+    scope_object_id: 1421228469708676,
+    events: [
+        '*.*'
+    ],
+    version: 1
+}
+
+smartsheet.webhooks.create(body: body)
 ```
 
 > Example Response:
@@ -17803,7 +18371,7 @@ ss_client.Webhooks.delete_webhook(
 ```
 
 ```ruby
-# [todo]
+smartsheet.webhooks.delete(webhook_id: 2674017481058180)
 ```
 
 > Example Response:
@@ -17870,7 +18438,7 @@ Webhook = ss_client.Webhooks.get_webhook(
 ```
 
 ```ruby
-# [todo]
+smartsheet.webhooks.get(webhook_id: 2674017481058180)
 ```
 
 > Example Response:
@@ -17948,7 +18516,7 @@ IndexResult = ss_client.Webhooks.list_webhooks(
 ```
 
 ```ruby
-# [todo]
+smartsheet.webhooks.list
 ```
 
 > Example Response:
@@ -18034,7 +18602,7 @@ Webhook = ss_client.Webhooks.reset_shared_secret(
 ```
 
 ```ruby
-# [todo]
+smartsheet.webhooks.reset_shared_secret(webhook_id: 2674017481058180)
 ```
 
 > Example Response:
@@ -18128,7 +18696,17 @@ Webhook = ss_client.Webhooks.update_webhook(
 ```
 
 ```ruby
-# [todo]
+body = {
+    name: 'Webhook #4 Modified',
+    callback_url: 'https://www.myApp.com/webhooks/nouveau',
+    events: [
+        '*.*'
+    ],
+    enabled: true,
+    version: 1
+}
+
+smartsheet.webhooks.update(webhook_id: 2674017481058180, body: body)
 ```
 
 > Example Response:
