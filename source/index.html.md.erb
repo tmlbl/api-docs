@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-10-24
+Updated 2017-10-25
 
 # Overview
 
@@ -504,11 +504,19 @@ ss_client.errors_as_exceptions(True)
 require 'smartsheet'
 require 'logger'
 
-# Add your token to the config.json file
-{
-  "token": "ll352u9jujauoqz4gstvsae05",
-  "sheet_id": "5091283781476228"
-}
+def load_config(config_name)
+  file = File.open(config_name)
+
+  JSON.load(file)
+end
+
+config = load_config('config.json')
+
+logger = Logger.new(STDOUT)
+logger.level = Logger::INFO
+
+# Initialize client
+smartsheet = Smartsheet::Client.new(token: config['token'], logger: logger)
 ```
 
 Smartsheet has SDKs providing a higher level interface for several languages.
@@ -12356,7 +12364,7 @@ response = ss_client.Sheets.copy_sheet(
 ```ruby
 body = {
     destination_type: 'folder',
-    destination_id: 8964300887877508,
+    destination_id: 9283173393803140,
     new_name: 'Copy of Sheet'
 }
 
@@ -12537,7 +12545,7 @@ body = {
     ]
 }
 
-smartsheet.sheets.create(body: body)
+new_sheet = smartsheet.sheets.create(body: body)
 ```
 
 > Example Response:
@@ -12699,7 +12707,7 @@ body = {
     ]
 }
 
-smartsheet.sheets.create_in_folder(folder_id: 2252168947361668, body: body)
+new_sheet = smartsheet.sheets.create_in_folder(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -12860,7 +12868,7 @@ body = {
     ]
 }
 
-smartsheet.sheets.create_in_workspace(workspace_id: 7116448184199044, body: body)
+new_sheet = smartsheet.sheets.create_in_workspace(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -12970,7 +12978,7 @@ body = {
     from_id: 8713620155590532
 }
 
-smartsheet.sheets.create_from_template(body: body)
+new_sheet = smartsheet.sheets.create_from_template(body: body)
 ```
 
 > Example Response:
@@ -13084,7 +13092,7 @@ body = {
     from_id: 8713620155590532
 }
 
-smartsheet.sheets.create_in_folder_from_template(folder_id: 2252168947361668, body: body)
+new_sheet = smartsheet.sheets.create_in_folder_from_template(folder_id: 2252168947361668, body: body)
 ```
 
 > Example Response:
@@ -13198,7 +13206,7 @@ body = {
     from_id: 8713620155590532
 }
 
-smartsheet.sheets.create_in_workspace_from_template(workspace_id: 7116448184199044, body: body)
+new_sheet = smartsheet.sheets.create_in_workspace_from_template(workspace_id: 7116448184199044, body: body)
 ```
 
 > Example Response:
@@ -13255,7 +13263,7 @@ ss_client.Sheets.delete_sheet(
 ```
 
 ```ruby
-smartsheet.sheets.delete(sheet_id: 4583173393803140)
+smartsheet.sheets.delete(sheet_id: 1531988831168388)
 ```
 
 > Example Response:
@@ -13320,7 +13328,8 @@ version = ss_client.Sheets.get_sheet_version(
 ```
 
 ```ruby
-smartsheet.sheets.get_version(sheet_id: 4583173393803140)
+version = smartsheet.sheets.get_version(sheet_id: 4583173393803140)
+sheet = response[:version]
 ```
 
 > Example Response:
@@ -13410,7 +13419,8 @@ sheet = ss_client.Sheets.get_sheet(
 ```
 
 ```ruby
-smartsheet.sheets.get(sheet_id: 4583173393803140)
+response = smartsheet.sheets.get(sheet_id: 1531988831168388)
+sheet = response[:name]
 ```
 
 > Example Response:
@@ -13533,7 +13543,7 @@ ss_client.Sheets.get_sheet_as_excel(
 ```ruby
 file_contents = smartsheet.sheets.get_as_excel(sheet_id: 4583173393803140)
 
-File.open('sheet.xlsx', 'w') {|f| f.write(file_contents)}
+File.open('output.xlsx', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -13559,7 +13569,7 @@ File.open('sheet.xlsx', 'w') {|f| f.write(file_contents)}
 ```
 
 ```ruby
-# [todo]
+# See local file named "output.xlsx"
 ```
 
 > Example Request: Get Sheet as PDF
@@ -13619,7 +13629,7 @@ ss_client.Sheets.get_sheet_as_pdf(
 ```ruby
 file_contents = smartsheet.sheets.get_as_pdf(sheet_id: 4583173393803140)
 
-File.open('sheet.pdf', 'w') {|f| f.write(file_contents)}
+File.open('output.pdf', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -13645,7 +13655,7 @@ File.open('sheet.pdf', 'w') {|f| f.write(file_contents)}
 ```
 
 ```ruby
-# [todo]
+# See local file named "output.pdf"
 ```
 
 > Example Request: Get Sheet as CSV
@@ -13702,7 +13712,7 @@ ss_client.Sheets.get_sheet_as_csv(
 ```ruby
 file_contents = smartsheet.sheets.get_as_csv(sheet_id: 4583173393803140)
 
-File.open('sheet.csv', 'w') {|f| f.write(file_contents)}
+File.open('output.csv', 'w') {|f| f.write(file_contents)}
 ```
 
 > Example Response:
@@ -13728,7 +13738,7 @@ File.open('sheet.csv', 'w') {|f| f.write(file_contents)}
 ```
 
 ```ruby
-# [todo]
+# See local file named "output.csv"
 ```
 
 `GET /sheets/{sheetId}`
@@ -13807,7 +13817,13 @@ sheets = response.data
 ```
 
 ```ruby
-smartsheet.sheets.list
+# Sample 1: Omit 'includeAll' parameter
+response = smartsheet.sheets.list
+sheets = response[:data]
+
+# Sample 2: Specify 'includeAll' with a value of 'true'
+response = smartsheet.sheets.list(params:{includeAll:true})
+sheets = response
 ```
 
 > Example Response:
@@ -13937,7 +13953,7 @@ sheet = ss_client.Sheets.move_sheet(
 ```ruby
 body = {
     destination_type: 'folder',
-    destination_id: 8964300887877508
+    destination_id: 7960873114331012
 }
 
 smartsheet.sheets.move(sheet_id: 4583173393803140, body: body)
@@ -14018,7 +14034,8 @@ status = response.result
 ```
 
 ```ruby
-smartsheet.sheets.get_publish_status(sheet_id: 4583173393803140)
+response = smartsheet.sheets.get_publish_status(sheet_id: 4583173393803140)
+status = response
 ```
 
 > Example Response:
@@ -14134,7 +14151,8 @@ body = {
     ical_enabled: true
 }
 
-smartsheet.sheets.set_publish_status(sheet_id: 4583173393803140, body: body)
+response = smartsheet.sheets.set_publish_status(sheet_id: 4583173393803140, body: body)
+status = response
 ```
 
 > Example Response:
@@ -14279,7 +14297,8 @@ body = {
     }
 }
 
-smartsheet.sheets.update(sheet_id: 4583173393803140, body: body)
+response = smartsheet.sheets.update(sheet_id: 4583173393803140, body: body)
+updated_sheet = response
 ```
 
 > Example Response:
