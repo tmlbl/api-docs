@@ -12,54 +12,54 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/emails \
 ```javascript	
 // Configure email
 var email = {
-    "sendTo": [
-        {
-            "email": "john.doe@smartsheet.com"
-        },
-        {
-            "groupId": 2258118617917316
-        }
-    ],
-    "subject": "Check these rows out!",
-    "message": "Here are the rows I mentioned in our meeting",
-    "ccMe": false,
-    "format": "PDF",
-    "formatDetails": {
-        "paperSize": "A4"
+  "sendTo": [
+    {
+      "email": "john.doe@smartsheet.com"
+    },
+    {
+      "groupId": 2258118617917316
     }
+  ],
+  "subject": "Check these rows out!",
+  "message": "Here are the rows I mentioned in our meeting",
+  "ccMe": false,
+  "format": "PDF",
+  "formatDetails": {
+    "paperSize": "A4"
+  }
 };
 
 // Set options
 var options = {
-    body: email,
-    sheetId: 2252168947361668
+  body: email,
+  sheetId: 2252168947361668
 };
 
 // Send sheet via email
 smartsheet.sheets.sendSheetViaEmail(options)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
+  .then(function (data) {
+    console.log(data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 ```
 
 ```csharp
 // Specify recipients
 Recipient[] recipients = new Recipient[] {
-    new Recipient { Email = "john.doe@smartsheet.com" },
-    new Recipient { GroupId = 2258118617917316 }
+  new Recipient { Email = "john.doe@smartsheet.com" },
+  new Recipient { GroupId = 2258118617917316 }
 };
 
 // Configure email
 SheetEmail sheetEmail = new SheetEmail {
-    SendTo = recipients,
-    Subject = "Check this report out!",
-    Message = "Here are the rows I mentioned in our meeting",
-    CcMe = false,
-    Format = SheetEmailFormat.PDF,
-    FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 }
+  SendTo = recipients,
+  Subject = "Check this report out!",
+  Message = "Here are the rows I mentioned in our meeting",
+  CcMe = false,
+  Format = SheetEmailFormat.PDF,
+  FormatDetails = new FormatDetails { PaperSize = PaperSize.A4 }
 };
 
 // Send sheet via email
@@ -69,13 +69,13 @@ smartsheet.SheetResources.SendSheet(4293147074291588, sheetEmail);      // sheet
 ```java
 // Specify individual recipient
 RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
-    .setEmail("john.doe@smartsheet.com")
-    .build();
+  .setEmail("john.doe@smartsheet.com")
+  .build();
 
 // Specify group recipient
 RecipientGroup recipientGroup = new RecipientGroup.AddRecipientGroupBuilder()
-    .setGroupId(2258118617917316L)
-    .build();
+  .setGroupId(2258118617917316L)
+  .build();
 
 // Set recipients
 List<Recipient> recipients = Arrays.asList(recipientEmail,recipientGroup);
@@ -86,13 +86,13 @@ formatDetails.setPaperSize(PaperSize.A0);
 
 // Configure email
 SheetEmail email = new SheetEmail.AddSheetEmailBuilder()
-    .setSendTo(recipients)
-    .setSubject("Check these rows out!")
-    .setMessage("Here are the rows I mentioned in our meeting")
-    .setCcMe(false)
-    .setFormat(SheetEmailFormat.PDF)
-    .setFormatDetails(formatDetails)
-    .build();
+  .setSendTo(recipients)
+  .setSubject("Check these rows out!")
+  .setMessage("Here are the rows I mentioned in our meeting")
+  .setCcMe(false)
+  .setFormat(SheetEmailFormat.PDF)
+  .setFormatDetails(formatDetails)
+  .build();
 
 // Send sheet via email
 smartsheet.sheetResources().sendSheet(4293147074291588L, email);        // sheetId
@@ -100,20 +100,20 @@ smartsheet.sheetResources().sendSheet(4293147074291588L, email);        // sheet
 
 ```python
 response = ss_client.Sheets.send_sheet(
-    4293147074291588,           # sheet_id
-    ss_client.models.SheetEmail({
-        'send_to': [
-            ss_client.models.Recipient({'email': 'john.doe@smartsheet.com'}),
-            ss_client.models.Recipient({'group_id': 2258118617917316})
-        ],
-        'subject': 'Check these rows out!',
-        'message': 'Here are the rows I mentioned in our meeting.',
-        'cc_me': False,
-        'format': 'PDF',
-        'format_details': ss_client.models.FormatDetails({
-            'paper_size': 'A4'
-        })
+  4293147074291588,           # sheet_id
+  ss_client.models.SheetEmail({
+    'send_to': [
+      ss_client.models.Recipient({'email': 'john.doe@smartsheet.com'}),
+      ss_client.models.Recipient({'group_id': 2258118617917316})
+    ],
+    'subject': 'Check these rows out!',
+    'message': 'Here are the rows I mentioned in our meeting.',
+    'cc_me': False,
+    'format': 'PDF',
+    'format_details': ss_client.models.FormatDetails({
+      'paper_size': 'A4'
     })
+  })
 )
 ```
 
@@ -143,8 +143,8 @@ smartsheet.sheets.send_via_email(sheet_id: 3294745817573252, body: body)
 
 ```json
 {
-    "message": "SUCCESS",
-    "resultCode": 0
+  "message": "SUCCESS",
+  "resultCode": 0
 }
 ```
 

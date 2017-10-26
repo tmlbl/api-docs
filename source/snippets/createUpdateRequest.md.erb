@@ -6,86 +6,86 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{ \
-    "sendTo": [ \
-        {"email": "recipient1@smartsheet.com"}, \
-        {"email": "recipient2@smartsheet.com"} \
-    ], \
-    "subject": "Sample Monthly Update Request", \
-    "message": "Please update my online sheet.", \
-    "ccMe": false, \
-    "rowIds": [4508292249610116, 2256492435924868], \
-    "columnIds": [4508284196546436, 2256484382861188], \
-    "includeAttachments": false, \
-    "includeDiscussions": false \
+  "sendTo": [ \
+    {"email": "recipient1@smartsheet.com"}, \
+    {"email": "recipient2@smartsheet.com"} \
+  ], \
+  "subject": "Sample Monthly Update Request", \
+  "message": "Please update my online sheet.", \
+  "ccMe": false, \
+  "rowIds": [4508292249610116, 2256492435924868], \
+  "columnIds": [4508284196546436, 2256484382861188], \
+  "includeAttachments": false, \
+  "includeDiscussions": false \
 }' 
 ```
 
 ```csharp
 // Specify recipients
 Recipient[] recipientSpecification = new Recipient[] {
-    new Recipient { Email = "recipient1@smartsheet.com"}
+  new Recipient { Email = "recipient1@smartsheet.com"}
 };
 
 // Configure update request
 UpdateRequest updateRequestSpecification = new UpdateRequest
 {
-    SendTo = recipientSpecification,
-    Subject = "Sample Monthly Update Request",
-    Message = "Please update my online sheet.",
-    CcMe = true,
-    RowIds = new long[] { 1123834706323332, 5627434333693828 },
-    ColumnIds = new long[] { 4549065498224516, 2297265684539268 },
-    IncludeAttachments = true,
-    IncludeDiscussions = true
+  SendTo = recipientSpecification,
+  Subject = "Sample Monthly Update Request",
+  Message = "Please update my online sheet.",
+  CcMe = true,
+  RowIds = new long[] { 1123834706323332, 5627434333693828 },
+  ColumnIds = new long[] { 4549065498224516, 2297265684539268 },
+  IncludeAttachments = true,
+  IncludeDiscussions = true
 };
 
 // Send update request via email
 UpdateRequest newUpdateRequest = smartsheet.SheetResources.UpdateRequestResources.CreateUpdateRequest(
-    3285357287499652,       // long sheetId
-    updateRequestSpecification
+  3285357287499652,       // long sheetId
+  updateRequestSpecification
 );
 ```
 
 ```javascript
 // Set body
 var body = {
-    rowIds: [
-        1049041315358596,
-        5552640942729092
-    ],
-    includeAttachments: true,
-    includeDiscussions: false,
-    sendTo: [
-        {
-            email: "jane.roe@smartsheet.com"    
-        }
-    ],
-    subject: "Sample Monthly Update Request",
-    message: "Please update my online sheet."
+  rowIds: [
+    1049041315358596,
+    5552640942729092
+  ],
+  includeAttachments: true,
+  includeDiscussions: false,
+  sendTo: [
+    {
+      email: "jane.roe@smartsheet.com"    
+    }
+  ],
+  subject: "Sample Monthly Update Request",
+  message: "Please update my online sheet."
 };
 
 // Set options
 var options = {
-    sheetId: 1696801624483716,
-    body: body
+  sheetId: 1696801624483716,
+  body: body
 };
 
 // Create update request
 smartsheet.sheets.createUpdateRequest(options)
-    .then(function (updatedRequest) {
-        console.log(updatedRequest);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
+  .then(function (updatedRequest) {
+    console.log(updatedRequest);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 ```
 
 ```java
 // Specify recipients
 RecipientEmail recipientSpecification = new RecipientEmail.AddRecipientEmailBuilder()
-    .setEmail("recipient1@smartsheet.com")
-    .setEmail("recipient2@smartsheet.com")
-    .build();
+  .setEmail("recipient1@smartsheet.com")
+  .setEmail("recipient2@smartsheet.com")
+  .build();
 
 List<Recipient> recipients = new ArrayList<Recipient>();
 recipients.add(recipientSpecification);
@@ -102,8 +102,8 @@ updateRequest.setIncludeDiscussions(false);
 
 // Create update request
 smartsheet.sheetResources().updateRequestResources().createUpdateRequest(
-    1639534409607044L,      // long sheetId
-    updateRequest
+  1639534409607044L,      // long sheetId
+  updateRequest
 );
 ```
 
@@ -111,8 +111,8 @@ smartsheet.sheetResources().updateRequestResources().createUpdateRequest(
 # Configure email
 email_spec = ss_client.models.MultiRowEmail()
 email_spec.send_to = [
-    ss_client.models.Recipient({'email': 'recipient1@smartsheet.com'}),
-    ss_client.models.Recipient({'email': 'recipient2@smartsheet.com'})]
+  ss_client.models.Recipient({'email': 'recipient1@smartsheet.com'}),
+  ss_client.models.Recipient({'email': 'recipient2@smartsheet.com'})]
 email_spec.subject = 'Please update based on meeting'
 email_spec.message = 'some message'
 email_spec.cc_me = False
@@ -121,8 +121,8 @@ email_spec.column_ids = [7036894123976580]
 
 # Send update request
 new_update_request = ss_client.Sheets.send_update_request(
-    5190835902932868,           # sheet_id
-    email_spec
+  5190835902932868,           # sheet_id
+  email_spec
 )
 ```
 
@@ -172,22 +172,22 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{ \
-    "sendTo": [ \
-        {"email": "recipient1@smartsheet.com"} \
-    ], \
-    "subject": "Sample Monthly Update Request", \
-    "message": "Please update my online sheet.", \
-    "ccMe": false, \
-    "rowIds": [7886095586224004], \
-    "columnIds": [6962516556310404, 3584816835782532], \
-    "includeAttachments": true, \
-    "includeDiscussions": true, \
-    "schedule": { \
-		"type": "MONTHLY", \
-		"startAt": "2016-04-01T19:00:00Z", \
-		"endAt": "2016-12-31T07:00:00Z", \
-		"dayOfMonth": 1, \
-		"repeatEvery": 1 \
+  "sendTo": [ \
+    {"email": "recipient1@smartsheet.com"} \
+  ], \
+  "subject": "Sample Monthly Update Request", \
+  "message": "Please update my online sheet.", \
+  "ccMe": false, \
+  "rowIds": [7886095586224004], \
+  "columnIds": [6962516556310404, 3584816835782532], \
+  "includeAttachments": true, \
+  "includeDiscussions": true, \
+  "schedule": { \
+  "type": "MONTHLY", \
+  "startAt": "2016-04-01T19:00:00Z", \
+  "endAt": "2016-12-31T07:00:00Z", \
+  "dayOfMonth": 1, \
+  "repeatEvery": 1 \
 	} \
 }'
 ```

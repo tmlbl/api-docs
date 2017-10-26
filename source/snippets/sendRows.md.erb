@@ -6,74 +6,74 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/emails \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{ \ 
-    "sendTo": [ \
-        {"email": "recipient@smartsheet.com"} \
-    ], \
-    "subject": "Check these rows out!", \
-    "message": "Here are the rows I mentioned in our meeting", \
-    "ccMe": false, \ 
-    "rowIds": [ \
-        6327127650920324, 3404239197235076 \
-    ], \
-    "columnIds": [ \
-        5190835902932868, 3791509922310020 \
-    ], \
-    "includeAttachments": false, \
-    "includeDiscussions": false \
+  "sendTo": [ \
+    {"email": "recipient@smartsheet.com"} \
+  ], \
+  "subject": "Check these rows out!", \
+  "message": "Here are the rows I mentioned in our meeting", \
+  "ccMe": false, \ 
+  "rowIds": [ \
+    6327127650920324, 3404239197235076 \
+  ], \
+  "columnIds": [ \
+    5190835902932868, 3791509922310020 \
+  ], \
+  "includeAttachments": false, \
+  "includeDiscussions": false \
 } 
 ```
 
 ```javascript
 // Configure email
 var email = {
-    "sendTo": [
-        {
-            "email": "john.doe@smartsheet.com"
-        },
-        {
-            "groupId": 2258118617917316
-        }
-    ],
-    "subject": "Check these rows out!",
-    "message": "Here are the rows I mentioned in our meeting",
-    "ccMe": false,
-    "includeDiscussions": false,
-    "includeAttachments": true
+  "sendTo": [
+    {
+      "email": "john.doe@smartsheet.com"
+    },
+    {
+      "groupId": 2258118617917316
+    }
+  ],
+  "subject": "Check these rows out!",
+  "message": "Here are the rows I mentioned in our meeting",
+  "ccMe": false,
+  "includeDiscussions": false,
+  "includeAttachments": true
 };
 
 // Set options
 var options = {
-    body: email,
-    sheetId: 2252168947361668,
-    rowId: 4293147074291588
+  body: email,
+  sheetId: 2252168947361668,
+  rowId: 4293147074291588
 };
 
 // Send row via email
 smartsheet.sheets.sendRow(options)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
+  .then(function (data) {
+    console.log(data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 ```
 
 ```csharp
 // Specify recipients
 Recipient[] recipients = new Recipient[] {
-    new Recipient { Email = "recipient@smartsheet.com" }
+  new Recipient { Email = "recipient@smartsheet.com" }
 };
 
 // Configure email
 MultiRowEmail multiRowEmail = new MultiRowEmail {
-    SendTo = recipients,
-    Subject = "some subject",
-    Message = "some message",
-    CcMe = false,
-    RowIds = new long[] { 6327127650920324, 3404239197235076 },
-    ColumnIds = new long[] { 5190835902932868, 3791509922310020 },
-    IncludeAttachments = false,
-    IncludeDiscussions = false
+  SendTo = recipients,
+  Subject = "some subject",
+  Message = "some message",
+  CcMe = false,
+  RowIds = new long[] { 6327127650920324, 3404239197235076 },
+  ColumnIds = new long[] { 5190835902932868, 3791509922310020 },
+  IncludeAttachments = false,
+  IncludeDiscussions = false
 };
 
 // Send rows via email
@@ -83,23 +83,23 @@ smartsheet.SheetResources.RowResources.SendRows(4293147074291588, multiRowEmail)
 ```java
 // Specify recipients
 RecipientEmail recipientEmail = new RecipientEmail.AddRecipientEmailBuilder()
-    .setEmail("recipient@smartsheet.com")
-    .build();
+  .setEmail("recipient@smartsheet.com")
+  .build();
 
 List<Recipient> recipients = new ArrayList<Recipient>();
 recipients.add(recipientEmail);
 
 // Configure email
 MultiRowEmail multiRowEmail = new MultiRowEmail.AddMultiRowEmailBuilder()
-    .setSendTo(recipients)
-    .setSubject("some subject")
-    .setMessage("some message")
-    .setCcMe(false)
-    .setRowIds(Arrays.asList(6327127650920324L, 3404239197235076L)
-    .setColumnIds(Arrays.asList(5190835902932868L, 3791509922310020L)
-    .setIncludeAttachments(false)
-    .setIncludeDiscussions(false)
-    .build();
+  .setSendTo(recipients)
+  .setSubject("some subject")
+  .setMessage("some message")
+  .setCcMe(false)
+  .setRowIds(Arrays.asList(6327127650920324L, 3404239197235076L)
+  .setColumnIds(Arrays.asList(5190835902932868L, 3791509922310020L)
+  .setIncludeAttachments(false)
+  .setIncludeDiscussions(false)
+  .build();
 
 // Send rows via email
 smartsheet.sheetResources().rowResources().sendRows(4293147074291588L, multiRowEmail);   // sheetId
@@ -109,43 +109,42 @@ smartsheet.sheetResources().rowResources().sendRows(4293147074291588L, multiRowE
 # Configure email
 email = ss_client.models.MultiRowEmail()
 email.send_to = ss_client.models.Recipient({
-    'email': 'john.doe@smartsheet.com'
+  'email': 'john.doe@smartsheet.com'
 })
 email.row_ids = [6327127650920324, 3404239197235076]
 email.column_ids = [5190835902932868, 3791509922310020]
 
 # Send rows via email
 response = ss_client.Sheets.send_rows(
-    4293147074291588,       # sheet_id
-    email)
+  4293147074291588,       # sheet_id
+  email)
 ```
 
 ```ruby
-body =
-  {
-    row_ids: [
-      409840559384452,
-      2661640373069700
-    ],
-    column_ids: [
-      495660408563588,
-      2747460222248836
-    ],
-    send_to: [
-      {
-        email: 'john.doe@smartsheet.com'
-      },
-      {
-        group_id: 3051008235464580
-      }
-    ],
-    subject: 'Check these rows out!',
-    message: 'Here are the rows I mentioned in our meeting',
-    cc_me: false,
-    include_attachments: false,
-    include_discussions: true,
-    layout: 'VERTICAL'
-  }
+body = {
+  row_ids: [
+    409840559384452,
+    2661640373069700
+  ],
+  column_ids: [
+    495660408563588,
+    2747460222248836
+  ],
+  send_to: [
+    {
+      email: 'john.doe@smartsheet.com'
+    },
+    {
+      group_id: 3051008235464580
+    }
+  ],
+  subject: 'Check these rows out!',
+  message: 'Here are the rows I mentioned in our meeting',
+  cc_me: false,
+  include_attachments: false,
+  include_discussions: true,
+  layout: 'VERTICAL'
+}
 
 smartsheet.sheets.rows.send_via_email(sheet_id: 4583173393803140, body: body)
 ```
@@ -154,8 +153,8 @@ smartsheet.sheets.rows.send_via_email(sheet_id: 4583173393803140, body: body)
 
 ```json
 {
-    "message": "SUCCESS",    
-    "resultCode": 0
+  "message": "SUCCESS",    
+  "resultCode": 0
 }
 ```
 
