@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-10-31
+Updated 2017-11-06
 
 # Overview
 
@@ -9467,6 +9467,7 @@ response = ss_client.Sheets.add_rows(
 ```
 
 ```ruby
+# Specify values
 body = {
   to_bottom: true,
   cells: [
@@ -9478,7 +9479,8 @@ body = {
   locked: false
 }
 
-smartsheet.sheets.rows.add(
+# Add rows to a sheet
+response = smartsheet.sheets.rows.add(
   sheet_id: 4583173393803140,
   body: body
 )
@@ -9662,6 +9664,7 @@ response = ss_client.Sheets.copy_rows(
 ```
 
 ```ruby
+# Specify rows to copy and destination sheet
 body = {
   row_ids: [
     4293147074291588,
@@ -9672,7 +9675,8 @@ body = {
   }
 }
 
-smartsheet.sheets.rows.copy_to_another_sheet(
+# Copy rows to another sheet
+response = smartsheet.sheets.rows.copy_to_another_sheet(
   sheet_id: 4583173393803140,
   body: body
 )
@@ -9859,7 +9863,7 @@ row = ss_client.Sheets.get_row(
 ```
 
 ```ruby
-smartsheet.sheets.rows.get(
+row = smartsheet.sheets.rows.get(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588
 )
@@ -10015,6 +10019,7 @@ response = ss_client.Sheets.move_rows(
 ```
 
 ```ruby
+# Specify rows to move and destination sheet
 body = {
   row_ids: [
     4293147074291588,
@@ -10025,7 +10030,8 @@ body = {
   }
 }
 
-smartsheet.sheets.rows.move_to_another_sheet(
+# Move rows to another sheet
+response = smartsheet.sheets.rows.move_to_another_sheet(
   sheet_id: 4583173393803140,
   body: body
 )
@@ -10201,15 +10207,17 @@ updated_row = ss_client.Sheets.update_rows(
 ```
 
 ```ruby
+# Specify updated cell values
 body = {
-  id: 4293147074291588,
+  id: 4293147074291588,   # row Id
   cells: [
     column_id: 4583173393803140,
     value: '456'
   ]
 }
 
-smartsheet.sheets.rows.update(
+# Update row
+response = smartsheet.sheets.rows.update(
   sheet_id: 4583173393803140,
   body: body
 )
