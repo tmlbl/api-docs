@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-11-06
+Updated 2017-11-07
 
 # Overview
 
@@ -5743,12 +5743,16 @@ response = ss_client.Favorites.add_favorites([
 ```
 
 ```ruby
+# Specify favorites
 body = {
   type: 'sight',
   object_id: 8400677765441412
 }
 
-smartsheet.favorites.add(body: body)
+# Add items to favorites
+response = smartsheet.favorites.add(
+  body: body
+)
 ```
 
 > Example Response:
@@ -5818,7 +5822,8 @@ faves = response.data
 ```
 
 ```ruby
-smartsheet.favorites.list
+response = smartsheet.favorites.list
+list = response[:data]
 ```
 
 > Example Response:
@@ -6051,7 +6056,7 @@ Removes a single Sheet from the user's list of Favorite items.
 > Example Request: Remove Favorite Sight
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/sights/{sightId} \
+curl https://api.smartsheet.com/2.0/favorites/sight/{sightId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -8471,7 +8476,8 @@ contents = ss_client.Home.list_all_contents(include='source')
 ```
 
 ```ruby
-smartsheet.home.list
+response = smartsheet.home.list
+contents = response[:sheets]
 ```
 
 > Example Response:
@@ -8676,9 +8682,10 @@ report = ss_client.Reports.get_report(
 ```
 
 ```ruby
-smartsheet.reports.get(
+response = smartsheet.reports.get(
   report_id: 4583173393803140
 )
+report = response[:name]
 ```
 
 > Example Response:
@@ -8996,7 +9003,8 @@ reports = response.data
 ```
 
 ```ruby
-smartsheet.reports.list
+response = smartsheet.reports.list
+reports = response[:data]
 ```
 
 > Example Response:
@@ -9077,7 +9085,7 @@ status = ss_client.Reports.get_publish_status(
 ```
 
 ```ruby
-smartsheet.reports.get_publish_status(
+status = smartsheet.reports.get_publish_status(
   report_id: 4583173393803140
 )
 ```
@@ -9152,12 +9160,14 @@ response = ss_client.Reports.set_publish_status(
 ```
 
 ```ruby
+# Set options
 body = {
   read_only_full_enabled: true,
   read_only_full_accessible_by: 'ORG'
 }
 
-smartsheet.reports.set_publish_status(
+# Set report publish status
+status = smartsheet.reports.set_publish_status(
   report_id: 4583173393803140,
   body: body
 )
@@ -15294,7 +15304,7 @@ status = ss_client.Sights.get_publish_status(
 ```
 
 ```ruby
-smartsheet.sights.get_publish_status(
+status = smartsheet.sights.get_publish_status(
   sight_id: 6327127650920324
 )
 ```
@@ -15374,12 +15384,14 @@ response = ss_client.Sights.set_publish_status(
 ```
 
 ```ruby
+# Set options
 body = {
   read_only_full_enabled: true,
   read_only_full_accessible_by: 'ALL'
 }
 
-smartsheet.sights.set_publish_status(
+# Set Sight publish status
+status = smartsheet.sights.set_publish_status(
   sight_id: 6327127650920324,
   body: body
 )
@@ -15582,7 +15594,8 @@ templates = response.data
 ```
 
 ```ruby
-smartsheet.templates.list_public
+response = smartsheet.templates.list_public
+templates = response[:data]
 ```
 
 > Example Response:
@@ -15639,7 +15652,8 @@ templates = response.data
 ```
 
 ```ruby
-smartsheet.templates.list
+response = smartsheet.templates.list
+templates = response[:data]
 ```
 
 > Example Response:
