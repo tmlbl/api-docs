@@ -14828,13 +14828,15 @@ new_sight = ss_client.Sights.copy_sight(
 ```
 
 ```ruby
+# Specify destination
 body = {
   destination_type: 'folder',
   destination_id: 8964300887877508,
   new_name: 'Copy of Sight'
 }
 
-smartsheet.sights.copy(
+# Copy Sight
+new_sight = smartsheet.sights.copy(
   sight_id: 6327127650920324,
   body: body
 )
@@ -14975,9 +14977,10 @@ Sight sight = smartsheet.sightResources().getSight(
 ```
 
 ```ruby
-smartsheet.sights.get(
+response = smartsheet.sights.get(
   sight_id: 6327127650920324
 )
+sights = response[:name]
 ```
 
 > Example Response:
@@ -15082,7 +15085,8 @@ sights = response.data
 ```
 
 ```ruby
-smartsheet.sights.list
+response = smartsheet.sights.list
+sights = response[:data]
 ```
 
 > Example Response:
@@ -15208,12 +15212,14 @@ response = ss_client.Sights.move_sight(
 ```
 
 ```ruby
+# Specify destination
 body = {
   destination_type: 'folder',
   destination_id: 8964300887877508
 }
 
-smartsheet.sights.move(
+# Move Sight
+moved_sight = smartsheet.sights.move(
   sight_id: 6327127650920324,
   body: body
 )
@@ -15462,11 +15468,13 @@ updated_sight = ss_client.Sights.update_sight(
 ```
 
 ```ruby
+# Specify property to change
 body = {
   name: 'Updated Sight'
 }
 
-smartsheet.sights.update(
+# Update Sight
+response = smartsheet.sights.update(
   sight_id: 6327127650920324,
   body: body
 )
