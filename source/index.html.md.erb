@@ -10463,7 +10463,6 @@ result = ss_client.Search.search(query)
 results = smartsheet.search.search_all(
   query: 'November'
 )
-puts results
 ```
 
 > Example Response:
@@ -10685,7 +10684,7 @@ info = ss_client.Server.server_info()
 ```
 
 ```ruby
-smartsheet.server_info.get
+info = smartsheet.server_info.get
 ```
 
 > Example Response: (*too long to list in its entirety*)
@@ -17113,11 +17112,13 @@ new_workspace = ss_client.Workspaces.copy_workspace(
 ```
 
 ```ruby
+# Specify details
 body = {
   new_name: 'Copied Workspace'
 }
 
-smartsheet.workspaces.copy(
+# Copy workspace
+workspace = smartsheet.workspaces.copy(
   workspace_id: 7116448184199044,
   body: body
 )
@@ -17208,11 +17209,15 @@ workspace = ss_client.Workspaces.create_workspace(
 ```
 
 ```ruby
+# Specify details
 body = {
   name: 'New Workspace'
 }
 
-smartsheet.workspaces.create(body: body)
+# Create the workspace
+workspace = smartsheet.workspaces.create(
+  body: body
+)
 ```
 
 > Example Response:
@@ -17373,7 +17378,7 @@ workspace = ss_client.Workspaces.get_workspace(
 ```
 
 ```ruby
-smartsheet.workspaces.get(
+response = smartsheet.workspaces.get(
   workspace_id: 7116448184199044
 )
 ```
@@ -17462,7 +17467,8 @@ workspaces = response.data
 ```
 
 ```ruby
-smartsheet.workspaces.list
+response = smartsheet.workspaces.list
+workspaces = response[:data]
 ```
 
 > Example Response:
@@ -17571,11 +17577,13 @@ updated_workspace = ss_client.Workspaces.update_workspace(
 ```
 
 ```ruby
+# Specify updated workspace properties
 body = {
   name: 'Updated Workspace'
 }
 
-smartsheet.workspaces.update(
+# Update workspace
+response = smartsheet.workspaces.update(
   workspace_id: 7116448184199044,
   body: body
 )
