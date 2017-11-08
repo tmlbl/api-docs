@@ -6771,13 +6771,15 @@ response = ss_client.Folders.copy_folder(
 ```
 
 ```ruby
+# Specify destination information
 body = {
   destination_type: 'workspace',
   destination_id: 2252168947361668,
   new_name: 'Copy of Folder'
 }
 
-smartsheet.folders.copy(
+# Copy folder
+response = smartsheet.folders.copy(
   folder_id: 2252168947361668,
   body: body
 )
@@ -6873,7 +6875,7 @@ body = {
   name: 'New Folder'
 }
 
-smartsheet.folders.create(body: body)
+new_folder = smartsheet.folders.create(body: body)
 ```
 
 > Example Response:
@@ -6953,7 +6955,7 @@ body = {
   name: 'New Folder'
 }
 
-smartsheet.folders.create_in_folder(
+new_folder = smartsheet.folders.create_in_folder(
   folder_id: 2252168947361668,
   body: body
 )
@@ -7036,7 +7038,7 @@ body = {
   name: 'New Folder'
 }
 
-smartsheet.folders.create_in_workspace(
+new_folder = smartsheet.folders.create_in_workspace(
   workspace_id: 7116448184199044,
   body: body
 )
@@ -7096,7 +7098,7 @@ ss_client.Folders.delete_folder(
 ```
 
 ```ruby
-smartsheet.folders.delete(
+response = smartsheet.folders.delete(
   folder_id: 2252168947361668
 )
 ```
@@ -7180,9 +7182,10 @@ folder = ss_client.Folders.get_folder(
 ```
 
 ```ruby
-smartsheet.folders.get(
+response = smartsheet.folders.get(
   folder_id: 2252168947361668
 )
+folder = response[:name]
 ```
 
 > Example Response:
@@ -7286,7 +7289,8 @@ folders = response.data
 ```
 
 ```ruby
-smartsheet.folders.list
+response = smartsheet.folders.list
+folders = response[:data]
 ```
 
 > Example Response:
@@ -7360,9 +7364,10 @@ folders = response.data
 ```
 
 ```ruby
-smartsheet.folders.list_in_folder(
+response = smartsheet.folders.list_in_folder(
   folder_id: 2252168947361668
 )
+folders = response[:data]
 ```
 
 > Example Response:
@@ -7436,9 +7441,10 @@ folders = response.data
 ```
 
 ```ruby
-smartsheet.folders.list_in_workspace(
+response = smartsheet.folders.list_in_workspace(
   workspace_id: 7116448184199044
 )
+folders = response[:data]
 ```
 
 > Example Response:
@@ -7530,12 +7536,14 @@ folder = ss_client.Folders.move_folder(
 ```
 
 ```ruby
+# Specify destination information
 body = {
   destination_type: 'workspace',
   destination_id: 7116448184199044
 }
 
-smartsheet.folders.move(
+# Move folder
+response = smartsheet.folders.move(
   folder_id: 2252168947361668,
   body: body
 )
@@ -7630,11 +7638,13 @@ updated_folder = ss_client.Folders.update_folder(
 ```
 
 ```ruby
+# Set options
 body = {
   name: 'Updated Folder'
 }
 
-smartsheet.folders.update(
+# Update folder
+response = smartsheet.folders.update(
   folder_id: 2252168947361668,
   body: body
 )
