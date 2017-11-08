@@ -7098,7 +7098,7 @@ ss_client.Folders.delete_folder(
 ```
 
 ```ruby
-response = smartsheet.folders.delete(
+smartsheet.folders.delete(
   folder_id: 2252168947361668
 )
 ```
@@ -7784,6 +7784,7 @@ new_group = ss_client.Groups.create_group(
 ```
 
 ```ruby
+# List members of group
 body = {
   name: 'New Group',
   description: 'A new group',
@@ -7794,7 +7795,10 @@ body = {
   ]
 }
 
-smartsheet.groups.create(body: body)
+# Create group
+new_group = smartsheet.groups.create(
+  body: body
+)
 ```
 
 > Example Response:
@@ -7951,9 +7955,10 @@ group = ss_client.Groups.get_group(
 ```
 
 ```ruby
-smartsheet.groups.get(
+response = smartsheet.groups.get(
   group_id: 4583173393803140
 )
+group = response[:name]
 ```
 
 > Example Response:
@@ -8036,7 +8041,8 @@ groups = response.data
 ```
 
 ```ruby
-smartsheet.groups.list
+response = smartsheet.groups.list
+groups = response[:data]
 ```
 
 > Example Response:
@@ -8144,13 +8150,15 @@ updated_group = ss_client.Groups.update_group(
 ```
 
 ```ruby
+# Specify the name and description of the group
 body = {
   name: 'Updated Group',
   description: 'An updated group',
   owner_id: 4583173393803140
 }
 
-smartsheet.groups.update(
+# Update group
+updated_group = smartsheet.groups.update(
   group_id: 4583173393803140,
   body: body
 )
@@ -8289,7 +8297,7 @@ body = {
   email: 'john.doe@smartsheet.com'
 }
 
-smartsheet.groups.add_members(
+new_members = smartsheet.groups.add_members(
   group_id: 4583173393803140,
   body: body
 )
