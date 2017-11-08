@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-11-07
+Updated 2017-11-08
 
 # Overview
 
@@ -503,19 +503,11 @@ ss_client.errors_as_exceptions(True)
 require 'smartsheet'
 require 'logger'
 
-def load_config(config_name)
-  file = File.open(config_name)
-
-  JSON.load(file)
-end
-
-config = load_config('config.json')
-
 logger = Logger.new(STDOUT)
 logger.level = Logger::INFO
 
 # Initialize client
-smartsheet = Smartsheet::Client.new(token: config['token'], logger: logger)
+smartsheet = Smartsheet::Client.new(token: 'll352u9jujauoqz4gstvsae05', logger: logger)
 ```
 
 Smartsheet has SDKs providing a higher level interface for several languages.
@@ -10891,10 +10883,11 @@ share = ss_client.Reports.get_share(
 ```
 
 ```ruby
-smartsheet.reports.share.get(
+response = smartsheet.reports.share.get(
   report_id: 4583173393803140,
   share_id: 'AAABbMomFOeE'
 )
+share = response[:scope]
 ```
 
 > Example Response:
@@ -10964,9 +10957,10 @@ shares = response.result
 ```
 
 ```ruby
-smartsheet.reports.share.list(
+response = smartsheet.reports.share.list(
   report_id: 4583173393803140
 )
+shares = response[:data]
 ```
 
 > Example Response:
@@ -11065,7 +11059,7 @@ body = {
   message: 'This Smartsheet report is ready for your inspection.'
 }
 
-smartsheet.reports.share.create(
+response = smartsheet.reports.share.create(
   report_id: 4583173393803140,
   body: body
 )
@@ -11158,7 +11152,7 @@ body = {
   access_level: 'EDITOR_SHARE'
 }
 
-smartsheet.reports.share.update(
+response = smartsheet.reports.share.update(
   report_id: 4583173393803140,
   share_id: 'AAABbMomFOeE',
   body: body
@@ -11288,10 +11282,11 @@ share = ss_client.Sheets.get_share(
 ```
 
 ```ruby
-smartsheet.sheets.share.get(
+response = smartsheet.sheets.share.get(
   sheet_id: 4583173393803140,
   share_id: 'AAABbMomFOeE'
 )
+share = response[:scope]
 ```
 
 > Example Response:
@@ -11363,9 +11358,10 @@ shares = response.data
 ```
 
 ```ruby
-smartsheet.sheets.share.list(
+response = smartsheet.sheets.share.list(
   sheet_id: 4583173393803140
 )
+shares = response[:data]
 ```
 
 > Example Response:
@@ -11458,15 +11454,14 @@ response = ss_client.Sheets.share_sheet(
 ```
 
 ```ruby
-body =
-  {
-    group_id: 3051008235464580,
-    access_level: 'VIEWER',
-    subject: 'This sheet has been shared with you!',
-    message: 'This Smartsheet is ready for your inspection.'
-  }
+body = {
+  group_id: 3051008235464580,
+  access_level: 'VIEWER',
+  subject: 'This sheet has been shared with you!',
+  message: 'This Smartsheet is ready for your inspection.'
+}
 
-smartsheet.sheets.share.create(
+response = smartsheet.sheets.share.create(
   sheet_id: 4583173393803140,
   body: body
 )
@@ -11552,12 +11547,11 @@ updated_share = ss_client.Sheets.update_share(
 ```
 
 ```ruby
-body =
-  {
-    access_level: 'EDITOR_SHARE'
-  }
+body = {
+  access_level: 'EDITOR_SHARE'
+}
 
-smartsheet.sheets.share.update(
+response = smartsheet.sheets.share.update(
   sheet_id: 4583173393803140,
   share_id: 'AAABbMomFOeE',
   body: body
@@ -11688,10 +11682,11 @@ share = ss_client.Sights.get_share(
 ```
 
 ```ruby
-smartsheet.sights.share.get(
+response = smartsheet.sights.share.get(
   sight_id: 6327127650920324,
   share_id: 'AAABbMomFOeE'
 )
+share = response[:scope]
 ```
 
 > Example Response:
@@ -11758,9 +11753,10 @@ shares = response.data
 ```
 
 ```ruby
-smartsheet.sights.share.list(
+response = smartsheet.sights.share.list(
   sight_id: 6327127650920324
 )
+shares = response[:data]
 ```
 
 > Example Response:
@@ -11857,7 +11853,7 @@ body = {
   message: 'This Smartsheet sight is ready for your inspection.'
 }
 
-smartsheet.sights.share.create(
+response = smartsheet.sights.share.create(
   sight_id: 6327127650920324,
   body: body
 )
@@ -11947,7 +11943,7 @@ body = {
   access_level: 'EDITOR'
 }
 
-smartsheet.sights.share.update(
+response = smartsheet.sights.share.update(
   sight_id: 6327127650920324,
   share_id: 'AAABbMomFOeE',
   body: body
@@ -12086,10 +12082,11 @@ share = ss_client.Sheets.get_share(
 ```
 
 ```ruby
-smartsheet.workspaces.share.get(
+response = smartsheet.workspaces.share.get(
   workspace_id: 7116448184199044,
   share_id: 'AAABbMomFOeE'
 )
+share = response[:scope]
 ```
 
 > Example Response:
@@ -12161,9 +12158,10 @@ shares = response.data
 ```
 
 ```ruby
-smartsheet.workspaces.share.list(
+response = smartsheet.workspaces.share.list(
   workspace_id: 7116448184199044
 )
+shares = response[:data]
 ```
 
 > Example Response:
@@ -12265,7 +12263,7 @@ body = {
   message: 'This Smartsheet workspace is ready for your inspection.'
 }
 
-smartsheet.workspaces.share.create(
+response = smartsheet.workspaces.share.create(
   workspace_id: 7116448184199044,
   body: body
 )
@@ -12365,7 +12363,7 @@ body = {
   access_level: 'EDITOR_SHARE'
 }
 
-smartsheet.workspaces.share.update(
+response = smartsheet.workspaces.share.update(
   workspace_id: 7116448184199044,
   share_id: 'AAABbMomFOeE',
   body: body
@@ -18635,6 +18633,7 @@ Webhook = ss_client.Webhooks.create_webhook(
 ```
 
 ```ruby
+# Webhook specification
 body = {
   name: 'Webhook #4',
   callback_url: 'https://www.myApp.com/webhooks',
@@ -18646,7 +18645,10 @@ body = {
   version: 1
 }
 
-smartsheet.webhooks.create(body: body)
+response = smartsheet.webhooks.create(
+  body: body
+)
+new_webhook = response[:result]
 ```
 
 > Example Response:
@@ -18798,9 +18800,10 @@ Webhook = ss_client.Webhooks.get_webhook(
 ```
 
 ```ruby
-smartsheet.webhooks.get(
+response = smartsheet.webhooks.get(
   webhook_id: 2674017481058180
 )
+webhook = response[:status]
 ```
 
 > Example Response:
@@ -18878,7 +18881,8 @@ IndexResult = ss_client.Webhooks.list_webhooks(
 ```
 
 ```ruby
-smartsheet.webhooks.list
+response = smartsheet.webhooks.list
+webhooks = response[:data]
 ```
 
 > Example Response:
@@ -18964,9 +18968,10 @@ Webhook = ss_client.Webhooks.reset_shared_secret(
 ```
 
 ```ruby
-smartsheet.webhooks.reset_shared_secret(
+response = smartsheet.webhooks.reset_shared_secret(
   webhook_id: 2674017481058180
 )
+updated_secret = response[:result]
 ```
 
 > Example Response:
@@ -19060,6 +19065,7 @@ Webhook = ss_client.Webhooks.update_webhook(
 ```
 
 ```ruby
+# Webhook specification
 body = {
   name: 'Webhook #4 Modified',
   callback_url: 'https://www.myApp.com/webhooks/nouveau',
@@ -19070,10 +19076,12 @@ body = {
   version: 1
 }
 
-smartsheet.webhooks.update(
+# Update Webhook
+response = smartsheet.webhooks.update(
   webhook_id: 2674017481058180,
   body: body
 )
+updated_webhook = response[:result]
 ```
 
 > Example Response:
