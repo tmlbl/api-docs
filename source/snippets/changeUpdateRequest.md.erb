@@ -6,8 +6,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests/{updateReque
 -H "Content-Type: application/json" \
 -X PUT \
 -d '{ \
-	"subject": "Sample Monthly Update Request", \
-    "message": "Please update my online sheet." \
+  "subject": "Sample Monthly Update Request", \
+  "message": "Please update my online sheet." \
 }'
 
 ```
@@ -16,39 +16,39 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/updaterequests/{updateReque
 // Identify the update request you want to change
 UpdateRequest updateRequestSpecification = new UpdateRequest
 {
-    Id = 7178482007467908,        // long updateRequestId
-    Subject = "new subject",
-    Message = "updated message"
+  Id = 7178482007467908,        // long updateRequestId
+  Subject = "new subject",
+  Message = "updated message"
 };
 
 // Change update request
 UpdateRequest updatedUpdateRequest = smartsheet.SheetResources.UpdateRequestResources.UpdateUpdateRequest(
-    3285357287499652,          // long sheetId
-    updateRequestSpecification
+  3285357287499652,          // long sheetId
+  updateRequestSpecification
 );
 ```
 
 ```javascript
 // Set text
 var body = {
-    subject: "Changed Monthly Update Request"
+  subject: "Changed Monthly Update Request"
 };
 
 // Set options
 var options = {
-    sheetId: 3285357287499652,
-    updateRequestId: 7178482007467908,
-    body: body
+  sheetId: 3285357287499652,
+  updateRequestId: 7178482007467908,
+  body: body
 };
 
 // Change update request
 smartsheet.sheets.changeUpdateRequest(options)
-    .then(function (updatedRequest) {
-        console.log(updatedRequest);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
+  .then(function (updatedRequest) {
+    console.log(updatedRequest);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 ```
 
 ```java
@@ -57,6 +57,41 @@ smartsheet.sheets.changeUpdateRequest(options)
 
 ```python
 # [todo]
+```
+
+```ruby
+body = {
+  send_to: [
+    {
+      email: 'jane.doe@smartsheet.com'
+    }
+  ],
+  column_ids: [
+    495660408563588,
+    2747460222248836
+  ],
+  include_attachments: false,
+  include_discussions: false,
+  subject: 'Update these new rows!',
+  message: "I'm sending you the right columns this time!",
+  cc_me: false,
+  schedule: {
+    type: 'MONTHLY',
+    start_at: '2017-10-09T20:00:00Z',
+    end_at: '2018-02-28T00:00:00Z',
+    day_ordinal: 'SECOND',
+    day_descriptors: [
+      'THURSDAY'
+    ],
+    repeat_every: 2
+  }
+}
+
+smartsheet.update_requests.update(
+  sheet_id: 3294745817573252,
+  update_request_id: 4523799765903236,
+  body: body
+)
 ```
 
 > Example Response:
