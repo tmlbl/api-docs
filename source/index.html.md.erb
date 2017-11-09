@@ -1499,17 +1499,20 @@ updated_attachment = ss_client.Attachments.attach_url_to_comment(
 ```
 
 ```ruby
+# Specify options
 body = {
   name: 'A URL',
   url: 'https://google.com',
   attachment_type: 'LINK'
 }
 
-smartsheet.sheets.comments.attachments.attach_url(
+# Attach URL to comment
+response = smartsheet.sheets.comments.attachments.attach_url(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588,
   body: body
 )
+new_attachment = response[:result]
 ```
 
 > Example Response:
@@ -1609,6 +1612,7 @@ updated_attachment = ss_client.Attachments.attach_url_to_row(
 ```
 
 ```ruby
+# Specify options
 body = {
   name: 'Search here',
   description: 'A search engine',
@@ -1616,11 +1620,13 @@ body = {
   attachment_type: 'LINK'
 }
 
-smartsheet.sheets.rows.attachments.attach_url(
+# Attach URL to row
+response = smartsheet.sheets.rows.attachments.attach_url(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
   body: body
 )
+new_attachment = response[:result]
 ```
 
 > Example Response:
@@ -1716,6 +1722,7 @@ updated_attachment = ss_client.Attachments.attach_url_to_sheet(
 ```
 
 ```ruby
+# Specify options
 body = {
   name: 'a link',
   description: 'some cool website',
@@ -1723,7 +1730,12 @@ body = {
   attachment_type: 'LINK'
 }
 
-smartsheet.sheets.attachments.attach_url(sheet_id: 4583173393803140, body: body)
+# Attach URL to sheet
+response = smartsheet.sheets.attachments.attach_url(
+  sheet_id: 4583173393803140,
+  body: body
+)
+new_attachment = response[:result]
 ```
 
 > Example Response:
@@ -1858,10 +1870,11 @@ attachment = ss_client.Attachments.get_attachment(
 ```
 
 ```ruby
-smartsheet.sheets.attachments.get(
+response = smartsheet.sheets.attachments.get(
   sheet_id: 4583173393803140,
   attachment_id: 7169782752536452
 )
+attachment = response[:name]
 ```
 
 > Example Response:
@@ -1945,7 +1958,10 @@ attachments = response.data
 ```
 
 ```ruby
-smartsheet.sheets.attachments.list(sheet_id: 4583173393803140)
+response = smartsheet.sheets.attachments.list(
+  sheet_id: 4583173393803140
+)
+attachments = response[:data]
 ```
 
 > Example Response:
@@ -2053,10 +2069,11 @@ attachments = response.data
 ```
 
 ```ruby
-smartsheet.sheets.discussions.attachments.list(
+response = smartsheet.sheets.discussions.attachments.list(
   sheet_id: 4583173393803140,
   discussion_id: 3962273862576004
 )
+attachments = response[:data]
 ```
 
 > Example Response:
@@ -2164,10 +2181,11 @@ attachments = response.data
 ```
 
 ```ruby
-smartsheet.sheets.rows.attachments.list(
+response = smartsheet.sheets.rows.attachments.list(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588
 )
+attachments = response[:data]
 ```
 
 > Example Response:
