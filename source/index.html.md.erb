@@ -51,7 +51,7 @@ Updated 2017-11-09
 
 ## Introduction
 
-> Click the corresponding tab above to see sample code in the language of your choice. For more detail, see [Sample Code and SDKs](#sample-code-and-sdks))
+> Click the corresponding tab above to see sample code in the language of your choice. For more detail, see [SDKs and Sample Code](#sdks-and-sample-code))
 
 ```shell
 # The cURL code samples included in this API documentation demonstrate
@@ -125,7 +125,7 @@ To get details on the sheet with id 123456, use the following:
 
 This Id pattern is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
 
-If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
+If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see [SDKs and Sample Code.](#sdks-and-sample-code)
 
 ### HTTP Verbs
 
@@ -423,7 +423,7 @@ Before you begin, you should already have an access token, which you used in the
 
 This core hierarchy of Sheet > Column > Row > Cell is essential to working with the Smartsheet API. As your user's sheets grow in complexity, the responses do too. This walkthrough has given you some navigational aid in finding the right value to plug into your API calls. Use the API Reference and the example language tabs to learn more.
 
-# Sample Code and SDKs
+# SDKs and Sample Code
 
 > Install the SDK
 
@@ -508,6 +508,21 @@ logger.level = Logger::INFO
 
 # Initialize client
 smartsheet = Smartsheet::Client.new(token: 'll352u9jujauoqz4gstvsae05', logger: logger)
+
+# Example call
+response = smartsheet.sheets.list
+sheets = response[:data]
+
+# Return is a Ruby Hash as below, though this document
+# displays a JSON example to accommodate the multiple tabs
+{
+  :id=>0123456789012345,
+  :name=>"Expense Report May 2017",
+  :access_level=>"VIEWER",
+  :permalink=>"https://app.company.com",
+  :created_at=>"2016-12-08T21:14:43Z",
+  :modified_at=>"2017-08-20T02:47:41Z"
+}
 ```
 
 Smartsheet has SDKs providing a higher level interface for several languages.
@@ -519,8 +534,6 @@ Language | SDK | Sample application
 | Node.js | [smartsheet-javascript-sdk](https://github.com/smartsheet-platform/smartsheet-javascript-sdk) | [node-read-write-sheet](https://github.com/smartsheet-samples/node-read-write-sheet)
 | Python | [smartsheet-python-sdk](https://github.com/smartsheet-platform/smartsheet-python-sdk) | [python-read-write-sheet](https://github.com/smartsheet-samples/python-read-write-sheet)
 | Ruby | [smartsheet-ruby-sdk](https://github.com/smartsheet-platform/smartsheet-ruby-sdk) | [ruby-read-write-sheet](https://github.com/smartsheet-samples/ruby-read-write-sheet)
-
-Submit your vote for additional language coverage by sending email to <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
 
 # Other Topics
 
