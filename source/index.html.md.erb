@@ -9562,14 +9562,14 @@ response = smartsheet.sheets.rows.add(
       "columnId": 7960873114331012,
       "type": "CHECKBOX",
       "value": true
-    },
-    {
+      },
+      {
       "columnId": 642523719853956,
       "displayValue": "New status",
       "type": "TEXT_NUMBER",
       "value": "New status"
-    }
-    ]
+      }
+      ]
     },
     {
       "id": 2040698783459204,
@@ -9579,20 +9579,20 @@ response = smartsheet.sheets.rows.add(
       "createdAt": "2013-02-28T17:45:13-08:00",
       "modifiedAt": "2013-02-28T17:45:13-08:00",
       "cells": [{
-          "columnId": 7960873114331012,
-          "type": "CHECKBOX",
-          "value": true
+        "columnId": 7960873114331012,
+        "type": "CHECKBOX",
+        "value": true
         },
         {
-          "columnId": 642523719853956,
-          "displayValue": "New status",
-          "type": "TEXT_NUMBER",
-          "value": "New status"
+        "columnId": 642523719853956,
+        "displayValue": "New status",
+        "type": "TEXT_NUMBER",
+        "value": "New status"
         }
       ]
     }
-	],
-	"version": 14
+  ],
+  "version": 14
 }
 ```
 
@@ -12806,7 +12806,10 @@ body = {
   ]
 }
 
-new_sheet = smartsheet.sheets.create(body: body)
+response = smartsheet.sheets.create(
+  body: body
+)
+new_sheet = response[:result]
 ```
 
 > Example Response:
@@ -12968,10 +12971,11 @@ body = {
   ]
 }
 
-new_sheet = smartsheet.sheets.create_in_folder(
+response = smartsheet.sheets.create_in_folder(
   folder_id: 2252168947361668,
   body: body
 )
+new_sheet = response[:result]
 ```
 
 > Example Response:
@@ -13132,10 +13136,11 @@ body = {
   ]
 }
 
-new_sheet = smartsheet.sheets.create_in_workspace(
+response = smartsheet.sheets.create_in_workspace(
   workspace_id: 7116448184199044,
   body: body
 )
+new_sheet = response[:result]
 ```
 
 > Example Response:
@@ -13245,7 +13250,10 @@ body = {
   from_id: 8713620155590532
 }
 
-new_sheet = smartsheet.sheets.create_from_template(body: body)
+response = smartsheet.sheets.create_from_template(
+  body: body
+)
+new_sheet = response[:result]
 ```
 
 > Example Response:
@@ -13359,10 +13367,11 @@ body = {
   from_id: 8713620155590532
 }
 
-new_sheet = smartsheet.sheets.create_in_folder_from_template(
+response = smartsheet.sheets.create_in_folder_from_template(
   folder_id: 2252168947361668,
   body: body
 )
+new_sheet = response[:result]
 ```
 
 > Example Response:
@@ -13476,10 +13485,11 @@ body = {
   from_id: 8713620155590532
 }
 
-new_sheet = smartsheet.sheets.create_in_workspace_from_template(
+response = smartsheet.sheets.create_in_workspace_from_template(
   workspace_id: 7116448184199044,
   body: body
 )
+new_sheet = response[:result]
 ```
 
 > Example Response:
@@ -14237,7 +14247,7 @@ body = {
   destination_id: 7960873114331012
 }
 
-smartsheet.sheets.move(
+sheet = smartsheet.sheets.move(
   sheet_id: 4583173393803140,
   body: body
 )
@@ -14318,10 +14328,9 @@ status = response.result
 ```
 
 ```ruby
-response = smartsheet.sheets.get_publish_status(
+status = smartsheet.sheets.get_publish_status(
   sheet_id: 4583173393803140
 )
-status = response
 ```
 
 > Example Response:
@@ -14437,11 +14446,10 @@ body = {
   ical_enabled: true
 }
 
-response = smartsheet.sheets.set_publish_status(
+status = smartsheet.sheets.set_publish_status(
   sheet_id: 4583173393803140,
   body: body
 )
-status = response
 ```
 
 > Example Response:
