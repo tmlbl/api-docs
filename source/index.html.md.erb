@@ -2356,24 +2356,26 @@ updated_attachment = response.result
 
 ```ruby
 # Sample 1: Attach new version
-filename = 'some_file.txt'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
-smartsheet.sheets.attachments.attach_new_version(
+response = smartsheet.sheets.attachments.attach_new_version(
   sheet_id: 4583173393803140,
   attachment_id: 7169782752536452,
   file: file,
   filename: filename,
   file_length: file_length
 )
+updated_attachment = response[:result]
 
 # Sample 2: Attach new version from path
-smartsheet.sheets.attachments.attach_new_version_from_path(
+response = smartsheet.sheets.attachments.attach_new_version_from_path(
   sheet_id: 4583173393803140,
   attachment_id: 7169782752536452,
-  path: 'file'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
+updated_attachment = response[:result]
 ```
 
 > Example Response:
@@ -2538,10 +2540,11 @@ versions = response.data
 ```
 
 ```ruby
-smartsheet.sheets.attachments.list_versions(
+response = smartsheet.sheets.attachments.list_versions(
   sheet_id: 4583173393803140,
   attachment_id: 7169782752536452
 )
+versions = response[:data]
 ```
 
 > Example Response:
