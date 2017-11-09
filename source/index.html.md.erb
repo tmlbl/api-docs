@@ -451,7 +451,7 @@ $ pip install smartsheet-python-sdk
 
 ```ruby
 # Add this line to your application's Gemfile
-gem 'smartsheet', '>= 1.0.0.beta'
+gem 'smartsheet', '>= 1.0.0'
 
 # And then execute
 $ bundle
@@ -1115,7 +1115,15 @@ updated_attachment = ss_client.Attachments.attach_file_to_comment(
 ```
 
 ```ruby
-# Sample 1: attach file
+# Sample 1: attach file from path
+response = smartsheet.sheets.comments.attachments.attach_file_from_path(
+  sheet_id: 4583173393803140,
+  comment_id: 4293147074291588,
+  path: '/Users/jdoe/Documents/expense_report_sample.png'
+)
+new_attachment = response[:result]
+
+# Sample 2: attach file
 filename = '/Users/jdoe/Documents/expense_report_sample.png'
 file = File.open(filename)
 file_length = File.size(filename)
@@ -1126,14 +1134,6 @@ response = smartsheet.sheets.comments.attachments.attach_file(
   file: file,
   filename: filename,
   file_length: file_length
-)
-new_attachment = response[:result]
-
-# Sample 2: attach file from path
-response = smartsheet.sheets.comments.attachments.attach_file_from_path(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588,
-  path: '/Users/jdoe/Documents/expense_report_sample.png'
 )
 new_attachment = response[:result]
 ```
@@ -1253,7 +1253,15 @@ updated_attachment = ss_client.Attachments.attach_file_to_row(
 ```
 
 ```ruby
-# Sample 1: Attach file
+# Sample 1: Attach file from path
+response = smartsheet.sheets.rows.attachments.attach_file_from_path(
+  sheet_id: 4583173393803140,
+  row_id: 4293147074291588,
+  path: '/Users/jroe/Documents/expense_report_sample.png'
+)
+new_attachment = response[:result]
+
+# Sample 2: Attach file
 filename = '/Users/jroe/Documents/expense_report_sample.png'
 file = File.open(filename)
 file_length = File.size(filename)
@@ -1264,14 +1272,6 @@ response = smartsheet.sheets.rows.attachments.attach_file(
   file: file,
   filename: filename,
   file_length: file_length
-)
-new_attachment = response[:result]
-
-# Sample 2: Attach file from path
-response = smartsheet.sheets.rows.attachments.attach_file_from_path(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  path: '/Users/jroe/Documents/expense_report_sample.png'
 )
 new_attachment = response[:result]
 ```
@@ -1383,7 +1383,14 @@ updated_attachment = ss_client.Attachments.attach_file_to_sheet(
 ```
 
 ```ruby
-# Sample 1: Attach file
+# Sample 1: Attach file from path
+response = smartsheet.sheets.attachments.attach_file_from_path(
+  sheet_id: 4583173393803140,
+  path: '/Users/jroe/Documents/expense_report_sample.png'
+)
+new_attachment = response[:result]
+
+# Sample 2: Attach file
 filename = '/Users/jroe/Documents/expense_report_sample.png'
 file = File.open(filename)
 file_length = File.size(filename)
@@ -1393,13 +1400,6 @@ response = smartsheet.sheets.attachments.attach_file(
   file: file,
   filename: filename,
   file_length: file_length
-)
-new_attachment = response[:result]
-
-# Sample 2: Attach file from path
-response = smartsheet.sheets.attachments.attach_file_from_path(
-  sheet_id: 4583173393803140,
-  path: '/Users/jroe/Documents/expense_report_sample.png'
 )
 new_attachment = response[:result]
 ```
@@ -1870,11 +1870,10 @@ attachment = ss_client.Attachments.get_attachment(
 ```
 
 ```ruby
-response = smartsheet.sheets.attachments.get(
+attachment = smartsheet.sheets.attachments.get(
   sheet_id: 4583173393803140,
   attachment_id: 7169782752536452
 )
-attachment = response[:name]
 ```
 
 > Example Response:
@@ -2355,7 +2354,15 @@ updated_attachment = response.result
 ```
 
 ```ruby
-# Sample 1: Attach new version
+# Sample 1: Attach new version from path
+response = smartsheet.sheets.attachments.attach_new_version_from_path(
+  sheet_id: 4583173393803140,
+  attachment_id: 7169782752536452,
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
+)
+updated_attachment = response[:result]
+
+# Sample 2: Attach new version
 filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
@@ -2366,14 +2373,6 @@ response = smartsheet.sheets.attachments.attach_new_version(
   file: file,
   filename: filename,
   file_length: file_length
-)
-updated_attachment = response[:result]
-
-# Sample 2: Attach new version from path
-response = smartsheet.sheets.attachments.attach_new_version_from_path(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452,
-  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 updated_attachment = response[:result]
 ```
@@ -3184,7 +3183,14 @@ ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file
 ```
 
 ```ruby
-# Sample 1: add image
+# Sample 1: Add image from path
+smartsheet.sheets.cells.add_image_from_path(
+  sheet_id: 4583173393803140,
+  row_id: 4293147074291588,
+  column_id: 495660408563588, path: 'file'
+)
+
+# Sample 2: Add image
 filename = 'some_file.txt'
 file = File.open(filename)
 file_length = File.size(filename)
@@ -3196,13 +3202,6 @@ smartsheet.sheets.cells.add_image(
   file: file,
   filename: filename,
   file_length: file_length
-)
-
-# Sample 2: add image from path
-smartsheet.sheets.cells.add_image_from_path(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588, path: 'file'
 )
 ```
 
@@ -4668,11 +4667,10 @@ comment = ss_client.Discussions.get_discussion_comment(
 ```
 
 ```ruby
-response = smartsheet.sheets.comments.get(
+comment = smartsheet.sheets.comments.get(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588
 )
-comment = response[:text]
 ```
 
 > Example Response:
@@ -4771,10 +4769,9 @@ contact = ss_client.Contacts.get_contact(
 ```
 
 ```ruby
-response = smartsheet.contacts.get(
+contact = smartsheet.contacts.get(
   contact_id: 'AAAAATYU54QAD7_fNhTnhA'
 )
-contact = response[:email]
 ```
 
 > Example Response:
@@ -5471,7 +5468,6 @@ response = smartsheet.sheets.discussions.list(
   sheet_id: 4583173393803140
 )
 discussions = response[:data]
-puts discussions
 ```
 
 > Example Response:
@@ -5535,11 +5531,10 @@ discussion = ss_client.Discussions.get_discussion(
 ```
 
 ```ruby
-response = smartsheet.sheets.discussions.get(
+discussion = smartsheet.sheets.discussions.get(
   sheet_id: 4583173393803140,
   discussion_id: 3962273862576004
 )
-discussion = response[:comments]
 ```
 
 > Example Response:
@@ -6336,7 +6331,7 @@ ss_client.Favorites.remove_favorites(
 
 ```ruby
 smartsheet.favorites.remove_folders(
-  folder_ids: [2252168947361668,2252168947361669]  # no space between ids
+  folder_ids: [2252168947361668, 2252168947361669]
 )
 ```
 
@@ -6401,7 +6396,7 @@ ss_client.Favorites.remove_favorites(
 
 ```ruby
 smartsheet.favorites.remove_reports(
-  report_ids: [2252168947361668,2252168947361669]   # no space between ids
+  report_ids: [2252168947361668, 2252168947361669]
 )
 ```
 
@@ -6466,7 +6461,7 @@ ss_client.Favorites.remove_favorites(
 
 ```ruby
 smartsheet.favorites.remove_sheets(
-  sheet_ids: [2252168947361668,2252168947361669]   # no space between ids
+  sheet_ids: [2252168947361668, 2252168947361669]
 )
 ```
 
@@ -6525,7 +6520,7 @@ ss_client.Favorites.remove_favorites(
 
 ```ruby
 smartsheet.favorites.remove_sights(
-  sight_ids: [6327127650920324,2591554075418573]  # no space between ids
+  sight_ids: [6327127650920324, 2591554075418573]
 )
 ```
 
@@ -6590,7 +6585,7 @@ ss_client.Favorites.remove_favorites(
 
 ```ruby
 smartsheet.favorites.remove_templates(
-  template_ids: [2252168947361668,2252168947361669]  # no space between ids
+  template_ids: [2252168947361668, 2252168947361669]
 )
 ```
 
@@ -6655,7 +6650,7 @@ ss_client.Favorites.remove_favorites(
 
 ```ruby
 smartsheet.favorites.remove_workspaces(
-  workspace_ids: [2252168947361668,2252168947361669]  # no space between ids
+  workspace_ids: [2252168947361668, 2252168947361669]
 )
 ```
 
@@ -7222,10 +7217,9 @@ folder = ss_client.Folders.get_folder(
 ```
 
 ```ruby
-response = smartsheet.folders.get(
+folder = smartsheet.folders.get(
   folder_id: 2252168947361668
 )
-folder = response[:name]
 ```
 
 > Example Response:
@@ -7995,10 +7989,9 @@ group = ss_client.Groups.get_group(
 ```
 
 ```ruby
-response = smartsheet.groups.get(
+group = smartsheet.groups.get(
   group_id: 4583173393803140
 )
-group = response[:name]
 ```
 
 > Example Response:
@@ -8534,8 +8527,7 @@ contents = ss_client.Home.list_all_contents(include='source')
 ```
 
 ```ruby
-response = smartsheet.home.list
-contents = response[:sheets]
+contents = smartsheet.home.list
 ```
 
 > Example Response:
@@ -8740,10 +8732,9 @@ report = ss_client.Reports.get_report(
 ```
 
 ```ruby
-response = smartsheet.reports.get(
+report = smartsheet.reports.get(
   report_id: 4583173393803140
 )
-report = response[:name]
 ```
 
 > Example Response:
@@ -10926,11 +10917,10 @@ share = ss_client.Reports.get_share(
 ```
 
 ```ruby
-response = smartsheet.reports.share.get(
+share = smartsheet.reports.share.get(
   report_id: 4583173393803140,
   share_id: 'AAABbMomFOeE'
 )
-share = response[:scope]
 ```
 
 > Example Response:
@@ -11325,11 +11315,10 @@ share = ss_client.Sheets.get_share(
 ```
 
 ```ruby
-response = smartsheet.sheets.share.get(
+share = smartsheet.sheets.share.get(
   sheet_id: 4583173393803140,
   share_id: 'AAABbMomFOeE'
 )
-share = response[:scope]
 ```
 
 > Example Response:
@@ -11725,11 +11714,10 @@ share = ss_client.Sights.get_share(
 ```
 
 ```ruby
-response = smartsheet.sights.share.get(
+share = smartsheet.sights.share.get(
   sight_id: 6327127650920324,
   share_id: 'AAABbMomFOeE'
 )
-share = response[:scope]
 ```
 
 > Example Response:
@@ -12125,11 +12113,10 @@ share = ss_client.Sheets.get_share(
 ```
 
 ```ruby
-response = smartsheet.workspaces.share.get(
+share = smartsheet.workspaces.share.get(
   workspace_id: 7116448184199044,
   share_id: 'AAABbMomFOeE'
 )
-share = response[:scope]
 ```
 
 > Example Response:
@@ -13617,7 +13604,6 @@ version = ss_client.Sheets.get_sheet_version(
 version = smartsheet.sheets.get_version(
   sheet_id: 4583173393803140
 )
-sheet = response[:version]
 ```
 
 > Example Response:
@@ -13707,10 +13693,9 @@ sheet = ss_client.Sheets.get_sheet(
 ```
 
 ```ruby
-response = smartsheet.sheets.get(
+sheet = smartsheet.sheets.get(
   sheet_id: 1531988831168388
 )
-sheet = response[:name]
 ```
 
 > Example Response:
@@ -15051,10 +15036,9 @@ Sight sight = smartsheet.sightResources().getSight(
 ```
 
 ```ruby
-response = smartsheet.sights.get(
+sight = smartsheet.sights.get(
   sight_id: 6327127650920324
 )
-sights = response[:name]
 ```
 
 > Example Response:
@@ -16513,11 +16497,10 @@ alt_email = ss_client.Users.get_alternate_email(
 ```
 
 ```ruby
-response = smartsheet.users.alternate_emails.get(
+alt_email = smartsheet.users.alternate_emails.get(
   user_id: 48569348493401200,
   alternate_email_id: 12345
 )
-email = response[:email]
 ```
 
 > Example Response:
@@ -16653,8 +16636,7 @@ user_profile = ss_client.Users.get_current_user()
 ```
 
 ```ruby
-response = smartsheet.users.get_current
-user = response[:email]
+user_profile = smartsheet.users.get_current
 ```
 
 > Example Response:
@@ -16735,10 +16717,9 @@ user_profile = ss_client.Users.get_user(
 ```
 
 ```ruby
-response = smartsheet.users.get(
+user_profile = smartsheet.users.get(
   user_id: 48569348493401200
 )
-user = response[:email]
 ```
 
 > Example Response:
@@ -18858,10 +18839,9 @@ Webhook = ss_client.Webhooks.get_webhook(
 ```
 
 ```ruby
-response = smartsheet.webhooks.get(
+Webhook = smartsheet.webhooks.get(
   webhook_id: 2674017481058180
 )
-webhook = response[:status]
 ```
 
 > Example Response:
