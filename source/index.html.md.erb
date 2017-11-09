@@ -1116,24 +1116,26 @@ updated_attachment = ss_client.Attachments.attach_file_to_comment(
 
 ```ruby
 # Sample 1: attach file
-filename = 'some_file.txt'
+filename = '/Users/jdoe/Documents/expense_report_sample.png'
 file = File.open(filename)
 file_length = File.size(filename)
 
-smartsheet.sheets.comments.attachments.attach_file(
+response = smartsheet.sheets.comments.attachments.attach_file(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588,
   file: file,
   filename: filename,
   file_length: file_length
 )
+new_attachment = response[:result]
 
 # Sample 2: attach file from path
-smartsheet.sheets.comments.attachments.attach_file_from_path(
+response = smartsheet.sheets.comments.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588,
-  path: 'file'
+  path: '/Users/jdoe/Documents/expense_report_sample.png'
 )
+new_attachment = response[:result]
 ```
 
 > Example Response:
@@ -1252,24 +1254,26 @@ updated_attachment = ss_client.Attachments.attach_file_to_row(
 
 ```ruby
 # Sample 1: Attach file
-filename = 'some_file.txt'
+filename = '/Users/jroe/Documents/expense_report_sample.png'
 file = File.open(filename)
 file_length = File.size(filename)
 
-smartsheet.sheets.rows.attachments.attach_file(
+response = smartsheet.sheets.rows.attachments.attach_file(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
   file: file,
   filename: filename,
   file_length: file_length
 )
+new_attachment = response[:result]
 
 # Sample 2: Attach file from path
-smartsheet.sheets.rows.attachments.attach_file_from_path(
+response = smartsheet.sheets.rows.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
-  path: 'file'
+  path: '/Users/jroe/Documents/expense_report_sample.png'
 )
+new_attachment = response[:result]
 ```
 
 > Example Response:
@@ -1339,7 +1343,7 @@ var options = {
   fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
 };
 
-// Attach file to comment
+// Attach file to sheet
 smartsheet.sheets.addFileAttachment(options)
   .then(function(attachment) {
       console.log(attachment);
@@ -1380,19 +1384,24 @@ updated_attachment = ss_client.Attachments.attach_file_to_sheet(
 
 ```ruby
 # Sample 1: Attach file
-filename = 'some_file.txt'
+filename = '/Users/jroe/Documents/expense_report_sample.png'
 file = File.open(filename)
 file_length = File.size(filename)
 
-smartsheet.sheets.attachments.attach_file(
+response = smartsheet.sheets.attachments.attach_file(
   sheet_id: 4583173393803140,
   file: file,
   filename: filename,
   file_length: file_length
 )
+new_attachment = response[:result]
 
 # Sample 2: Attach file from path
-smartsheet.sheets.attachments.attach_file_from_path(sheet_id: 4583173393803140, path: 'file')
+response = smartsheet.sheets.attachments.attach_file_from_path(
+  sheet_id: 4583173393803140,
+  path: '/Users/jroe/Documents/expense_report_sample.png'
+)
+new_attachment = response[:result]
 ```
 
 > Example Response:
@@ -4292,11 +4301,12 @@ body = {
   text: 'This is cool!'
 }
 
-smartsheet.sheets.comments.add(
+response = smartsheet.sheets.comments.add(
   sheet_id: 4583173393803140,
   discussion_id: 3962273862576004,
   body: body
 )
+new_comment = response[:result]
 ```
 
 > Example Request (with attachment): Add Comment
@@ -4473,11 +4483,12 @@ body = {
   text: 'Updated text!'
 }
 
-smartsheet.sheets.comments.update(
+response = smartsheet.sheets.comments.update(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588,
   body: body
 )
+updated_comment = response[:result]
 ```
 
 > Example Response:
@@ -4636,10 +4647,11 @@ comment = ss_client.Discussions.get_discussion_comment(
 ```
 
 ```ruby
-smartsheet.sheets.comments.get(
+response = smartsheet.sheets.comments.get(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588
 )
+comment = response[:text]
 ```
 
 > Example Response:
@@ -4980,6 +4992,7 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```
 
 ```ruby
+# Set options
 body = {
   title: 'New row discussion',
   comment: {
@@ -4987,11 +5000,13 @@ body = {
   }
 }
 
-smartsheet.sheets.discussions.create_on_row(
+# Create discussion on row
+response = smartsheet.sheets.discussions.create_on_row(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
   body: body
 )
+new_discussion = response[:result]
 ```
 
 > Example Request (with attachment): Create Discussion on Row
@@ -5170,6 +5185,7 @@ response = ss_client.Discussions.create_discussion_on_sheet(
 ```
 
 ```ruby
+# Set options
 body = {
   title: 'New sheet discussion',
   comment: {
@@ -5177,10 +5193,12 @@ body = {
   }
 }
 
-smartsheet.sheets.discussions.create_on_sheet(
+# Create discussion on sheet
+response = smartsheet.sheets.discussions.create_on_sheet(
   sheet_id: 4583173393803140,
   body: body
 )
+new_discussion = response[:result]
 ```
 
 > Example Request (with attachment): Create Discussion on Sheet
@@ -5428,9 +5446,11 @@ discussions = response.data
 ```
 
 ```ruby
-smartsheet.sheets.discussions.list(
+response = smartsheet.sheets.discussions.list(
   sheet_id: 4583173393803140
 )
+discussions = response[:data]
+puts discussions
 ```
 
 > Example Response:
@@ -5494,10 +5514,11 @@ discussion = ss_client.Discussions.get_discussion(
 ```
 
 ```ruby
-smartsheet.sheets.discussions.get(
+response = smartsheet.sheets.discussions.get(
   sheet_id: 4583173393803140,
   discussion_id: 3962273862576004
 )
+discussion = response[:comments]
 ```
 
 > Example Response:
@@ -5616,10 +5637,11 @@ discussions = response.data
 ```
 
 ```ruby
-smartsheet.sheets.discussions.list_row_discussions(
+response = smartsheet.sheets.discussions.list_row_discussions(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588
 )
+discussions = response[:data]
 ```
 
 > Example Response:
@@ -16108,6 +16130,7 @@ new_user = ss_client.Users.add_user(
 ```
 
 ```ruby
+# Set user properties
 body = {
   email: 'jimmy.doe@smartsheet.com',
   admin: false,
@@ -16117,7 +16140,11 @@ body = {
   resource_viewer: false
 }
 
-smartsheet.users.add(body: body)
+# Add user
+response = smartsheet.users.add(
+  body: body
+)
+new_user = response[:result]
 ```
 
 > Example Response:
@@ -16217,6 +16244,7 @@ response = ss_client.Users.add_alternate_email(
 ```
 
 ```ruby
+# Set options
 body = [
   {
     email: 'not.john.doe@smartsheet.com'
@@ -16226,7 +16254,8 @@ body = [
   }
 ]
 
-smartsheet.users.alternate_emails.add(
+# Add alternate email addresses
+response = smartsheet.users.alternate_emails.add(
   user_id: 48569348493401200,
   body: body
 )
@@ -16308,7 +16337,7 @@ response = ss_client.Users.promote_alternate_email(
 ```
 
 ```ruby
-smartsheet.users.alternate_emails.make_primary(
+response = smartsheet.users.alternate_emails.make_primary(
   user_id: 48569348493401200,
   alternate_email_id: 12345
 )
@@ -16463,10 +16492,11 @@ alt_email = ss_client.Users.get_alternate_email(
 ```
 
 ```ruby
-smartsheet.users.alternate_emails.get(
+response = smartsheet.users.alternate_emails.get(
   user_id: 48569348493401200,
   alternate_email_id: 12345
 )
+email = response[:email]
 ```
 
 > Example Response:
@@ -16537,9 +16567,10 @@ emails = response.data
 ```
 
 ```ruby
-smartsheet.users.alternate_emails.list(
+response = smartsheet.users.alternate_emails.list(
   user_id: 48569348493401200
 )
+emails = response[:data]
 ```
 
 > Example Response:
@@ -16601,7 +16632,8 @@ user_profile = ss_client.Users.get_current_user()
 ```
 
 ```ruby
-smartsheet.users.get_current
+response = smartsheet.users.get_current
+user = response[:email]
 ```
 
 > Example Response:
@@ -16682,9 +16714,10 @@ user_profile = ss_client.Users.get_user(
 ```
 
 ```ruby
-smartsheet.users.get(
+response = smartsheet.users.get(
   user_id: 48569348493401200
 )
+user = response[:email]
 ```
 
 > Example Response:
@@ -16787,7 +16820,8 @@ users = response.data
 ```
 
 ```ruby
-smartsheet.users.list
+response = smartsheet.users.list
+users = response[:data]
 ```
 
 > Example Response:
@@ -16991,6 +17025,7 @@ updated_user = ss_client.Users.update_user(
 ```
 
 ```ruby
+# Specify updated user properties
 body = {
   admin: false,
   licensed_sheet_creator: true,
@@ -16999,10 +17034,12 @@ body = {
   resource_viewer: true
 }
 
-smartsheet.users.update(
+# Update user
+response = smartsheet.users.update(
   user_id: 48569348493401200,
   body: body
 )
+updated_user = response[:result]
 ```
 
 > Example Response:
