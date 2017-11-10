@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-11-09
+Updated 2017-11-10
 
 # Overview
 
@@ -3197,18 +3197,19 @@ ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file
 
 ```ruby
 # Sample 1: Add image from path
-smartsheet.sheets.cells.add_image_from_path(
+response = smartsheet.sheets.cells.add_image_from_path(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
-  column_id: 495660408563588, path: 'file'
+  column_id: 495660408563588, path: '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
 )
+new_image = response[:result]
 
 # Sample 2: Add image
-filename = 'some_file.txt'
+filename = '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
 file = File.open(filename)
 file_length = File.size(filename)
 
-smartsheet.sheets.cells.add_image(
+response = smartsheet.sheets.cells.add_image(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
   column_id: 495660408563588,
@@ -3216,6 +3217,7 @@ smartsheet.sheets.cells.add_image(
   filename: filename,
   file_length: file_length
 )
+new_image = response[:result]
 ```
 
 > Example Response:
@@ -3454,7 +3456,9 @@ body = [
   }
 ]
 
-smartsheet.sheets.list_image_urls(body: body)
+image_urls = smartsheet.sheets.list_image_urls(
+  body: body
+)
 ```
 
 > Example Response:
