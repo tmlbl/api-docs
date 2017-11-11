@@ -45,13 +45,13 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-11-09
+Updated 2017-11-10
 
 # Overview
 
 ## Introduction
 
-> Click the corresponding tab above to see sample code in the language of your choice. For more detail, see [Sample Code and SDKs](#sample-code-and-sdks))
+> Click the corresponding tab above to see sample code in the language of your choice. For more detail, see [SDKs and Sample Code](#sdks-and-sample-code))
 
 ```shell
 # The cURL code samples included in this API documentation demonstrate
@@ -125,7 +125,7 @@ To get details on the sheet with id 123456, use the following:
 
 This Id pattern is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.
 
-If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see [Sample Code and SDKs.](#sample-code-and-sdks)
+If you don't want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see [SDKs and Sample Code.](#sdks-and-sample-code)
 
 ### HTTP Verbs
 
@@ -423,7 +423,7 @@ Before you begin, you should already have an access token, which you used in the
 
 This core hierarchy of Sheet > Column > Row > Cell is essential to working with the Smartsheet API. As your user's sheets grow in complexity, the responses do too. This walkthrough has given you some navigational aid in finding the right value to plug into your API calls. Use the API Reference and the example language tabs to learn more.
 
-# Sample Code and SDKs
+# SDKs and Sample Code
 
 > Install the SDK
 
@@ -508,6 +508,21 @@ logger.level = Logger::INFO
 
 # Initialize client
 smartsheet = Smartsheet::Client.new(token: 'll352u9jujauoqz4gstvsae05', logger: logger)
+
+# Example call
+response = smartsheet.sheets.list
+sheets = response[:data]
+
+# Return is a Ruby Hash as below, though this document
+# displays a JSON example to accommodate the multiple tabs
+{
+  :id=>0123456789012345,
+  :name=>"Expense Report May 2017",
+  :access_level=>"VIEWER",
+  :permalink=>"https://app.company.com",
+  :created_at=>"2016-12-08T21:14:43Z",
+  :modified_at=>"2017-08-20T02:47:41Z"
+}
 ```
 
 Smartsheet has SDKs providing a higher level interface for several languages.
@@ -519,8 +534,6 @@ Language | SDK | Sample application
 | Node.js | [smartsheet-javascript-sdk](https://github.com/smartsheet-platform/smartsheet-javascript-sdk) | [node-read-write-sheet](https://github.com/smartsheet-samples/node-read-write-sheet)
 | Python | [smartsheet-python-sdk](https://github.com/smartsheet-platform/smartsheet-python-sdk) | [python-read-write-sheet](https://github.com/smartsheet-samples/python-read-write-sheet)
 | Ruby | [smartsheet-ruby-sdk](https://github.com/smartsheet-platform/smartsheet-ruby-sdk) | [ruby-read-write-sheet](https://github.com/smartsheet-samples/ruby-read-write-sheet)
-
-Submit your vote for additional language coverage by sending email to <a href="mailto:api@smartsheet.com">api@smartsheet.com</a>.
 
 # Other Topics
 
@@ -3184,18 +3197,19 @@ ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file
 
 ```ruby
 # Sample 1: Add image from path
-smartsheet.sheets.cells.add_image_from_path(
+response = smartsheet.sheets.cells.add_image_from_path(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
-  column_id: 495660408563588, path: 'file'
+  column_id: 495660408563588, path: '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
 )
+new_image = response[:result]
 
 # Sample 2: Add image
-filename = 'some_file.txt'
+filename = '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
 file = File.open(filename)
 file_length = File.size(filename)
 
-smartsheet.sheets.cells.add_image(
+response = smartsheet.sheets.cells.add_image(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
   column_id: 495660408563588,
@@ -3203,6 +3217,7 @@ smartsheet.sheets.cells.add_image(
   filename: filename,
   file_length: file_length
 )
+new_image = response[:result]
 ```
 
 > Example Response:
@@ -3441,7 +3456,9 @@ body = [
   }
 ]
 
-smartsheet.sheets.list_image_urls(body: body)
+image_urls = smartsheet.sheets.list_image_urls(
+  body: body
+)
 ```
 
 > Example Response:
@@ -3680,7 +3697,7 @@ body = {
 }
 
 # Add the column
-smartsheet.sheets.columns.add(
+new_columns = smartsheet.sheets.columns.add(
   sheet_id: 9283173393803140,
   body: body
 )
