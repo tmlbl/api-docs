@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-11-10
+Updated 2017-11-13
 
 # Overview
 
@@ -1081,8 +1081,8 @@ var options = {
   sheetId: 1696803624483716,
   commentId: 7722333183016324,
   fileSize: 20765,
-  fileName: "expense_report_sample.png",
-  fileStream: fs.createReadStream("/Users/jdoe/Documents/expense_report_sample.png")
+  fileName: "ProgressReport.docx",
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach file to comment
@@ -1106,7 +1106,7 @@ Attachment attachment = smartsheet.SheetResources.CommentResources.AttachmentRes
 
 ```java
 // Specify file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach file to comment
 Attachment attachment = smartsheet.sheetResources().commentResources().attachmentResources().attachFile(
@@ -1132,12 +1132,12 @@ updated_attachment = ss_client.Attachments.attach_file_to_comment(
 response = smartsheet.sheets.comments.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588,
-  path: '/Users/jdoe/Documents/expense_report_sample.png'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 new_attachment = response[:result]
 
 # Sample 2: attach file
-filename = '/Users/jdoe/Documents/expense_report_sample.png'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
@@ -1219,8 +1219,8 @@ var options = {
   sheetId: 1696803624483716,
   rowId: 1049041355358596,
   fileSize: 20765,
-  fileName: "expense_report_sample.png",
-  fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
+  fileName: "ProgressReport.docx",
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach file to row
@@ -1244,7 +1244,7 @@ Attachment attachment = smartsheet.SheetResources.RowResources.AttachmentResourc
 
 ```java
 // Specify file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach file to row
 Attachment attachment = smartsheet.sheetResources().rowResources().attachmentResources().attachFile(
@@ -1270,12 +1270,12 @@ updated_attachment = ss_client.Attachments.attach_file_to_row(
 response = smartsheet.sheets.rows.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
-  path: '/Users/jroe/Documents/expense_report_sample.png'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 new_attachment = response[:result]
 
 # Sample 2: Attach file
-filename = '/Users/jroe/Documents/expense_report_sample.png'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
@@ -1352,8 +1352,8 @@ var fs = require("fs")
 var options = {
   sheetId: 1694401624483716,
   fileSize: 20765,
-  fileName: "expense_report_sample.png",
-  fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
+  fileName: "ProgressReport.docx",
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach file to sheet
@@ -1376,7 +1376,7 @@ Attachment attachment = smartsheet.SheetResources.AttachmentResources.AttachFile
 
 ```java
 // Specify file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach file to sheet
 Attachment attachment = smartsheet.sheetResources().attachmentResources().attachFile(
@@ -1399,12 +1399,12 @@ updated_attachment = ss_client.Attachments.attach_file_to_sheet(
 # Sample 1: Attach file from path
 response = smartsheet.sheets.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
-  path: '/Users/jroe/Documents/expense_report_sample.png'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 new_attachment = response[:result]
 
 # Sample 2: Attach file
-filename = '/Users/jroe/Documents/expense_report_sample.png'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
@@ -1737,9 +1737,9 @@ updated_attachment = ss_client.Attachments.attach_url_to_sheet(
 ```ruby
 # Specify options
 body = {
-  name: 'a link',
-  description: 'some cool website',
-  url: 'https://www.smartsheet.com/',
+  name: 'Search Engine',
+  description: 'A popular search engine.',
+  url: 'http://www.google.com',
   attachment_type: 'LINK'
 }
 
@@ -1848,7 +1848,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 9283173393803140,
   attachmentId: 4583173393803140
 };
 
@@ -1865,27 +1865,27 @@ smartsheet.sheets.getAttachment(options)
 ```csharp
 Attachment attachment = smartsheet.SheetResources.AttachmentResources.GetAttachment(
   9283173393803140,               // long sheetId
-  0123456789012334                // long attachmentId
+  4583173393803140                // long attachmentId
 );
 ```
 
 ```java
 Attachment attachment = smartsheet.sheetResources().attachmentResources().getAttachment(
   9283173393803140L,       // long sheetId
-  0123456789012334L        // long attachmentId
+  4583173393803140L        // long attachmentId
 );
 ```
 
 ```python
 attachment = ss_client.Attachments.get_attachment(
   9283173393803140,       # sheet_id
-  0123456789012334)       # attachment_id
+  4583173393803140)       # attachment_id
 ```
 
 ```ruby
 attachment = smartsheet.sheets.attachments.get(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452
+  sheet_id: 9283173393803140,
+  attachment_id: 4583173393803140
 )
 ```
 
@@ -1924,7 +1924,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668
+  sheetId: 9283173393803140
 };
 
 // List attachments
@@ -1971,7 +1971,7 @@ attachments = response.data
 
 ```ruby
 response = smartsheet.sheets.attachments.list(
-  sheet_id: 4583173393803140
+  sheet_id: 9283173393803140
 )
 attachments = response[:data]
 ```
@@ -1997,7 +1997,7 @@ attachments = response[:data]
 			"name": "att4.png",
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
-			"id": 4583173393803140,
+			"id": 7993173393803140,
 			"parentType" : "ROW",
 			"parentId" : 684956754834557
 		}
@@ -2082,8 +2082,8 @@ attachments = response.data
 
 ```ruby
 response = smartsheet.sheets.discussions.attachments.list(
-  sheet_id: 4583173393803140,
-  discussion_id: 3962273862576004
+  sheet_id: 9283173393803140,
+  discussion_id: 1234567890123456
 )
 attachments = response[:data]
 ```
@@ -2109,7 +2109,7 @@ attachments = response[:data]
 			"name": "att4.png",
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
-			"id": 4583173393803140,
+			"id": 7993173393803140,
 			"parentType" : "COMMENT",
 			"parentId" : 684956754834557
 		}
@@ -2194,7 +2194,7 @@ attachments = response.data
 
 ```ruby
 response = smartsheet.sheets.rows.attachments.list(
-  sheet_id: 4583173393803140,
+  sheet_id: 2252168947361668,
   row_id: 4293147074291588
 )
 attachments = response[:data]
@@ -2221,7 +2221,7 @@ attachments = response[:data]
 			"name": "att4.png",
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
-			"id": 4583173393803140,
+			"id": 7993173393803140,
 			"parentType" : "COMMENT",
 			"parentId" : 684956754834557
 		}
@@ -2319,7 +2319,7 @@ var options = {
   attachmentId: 0123456789123456,
   fileSize: 17291,
   fileName: "ProgressReport.docx",
-  fileStream: fs.createReadStream("ProgressReport.docx")
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach new version
@@ -2343,7 +2343,7 @@ Attachment attachment = smartsheet.SheetResources.AttachmentResources.Versioning
 
 ```java
 // Specify the new file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach new version of the file
 Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
@@ -2369,8 +2369,8 @@ updated_attachment = response.result
 ```ruby
 # Sample 1: Attach new version from path
 response = smartsheet.sheets.attachments.attach_new_version_from_path(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452,
+  sheet_id: 9283173393803140,
+  attachment_id: 0123456789123456,
   path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 updated_attachment = response[:result]
@@ -2381,8 +2381,8 @@ file = File.open(filename)
 file_length = File.size(filename)
 
 response = smartsheet.sheets.attachments.attach_new_version(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452,
+  sheet_id: 9283173393803140,
+  attachment_id: 0123456789123456,
   file: file,
   filename: filename,
   file_length: file_length
@@ -2464,8 +2464,8 @@ ss_client.Attachments.delete_attachment_versions(
 
 ```ruby
 smartsheet.sheets.attachments.delete_all_versions(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452
+  sheet_id: 9283173393803140,
+  attachment_id: 0123456789123456
 )
 ```
 
@@ -2554,7 +2554,7 @@ versions = response.data
 ```ruby
 response = smartsheet.sheets.attachments.list_versions(
   sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452
+  attachment_id: 5510069950408580
 )
 versions = response[:data]
 ```
@@ -2777,9 +2777,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
-  rowId: 4293147074291588,
-  columnId: 642523719853956
+  sheetId: 9283173393803140,
+  rowId: 0123456789012345,
+  columnId: 4567890123456789
 };
 
 // Get cell history
@@ -2847,9 +2847,9 @@ revisions = response.data
 
 ```ruby
 response = smartsheet.sheets.cells.get_history(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588
+  sheet_id: 9283173393803140,
+  row_id: 0123456789012345,
+  column_id: 4567890123456789
 )
 revisions = response[:data]
 ```
@@ -2864,7 +2864,7 @@ revisions = response[:data]
   "totalCount": 3,
 	"data": [
 		{
-			"columnId":642523719853956,
+			"columnId":4567890123456789,
 			"displayValue": "Revision 3",
 			"columnType": "TEXT_NUMBER",
 			"value": "Revision 3",
@@ -2875,7 +2875,7 @@ revisions = response[:data]
 			}
 		},
 		{
-			"columnId":642523719853956,
+			"columnId":4567890123456789,
 			"displayValue": "Revision 2",
 			"columnType": "TEXT_NUMBER",
 			"value": "Revision 2",
@@ -2886,7 +2886,7 @@ revisions = response[:data]
 			}
 		},
 		{
-			"columnId":642523719853956,
+			"columnId":4567890123456789,
 			"displayValue": "Revision 1",
 			"columnType": "TEXT_NUMBER",
 			"value": "Revision 1",
@@ -3162,9 +3162,9 @@ Image image = new Image
   };
 
 smartsheet.SheetResources.RowResources.CellResources.AddImageToCell(
-  3285357287499652, // sheetId
-  1123834706323332, // rowId
-  4549065498224516, // columnId
+  1696831624483716, // sheetId
+  1049441315358596, // rowId
+  74761903175665540, // columnId
   "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png",
   "image"
 );
@@ -3179,17 +3179,17 @@ image.setWidth(16L);
 
 smartsheet.sheetResources().rowResources().cellResources().addImageToCell(
   1639534409607044L,      // sheetId
-  3344087179913092L,      // rowId
-  1735559124150148L,      // columnId
+  1049441315358596L,      // rowId
+  74761903175665540L,      // columnId
   "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png",
   "image"
 );
 ```
 
 ```python
-sheet_id = 3285357287499652
-column_id = 4549065498224516
-row_id = 1123834706323332
+sheet_id = 1696831624483716
+column_id = 74761903175665540
+row_id = 1049441315358596
 caution_pic = "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png"
 file_type = "png"
 ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file_type)
@@ -3198,9 +3198,10 @@ ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file
 ```ruby
 # Sample 1: Add image from path
 response = smartsheet.sheets.cells.add_image_from_path(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588, path: '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
+  sheet_id: 1696831624483716,
+  row_id: 1049441315358596,
+  column_id: 74761903175665540,
+  path: '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
 )
 new_image = response[:result]
 
@@ -3210,9 +3211,9 @@ file = File.open(filename)
 file_length = File.size(filename)
 
 response = smartsheet.sheets.cells.add_image(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588,
+  sheet_id: 1696831624483716,
+  row_id: 1049441315358596,
+  column_id: 74761903175665540,
   file: file,
   filename: filename,
   file_length: file_length
@@ -3429,7 +3430,7 @@ smartsheet.images.listImageUrls(options)
 
 ```csharp
 // Build list of image urls
-ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = imageId } };
+ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = "jpbGklqdfZuL4Jw-kZhdZA" } };
 
 string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).ImageUrls[0].Url;
 ```
@@ -3437,7 +3438,7 @@ string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).Image
 ```java
 // Build list of image urls
 ImageUrl imageUrl = new ImageUrl();
-imageUrl.setImageId(imageId);
+imageUrl.setImageId("jpbGklqdfZuL4Jw-kZhdZA");
 List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
 
 String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
@@ -3450,7 +3451,7 @@ String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).get
 ```ruby
 body = [
   {
-    image_id: 'e1znCxhuZo_soEJtUmmX_A',
+    image_id: 'jpbGklqdfZuL4Jw-kZhdZA',
     height: 100,
     width: 100
   }
@@ -3467,7 +3468,7 @@ image_urls = smartsheet.sheets.list_image_urls(
 {
   "urlExpiresInMillis": 1800000,
   "imageUrls": [{
-    "imageId": "e1znCxhuZo_soEJtUmmX_A",
+    "imageId": "jpbGklqdfZuL4Jw-kZhdZA",
     "url": "https://urltoimage1.com?qs1=foo"
   },
   {
@@ -3603,7 +3604,7 @@ var column = [
     "title": "New Date Column",
     "type": "DATE",
     "validation": true,
-    "index": 5
+    "index": 4
   }
 ];
 
@@ -3634,7 +3635,7 @@ Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DA
 
 // Add columns to the sheet
 IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
-  9283173393803140, // long sheetId
+  2252168947361668, // long sheetId
   new Column[] { columnA, columnB }
 );
 ```
@@ -3657,7 +3658,7 @@ Column column2 = new Column.AddColumnToSheetBuilder()
 
 // Add columns to the sheet
 List<Column> newColumns = smartsheet.sheetResources().columnResources().addColumns(
-  9283173393803140L,       // long sheetId
+  2252168947361668L,       // long sheetId
   Arrays.asList(column1, column2)
 );
 ```
@@ -3684,21 +3685,32 @@ column2 = ss_client.models.Column({
 
 # Add columns to the sheet
 new_columns = ss_client.Sheets.add_columns(
-  9283173393803140,       # sheet_id
+  2252168947361668,       # sheet_id
   [column1, column2])
 ```
 
 ```ruby
 # Define options
 body = {
-  title: 'new column',
-  type: 'TEXT_NUMBER',
-  index: 3
+  title: 'New Picklist Column 1',
+  type: 'PICKLIST',
+  options: [
+    'First',
+    'Second',
+    'Third'
+  ],
+  index: 4
+},
+{
+  title: "New Date Column",
+  type: 'DATE',
+  validation: true,
+  index: 4
 }
 
 # Add the column
 new_columns = smartsheet.sheets.columns.add(
-  sheet_id: 9283173393803140,
+  sheet_id: 2252168947361668,
   body: body
 )
 ```
@@ -3763,8 +3775,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
-  columnId: 7881817631025028
+  sheetId: 9283173393803140,
+  columnId: 0123456789012345
 };
 
 // Delete column
@@ -3799,8 +3811,8 @@ ss_client.Sheets.delete_column(
 
 ```ruby
 smartsheet.sheets.columns.delete(
-  sheet_id: 4583173393803140,
-  column_id: 495660408563588
+  sheet_id: 9283173393803140,
+  column_id: 0123456789012345
 )
 ```
 
@@ -3835,7 +3847,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 9283173393803140,
   columnId: 7960873114331012
 };
 
@@ -3853,14 +3865,14 @@ smartsheet.sheets.getColumns(options)
 // Sample 1: Omit 'include' parameter
 Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
   9283173393803140,               // long sheetId
-  0123456789012345,               // long columnId
+  7960873114331012,               // long columnId
   null                            // IEnumerable<ColumnInclusion> includes
 );
 
 // Sample 2: Specify 'include' parameter with value of "FILTERS"
 Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
   9283173393803140,               // long sheetId
-  0123456789012345,               // long columnId
+  7960873114331012,               // long columnId
   new ColumnInclusion[] { ColumnInclusion.FILTERS }
 );
 ```
@@ -3869,14 +3881,14 @@ Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
 // Sample 1: Omit 'include' parameter
 Column column = smartsheet.sheetResources().columnResources().getColumn(
   9283173393803140L,       // long sheetId
-  0123456789012345L,       // long columnId
+  7960873114331012L,       // long columnId
   null                     // EnumSet<ColumnInclusion> includes
 );
 
 // Sample 2: Specify 'include' parameter with value of "FILTERS"
 Column column = smartsheet.sheetResources().columnResources().getColumn(
   9283173393803140L,       // long sheetId
-  0123456789012345L,       // long columnId
+  7960873114331012L,       // long columnId
   EnumSet.of(ColumnInclusion.FILTERS)
 );
 ```
@@ -3884,13 +3896,13 @@ Column column = smartsheet.sheetResources().columnResources().getColumn(
 ```python
 column = ss_client.Sheets.get_column(
   9283173393803140,       # sheet_id
-  0123456789012345)       # column_id
+  7960873114331012)       # column_id
 ```
 
 ```ruby
 column = smartsheet.sheets.columns.get(
   sheet_id: 9283173393803140,
-  column_id: 0123456789012345
+  column_id: 7960873114331012
 )
 ```
 
@@ -3930,7 +3942,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668
+  sheetId: 9283173393803140
 };
 
 // List columns
@@ -4064,7 +4076,7 @@ smartsheet.sheets.updateColumn(options)
 ```csharp
 // Specify column properties
 Column columnSpecification = new Column.UpdateColumnBuilder(
-      5005385858869124,
+      5005385858869124,   // columnId
       "First Column",
       0)                  // column index
   .SetType(ColumnType.PICKLIST)
@@ -4072,13 +4084,16 @@ Column columnSpecification = new Column.UpdateColumnBuilder(
   .Build();
 
 // Update column
-Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, columnSpecification);
+Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
+  2252168947361668,   // sheetId
+  columnSpecification
+);
 ```
 
 ```java
 // Specify column properties
 Column columnSpecification = new Column.UpdateColumnBuilder()
-  .setColumnId(2252168947361668L)         // long columnId
+  .setColumnId(5005385858869124)         // long columnId
   .setTitle("First Column")
   .setIndex(0)
   .setType(ColumnType.PICKLIST)
@@ -4086,7 +4101,10 @@ Column columnSpecification = new Column.UpdateColumnBuilder()
   .build();
 
 // Update column
-Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(2252168947361668L, columnSpecification);
+Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(
+  2252168947361668,   // sheetId
+  columnSpecification
+);
 ```
 
 ```python
@@ -4101,7 +4119,7 @@ column_spec = ss_client.models.Column({
 # Update column
 response = ss_client.Sheets.update_column(
   2252168947361668,       # sheet_id
-  2252168947361668,       # column_id
+  5005385858869124,       # column_id
   column_spec)
 
 updated_column = response.result
@@ -4110,13 +4128,18 @@ updated_column = response.result
 ```ruby
 # Specify column properties
 body = {
-  title: 'updated column'
+  title: 'First Column',
+  type: 'PICKLIST',
+  options: [
+    'One',
+    'Two'
+  ]
 }
 
 # Update column
 response = smartsheet.sheets.columns.update(
-  sheet_id: 4583173393803140,
-  column_id: 495660408563588,
+  sheet_id: 2252168947361668,
+  column_id: 5005385858869124,
   body: body
 )
 updated_column = response[:result]
@@ -4335,11 +4358,11 @@ response = ss_client.Discussions.add_comment_to_discussion(
 
 ```ruby
 body = {
-  text: 'This is cool!'
+  text: 'This is a new comment.'
 }
 
 response = smartsheet.sheets.comments.add(
-  sheet_id: 4583173393803140,
+  sheet_id: 2252168947361668,
   discussion_id: 3962273862576004,
   body: body
 )
@@ -4360,7 +4383,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
     # Content of the comment.json file:
     #
     {
-      "text":"This text is the body of the new comment"
+      "text":"This is a new comment."
     }
 ```
 
@@ -4400,7 +4423,7 @@ smartsheet.sheetResources().discussionResources().commentResources().addCommentW
 ```python
 # Create comment
 comment = ss_client.models.Comment({
-  'text': 'You might want this.'
+  'text': 'This is a new comment.'
 })
 
 # Add comment (with attachment) to discussion
@@ -4517,12 +4540,12 @@ comment = ss_client.Discussions.update_comment(
 
 ```ruby
 body = {
-  text: 'Updated text!'
+  text: 'This is the updated comment text'
 }
 
 response = smartsheet.sheets.comments.update(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588,
+  sheet_id: 3285357287499652,
+  comment_id: 7144101943502724,
   body: body
 )
 updated_comment = response[:result]
@@ -4612,8 +4635,8 @@ ss_client.Discussions.delete_discussion_comment(
 
 ```ruby
 smartsheet.sheets.comments.delete(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588
+  sheet_id: 2252168947361668,
+  comment_id: 4952999001909124
 )
 ```
 
@@ -4685,8 +4708,8 @@ comment = ss_client.Discussions.get_discussion_comment(
 
 ```ruby
 comment = smartsheet.sheets.comments.get(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588
+  sheet_id: 2252168947361668,
+  comment_id: 4856934849340120
 )
 ```
 
@@ -4698,7 +4721,7 @@ comment = smartsheet.sheets.comments.get(
   "createdBy" : {"name": "John Doe", "email" : "john.doe@smartsheet.com"},
   "createdAt" : "2013-06-24T21:07:45Z",
   "modifiedAt" : "2013-06-24T21:07:45Z",
-  "discussionId" : 48569348493469348,
+  "discussionId" : 4503677744506756,
   "id": 48569348493401200
 }
 ```
@@ -4756,7 +4779,7 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 
 ```javascript
 // Set options
-var options = {id: "AAcBgiYU54QAGfLS5hTnhA"};
+var options = {id: "AAAAATYU54QAD7_fNhTnhA"};
 
 // Get contact
 smartsheet.contacts.getContact(options)
@@ -4877,7 +4900,7 @@ contacts = response[:data]
       "email": "dd@example.com"
     },
     {
-      "id": "AAAAATYU54QAH7_fNhTnhA",
+      "id": "AAXFBiYU54QAEeWu5hTnhA",
       "name": "Ed Edwin",
       "email": "ee@example.com"
     }
@@ -5029,9 +5052,9 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```ruby
 # Set options
 body = {
-  title: 'New row discussion',
+  title: 'This is a new discussion',
   comment: {
-    text: 'First!'
+    text: 'This text is the body of the first comment'
   }
 }
 
@@ -5222,9 +5245,9 @@ response = ss_client.Discussions.create_discussion_on_sheet(
 ```ruby
 # Set options
 body = {
-  title: 'New sheet discussion',
+  title: 'This is a new discussion',
   comment: {
-    text: 'First!'
+    text: 'This text is the body of the first comment'
   }
 }
 
@@ -5797,7 +5820,7 @@ response = ss_client.Favorites.add_favorites([
 ```ruby
 # Specify favorites
 body = {
-  type: 'sight',
+  type: 'sheet',
   object_id: 8400677765441412
 }
 
@@ -6732,7 +6755,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=data
 // Specify destination information
 var body = {
   destinationType: "folder",
-  destinationId: 6327127650920324,
+  destinationId: 7960873114331012,
   newName: "Folder Copy"
 };
 
@@ -6762,7 +6785,7 @@ smartsheet.folders.copyFolder(options)
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
-  DestinationId = 6327127650920324,
+  DestinationId = 7960873114331012,
   DestinationType = DestinationType.FOLDER,
   NewName = "newFolderName"
 };
@@ -6790,7 +6813,7 @@ Folder folder = smartsheet.FolderResources.CopyFolder(
 // Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
   .setDestinationType(DestinationType.FOLDER)
-  .setDestinationId(6327127650920324L)    // long destinationFolderId
+  .setDestinationId(7960873114331012L)    // long destinationFolderId
   .setNewName("newFolderName")
   .build();
 
@@ -6815,7 +6838,7 @@ Folder folder = smartsheet.folderResources().copyFolder(
 response = ss_client.Folders.copy_folder(
   2252168947361668,                           # folder_id
   ss_client.models.ContainerDestination({
-    'destination_id': 6327127650920324,
+    'destination_id': 7960873114331012,
     'destination_type': 'folder',
     'new_name': 'newFolderName'
   })
@@ -6825,9 +6848,9 @@ response = ss_client.Folders.copy_folder(
 ```ruby
 # Specify destination information
 body = {
-  destination_type: 'workspace',
-  destination_id: 2252168947361668,
-  new_name: 'Copy of Folder'
+  destination_type: 'folder',
+  destination_id: 7960873114331012,
+  new_name: 'newFolderName'
 }
 
 # Copy folder
