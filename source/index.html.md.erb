@@ -45,7 +45,7 @@ search: false
 <% PERSONAL_SETTINGS_MANAGE_EMAIL_URL = "https://help.smartsheet.com/articles/2392037-change-the-email-address-used-with-your-smartsheet-account#manageemails" %>
 # <span class="customTOCSectionHeading">Smartsheet API 2.0</span>
 
-Updated 2017-11-10
+Updated 2017-11-14
 
 # Overview
 
@@ -246,7 +246,7 @@ The Smartsheet API uses OAuth 2.0 for Authentication and Authorization. An HTTP 
 
 If you want to get started quickly, or are developing a standalone application that can run with your credentials, follow these instructions:
 
-1. Open the Account/Personal Settings form and click the "API Access" tab.
+1. Click the Account button in the upper-right corner of your Smartsheet screen and click Personal Settings. Click the "API Access" tab.
 2. Click the "Generate new access token" button to obtain an access token.
 
 The access token must be sent with every API call in an HTTPS authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
@@ -642,7 +642,7 @@ During the above steps for requesting authorization from the user, if the user c
 Value | Description |
 -----|-----|
 code | Authorization code required to obtain access token.
-expires_in | Number of seconds code is valid once issued; this is always four minutes - you must obtain an access token within that time.
+expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes - you must obtain an access token within that time.
 state | **state** string specified earlier.
 
 If the user clicks "Deny", Smartsheet redirects the user to the Redirect URL with the following parameters:
@@ -1081,8 +1081,8 @@ var options = {
   sheetId: 1696803624483716,
   commentId: 7722333183016324,
   fileSize: 20765,
-  fileName: "expense_report_sample.png",
-  fileStream: fs.createReadStream("/Users/jdoe/Documents/expense_report_sample.png")
+  fileName: "ProgressReport.docx",
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach file to comment
@@ -1106,7 +1106,7 @@ Attachment attachment = smartsheet.SheetResources.CommentResources.AttachmentRes
 
 ```java
 // Specify file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach file to comment
 Attachment attachment = smartsheet.sheetResources().commentResources().attachmentResources().attachFile(
@@ -1132,12 +1132,12 @@ updated_attachment = ss_client.Attachments.attach_file_to_comment(
 response = smartsheet.sheets.comments.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
   comment_id: 4293147074291588,
-  path: '/Users/jdoe/Documents/expense_report_sample.png'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 new_attachment = response[:result]
 
 # Sample 2: attach file
-filename = '/Users/jdoe/Documents/expense_report_sample.png'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
@@ -1219,8 +1219,8 @@ var options = {
   sheetId: 1696803624483716,
   rowId: 1049041355358596,
   fileSize: 20765,
-  fileName: "expense_report_sample.png",
-  fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
+  fileName: "ProgressReport.docx",
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach file to row
@@ -1244,7 +1244,7 @@ Attachment attachment = smartsheet.SheetResources.RowResources.AttachmentResourc
 
 ```java
 // Specify file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach file to row
 Attachment attachment = smartsheet.sheetResources().rowResources().attachmentResources().attachFile(
@@ -1270,12 +1270,12 @@ updated_attachment = ss_client.Attachments.attach_file_to_row(
 response = smartsheet.sheets.rows.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
   row_id: 4293147074291588,
-  path: '/Users/jroe/Documents/expense_report_sample.png'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 new_attachment = response[:result]
 
 # Sample 2: Attach file
-filename = '/Users/jroe/Documents/expense_report_sample.png'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
@@ -1352,8 +1352,8 @@ var fs = require("fs")
 var options = {
   sheetId: 1694401624483716,
   fileSize: 20765,
-  fileName: "expense_report_sample.png",
-  fileStream: fs.createReadStream("/Users/jroe/Documents/expense_report_sample.png")
+  fileName: "ProgressReport.docx",
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach file to sheet
@@ -1376,7 +1376,7 @@ Attachment attachment = smartsheet.SheetResources.AttachmentResources.AttachFile
 
 ```java
 // Specify file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach file to sheet
 Attachment attachment = smartsheet.sheetResources().attachmentResources().attachFile(
@@ -1399,12 +1399,12 @@ updated_attachment = ss_client.Attachments.attach_file_to_sheet(
 # Sample 1: Attach file from path
 response = smartsheet.sheets.attachments.attach_file_from_path(
   sheet_id: 4583173393803140,
-  path: '/Users/jroe/Documents/expense_report_sample.png'
+  path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 new_attachment = response[:result]
 
 # Sample 2: Attach file
-filename = '/Users/jroe/Documents/expense_report_sample.png'
+filename = '/Users/jdoe/Documents/ProgressReport.docx'
 file = File.open(filename)
 file_length = File.size(filename)
 
@@ -1737,9 +1737,9 @@ updated_attachment = ss_client.Attachments.attach_url_to_sheet(
 ```ruby
 # Specify options
 body = {
-  name: 'a link',
-  description: 'some cool website',
-  url: 'https://www.smartsheet.com/',
+  name: 'Search Engine',
+  description: 'A popular search engine.',
+  url: 'http://www.google.com',
   attachment_type: 'LINK'
 }
 
@@ -1848,7 +1848,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId} 
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 9283173393803140,
   attachmentId: 4583173393803140
 };
 
@@ -1865,27 +1865,27 @@ smartsheet.sheets.getAttachment(options)
 ```csharp
 Attachment attachment = smartsheet.SheetResources.AttachmentResources.GetAttachment(
   9283173393803140,               // long sheetId
-  0123456789012334                // long attachmentId
+  4583173393803140                // long attachmentId
 );
 ```
 
 ```java
 Attachment attachment = smartsheet.sheetResources().attachmentResources().getAttachment(
   9283173393803140L,       // long sheetId
-  0123456789012334L        // long attachmentId
+  4583173393803140L        // long attachmentId
 );
 ```
 
 ```python
 attachment = ss_client.Attachments.get_attachment(
   9283173393803140,       # sheet_id
-  0123456789012334)       # attachment_id
+  4583173393803140)       # attachment_id
 ```
 
 ```ruby
 attachment = smartsheet.sheets.attachments.get(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452
+  sheet_id: 9283173393803140,
+  attachment_id: 4583173393803140
 )
 ```
 
@@ -1924,7 +1924,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668
+  sheetId: 9283173393803140
 };
 
 // List attachments
@@ -1971,7 +1971,7 @@ attachments = response.data
 
 ```ruby
 response = smartsheet.sheets.attachments.list(
-  sheet_id: 4583173393803140
+  sheet_id: 9283173393803140
 )
 attachments = response[:data]
 ```
@@ -1997,7 +1997,7 @@ attachments = response[:data]
 			"name": "att4.png",
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
-			"id": 4583173393803140,
+			"id": 7993173393803140,
 			"parentType" : "ROW",
 			"parentId" : 684956754834557
 		}
@@ -2082,8 +2082,8 @@ attachments = response.data
 
 ```ruby
 response = smartsheet.sheets.discussions.attachments.list(
-  sheet_id: 4583173393803140,
-  discussion_id: 3962273862576004
+  sheet_id: 9283173393803140,
+  discussion_id: 1234567890123456
 )
 attachments = response[:data]
 ```
@@ -2109,7 +2109,7 @@ attachments = response[:data]
 			"name": "att4.png",
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
-			"id": 4583173393803140,
+			"id": 7993173393803140,
 			"parentType" : "COMMENT",
 			"parentId" : 684956754834557
 		}
@@ -2194,7 +2194,7 @@ attachments = response.data
 
 ```ruby
 response = smartsheet.sheets.rows.attachments.list(
-  sheet_id: 4583173393803140,
+  sheet_id: 2252168947361668,
   row_id: 4293147074291588
 )
 attachments = response[:data]
@@ -2221,7 +2221,7 @@ attachments = response[:data]
 			"name": "att4.png",
 			"attachmentType": "FILE",
 			"mimeType": "image/png",
-			"id": 4583173393803140,
+			"id": 7993173393803140,
 			"parentType" : "COMMENT",
 			"parentId" : 684956754834557
 		}
@@ -2319,7 +2319,7 @@ var options = {
   attachmentId: 0123456789123456,
   fileSize: 17291,
   fileName: "ProgressReport.docx",
-  fileStream: fs.createReadStream("ProgressReport.docx")
+  fileStream: fs.createReadStream("/Users/jdoe/Documents/ProgressReport.docx")
 };
 
 // Attach new version
@@ -2343,7 +2343,7 @@ Attachment attachment = smartsheet.SheetResources.AttachmentResources.Versioning
 
 ```java
 // Specify the new file to be attached
-File file = new File(filePath);
+File file = new File("/Users/jdoe/Documents/ProgressReport.docx");
 
 // Attach new version of the file
 Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
@@ -2369,8 +2369,8 @@ updated_attachment = response.result
 ```ruby
 # Sample 1: Attach new version from path
 response = smartsheet.sheets.attachments.attach_new_version_from_path(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452,
+  sheet_id: 9283173393803140,
+  attachment_id: 0123456789123456,
   path: '/Users/jdoe/Documents/ProgressReport.docx'
 )
 updated_attachment = response[:result]
@@ -2381,8 +2381,8 @@ file = File.open(filename)
 file_length = File.size(filename)
 
 response = smartsheet.sheets.attachments.attach_new_version(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452,
+  sheet_id: 9283173393803140,
+  attachment_id: 0123456789123456,
   file: file,
   filename: filename,
   file_length: file_length
@@ -2464,8 +2464,8 @@ ss_client.Attachments.delete_attachment_versions(
 
 ```ruby
 smartsheet.sheets.attachments.delete_all_versions(
-  sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452
+  sheet_id: 9283173393803140,
+  attachment_id: 0123456789123456
 )
 ```
 
@@ -2554,7 +2554,7 @@ versions = response.data
 ```ruby
 response = smartsheet.sheets.attachments.list_versions(
   sheet_id: 4583173393803140,
-  attachment_id: 7169782752536452
+  attachment_id: 5510069950408580
 )
 versions = response[:data]
 ```
@@ -2777,9 +2777,9 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{colum
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
-  rowId: 4293147074291588,
-  columnId: 642523719853956
+  sheetId: 9283173393803140,
+  rowId: 0123456789012345,
+  columnId: 4567890123456789
 };
 
 // Get cell history
@@ -2847,9 +2847,9 @@ revisions = response.data
 
 ```ruby
 response = smartsheet.sheets.cells.get_history(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588
+  sheet_id: 9283173393803140,
+  row_id: 0123456789012345,
+  column_id: 4567890123456789
 )
 revisions = response[:data]
 ```
@@ -2864,7 +2864,7 @@ revisions = response[:data]
   "totalCount": 3,
 	"data": [
 		{
-			"columnId":642523719853956,
+			"columnId":4567890123456789,
 			"displayValue": "Revision 3",
 			"columnType": "TEXT_NUMBER",
 			"value": "Revision 3",
@@ -2875,7 +2875,7 @@ revisions = response[:data]
 			}
 		},
 		{
-			"columnId":642523719853956,
+			"columnId":4567890123456789,
 			"displayValue": "Revision 2",
 			"columnType": "TEXT_NUMBER",
 			"value": "Revision 2",
@@ -2886,7 +2886,7 @@ revisions = response[:data]
 			}
 		},
 		{
-			"columnId":642523719853956,
+			"columnId":4567890123456789,
 			"displayValue": "Revision 1",
 			"columnType": "TEXT_NUMBER",
 			"value": "Revision 1",
@@ -3162,9 +3162,9 @@ Image image = new Image
   };
 
 smartsheet.SheetResources.RowResources.CellResources.AddImageToCell(
-  3285357287499652, // sheetId
-  1123834706323332, // rowId
-  4549065498224516, // columnId
+  1696831624483716, // sheetId
+  1049441315358596, // rowId
+  74761903175665540, // columnId
   "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png",
   "image"
 );
@@ -3179,17 +3179,17 @@ image.setWidth(16L);
 
 smartsheet.sheetResources().rowResources().cellResources().addImageToCell(
   1639534409607044L,      // sheetId
-  3344087179913092L,      // rowId
-  1735559124150148L,      // columnId
+  1049441315358596L,      // rowId
+  74761903175665540L,      // columnId
   "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png",
   "image"
 );
 ```
 
 ```python
-sheet_id = 3285357287499652
-column_id = 4549065498224516
-row_id = 1123834706323332
+sheet_id = 1696831624483716
+column_id = 74761903175665540
+row_id = 1049441315358596
 caution_pic = "/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png"
 file_type = "png"
 ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file_type)
@@ -3198,9 +3198,10 @@ ss_client.Cells.add_image_to_cell(sheet_id, row_id, column_id, caution_pic, file
 ```ruby
 # Sample 1: Add image from path
 response = smartsheet.sheets.cells.add_image_from_path(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588, path: '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
+  sheet_id: 1696831624483716,
+  row_id: 1049441315358596,
+  column_id: 74761903175665540,
+  path: '/Users/jdoe/Documents/images/img_pl_decisionshapesHold.png'
 )
 new_image = response[:result]
 
@@ -3210,9 +3211,9 @@ file = File.open(filename)
 file_length = File.size(filename)
 
 response = smartsheet.sheets.cells.add_image(
-  sheet_id: 4583173393803140,
-  row_id: 4293147074291588,
-  column_id: 495660408563588,
+  sheet_id: 1696831624483716,
+  row_id: 1049441315358596,
+  column_id: 74761903175665540,
   file: file,
   filename: filename,
   file_length: file_length
@@ -3429,7 +3430,7 @@ smartsheet.images.listImageUrls(options)
 
 ```csharp
 // Build list of image urls
-ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = imageId } };
+ImageUrl[] imageUrls = new ImageUrl[] { new ImageUrl { ImageId = "jpbGklqdfZuL4Jw-kZhdZA" } };
 
 string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).ImageUrls[0].Url;
 ```
@@ -3437,7 +3438,7 @@ string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).Image
 ```java
 // Build list of image urls
 ImageUrl imageUrl = new ImageUrl();
-imageUrl.setImageId(imageId);
+imageUrl.setImageId("jpbGklqdfZuL4Jw-kZhdZA");
 List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
 
 String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
@@ -3450,7 +3451,7 @@ String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).get
 ```ruby
 body = [
   {
-    image_id: 'e1znCxhuZo_soEJtUmmX_A',
+    image_id: 'jpbGklqdfZuL4Jw-kZhdZA',
     height: 100,
     width: 100
   }
@@ -3467,7 +3468,7 @@ image_urls = smartsheet.sheets.list_image_urls(
 {
   "urlExpiresInMillis": 1800000,
   "imageUrls": [{
-    "imageId": "e1znCxhuZo_soEJtUmmX_A",
+    "imageId": "jpbGklqdfZuL4Jw-kZhdZA",
     "url": "https://urltoimage1.com?qs1=foo"
   },
   {
@@ -3603,7 +3604,7 @@ var column = [
     "title": "New Date Column",
     "type": "DATE",
     "validation": true,
-    "index": 5
+    "index": 4
   }
 ];
 
@@ -3634,7 +3635,7 @@ Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DA
 
 // Add columns to the sheet
 IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
-  9283173393803140, // long sheetId
+  2252168947361668, // long sheetId
   new Column[] { columnA, columnB }
 );
 ```
@@ -3657,7 +3658,7 @@ Column column2 = new Column.AddColumnToSheetBuilder()
 
 // Add columns to the sheet
 List<Column> newColumns = smartsheet.sheetResources().columnResources().addColumns(
-  9283173393803140L,       // long sheetId
+  2252168947361668L,       // long sheetId
   Arrays.asList(column1, column2)
 );
 ```
@@ -3684,21 +3685,32 @@ column2 = ss_client.models.Column({
 
 # Add columns to the sheet
 new_columns = ss_client.Sheets.add_columns(
-  9283173393803140,       # sheet_id
+  2252168947361668,       # sheet_id
   [column1, column2])
 ```
 
 ```ruby
 # Define options
 body = {
-  title: 'new column',
-  type: 'TEXT_NUMBER',
-  index: 3
+  title: 'New Picklist Column 1',
+  type: 'PICKLIST',
+  options: [
+    'First',
+    'Second',
+    'Third'
+  ],
+  index: 4
+},
+{
+  title: "New Date Column",
+  type: 'DATE',
+  validation: true,
+  index: 4
 }
 
 # Add the column
 new_columns = smartsheet.sheets.columns.add(
-  sheet_id: 9283173393803140,
+  sheet_id: 2252168947361668,
   body: body
 )
 ```
@@ -3763,8 +3775,8 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
-  columnId: 7881817631025028
+  sheetId: 9283173393803140,
+  columnId: 0123456789012345
 };
 
 // Delete column
@@ -3799,8 +3811,8 @@ ss_client.Sheets.delete_column(
 
 ```ruby
 smartsheet.sheets.columns.delete(
-  sheet_id: 4583173393803140,
-  column_id: 495660408563588
+  sheet_id: 9283173393803140,
+  column_id: 0123456789012345
 )
 ```
 
@@ -3835,7 +3847,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns/{columnId} \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 9283173393803140,
   columnId: 7960873114331012
 };
 
@@ -3853,14 +3865,14 @@ smartsheet.sheets.getColumns(options)
 // Sample 1: Omit 'include' parameter
 Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
   9283173393803140,               // long sheetId
-  0123456789012345,               // long columnId
+  7960873114331012,               // long columnId
   null                            // IEnumerable<ColumnInclusion> includes
 );
 
 // Sample 2: Specify 'include' parameter with value of "FILTERS"
 Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
   9283173393803140,               // long sheetId
-  0123456789012345,               // long columnId
+  7960873114331012,               // long columnId
   new ColumnInclusion[] { ColumnInclusion.FILTERS }
 );
 ```
@@ -3869,14 +3881,14 @@ Column column = smartsheet.SheetResources.ColumnResources.GetColumn(
 // Sample 1: Omit 'include' parameter
 Column column = smartsheet.sheetResources().columnResources().getColumn(
   9283173393803140L,       // long sheetId
-  0123456789012345L,       // long columnId
+  7960873114331012L,       // long columnId
   null                     // EnumSet<ColumnInclusion> includes
 );
 
 // Sample 2: Specify 'include' parameter with value of "FILTERS"
 Column column = smartsheet.sheetResources().columnResources().getColumn(
   9283173393803140L,       // long sheetId
-  0123456789012345L,       // long columnId
+  7960873114331012L,       // long columnId
   EnumSet.of(ColumnInclusion.FILTERS)
 );
 ```
@@ -3884,13 +3896,13 @@ Column column = smartsheet.sheetResources().columnResources().getColumn(
 ```python
 column = ss_client.Sheets.get_column(
   9283173393803140,       # sheet_id
-  0123456789012345)       # column_id
+  7960873114331012)       # column_id
 ```
 
 ```ruby
 column = smartsheet.sheets.columns.get(
   sheet_id: 9283173393803140,
-  column_id: 0123456789012345
+  column_id: 7960873114331012
 )
 ```
 
@@ -3930,7 +3942,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/columns \
 ```javascript
 // Set options
 var options = {
-  sheetId: 2252168947361668
+  sheetId: 9283173393803140
 };
 
 // List columns
@@ -4064,7 +4076,7 @@ smartsheet.sheets.updateColumn(options)
 ```csharp
 // Specify column properties
 Column columnSpecification = new Column.UpdateColumnBuilder(
-      5005385858869124,
+      5005385858869124,   // columnId
       "First Column",
       0)                  // column index
   .SetType(ColumnType.PICKLIST)
@@ -4072,13 +4084,16 @@ Column columnSpecification = new Column.UpdateColumnBuilder(
   .Build();
 
 // Update column
-Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(2252168947361668, columnSpecification);
+Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
+  2252168947361668,   // sheetId
+  columnSpecification
+);
 ```
 
 ```java
 // Specify column properties
 Column columnSpecification = new Column.UpdateColumnBuilder()
-  .setColumnId(2252168947361668L)         // long columnId
+  .setColumnId(5005385858869124)         // long columnId
   .setTitle("First Column")
   .setIndex(0)
   .setType(ColumnType.PICKLIST)
@@ -4086,7 +4101,10 @@ Column columnSpecification = new Column.UpdateColumnBuilder()
   .build();
 
 // Update column
-Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(2252168947361668L, columnSpecification);
+Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(
+  2252168947361668,   // sheetId
+  columnSpecification
+);
 ```
 
 ```python
@@ -4101,7 +4119,7 @@ column_spec = ss_client.models.Column({
 # Update column
 response = ss_client.Sheets.update_column(
   2252168947361668,       # sheet_id
-  2252168947361668,       # column_id
+  5005385858869124,       # column_id
   column_spec)
 
 updated_column = response.result
@@ -4110,13 +4128,18 @@ updated_column = response.result
 ```ruby
 # Specify column properties
 body = {
-  title: 'updated column'
+  title: 'First Column',
+  type: 'PICKLIST',
+  options: [
+    'One',
+    'Two'
+  ]
 }
 
 # Update column
 response = smartsheet.sheets.columns.update(
-  sheet_id: 4583173393803140,
-  column_id: 495660408563588,
+  sheet_id: 2252168947361668,
+  column_id: 5005385858869124,
   body: body
 )
 updated_column = response[:result]
@@ -4335,11 +4358,11 @@ response = ss_client.Discussions.add_comment_to_discussion(
 
 ```ruby
 body = {
-  text: 'This is cool!'
+  text: 'This is a new comment.'
 }
 
 response = smartsheet.sheets.comments.add(
-  sheet_id: 4583173393803140,
+  sheet_id: 2252168947361668,
   discussion_id: 3962273862576004,
   body: body
 )
@@ -4360,7 +4383,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
     # Content of the comment.json file:
     #
     {
-      "text":"This text is the body of the new comment"
+      "text":"This is a new comment."
     }
 ```
 
@@ -4400,7 +4423,7 @@ smartsheet.sheetResources().discussionResources().commentResources().addCommentW
 ```python
 # Create comment
 comment = ss_client.models.Comment({
-  'text': 'You might want this.'
+  'text': 'This is a new comment.'
 })
 
 # Add comment (with attachment) to discussion
@@ -4517,12 +4540,12 @@ comment = ss_client.Discussions.update_comment(
 
 ```ruby
 body = {
-  text: 'Updated text!'
+  text: 'This is the updated comment text'
 }
 
 response = smartsheet.sheets.comments.update(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588,
+  sheet_id: 3285357287499652,
+  comment_id: 7144101943502724,
   body: body
 )
 updated_comment = response[:result]
@@ -4612,8 +4635,8 @@ ss_client.Discussions.delete_discussion_comment(
 
 ```ruby
 smartsheet.sheets.comments.delete(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588
+  sheet_id: 2252168947361668,
+  comment_id: 4952999001909124
 )
 ```
 
@@ -4685,8 +4708,8 @@ comment = ss_client.Discussions.get_discussion_comment(
 
 ```ruby
 comment = smartsheet.sheets.comments.get(
-  sheet_id: 4583173393803140,
-  comment_id: 4293147074291588
+  sheet_id: 2252168947361668,
+  comment_id: 4856934849340120
 )
 ```
 
@@ -4698,7 +4721,7 @@ comment = smartsheet.sheets.comments.get(
   "createdBy" : {"name": "John Doe", "email" : "john.doe@smartsheet.com"},
   "createdAt" : "2013-06-24T21:07:45Z",
   "modifiedAt" : "2013-06-24T21:07:45Z",
-  "discussionId" : 48569348493469348,
+  "discussionId" : 4503677744506756,
   "id": 48569348493401200
 }
 ```
@@ -4756,7 +4779,7 @@ curl https://api.smartsheet.com/2.0/contacts/{contactId} \
 
 ```javascript
 // Set options
-var options = {id: "AAcBgiYU54QAGfLS5hTnhA"};
+var options = {id: "AAAAATYU54QAD7_fNhTnhA"};
 
 // Get contact
 smartsheet.contacts.getContact(options)
@@ -4877,7 +4900,7 @@ contacts = response[:data]
       "email": "dd@example.com"
     },
     {
-      "id": "AAAAATYU54QAH7_fNhTnhA",
+      "id": "AAXFBiYU54QAEeWu5hTnhA",
       "name": "Ed Edwin",
       "email": "ee@example.com"
     }
@@ -5029,9 +5052,9 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```ruby
 # Set options
 body = {
-  title: 'New row discussion',
+  title: 'This is a new discussion',
   comment: {
-    text: 'First!'
+    text: 'This text is the body of the first comment'
   }
 }
 
@@ -5222,9 +5245,9 @@ response = ss_client.Discussions.create_discussion_on_sheet(
 ```ruby
 # Set options
 body = {
-  title: 'New sheet discussion',
+  title: 'This is a new discussion',
   comment: {
-    text: 'First!'
+    text: 'This text is the body of the first comment'
   }
 }
 
@@ -5797,7 +5820,7 @@ response = ss_client.Favorites.add_favorites([
 ```ruby
 # Specify favorites
 body = {
-  type: 'sight',
+  type: 'sheet',
   object_id: 8400677765441412
 }
 
@@ -6732,7 +6755,7 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=data
 // Specify destination information
 var body = {
   destinationType: "folder",
-  destinationId: 6327127650920324,
+  destinationId: 7960873114331012,
   newName: "Folder Copy"
 };
 
@@ -6762,7 +6785,7 @@ smartsheet.folders.copyFolder(options)
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
-  DestinationId = 6327127650920324,
+  DestinationId = 7960873114331012,
   DestinationType = DestinationType.FOLDER,
   NewName = "newFolderName"
 };
@@ -6790,7 +6813,7 @@ Folder folder = smartsheet.FolderResources.CopyFolder(
 // Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
   .setDestinationType(DestinationType.FOLDER)
-  .setDestinationId(6327127650920324L)    // long destinationFolderId
+  .setDestinationId(7960873114331012L)    // long destinationFolderId
   .setNewName("newFolderName")
   .build();
 
@@ -6815,7 +6838,7 @@ Folder folder = smartsheet.folderResources().copyFolder(
 response = ss_client.Folders.copy_folder(
   2252168947361668,                           # folder_id
   ss_client.models.ContainerDestination({
-    'destination_id': 6327127650920324,
+    'destination_id': 7960873114331012,
     'destination_type': 'folder',
     'new_name': 'newFolderName'
   })
@@ -6825,9 +6848,9 @@ response = ss_client.Folders.copy_folder(
 ```ruby
 # Specify destination information
 body = {
-  destination_type: 'workspace',
-  destination_id: 2252168947361668,
-  new_name: 'Copy of Folder'
+  destination_type: 'folder',
+  destination_id: 7960873114331012,
+  new_name: 'newFolderName'
 }
 
 # Copy folder
@@ -7008,7 +7031,7 @@ body = {
 }
 
 new_folder = smartsheet.folders.create_in_folder(
-  folder_id: 2252168947361668,
+  folder_id: 7960873114331012,
   body: body
 )
 ```
@@ -7081,7 +7104,7 @@ Folder newFolder = smartsheet.workspaceResources().folderResources().createFolde
 
 ```python
 new_workspace = ss_client.Workspaces.create_folder_in_workspace(
-  7960873114331012,       # workspace_id
+  1656220827314052,       # workspace_id
   'New folder')
 ```
 
@@ -7091,7 +7114,7 @@ body = {
 }
 
 new_folder = smartsheet.folders.create_in_workspace(
-  workspace_id: 7116448184199044,
+  workspace_id: 1656220827314052,
   body: body
 )
 ```
@@ -7230,12 +7253,12 @@ Folder folder = smartsheet.folderResources().getFolder(
 
 ```python
 folder = ss_client.Folders.get_folder(
-  7960873114331012)       # folder_id
+  7116448184199044)       # folder_id
 ```
 
 ```ruby
 folder = smartsheet.folders.get(
-  folder_id: 2252168947361668
+  folder_id: 7116448184199044
 )
 ```
 
@@ -7385,7 +7408,7 @@ smartsheet.folders.listChildFolders(options)
 ```csharp
 // Omit pagination parameters
 PaginatedResult<Folder> folders = smartsheet.FolderResources.ListFolders(
-  7116448184199044,           // long folderId
+  5107651446105988,           // long folderId
   null                        // PaginationParameters
 );
 ```
@@ -7393,7 +7416,7 @@ PaginatedResult<Folder> folders = smartsheet.FolderResources.ListFolders(
 ```java
 // Omit pagination parameters
 PagedResult<Folder> folders = smartsheet.folderResources().listFolders(
-  7116448184199044L,               // long parentFolderId
+  510765144610598L,               // long parentFolderId
   null                             // PaginationParameters
 );
 ```
@@ -7401,13 +7424,13 @@ PagedResult<Folder> folders = smartsheet.folderResources().listFolders(
 ```python
 # Sample 1: List all
 response = ss_client.Folders.list_folders(
-  7960873114331012,       # folder_id
+  5107651446105988,       # folder_id
   include_all=True)
 folders = response.data
 
 # Sample 2: Paginate the list
 response = ss_client.Folders.list_folders(
-  7960873114331012,       # folder_id
+  5107651446105988,       # folder_id
   page_size=5,
   page=1)
 pages = response.total_pages
@@ -7416,7 +7439,7 @@ folders = response.data
 
 ```ruby
 response = smartsheet.folders.list_in_folder(
-  folder_id: 2252168947361668
+  folder_id: 5107651446105988
 )
 folders = response[:data]
 ```
@@ -7462,7 +7485,7 @@ smartsheet.workspaces.listWorkspaceFolders(options)
 ```csharp
 // Omit pagination parameters
 PaginatedResult<Folder> folders = smartsheet.WorkspaceResources.FolderResources.ListFolders(
-  7116448184199044,               // long workspaceId
+  1656220827314052,               // long workspaceId
   null                            // PaginationParameters
 );
 ```
@@ -7470,7 +7493,7 @@ PaginatedResult<Folder> folders = smartsheet.WorkspaceResources.FolderResources.
 ```java
 // Omit pagination parameters
 PagedResult<Folder> folders = smartsheet.workspaceResources().folderResources().listFolders(
-  7116448184199044L,                   // long workspaceId
+  1656220827314052L,                   // long workspaceId
   null                                 // PaginationParameters
 );
 ```
@@ -7478,13 +7501,13 @@ PagedResult<Folder> folders = smartsheet.workspaceResources().folderResources().
 ```python
 # Sample 1: List all
 response = ss_client.Workspaces.list_folders(
-  7116448184199044,       # workspace_id
+  1656220827314052,       # workspace_id
   include_all=True)
 folders = response.data
 
 # Sample 2: Paginate the list
 response = ss_client.Workspaces.list_folders(
-  7116448184199044,       # workspace_id
+  1656220827314052,       # workspace_id
   page_size=5,
   page=1)
 pages = response.total_pages
@@ -7493,7 +7516,7 @@ folders = response.data
 
 ```ruby
 response = smartsheet.folders.list_in_workspace(
-  workspace_id: 7116448184199044
+  workspace_id: 1656220827314052
 )
 folders = response[:data]
 ```
@@ -7529,12 +7552,12 @@ curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 // Set destination information
 var body = {
   destinationType: "folder",
-  destinationId: 4509918431602564
+  destinationId: 7960873114331012
 };
 
 // Set options
 var options = {
-  folderId: 7960873114331012,
+  folderId: 4509918431602564,
   body: body
 };
 
@@ -7551,13 +7574,13 @@ smartsheet.folders.moveFolder(options)
 ```csharp
 // Specify destination
 ContainerDestination destination = new ContainerDestination {
-  DestinationId = 4509918431602564,       // long destinationFolderId
+  DestinationId = 7960873114331012,       // long destinationFolderId
   DestinationType = DestinationType.FOLDER,
 };
 
 // Move folder
 Folder folder = smartsheet.FolderResources.MoveFolder(
-  7960873114331012,               // long folderId
+  4509918431602564,               // long folderId
   destination
 );
 ```
@@ -7566,21 +7589,21 @@ Folder folder = smartsheet.FolderResources.MoveFolder(
 // Specify destination
 ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
   .setDestinationType(DestinationType.FOLDER)
-  .setDestinationId(4509918431602564L)        // long destinationFolderId
+  .setDestinationId(7960873114331012L)        // long destinationFolderId
   .build();
 
 // Move folder
 Folder folder = smartsheet.folderResources().moveFolder(
-  7960873114331012L,                         // long folderId
+  4509918431602564L,                         // long folderId
   destination
 );
 ```
 
 ```python
 folder = ss_client.Folders.move_folder(
-  7960873114331012,                           # folder_id to be moved
+  4509918431602564,                           # folder_id to be moved
   ss_client.models.Destination({
-    'destination_id': 4509918431602564,     # destination folder_id
+    'destination_id': 7960873114331012,     # destination folder_id
     'destination_type': 'folder'
   })
 )
@@ -7590,12 +7613,12 @@ folder = ss_client.Folders.move_folder(
 # Specify destination information
 body = {
   destination_type: 'workspace',
-  destination_id: 7116448184199044
+  destination_id: 7960873114331012
 }
 
 # Move folder
 response = smartsheet.folders.move(
-  folder_id: 2252168947361668,
+  folder_id: 4509918431602564,
   body: body
 )
 ```
@@ -7646,7 +7669,7 @@ var folder = {
 
 // Set options
 var options = {
-  id: 1486948649985924, // Id of Folder
+  id: 7960873114331012, // Id of Folder
   body: folder
 };
 
@@ -7691,12 +7714,12 @@ updated_folder = ss_client.Folders.update_folder(
 ```ruby
 # Set options
 body = {
-  name: 'Updated Folder'
+  name: 'New name for folder'
 }
 
 # Update folder
 response = smartsheet.folders.update(
-  folder_id: 2252168947361668,
+  folder_id: 7960873114331012,
   body: body
 )
 ```
@@ -7708,7 +7731,7 @@ response = smartsheet.folders.update(
   "message": "SUCCESS",
   "resultCode": 0,
   "result": {
-    "id": 1486948649985924,
+    "id": 7960873114331012,
     "name": "New name for folder"
   }
 }
@@ -7837,8 +7860,8 @@ new_group = ss_client.Groups.create_group(
 ```ruby
 # List members of group
 body = {
-  name: 'New Group',
-  description: 'A new group',
+  name: 'API-created Group',
+  description: 'Group created via API',
   members: [
     {
       email: 'john.doe@smartsheet.com'
@@ -7974,7 +7997,7 @@ curl https://api.smartsheet.com/2.0/groups/{groupId} \
 ```javascript
 // Set options
 var options = {
-  id: 4583173393803140 // Id of Group
+  id: 6932724448552836 // Id of Group
 };
 
 // Get group
@@ -8007,7 +8030,7 @@ group = ss_client.Groups.get_group(
 
 ```ruby
 group = smartsheet.groups.get(
-  group_id: 4583173393803140
+  group_id: 6932724448552836
 )
 ```
 
@@ -8015,7 +8038,7 @@ group = smartsheet.groups.get(
 
 ```json
 {
-  "id": 4583173393803140,
+  "id": 6932724448552836,
   "name": "Group 1",
   "description": "My group",
   "owner": "john.doe@smartsheet.com",
@@ -8168,7 +8191,7 @@ smartsheet.groups.updateGroup(options)
 ```csharp
 // Specify the name and description of the group
 Group groupSpecification = new Group.UpdateGroupBuilder(
-    6932724448552836)               // long groupId
+    2331373580117892)               // long groupId
   .SetName ("Renamed Group")
   .SetDescription ("Some new description")
   .Build();
@@ -8180,7 +8203,7 @@ Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
 ```java
 // Specify the name and description of the group
 Group groupSpecification = new Group.UpdateGroupBuilder()
-  .setId(6932724448552836L)               // long groupId
+  .setId(2331373580117892L)               // long groupId
   .setName("Renamed Group")
   .setDescription("Some new description")
   .build();
@@ -8191,7 +8214,7 @@ Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification)
 
 ```python
 updated_group = ss_client.Groups.update_group(
-  6932724448552836,       # group_id
+  2331373580117892,       # group_id
   ss_client.models.Group({
     'name': 'Renamed Group',
     'description': 'Some new description'
@@ -8202,14 +8225,14 @@ updated_group = ss_client.Groups.update_group(
 ```ruby
 # Specify the name and description of the group
 body = {
-  name: 'Updated Group',
-  description: 'An updated group',
+  name: 'Renamed Group',
+  description: 'Some new description',
   owner_id: 4583173393803140
 }
 
 # Update group
 updated_group = smartsheet.groups.update(
-  group_id: 4583173393803140,
+  group_id: 2331373580117892,
   body: body
 )
 ```
@@ -8337,18 +8360,18 @@ List<GroupMember> newMembers = smartsheet.groupResources().memberResources().add
 
 ```python
 new_members = ss_client.Groups.add_members(
-  6932724448552836,       # group_id
+  7917992160847748,       # group_id
   [ss_client.models.GroupMember({'email': 'jane.doe@smartsheet.com'})]
 )
 ```
 
 ```ruby
 body = {
-  email: 'john.doe@smartsheet.com'
+  email: 'jane.doe@smartsheet.com'
 }
 
 new_members = smartsheet.groups.add_members(
-  group_id: 4583173393803140,
+  group_id: 7917992160847748,
   body: body
 )
 ```
@@ -9549,7 +9572,7 @@ body = {
   cells: [
     {
       column_id: 495660408563588,
-      value: '123'
+      value: 'New Status'
     }
   ],
   locked: false
@@ -9557,7 +9580,7 @@ body = {
 
 # Add rows to a sheet
 response = smartsheet.sheets.rows.add(
-  sheet_id: 4583173393803140,
+  sheet_id: 2331373580117892,
   body: body
 )
 ```
@@ -9659,7 +9682,7 @@ var copyRow = {
 
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 4583173393803140,
   body: copyRow
   };
 
@@ -9682,7 +9705,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new lon
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
-  2258256056870788,           // long sheetId
+  4583173393803140,           // long sheetId
   directive,
   null,                       // IEnumerable<CopyRowInclusion> include
   null                        // Nullable<bool> ignoreRowsNotFound
@@ -9690,7 +9713,7 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToA
 
 // Sample 2: Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(
-  2258256056870788,           // long sheetId
+  4583173393803140,           // long sheetId
   directive,
   new CopyRowInclusion[] {
     CopyRowInclusion.CHILDREN },
@@ -9712,7 +9735,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRo
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
-  2258256056870788L,                                              // long sheetId
+  4583173393803140L,                                              // long sheetId
   null,                                                           // EnumSet<RowCopyInclusion> includes
   true,                                                           // Boolean ignoreRowsNotFound
   directive
@@ -9720,7 +9743,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRow
 
 // Sample 2: Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
-  2258256056870788L,                                              // long sheetId
+  4583173393803140L,                                              // long sheetId
   EnumSet.of(RowCopyInclusion.CHILDREN),
   true,
   directive
@@ -9743,11 +9766,11 @@ response = ss_client.Sheets.copy_rows(
 # Specify rows to copy and destination sheet
 body = {
   row_ids: [
-    4293147074291588,
-    567735454328708
+    145417762563972,
+    8026717110462340
   ],
   to: {
-    sheet_id: 4583173393803140
+    sheet_id: 2258256056870788
   }
 }
 
@@ -9828,8 +9851,8 @@ ss_client.Sheets.delete_rows(
 
 ```ruby
 smartsheet.sheets.rows.delete(
-  sheet_id: 4583173393803140,
-  row_ids: [4293147074291588, 567735454328708]
+  sheet_id: 2252168947361668,
+  row_ids: [207098194749316, 207098194749316]
 )
 ```
 
@@ -9840,10 +9863,8 @@ smartsheet.sheets.rows.delete(
   "message": "SUCCESS",    
   "resultCode": 0,
   "result": [
-    145417762563972,
-    4508365800925060,
-    8026717110462340,
-    2256565987239812 
+    207098194749316,
+    207098194749316
   ]
 }
 ```
@@ -9941,7 +9962,7 @@ row = ss_client.Sheets.get_row(
 ```ruby
 row = smartsheet.sheets.rows.get(
   sheet_id: 4583173393803140,
-  row_id: 4293147074291588
+  row_id: 2361756178769796
 )
 ```
 
@@ -10011,7 +10032,7 @@ var moveRow = {
 
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 4583173393803140,
   body: moveRow
   };
 
@@ -10034,7 +10055,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new lon
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
-  2258256056870788,               // long sheetId
+  4583173393803140,               // long sheetId
   directive,
   null,                           // IEnumerable<MoveRowInclusion> include
   null                            // Nullable<bool> ignoreRowsNotFound
@@ -10042,7 +10063,7 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToA
 
 // Sample 2: Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToAnotherSheet(
-  2258256056870788,               // long sheetId
+  4583173393803140,               // long sheetId
   directive,
   new MoveRowInclusion[] {
     MoveRowInclusion.ATTACHMENTS,
@@ -10065,7 +10086,7 @@ CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRo
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
-  2258256056870788L,                  // long sheetId
+  4583173393803140L,                  // long sheetId
   null,                               // EnumSet<RowMoveInclusion> includes
   true,                               // Boolean ignoreRowsNotFound
   directive
@@ -10073,7 +10094,7 @@ CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRow
 
 // Sample 2: Specify 'include' parameter with value of "ATTACHMENTS" and "DISCUSSIONS", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
-  2258256056870788L,                  // long sheetId
+  4583173393803140L,                  // long sheetId
   EnumSet.of(
     RowMoveInclusion.ATTACHMENTS,
     RowMoveInclusion.DISCUSSIONS),
@@ -10098,11 +10119,11 @@ response = ss_client.Sheets.move_rows(
 # Specify rows to move and destination sheet
 body = {
   row_ids: [
-    4293147074291588,
-    567735454328708
+    145417762563972,
+    8026717110462340
   ],
   to: {
-    sheet_id: 4583173393803140
+    sheet_id: 2258256056870788
   }
 }
 
@@ -10182,7 +10203,7 @@ var row = [
 
 // Set options
 var options = {
-  sheetId: 2252168947361668,
+  sheetId: 2068827774183300,
   body: row
   };
 
@@ -10268,7 +10289,7 @@ List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
 # Build new cell value
 new_cell = ss_client.models.Cell()
 new_cell.column_id = 7036894123976580
-new_cell.value = "Third"
+new_cell.value = "new value"
 new_cell.strict = False
 
 # Build the row to update
@@ -10278,7 +10299,7 @@ new_row.cells.append(new_cell)
 
 # Update rows
 updated_row = ss_client.Sheets.update_rows(
-  5190835902932868,      # sheet_id
+  2068827774183300,      # sheet_id
   [new_row])
 ```
 
@@ -10287,14 +10308,14 @@ updated_row = ss_client.Sheets.update_rows(
 body = {
   id: 4293147074291588,   # row Id
   cells: [
-    column_id: 4583173393803140,
-    value: '456'
+    column_id: 7036894123976580,
+    value: 'new value'
   ]
 }
 
 # Update row
 response = smartsheet.sheets.rows.update(
-  sheet_id: 4583173393803140,
+  sheet_id: 2068827774183300,
   body: body
 )
 ```
@@ -10537,7 +10558,7 @@ result = ss_client.Search.search(query)
 
 ```ruby
 results = smartsheet.search.search_all(
-  query: 'November'
+  query: 'stuff'
 )
 ```
 
@@ -10807,7 +10828,7 @@ Use the *Sharing* operations to control sharing of Reports, Sheets, Workspaces, 
 
      |     |     |
 -----|-----|-----|
-**id**          | number | Share Id.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
+**id**          | string | Share Id.<br/>**NOTE:** unlike other Smartsheet object ids, this id is an alphanumeric string.
 **type**        | string | The type of this share. One of the following values: `USER` or `GROUP`.
 **userId**      | number | User Id if the share is a user share, else null.
 **groupId**     | number | Group Id if the share is a group share, else null.
@@ -10872,8 +10893,8 @@ ss_client.Reports.delete_share(
 
 ```ruby
 smartsheet.reports.share.delete(
-  report_id: 4583173393803140,
-  share_id: 'AAABbMomFOeE'
+  report_id: 665829219035012,
+  share_id: 'AAAQSF82F1eE'
 )
 ```
 
@@ -10935,7 +10956,7 @@ share = ss_client.Reports.get_share(
 
 ```ruby
 share = smartsheet.reports.share.get(
-  report_id: 4583173393803140,
+  report_id: 6932724448552836,
   share_id: 'AAABbMomFOeE'
 )
 ```
@@ -11008,7 +11029,7 @@ shares = response.result
 
 ```ruby
 response = smartsheet.reports.share.list(
-  report_id: 4583173393803140
+  report_id: 665829219035012
 )
 shares = response[:data]
 ```
@@ -11103,14 +11124,14 @@ response = ss_client.Reports.share_report(
 
 ```ruby
 body = {
-  group_id: 3051008235464580,
-  access_level: 'VIEWER',
+  email: 'jane.doe@smartsheet.com',
+  access_level: 'EDITOR',
   subject: 'This report has been shared with you!',
   message: 'This Smartsheet report is ready for your inspection.'
 }
 
 response = smartsheet.reports.share.create(
-  report_id: 4583173393803140,
+  report_id: 665829219035012,
   body: body
 )
 ```
@@ -11199,11 +11220,11 @@ updated_share = ss_client.Reports.update_share(
 
 ```ruby
 body = {
-  access_level: 'EDITOR_SHARE'
+  access_level: 'VIEWER'
 }
 
 response = smartsheet.reports.share.update(
-  report_id: 4583173393803140,
+  report_id: 665829219035012,
   share_id: 'AAABbMomFOeE',
   body: body
 )
@@ -11504,8 +11525,8 @@ response = ss_client.Sheets.share_sheet(
 
 ```ruby
 body = {
-  group_id: 3051008235464580,
-  access_level: 'VIEWER',
+  email: 'jane.doe@smartsheet.com',
+  access_level: 'EDITOR',
   subject: 'This sheet has been shared with you!',
   message: 'This Smartsheet is ready for your inspection.'
 }
@@ -11597,7 +11618,7 @@ updated_share = ss_client.Sheets.update_share(
 
 ```ruby
 body = {
-  access_level: 'EDITOR_SHARE'
+  access_level: 'VIEWER'
 }
 
 response = smartsheet.sheets.share.update(
@@ -11843,7 +11864,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true
 var share = [
   {
     "email": "jane.doe@smartsheet.com",
-    "accessLevel": "VIEWER"
+    "accessLevel": "EDITOR"
   }
 ];
 
@@ -11886,8 +11907,8 @@ List<Share> addressList = smartsheet.sightResources().shareResources().shareTo(
 response = ss_client.Sights.share_sight(
   6327127650920324,       # sight_id
   ss_client.models.Share({
-    'access_level': 'ADMIN',
-    'email': 'jane.roe@smartsheet.com'
+    'access_level': 'EDITOR',
+    'email': 'jane.doe@smartsheet.com'
   }),
   True                    # sendEmail
 )
@@ -11895,8 +11916,8 @@ response = ss_client.Sights.share_sight(
 
 ```ruby
 body = {
-  group_id: 3051008235464580,
-  access_level: 'VIEWER',
+  email: 'jane.doe@smartsheet.com',
+  access_level: 'EDITOR',
   subject: 'This sight has been shared with you!',
   message: 'This Smartsheet sight is ready for your inspection.'
 }
@@ -11988,7 +12009,7 @@ updated_share = ss_client.Sights.update_share(
 
 ```ruby
 body = {
-  access_level: 'EDITOR'
+  access_level: 'VIEWER'
 }
 
 response = smartsheet.sights.share.update(
@@ -12064,7 +12085,7 @@ ss_client.Workspaces.delete_share(
 
 ```ruby
 smartsheet.workspaces.share.delete(
-  workspace_id: 7116448184199044,
+  workspace_id: 1656220827314052,
   share_id: 'AAABbMomFOeE'
 )
 ```
@@ -12131,7 +12152,7 @@ share = ss_client.Sheets.get_share(
 
 ```ruby
 share = smartsheet.workspaces.share.get(
-  workspace_id: 7116448184199044,
+  workspace_id: 1656220827314052,
   share_id: 'AAABbMomFOeE'
 )
 ```
@@ -12206,7 +12227,7 @@ shares = response.data
 
 ```ruby
 response = smartsheet.workspaces.share.list(
-  workspace_id: 7116448184199044
+  workspace_id: 1656220827314052
 )
 shares = response[:data]
 ```
@@ -12304,14 +12325,14 @@ response = ss_client.Workspaces.share_workspace(
 
 ```ruby
 body = {
-  group_id: 3051008235464580,
-  access_level: 'VIEWER',
+  email: 'jane.doe@smartsheet.com',
+  access_level: 'EDITOR',
   subject: 'This workspace has been shared with you!',
   message: 'This Smartsheet workspace is ready for your inspection.'
 }
 
 response = smartsheet.workspaces.share.create(
-  workspace_id: 7116448184199044,
+  workspace_id: 1656220827314052,
   body: body
 )
 ```
@@ -12407,11 +12428,11 @@ updated_share = ss_client.Workspaces.update_share(
 
 ```ruby
 body = {
-  access_level: 'EDITOR_SHARE'
+  access_level: 'VIEWER'
 }
 
 response = smartsheet.workspaces.share.update(
-  workspace_id: 7116448184199044,
+  workspace_id: 1656220827314052,
   share_id: 'AAABbMomFOeE',
   body: body
 )
@@ -12640,7 +12661,7 @@ response = ss_client.Sheets.copy_sheet(
 body = {
   destination_type: 'folder',
   destination_id: 9283173393803140,
-  new_name: 'Copy of Sheet'
+  new_name: 'newSheetName'
 }
 
 smartsheet.sheets.copy(
@@ -12743,7 +12764,7 @@ Column columnB = new Column.CreateSheetColumnBuilder(
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
 Sheet newSheet = smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
-    "new sheet title",
+    "newsheet",
     new Column[] { columnA, columnB })
   .Build());
 ```
@@ -12765,7 +12786,7 @@ Column columnB = new Column.AddColumnToSheetBuilder()
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
 Sheet newSheet = new Sheet.CreateSheetBuilder()
-  .setName("new sheet title")
+  .setName("newsheet")
   .setColumns(Arrays.asList(columnA, columnB))
   .build();
 smartsheet.sheetResources().createSheet(newSheet);
@@ -12791,34 +12812,18 @@ new_sheet = response.result
 
 ```ruby
 body = {
-  name: 'New Sheet',
+  name: 'newsheet',
   columns: [
     {
-      title: 'Internal ID',
-      type: 'TEXT_NUMBER',
-      system_column_type: 'AUTO_NUMBER',
-      auto_number_format: {
-        starting_number: 9001,
-        prefix: '{YYYY}{MM}{DD}-',
-        fill: '00',
-        suffix: '{DD}{MM}{YYYY}'
-      }
-    },
-    {
-      title: 'ID',
-      primary: true,
-      type: 'TEXT_NUMBER'
-    },
-    {
-      title: 'Favorite?',
+      title: 'Favorite',
       type: 'CHECKBOX',
       symbol: 'STAR',
       width: 10
     },
     {
-      title: 'Completion Status',
-      type: 'PICKLIST',
-      options: ['Not Started', 'In Progress', 'Complete']
+      title: 'Primary Column',
+      type: 'TEXT_NUMBER',
+      primary: true
     }
   ]
 }
@@ -12956,40 +12961,24 @@ new_sheet = response.result
 
 ```ruby
 body = {
-  name: 'New Sheet',
+  name: 'newsheet',
   columns: [
     {
-      title: 'Internal ID',
-      type: 'TEXT_NUMBER',
-      system_column_type: 'AUTO_NUMBER',
-      auto_number_format: {
-        starting_number: 9001,
-        prefix: '{YYYY}{MM}{DD}-',
-        fill: '00',
-        suffix: '{DD}{MM}{YYYY}'
-      }
-    },
-    {
-      title: 'ID',
-      primary: true,
-      type: 'TEXT_NUMBER'
-    },
-    {
-      title: 'Favorite?',
+      title: 'Favorite',
       type: 'CHECKBOX',
       symbol: 'STAR',
       width: 10
     },
     {
-      title: 'Completion Status',
-      type: 'PICKLIST',
-      options: ['Not Started', 'In Progress', 'Complete']
+      title: 'Primary Column',
+      type: 'TEXT_NUMBER',
+      primary: true
     }
   ]
 }
 
 response = smartsheet.sheets.create_in_folder(
-  folder_id: 2252168947361668,
+  folder_id: 3734419270854532,
   body: body
 )
 new_sheet = response[:result]
@@ -13121,40 +13110,24 @@ new_sheet = response.result
 
 ```ruby
 body = {
-  name: 'New Sheet',
+  name: 'newsheet',
   columns: [
     {
-      title: 'Internal ID',
-      type: 'TEXT_NUMBER',
-      system_column_type: 'AUTO_NUMBER',
-      auto_number_format: {
-        starting_number: 9001,
-        prefix: '{YYYY}{MM}{DD}-',
-        fill: '00',
-        suffix: '{DD}{MM}{YYYY}'
-      }
-    },
-    {
-      title: 'ID',
-      primary: true,
-      type: 'TEXT_NUMBER'
-    },
-    {
-      title: 'Favorite?',
+      title: 'Favorite',
       type: 'CHECKBOX',
       symbol: 'STAR',
       width: 10
     },
     {
-      title: 'Completion Status',
-      type: 'PICKLIST',
-      options: ['Not Started', 'In Progress', 'Complete']
+      title: 'Primary Column',
+      type: 'TEXT_NUMBER',
+      primary: true
     }
   ]
 }
 
 response = smartsheet.sheets.create_in_workspace(
-  workspace_id: 7116448184199044,
+  workspace_id: 3734419270854532,
   body: body
 )
 new_sheet = response[:result]
@@ -13263,8 +13236,8 @@ new_sheet = response.result
 
 ```ruby
 body = {
-  name: 'New Sheet from Template',
-  from_id: 8713620155590532
+  name: 'newsheet',
+  from_id: 7679398137620356
 }
 
 response = smartsheet.sheets.create_from_template(
@@ -13373,19 +13346,19 @@ response = ss_client.Folders.create_sheet_in_folder_from_template(
   3734419270854532,                   # folder_id
   ss_client.models.Sheet({
     'name': 'newsheet',
-    'from_id': 7679398137620356     # template_id
+    'from_id': 7679398137620356       # template_id
   })
 )
 ```
 
 ```ruby
 body = {
-  name: 'New Sheet from Template',
-  from_id: 8713620155590532
+  name: 'newsheet',
+  from_id: 7679398137620356
 }
 
 response = smartsheet.sheets.create_in_folder_from_template(
-  folder_id: 2252168947361668,
+  folder_id: 3734419270854532,
   body: body
 )
 new_sheet = response[:result]
@@ -13498,12 +13471,12 @@ response = ss_client.Workspaces.create_sheet_in_workspace_from_template(
 
 ```ruby
 body = {
-  name: 'New Sheet from Template',
-  from_id: 8713620155590532
+  name: 'newsheet',
+  from_id: 7679398137620356
 }
 
 response = smartsheet.sheets.create_in_workspace_from_template(
-  workspace_id: 7116448184199044,
+  workspace_id: 1656220827314052,
   body: body
 )
 new_sheet = response[:result]
@@ -13629,7 +13602,7 @@ version = ss_client.Sheets.get_sheet_version(
 
 ```ruby
 version = smartsheet.sheets.get_version(
-  sheet_id: 4583173393803140
+  sheet_id: 1531988831168388
 )
 ```
 
@@ -13844,7 +13817,7 @@ ss_client.Sheets.get_sheet_as_excel(
 
 ```ruby
 file_contents = smartsheet.sheets.get_as_excel(
-  sheet_id: 4583173393803140
+  sheet_id: 1531988831168388
 )
 
 File.open('output.xlsx', 'w') {|f| f.write(file_contents)}
@@ -13932,7 +13905,7 @@ ss_client.Sheets.get_sheet_as_pdf(
 
 ```ruby
 file_contents = smartsheet.sheets.get_as_pdf(
-  sheet_id: 4583173393803140
+  sheet_id: 1531988831168388
 )
 
 File.open('output.pdf', 'w') {|f| f.write(file_contents)}
@@ -14017,7 +13990,7 @@ ss_client.Sheets.get_sheet_as_csv(
 
 ```ruby
 file_contents = smartsheet.sheets.get_as_csv(
-  sheet_id: 4583173393803140
+  sheet_id: 1531988831168388
 )
 
 File.open('output.csv', 'w') {|f| f.write(file_contents)}
@@ -14599,15 +14572,15 @@ updated_sheet = ss_client.Sheets.update_sheet(
 
 ```ruby
 body = {
-  name: 'Sample Project Updated',
+  name: 'New Sheet Name',
   user_settings: {
     critical_path_enabled: true,
     display_summary_tasks: false
   },
   project_settings: {
-    working_days: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
-    non_working_days: ['2017-10-09'],
-    length_of_day: 23
+    working_days: ['MONDAY', 'TUESDAY', 'WEDNESDAY'],
+    non_working_days: ['2018-01-01'],
+    length_of_day: 6
   }
 }
 
@@ -14915,8 +14888,8 @@ new_sight = ss_client.Sights.copy_sight(
 # Specify destination
 body = {
   destination_type: 'folder',
-  destination_id: 8964300887877508,
-  new_name: 'Copy of Sight'
+  destination_id: 3791509922310020,
+  new_name: 'newSightName'
 }
 
 # Copy Sight
@@ -15298,12 +15271,12 @@ response = ss_client.Sights.move_sight(
 # Specify destination
 body = {
   destination_type: 'folder',
-  destination_id: 8964300887877508
+  destination_id: 8460057768683396
 }
 
 # Move Sight
 response = smartsheet.sights.move(
-  sight_id: 6327127650920324,
+  sight_id: 5363568917931908,
   body: body
 )
 moved_sight = response[:result]
@@ -15379,7 +15352,7 @@ status = ss_client.Sights.get_publish_status(
 
 ```ruby
 status = smartsheet.sights.get_publish_status(
-  sight_id: 6327127650920324
+  sight_id: 970160971507588
 )
 ```
 
@@ -15466,7 +15439,7 @@ body = {
 
 # Set Sight publish status
 response = smartsheet.sights.set_publish_status(
-  sight_id: 6327127650920324,
+  sight_id: 5363568917931908,
   body: body
 )
 status = response[:result]
@@ -15512,7 +15485,7 @@ curl https://api.smartsheet.com/2.0/sights/{sightId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"name": "New Sight name"}'
+-d '{"name": "New Sight Name"}'
 ```
 
 ```javascript
@@ -15557,12 +15530,12 @@ updated_sight = ss_client.Sights.update_sight(
 ```ruby
 # Specify property to change
 body = {
-  name: 'Updated Sight'
+  name: 'New Sight Name'
 }
 
 # Update Sight
 response = smartsheet.sights.update(
-  sight_id: 6327127650920324,
+  sight_id: 5363568917931908,
   body: body
 )
 updated_sight = response[:result]
@@ -15576,7 +15549,7 @@ updated_sight = response[:result]
   "resultCode": 0,
   "result": {
     "id": 5363568917931908,
-    "name": "New Sight name",
+    "name": "New Sight Name",
     "accessLevel": "OWNER",
     "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
   }
@@ -16165,10 +16138,10 @@ new_user = ss_client.Users.add_user(
 ```ruby
 # Set user properties
 body = {
-  email: 'jimmy.doe@smartsheet.com',
+  email: 'john.doe@smartsheet.com',
   admin: false,
   licensed_sheet_creator: false,
-  first_name: 'Jimmy',
+  first_name: 'John',
   last_name: 'Doe',
   resource_viewer: false
 }
@@ -16230,7 +16203,7 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '[{"email": "altEmail1@smartsheet.com"},{"email": "altEmail2@smartsheet.com"}]'
+-d '[{"email": "John.Doe@smartsheet.com"}]'
 ```
 
 ```javascript
@@ -16280,16 +16253,13 @@ response = ss_client.Users.add_alternate_email(
 # Set options
 body = [
   {
-    email: 'not.john.doe@smartsheet.com'
-  },
-  {
-    email: 'not.john.doe2@smartsheet.com'
+    email: 'John.Doe@smartsheet.com'
   }
 ]
 
 # Add alternate email addresses
 response = smartsheet.users.alternate_emails.add(
-  user_id: 48569348493401200,
+  user_id: 4495214342629252,
   body: body
 )
 ```
@@ -16371,8 +16341,8 @@ response = ss_client.Users.promote_alternate_email(
 
 ```ruby
 response = smartsheet.users.alternate_emails.make_primary(
-  user_id: 48569348493401200,
-  alternate_email_id: 12345
+  user_id: 401090454808452,
+  alternate_email_id: 123456789012345
 )
 ```
 
@@ -16454,8 +16424,8 @@ ss_client.Users.delete_alternate_email(
 
 ```ruby
 smartsheet.users.alternate_emails.delete(
-  user_id: 48569348493401200,
-  alternate_email_id: 12345
+  user_id: 401090454808452,
+  alternate_email_id: 123456789012345
 )
 ```
 
@@ -16526,8 +16496,8 @@ alt_email = ss_client.Users.get_alternate_email(
 
 ```ruby
 alt_email = smartsheet.users.alternate_emails.get(
-  user_id: 48569348493401200,
-  alternate_email_id: 12345
+  user_id: 401090454808452,
+  alternate_email_id: 123456789012345
 )
 ```
 
@@ -16563,7 +16533,7 @@ curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
 ```javascript
 // Set options
 var options = {
-  userId: 4495214342629252
+  userId: 123456789012345
 };
 
 // List alternate email addresses
@@ -16579,7 +16549,7 @@ smartsheet.users.listAlternateEmails(options)
 ```csharp
 // Omit 'email' parameter and pagination parameters
 PaginatedResult<AlternateEmail> results = smartsheet.UserResources.ListAlternateEmails(
-  401090454808452,        // long userId
+  123456789012345,        // long userId
   null                    // PaginationParameters
 );
 ```
@@ -16587,20 +16557,20 @@ PaginatedResult<AlternateEmail> results = smartsheet.UserResources.ListAlternate
 ```java
 // Omit 'email' parameter and pagination parameters
 PagedResult<AlternateEmail> results = smartsheet.userResources().listAlternateEmails(
-  401090454808452L,        // long userId
+  123456789012345L,        // long userId
   null                    // PaginationParameters
 );
 ```
 
 ```python
 response = ss_client.Users.list_alternate_emails(
-  401090454808452)        # user_id
+  123456789012345)        # user_id
 emails = response.data
 ```
 
 ```ruby
 response = smartsheet.users.alternate_emails.list(
-  user_id: 48569348493401200
+  user_id: 123456789012345
 )
 emails = response[:data]
 ```
@@ -16955,7 +16925,7 @@ ss_client.Users.remove_user(
 
 ```ruby
 smartsheet.users.remove(
-  user_id: 48569348493401200
+  user_id: 94094820842
 )
 ```
 
@@ -17224,7 +17194,7 @@ new_workspace = ss_client.Workspaces.copy_workspace(
 ```ruby
 # Specify details
 body = {
-  new_name: 'Copied Workspace'
+  new_name: 'newWorkspaceName'
 }
 
 # Copy workspace
@@ -17322,7 +17292,7 @@ workspace = ss_client.Workspaces.create_workspace(
 ```ruby
 # Specify details
 body = {
-  name: 'New Workspace'
+  name: 'New workspace'
 }
 
 # Create the workspace
@@ -17681,7 +17651,7 @@ Workspace updatedWorkspace = smartsheet.workspaceResources().updateWorkspace(wor
 
 ```python
 updated_workspace = ss_client.Workspaces.update_workspace(
-  6621332407379844,       # workspace_id
+  7960873114331012,       # workspace_id
   ss_client.models.Workspace({
     'name': 'Updated workspace'
   })
@@ -17691,12 +17661,12 @@ updated_workspace = ss_client.Workspaces.update_workspace(
 ```ruby
 # Specify updated workspace properties
 body = {
-  name: 'Updated Workspace'
+  name: 'Updated workspace'
 }
 
 # Update workspace
 response = smartsheet.workspaces.update(
-  workspace_id: 7116448184199044,
+  workspace_id: 7960873114331012,
   body: body
 )
 ```
@@ -18707,7 +18677,7 @@ body = {
   name: 'Webhook #4',
   callback_url: 'https://www.myApp.com/webhooks',
   scope: 'sheet',
-  scope_object_id: 1421228469708676,
+  scope_object_id: 3285357287499652,
   events: [
     '*.*'
   ],
@@ -19037,7 +19007,7 @@ Webhook = ss_client.Webhooks.reset_shared_secret(
 
 ```ruby
 response = smartsheet.webhooks.reset_shared_secret(
-  webhook_id: 2674017481058180
+  webhook_id: 401090454808452
 )
 updated_secret = response[:result]
 ```
@@ -19135,18 +19105,18 @@ Webhook = ss_client.Webhooks.update_webhook(
 ```ruby
 # Webhook specification
 body = {
-  name: 'Webhook #4 Modified',
+  name: 'Webhook #4',
   callback_url: 'https://www.myApp.com/webhooks/nouveau',
   events: [
     '*.*'
   ],
   enabled: true,
-  version: 1
+  version: 2
 }
 
 # Update Webhook
 response = smartsheet.webhooks.update(
-  webhook_id: 2674017481058180,
+  webhook_id: 8444254503626628,
   body: body
 )
 updated_webhook = response[:result]
