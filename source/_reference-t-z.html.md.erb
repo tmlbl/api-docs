@@ -1,0 +1,1989 @@
+# Token
+
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
+
+## Get Access Token
+
+> Example Request: Get Access Token
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
+-X POST
+```
+
+```javascript
+// Create hash
+var hash =
+  crypto.createHash('sha256')
+    .update('Your App Secret' + '|' + 'Received Authorization Code')
+    .digest('hex');
+ 
+// Set options
+var options = {
+  queryParameters: {
+    client_id: 'Your App Client ID',
+    code: 'Received Authorization Code',
+    hash: hash
+  },
+  contentType: 'application/x-www-form-urlencoded'
+};
+
+// Get access token
+smartsheet.tokens.getAccessToken(options)
+  .then(function(token) {
+    console.log(token);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+```ruby
+hash = Digest::SHA256.hexdigest '{your_app_secret}|{your_code}'
+smartsheet.token.get(client_id: '{your_client_id}', code: '{your_code}', hash: hash)
+```
+
+> Example Response:
+
+```json
+{
+  "access_token": "ll352u9jujauoqz4gstvsae05",
+  "token_type": "bearer",
+  "refresh_token": "e9x352a9mp4151le2505",
+  "expires_in": 604799
+}
+```
+
+`POST /token`
+
+Gets an access token, as part of the OAuth process. For more information, see [OAuth Flow](#oauth-flow).
+
+     |     |
+-----|-----|
+<%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
+ | **client_id** (required) -- client id for your app
+ | **code** (required) -- authorization code returned in the previous step
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
+ | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
+
+## Refresh Access Token
+
+> Example Request: Refresh Access Token
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-d 'grant_type=refresh_token&refresh_token={your_refresh_token}
+&client_id={your_client_id}&redirect_uri={redirect_uri}
+&hash={SHA_256(app_secret|refresh_token)}' \
+-X POST
+```
+
+```javascript
+// Create hash
+var hash =
+  crypto.createHash('sha256')
+    .update('Your App Secret' + '|' + 'Your App Refresh Token')
+    .digest('hex');
+
+// Set options
+var options = {
+  queryParameters: {
+    client_id: 'Your App Client ID',
+    refresh_token: 'Your App Refresh Token',
+    hash: hash
+  },
+  contentType: 'application/x-www-form-urlencoded'    
+};
+ 
+// Refresh access token
+smartsheet.tokens.refreshAccessToken(options)
+  .then(function(updatedToken) {
+    console.log(updatedToken);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+```ruby
+hash = Digest::SHA256.hexdigest '{your_app_secret}|{refresh_token}'
+smartsheet.token.refresh(
+  client_id: '{your_client_id}',
+  refresh_token: '{refresh_token}',
+  hash: hash
+)
+```
+
+> Example Response:
+
+```json
+{
+  "access_token": "ll352u9jujauoqz4gstvsae05",
+  "token_type": "bearer",
+  "refresh_token": "e9x352a9mp4151le2505",
+  "expires_in": 604799
+}
+```
+
+`POST /token`
+
+Refreshes an access token, as part of the OAuth process. For more information, see [OAuth Flow](#oauth-flow).
+
+     |     |
+-----|-----|
+<%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
+ | **client_id** (required) -- client id for your app
+ | **refresh_token** (required) -- refresh_token value that came with the access token
+ | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://")
+ | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the refresh token value
+
+## Revoke Access Token
+
+> Example Request: Revoke Access Token
+
+```shell
+curl https://api.smartsheet.com/2.0/token \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X DELETE
+```
+
+```javascript
+smartsheet.tokens.revokeAccessToken({})
+  .then(function(results) {
+    console.log(results);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+```
+
+```csharp
+smartsheet.TokenResources.RevokeAccessToken();
+```
+
+```java
+smartsheet.tokenResources().revokeAccessToken();
+```
+
+```python
+ss_client.Token.revoke_access_token()
+```
+
+```ruby
+smartsheet.token.revoke
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0
+}
+```
+
+`DELETE /token`
+
+Revokes the access token used to make this request.  The access token is no longer valid, and subsequent API calls made using the token fail.
+
+     |     |
+-----|-----|
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result Object](#result-object)
+
+# Update Requests
+
+## <%= OBJECTS %>
+
+<%= partial "snippets/updateRequest_object.md.erb" %>
+
+<%= partial "snippets/sentUpdateRequest_object.md.erb" %>
+
+<%= partial "snippets/schedule_object.md.erb" %>
+
+## Create Update Request
+
+<%= partial "snippets/createUpdateRequest.md.erb" %>
+
+## Delete Update Request
+
+<%= partial "snippets/deleteUpdateRequest.md.erb" %>
+
+## Get Update Request
+
+<%= partial "snippets/getUpdateRequest.md.erb" %>
+
+## Get All Update Requests
+
+<%= partial "snippets/listUpdateRequests.md.erb" %>
+
+## Change Update Request
+
+<%= partial "snippets/changeUpdateRequest.md.erb" %>
+
+## Delete Sent Update Request
+
+<%= partial "snippets/deleteSentUpdateRequest.md.erb" %>
+
+## Get Sent Update Request
+
+<%= partial "snippets/getSentUpdateRequest.md.erb" %>
+
+## Get All Sent Update Requests
+
+<%= partial "snippets/listSentUpdateRequests.md.erb" %>
+
+# Users
+
+## <%= OBJECTS %>
+
+### User Object
+
+> Example User Object:
+
+```json
+{
+  "email": "john.doe@smartsheet.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  "id": 48569348493401200,
+  "status": "ACTIVE",
+  "admin": true,
+  "licensedSheetCreator": true,
+  "groupAdmin": true,
+  "resourceViewer": true, 
+  "alternateEmails": [],
+  "sheetCount": 3,
+  "lastLogin": "2016-08-15T18:32:47Z",
+  "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | number | User Id
+**email** | string | User's primary email address
+**name** | string | User's full name (read-only)
+**firstName** | string | User's first name
+**lastName** | string | User's last name
+**admin** | Boolean | Flag indicating whether the user is a system admin (can manage users and account)
+**licensedSheetCreator** | Boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
+**groupAdmin** | Boolean | Flag indicating whether the user is a group admin (can create and edit groups)
+**resourceViewer** | Boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**status** | string |  User status, set to one of the following values:<ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
+**alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail Objects](#alternateemail-object) representing the alternate email addresses associated with the User account
+**sheetCount** | number | The number of sheets owned by the current user within the organization
+**lastLogin** | timestamp | Last login time of the current user
+**customWelcomeScreenViewed** | timestamp | Timestamp of viewing an Enterprise [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) by the current user
+
+### UserProfile Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Current user's Id
+**email** | string | Current user's primary email address
+**firstName** | string | Current user's first name
+**lastName** | string | Current user's last name
+**timeZone** | string | Current user's time zone Id
+**locale** | string | Current user's locale (see [Server Information](#server-information))
+**account** | [Account](#account-object) | Account Object representing the current user's customer account
+**admin** | Boolean | Flag indicating whether the user is a system admin (can manage users and account)
+**licensedSheetCreator** | Boolean | Flag indicating whether the user is a licensed user (can create and own sheets)
+**groupAdmin** | Boolean | Flag indicating whether the user is a group admin (can create and edit groups)
+**resourceViewer** | Boolean | Flag indicating whether the user is a resource viewer (can access resource views)
+**status** | string | User status, set to one of the following values: <ul><li>ACTIVE</li><li>PENDING</li><li>DECLINED</li></ul>
+**alternateEmails** | [AlternateEmail](#alternateemail-object)[] | An array of [AlternateEmail Objects](#alternateemail-object) representing the alternate email addresses associated with the User account
+**sheetCount** | number | The number of sheets owned by the current user within the organization
+**lastLogin** | timestamp | Last login time of the current user
+**customWelcomeScreenViewed** | timestamp | Timestamp of viewing an Enterprise [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) by the current user
+
+### Account Object
+
+     |     |     |
+-----|-----|-----|
+**name** | string | Account name
+**id** | number | Account Id
+
+### AlternateEmail Object
+
+     |     |     |
+-----|-----|-----|
+**id** | number | AlternateEmail Id
+**email** | string | User's alternate email address
+**confirmed** | Boolean | Flag indicating whether the alternate email address has been confirmed
+
+## Add User
+
+> Example Request: Add User
+
+```shell
+curl https://api.smartsheet.com/2.0/users?sendEmail=true \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"firstName": "John", "lastName": "Doe", "email": "john.doe@smartsheet.com", "admin": false, "licensedSheetCreator": true}'
+```
+
+```javascript
+// Specify user properties
+var user = {
+	"firstName": "John",
+	"lastName": "Doe",
+	"email": "john.doe@smartsheet.com",
+	"admin": false,
+	"licensedSheetCreator": true
+};
+
+// Set options
+var options = {
+	body: user
+};
+
+// Add user
+smartsheet.users.addUser(options)
+	.then(function(newUser) {
+		console.log(newUser)
+	}).catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Set user properties
+User userSpecification = new User.AddUserBuilder(
+    "john.doe@smartsheet.com",
+    false,              // Nullable<bool> admin
+    true)               // Nullable<bool> licensedSheetCreator
+  .SetFirstName ("John")
+  .SetLastName ("Doe")
+  .Build();
+
+// Add user
+User newUser = smartsheet.UserResources.AddUser(
+  userSpecification,
+  true,                   // Nullable<bool> sendEmail
+  null                    // Nullable<bool> allowInviteAccountAdmin
+);
+```
+
+```java
+// Set user properties
+User userSpecification = new User.AddUserBuilder().setAdmin(false)
+  .setEmail("john.doe@smartsheet.com")
+  .setFirstName("John")
+  .setLastName("Doe")
+  .setLicensedSheetCreator(true)
+  .build();
+
+// Add user
+User newUser = smartsheet.userResources().addUser(userSpecification);
+```
+
+```python
+new_user = ss_client.Users.add_user(
+  ss_client.models.User({
+    'first_name': 'John',
+    'last_name': 'Doe',
+    'email': 'john.doe@smartsheet.com',
+    'admin': False,
+    'licensed_sheet_creator': True
+  })
+)
+```
+
+```ruby
+# Set user properties
+body = {
+  email: 'john.doe@smartsheet.com',
+  admin: false,
+  licensed_sheet_creator: false,
+  first_name: 'John',
+  last_name: 'Doe',
+  resource_viewer: false
+}
+
+# Add user
+response = smartsheet.users.add(
+  body: body
+)
+new_user = response[:result]
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0,
+  "result": {
+    "admin": false,
+    "email": "john.doe@smartsheet.com",
+    "name": "John Doe",
+    "id": 1768423626696580,
+    "licensedSheetCreator": true
+  }
+}
+```
+
+`POST /users`
+
+Adds a User to the organization.
+
+<aside class="notice">This operation is only available to system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **sendEmail** (optional): A Boolean flag indicating whether or not to send a welcome email. Defaults to **false**.
+<%= REQUEST %> | [User Object](#user-object) with the following attributes:<ul><li>email (required)</li><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>groupAdmin (optional)</li><li>resourceViewer (optional)</li></ul>
+<%= RETURNS %> | [Result Object](#result-object) containing the newly created [User Object](#user-object).
+<%= ERRORS %>  | If an error occurs because the request specified the [*alternate* email address](#alternate-email-addresses) (that is, not the primary email address) of an existing Smartsheet User (to invite the user into the Org), the [Error Object](#error-object) returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**alternateEmailAddress**: User's *alternate* email address that was specified in the request</li><li>**primaryEmailAddress**: User's primary email address that must instead be specified for the operation</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 5xxx,<br/>&#160;&#160;"message": "The specified email address (u1+1@smartsheet.com) is an alternate address for a user with the primary email address of u1@smartsheet.com. Please retry using their primary address."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"alternateEmailAddress": "u1+1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"primaryEmailAddress": "u1@smartsheet.com"<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+
+<aside class="notice">If successful, and user auto provisioning (UAP) is on, and user matches the auto provisioning rules, user is added to the org.  If UAP is off, or user does not match UAP rules, user is invited to the org and must explicitly accept the invitation to join.</aside>
+
+<aside class="notice">In some specific scenarios, supplied attributes such as <b>firstName</b> and <b>lastName</b> may be ignored.  For example, if you are inviting an existing Smartsheet user to join your organization, and the invited user has not yet accepted your invitation, any supplied <b>firstName</b> and <b>lastName</b> are ignored.</aside>
+
+## Alternate Email Addresses
+
+A [User](#user-object) in Smartsheet must have a *primary* email address associated with their account (**User.email**) and may optionally have one or more *alternate* email addresses associated with their account (**User.alternateEmails**). 
+
+<aside class="notice">The following operations must be performed using an User's <i>primary</i> email address:<ul><li><a href="#add-group-members">Add Group Members</a></li><li><a href="#add-user">Add User</a></li><li><a href="#create-update-request">Create Update Request</a></li><li><a href="#report-sharing">Share Report</a></li><li><a href="#share-sheet">Share Sheet</a></li><li><a href="#workspace-sharing">Share Workspace</a></li></ul>Attempting to specify a User's <i>alternate</i> email address for any of the above operations results in an error.</aside>
+
+### Add Alternate Emails
+
+> Example Request: Add Alternate Emails
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '[{"email": "John.Doe@smartsheet.com"}]'
+```
+
+```javascript
+// Specify email addresses to add
+var body = [
+  {
+    email: "John.Doe@smartsheet.com"
+  }
+];
+
+// Set options
+var options = {
+  userId: 4495214342629252,
+  body: body
+};
+
+// Add alternate email address
+smartsheet.users.addAlternateEmail(options)
+  .then(function (results) {
+    console.log(results);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+response = ss_client.Users.add_alternate_email(
+  4495214342629252,          # user_id
+  [
+    ss_client.models.AlternateEmail({
+        'email': 'John.Doe@smartsheet.com'
+    })
+  ]
+)
+```
+
+```ruby
+# Set options
+body = [
+  {
+    email: 'John.Doe@smartsheet.com'
+  }
+]
+
+# Add alternate email addresses
+response = smartsheet.users.alternate_emails.add(
+  user_id: 4495214342629252,
+  body: body
+)
+```
+
+> Example Response:
+
+```json
+{
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": [{
+		"id": 4495214342629252,
+		"email": "John.Doe@smartsheet.com",
+		"confirmed": false
+	}]
+}
+```
+
+`POST /users/{userId}/alternateemails`
+
+Adds one or more alternate email addresses for the specified User.
+
+<aside class="notice">This operation is only available to system administrators.</aside>
+
+<aside class="notice">If the API request is submitted by a system administrator of an Enterprise account and the alternate email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a>, the added email address is automatically confirmed.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | Array of [AlternateEmail Objects](#alternateemail-object), each limited to only the **email** attribute
+<%= RETURNS %> | [Result Object](#result-object) containing an array of the newly created [AlternateEmail Objects](#alternateemail-object).
+<%= ERRORS %>  | If a single email address is specified in the request and an error occurs, the response contains an [Error Object](#error-object).<br/><br/>If multiple email addresses are specified in the request and an error occurs, the Error Object returned contains a **detail** attribute set to an array of objects, each object in the array having the following attributes:<ul><li>**email**: Problematic email address specified in the request</li><li>**errorCode**: Smartsheet [error code](#complete-error-code-list)</li><li>**message**: Message that describes the problem with the specified email address</li></ul>For example:<br/>{<br/>&#160;&#160;"errorCode": 1160,<br/>&#160;&#160;"message": "Invalid bulk request. See detail for more information."<br/>&#160;&#160;"detail": [<br/>&#160;&#160;&#160;&#160;&#160;&#160;{<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"email": "altEmail1@smartsheet.com",<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"errorCode": 1157,<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"message": "This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account."<br/>&#160;&#160;&#160;&#160;&#160;&#160;}<br/>&#160;&#160;]<br/>}
+
+### Make Alternate Email Primary
+
+> Example Request: Make Alternate Email Primary
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmailId}/makeprimary \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST
+```
+
+```javascript
+// Set options
+var options = {
+  userId: 401090454808452,
+  alternateEmailId: 123456789012345
+};
+
+// Make alternate email primary
+smartsheet.users.makeAlternateEmailPrimary(options)
+  .then(function (results) {
+    console.log(results);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+AlternateEmail primaryEmail = smartsheet.UserResources.PromoteAlternateEmail(
+  401090454808452,        // long userId
+  123456789012345         // long altEmailId
+);
+```
+
+```java
+// [todo]
+```
+
+```python
+response = ss_client.Users.promote_alternate_email(
+  401090454808452,        # user_id
+  123456789012345)        # alt_id
+```
+
+```ruby
+response = smartsheet.users.alternate_emails.make_primary(
+  user_id: 401090454808452,
+  alternate_email_id: 123456789012345
+)
+```
+
+> Example Response:
+
+```json
+{
+	"message": "SUCCESS",
+	"resultCode": 0,
+	"result": {
+		"id": 123456789012345,
+		"email": "John.Doe@smartsheet.com",
+		"confirmed": true
+	}
+}
+```
+
+`POST /users/{userId}/alternateemails/{alternateEmailId}/makeprimary`
+
+Makes the specified alternate email address to become the primary email address for the specified user.
+
+<aside class="notice">This operation is only available to system administrators of an Enterprise account. <a href="https://www.smartsheet.com/product/enterprise-deployment">Learn more</a> about the Enterprise platform.</aside>
+
+<aside class="notice">The alternate email address can only be made primary if both conditions are met:<ul><li>The primary email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a></li><li>The alternate email address is confirmed <b>OR</b> the alternate email address <a href="<%= USER_AUTO_PROVISIONING_URL %>">domain is validated</a></li></ul></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= RETURNS %> | [Result Object](#result-object) containing the [AlternateEmail Object](#alternateemail-object) that is now the primary email address
+<%= ERRORS %> | If an error occurs because the special permission is not granted to change primary email address, contact Smartsheet (<a href="mailto:api@smartsheet.com">api@smartsheet.com</a>) for assistance to enable this feature.<br/><br/>If an error occurs because the specified user has a personal email address as the primary email address (that is. the email address domain cannot be [validated](<%= USER_AUTO_PROVISIONING_URL %>), the specified user needs to manually change the primary email address in the [Personal Settings](<%= PERSONAL_SETTINGS_MANAGE_EMAIL_URL %>).
+
+### Delete Alternate Email
+
+> Example Request: Delete Alternate Email
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternatEmailId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X DELETE
+```
+
+```javascript
+// Set options
+var options = {
+  userId: 401090454808452,
+  alternateEmailId: 123456789012345
+};
+
+// Delete alternate email address
+smartsheet.users.deleteAlternateEmail(options)
+  .then(function (results) {
+    console.log(results);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+smartsheet.UserResources.DeleteAlternateEmail(
+  401090454808452,        // long userId
+  123456789012345         // long altEmailId
+);
+```
+
+```java
+smartsheet.userResources().deleteAlternateEmail(
+  401090454808452L,        // long userId
+  123456789012345L         // long altEmailId
+);
+```
+
+```python
+ss_client.Users.delete_alternate_email(
+  401090454808452,        # user_id
+  123456789012345)        # alternate_email_id
+```
+
+```ruby
+smartsheet.users.alternate_emails.delete(
+  user_id: 401090454808452,
+  alternate_email_id: 123456789012345
+)
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0
+}
+```
+
+`DELETE /users/{userId}/alternateemails/{alternateEmailId}`
+
+Deletes the specified alternate email address for the specified user.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result Object](#result-object)
+
+### Get Alternate Email
+
+> Example Request: Get Alternate Email
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails/{alternateEmailId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+  userId: 401090454808452,
+  alternateEmailId: 123456789012345
+};
+
+// Get alternate email address
+smartsheet.users.getAlternateEmail(options)
+  .then(function (email) {
+    console.log(email);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+smartsheet.UserResources.GetAlternateEmail(
+  401090454808452,        // long userId
+  123456789012345         // long altEmailId
+);
+```
+
+```java
+smartsheet.userResources().getAlternateEmail(
+  401090454808452L,        // long userId
+  123456789012345L         // long altEmailId
+);
+```
+
+```python
+alt_email = ss_client.Users.get_alternate_email(
+  401090454808452,        # user_id
+  123456789012345)        # alternate_email_id
+```
+
+```ruby
+alt_email = smartsheet.users.alternate_emails.get(
+  user_id: 401090454808452,
+  alternate_email_id: 123456789012345
+)
+```
+
+> Example Response:
+
+```json
+{
+	"id": 123456789012345,
+	"email": "John.Doe@smartsheet.com",
+	"confirmed": true
+}
+```
+
+`GET /users/{userId}/alternateemails/{alternateEmailId}`
+
+Gets the specified Alternate Email. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [AlternateEmail Object](#alternateemail-object)<br/><br/>
+
+### List Alternate Emails
+
+> Example Request: List Alternate Emails
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}/alternateemails \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+  userId: 123456789012345
+};
+
+// List alternate email addresses
+smartsheet.users.listAlternateEmails(options)
+  .then(function (emailList) {
+    console.log(emailList);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Omit 'email' parameter and pagination parameters
+PaginatedResult<AlternateEmail> results = smartsheet.UserResources.ListAlternateEmails(
+  123456789012345,        // long userId
+  null                    // PaginationParameters
+);
+```
+
+```java
+// Omit 'email' parameter and pagination parameters
+PagedResult<AlternateEmail> results = smartsheet.userResources().listAlternateEmails(
+  123456789012345L,        // long userId
+  null                    // PaginationParameters
+);
+```
+
+```python
+response = ss_client.Users.list_alternate_emails(
+  123456789012345)        # user_id
+emails = response.data
+```
+
+```ruby
+response = smartsheet.users.alternate_emails.list(
+  user_id: 123456789012345
+)
+emails = response[:data]
+```
+
+> Example Response:
+
+```json
+{
+  "pageNumber": 1,
+  "pageSize": 100,
+  "totalPages": 1,
+  "totalCount": 1,
+  "data": 
+  [{
+    "id": 123456789012345,
+    "email": "John.Doe@smartsheet.com",
+    "confirmed": true
+  }]
+}
+```
+
+`GET /users/{userId}/alternateemails`
+
+Gets a list of the Alternate Emails for the specified User. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [AlternateEmail Objects](#alternateemail-object)<br/><br/>
+
+## Get Current User
+
+> Example Request: Get Current User
+
+```shell
+curl https://api.smartsheet.com/2.0/users/me \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+smartsheet.users.getCurrentUser()
+  .then(function(userProfile) {
+    console.log(userProfile);
+  })
+  .catch(function(error) {
+      console.log(error);
+    });
+```
+
+```csharp
+UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
+```
+
+```java
+UserProfile userProfile = smartsheet.userResources().getCurrentUser();
+```
+
+```python
+user_profile = ss_client.Users.get_current_user()
+```
+
+```ruby
+user_profile = smartsheet.users.get_current
+```
+
+> Example Response:
+
+```json
+{
+  "email": "john.doe@smartsheet.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  "id": 48569348493401200, 
+  "admin": true,
+  "licensedSheetCreator": true,
+  "groupAdmin": true,
+  "resourceViewer": true,	
+  "alternateEmails": [
+    {
+      "id": 12345,
+      "email": "altEmail1@smartsheet.com",
+      "confirmed": true                
+    }
+	],
+  "sheetCount": 0,
+  "lastLogin": "2016-11-23T19:27:31Z",
+  "customWelcomeScreenViewed": "2016-11-23T19:46:34Z"
+}
+```
+
+`GET /users/me`
+
+Gets the current User.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | all scopes
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [UserProfile Object](#userprofile-object)<br/><br/><b>Note</b>: For system administrators, the following UserProfile attributes are included in the response):<ul><li>lastLogin (only returned if the user has logged in)</li><li>sheetCount (only returned if the status attribute is ACTIVE)</li><li>customWelcomeScreenViewed (only returned when an Enterprise user has viewed the [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>))</li></ul>
+
+## Get User
+
+> Example Request: Get User
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+	id: 48569348493401200	// Id of user
+};
+
+// Get user
+smartsheet.users.getUser(options)
+  .then(function(userProfile) {
+    console.log(userProfile)
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+```
+
+```csharp
+UserProfile userProfile = smartsheet.UserResources.GetUser(
+  48569348493401200           // long userId
+);
+```
+
+```java
+UserProfile userProfile = smartsheet.userResources().getUser(
+  48569348493401200L           // long userId
+);
+```
+
+```python
+user_profile = ss_client.Users.get_user(
+  48569348493401200)          # user_id
+```
+
+```ruby
+user_profile = smartsheet.users.get(
+  user_id: 48569348493401200
+)
+```
+
+> Example Response:
+
+```json
+{
+  "email": "john.doe@smartsheet.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  "id": 48569348493401200,
+  "status": "ACTIVE",
+  "admin": true,
+  "licensedSheetCreator": true,
+  "groupAdmin": true,
+  "resourceViewer": true,	
+  "alternateEmails": [
+    {
+      "id": 12345,
+      "email": "altEmail1@smartsheet.com",
+      "confirmed": true                
+    }
+  ],
+  "sheetCount": 3,
+  "lastLogin": "2016-08-15T18:32:47Z",
+  "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+}
+```
+
+`GET /users/{userId}`
+
+Gets the User specified in the URL. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [UserProfile Object](#userprofile-object)<br/><br/><b>Note</b>: For system administrators, the following UserProfile attributes are included in the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (only returned if the user has logged in)</li><li>sheetCount (only returned if the status attribute is ACTIVE)</li><li>customWelcomeScreenViewed (only returned when an Enterprise user has viewed the [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>))</li></ul>
+
+## List Users
+
+> Example Request: List Users
+
+```shell
+curl https://api.smartsheet.com/2.0/users?email=john.doe@smartsheet.com&include=lastLogin \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript 
+smartsheet.users.listAllUsers()
+	.then(function(userList) {
+		console.log(userList)
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Sample 1: Omit 'email' parameter and pagination parameters
+PaginatedResult<User> users = smartsheet.UserResources.ListUsers(
+  null,               // IEnumerable<string> emails
+  null                // PaginationParameters
+);
+
+// Sample 2: Specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true'
+PaginatedResult<User> users = smartsheet.UserResources.ListUsers(
+  new string[] { "john.doe@smartsheet.com" },
+  new PaginationParameters(
+    true, // includeAll
+    null, // int pageSize
+    null) // int page
+);
+```
+
+```java
+// Sample 1: Omit 'email' parameter and pagination parameters
+PagedResult<User> users = smartsheet.userResources().listUsers(
+  null,       // Set<String> email
+  null        // PaginationParameters
+);
+
+// Sample 2: Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+
+// Specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true'
+PagedResult<User> users = smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
+```
+
+```python
+# Sample 1; List all
+response = ss_client.Users.list_users(include_all=True)
+users = response.data
+
+# Sample 2: Paginate the list
+response = ss_client.Users.list_users(
+  page_size=100,
+  page=1)
+pages = response.total_pages
+users = response.data
+```
+
+```ruby
+response = smartsheet.users.list
+users = response[:data]
+```
+
+> Example Response:
+
+```json
+{
+  "pageNumber": 1,
+  "pageSize": 100,
+  "totalPages": 1,
+  "totalCount": 1,
+  "data": [
+    {
+      "id": 94094820842,
+      "admin": true,
+      "email": "john.doe@smartsheet.com",
+      "name": "John Doe",
+      "status": "ACTIVE",
+      "admin": true,
+      "licensedSheetCreator": true,
+      "groupAdmin": true,
+      "resourceViewer": true,
+      "sheetCount": 3,
+      "lastLogin": "2016-08-15T18:32:47Z",
+      "customWelcomeScreenViewed": "2016-08-12T12:15:47Z"
+    }
+  ]
+}
+```
+
+`GET /users`
+
+Gets a list of Users in the organization. To filter by email, use the optional **email** query string parameter to specify a list of users' email addresses.
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **email** (optional): Comma-separated list of email addresses on which to filter the results.
+ | **include** (optional): When specified with a value of "lastLogin", response includes the **lastLogin** attribute for each [user](#user-object) if:<br/><ul><li>the request is submitted by a system administrator, and</li><li>the returned [IndexResult object](#indexresult-object) that contains a maximum of 100 [User Objects](#user-object).</li></ul>
+ | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [User Objects](#user-object)<br/><br/><b>Note</b>: If the API request is submitted by a system administrator, the following User attributes are included in the response (else, they are omitted from the response):<ul><li>status</li><li>admin</li><li>licensedSheetCreator</li><li>groupAdmin</li><li>resourceViewer</li><li>lastLogin (omitted if the user has never logged in before)</li><li>sheetCount (omitted if the status attribute is not ACTIVE)</li></ul><br/><b>Note</b>: If the API request is submitted by a system administrator of an Enterprise account, and [Custom Welcome Screen](<%= CUSTOM_WELCOME_SCREEN_URL %>) is enabled, the following User attributes are included in the response (else, they are omitted from the response):<ul><li>customWelcomeScreenViewed (omitted if the user has never viewed the Custom Welcome Screen)</li></ul>
+
+
+## Remove User
+
+> Example Request: Remove User
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId}?transferTo=USER_Id&removeFromSharing=true \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X DELETE
+```
+
+```javascript
+// Set options
+var options = {
+	id: 94094820842 // Id of User
+};
+
+// Remove user
+smartsheet.users.removeUser(options)
+	.then(function(results) {
+		console.log(results)
+	})	
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Transfer ownership of groups and sheets to another user and remove the user from sharing
+smartsheet.UserResources.RemoveUser(
+  94094820842,                // long userId
+  transferToUserId,           // Nullable<long> transferTo
+  true,                       // Nullable<bool> transferSheets
+  true                        // Nullable<bool> removeFromSharing
+);
+```
+
+```java
+// Transfer ownership of groups and sheets to another user and remove the user from sharing
+DeleteUserParameters parameters = new DeleteUserParameters(
+  62123820842L,       // long transferToUserId
+  true,               // Boolean transferSheets
+  true                // Boolean removeFromSharing
+);
+smartsheet.userResources().deleteUser(
+  94094820842L,        // long userId
+  parameters
+);
+```
+
+```python
+ss_client.Users.remove_user(
+  94094820842,                # user_id
+  transfer_to=62123820842,    # ownership of groups and sheets transfer to user_id
+  remove_from_sharing=True)
+```
+
+```ruby
+smartsheet.users.remove(
+  user_id: 94094820842
+)
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0
+}
+```
+
+`DELETE /users/{userId}`
+
+Removes a User from an organization. User is transitioned to a free collaborator with read-only access to owned sheets (unless those are optionally transferred to another user). 
+
+<aside class="notice">This operation is only available to system administrators.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **transferTo** (required if user owns groups): The Id of the user to transfer ownership to.  If the user being removed owns groups, they are transferred to this user.  If the user owns sheets, *and* **transferSheets** is true, the removed user's sheets are transferred to this user.
+  | **transferSheets** (optional): If `true`, and **transferTo** is specified, the removed user's sheets are transferred.  Else, sheets are not transferred.  Defaults to `false`.
+  | **removeFromSharing** (optional): Set to `true` to remove the user from sharing for all sheets/workspaces in the organization. If not specified, User is not removed from sharing.
+<%= RETURNS %> | [Result Object](#result-object)
+
+<aside class="notice">If the <b>transferTo</b> parameter is specified and the removed user owns Groups, the user specified via the <b>transferTo</b> parameter must have Group Admin rights.</aside>
+
+<aside class="notice">The <b>transferTo</b> and <b>transferSheets</b> parameters cannot be specified for a user who has not yet accepted an invitation to join the organization (that is, if user <b>status</b> = "PENDING").</aside>
+
+## Update User
+
+> Example Request: Update User
+
+```shell
+curl https://api.smartsheet.com/2.0/users/{userId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"admin": true, "licensedSheetCreator": true}'
+```
+
+```javascript
+// Specify updated user properties
+var user = {
+	"admin": true,
+	"licensedSheetCreator": true
+};
+
+// Set options
+var options = {
+  id: 82349925918590, // Id of User
+  body: user
+	};
+
+// Update user
+smartsheet.users.updateUser(options)
+	.then(function(updatedUser) {
+		console.log(updatedUser)
+	}).catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Specify updated user properties
+User userSpecification = new User.UpdateUserBuilder(
+    82349925918590,             // long userId
+    true,                       // Nullable<bool> admin
+    true)                       // Nullable<bool> licensedSheetCreator
+  .Build();
+
+// Update user
+User updatedUser = smartsheet.UserResources.UpdateUser(
+  82349925918590,             // long userId
+  userSpecification
+);
+```
+
+```java
+// Specify updated user properties
+User userSpecification = new User.UpdateUserBuilder().setUserId(userId).setAdmin(true).setLicensedSheetCreator(true).build();
+
+// Update user
+User updatedUser = smartsheet.userResources().updateUser(userSpecification);
+```
+
+```python
+updated_user = ss_client.Users.update_user(
+  82349925918590,     # user_id
+  ss_client.models.User({
+    'licensed_sheet_creator': True,
+    'admin': True
+  })
+)
+```
+
+```ruby
+# Specify updated user properties
+body = {
+  admin: false,
+  licensed_sheet_creator: true,
+  first_name: 'Johnny',
+  last_name: 'Doeford',
+  resource_viewer: true
+}
+
+# Update user
+response = smartsheet.users.update(
+  user_id: 48569348493401200,
+  body: body
+)
+updated_user = response[:result]
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0,
+  "result": {
+    "admin": true,
+    "licensedSheetCreator": true
+  }
+}
+```
+
+`PUT /users/{userId}`
+
+Updates the User specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_USERS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [User Object](#user-object) containing at least one of the following attributes:<ul><li>admin (required)</li><li>licensedSheetCreator (required)</li><li>firstName (optional)</li><li>lastName (optional)</li><li>groupAdmin (optional)</li><li>resourceViewer (optional)</li></ul>
+<%= RETURNS %> | [Result Object](#result-object) containing the [User Object](#user-object) for the updated User
+
+# Workspaces
+
+## <%= OBJECTS %>
+
+### Workspace Object
+
+> Example Workspace Object:
+
+```json
+{
+  "sheets": [],
+  "accessLevel": "OWNER",
+  "id": 7116448184199044,
+  "name": "New workspace",
+  "permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zgg"
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Workspace Id
+**name** | string | Workspace name
+**favorite** | Boolean | Returned only if the user has marked the Workspace as a Favorite in their Home tab (value = 'true')
+**accessLevel** | string | User's permissions on the Workspace
+**permalink** | string | URL that represents a direct link to the Workspace in Smartsheet
+**sheets** | [Sheet](#sheet-object)[] | Array of Sheet Objects
+**folders** | [Folder](#folder-object)[] | Array of Folder Objects
+**reports** | [Report](#report-object)[] | Array of Report Objects
+**sights** | [Sight](#sight-object)[] | Array of Sight Objects
+**templates** | [Template](#template-object)[] | Array of Template Objects
+
+## Copy Workspace
+
+> Example Request: Copy Workspace
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/copy?include=data
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+-H "Content-Type: application/json"
+-d '{"newName": "newWorkspaceName"}'
+-X POST
+```
+
+```javascript
+// Specify new workspace name
+var body = {
+  newName: "newWorkspaceName"
+};
+
+// Set elements to copy
+var params = {
+  include: "data,discussions",
+  skipRemap: "cellLinks"
+};
+
+// Set options
+var options = {
+  workspaceId: 7116448184199044,
+  body: body,
+  queryParameters: params
+};
+
+// Copy workspace
+smartsheet.workspaces.copyWorkspace(options)
+  .then(function (copiedWorkspace) {
+    console.log(copiedWorkspace);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Specify name for the new workspace
+ContainerDestination destination = new ContainerDestination {
+  NewName = "newWorkspaceName"
+};
+
+// Sample 1: Omit 'include' and 'skipRemap' parameters
+Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
+  7116448184199044,          // long workspaceId
+  destination,
+  null,                      // IEnumerable<WorkspaceCopyInclusion> include
+  null                       // IEnumerable<WorkspaceRemapExclusion> skipRemap
+);
+
+// Sample 2: Specify 'include' parameter with value of "DATA", and 'skipRemap' parameter with value of "CELL_LINKS"
+Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
+  7116448184199044,           // long workspaceId
+  destination,
+  new WorkspaceCopyInclusion[] { WorkspaceCopyInclusion.DATA },
+  new WorkspaceRemapExclusion[] { WorkspaceRemapExclusion.CELL_LINKS }
+);
+```
+
+```java
+// Specify name for the new workspace
+ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setNewName("newWorkspaceName").build();
+
+// Sample 1: Omit 'include' and 'skipRemap' parameters
+Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
+  7116448184199044L,          // long workspaceId
+  destination,
+  null,                       // EnumSet<WorkspaceCopyInclusion> includes
+  null                        // EnumSet<WorkspaceRemapExclusion> skipRemap
+);
+
+// Sample 2: Specify 'include' parameter with value of "DATA", and 'skipRemap' parameter with value of "CELLLINKS"
+Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
+  7116448184199044L,          // long workspaceId
+  destination,
+  EnumSet.of(WorkspaceCopyInclusion.DATA),
+  EnumSet.of(WorkspaceRemapExclusion.CELLLINKS)
+);
+```
+
+```python
+new_workspace = ss_client.Workspaces.copy_workspace(
+  7116448184199044,           # workspace_id
+  ss_client.models.ContainerDestination({
+    'new_name': 'newWorkspaceName'
+  })
+)
+```
+
+```ruby
+# Specify details
+body = {
+  new_name: 'newWorkspaceName'
+}
+
+# Copy workspace
+response = smartsheet.workspaces.copy(
+  workspace_id: 7116448184199044,
+  body: body
+)
+new_workspace = response[:result]
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",    
+  "resultCode": 0,
+  "result": {
+    "id": 6282479888820100,
+    "name": "newWorkspaceName",
+    "accessLevel": "OWNER",
+    "permalink": "https://{url}?lx=VL4YlIUnyYgASeX02grbLQ"
+  }
+}
+```
+
+`POST /workspaces/{workspaceId}/copy`
+
+Creates a copy of the specified Workspace.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+ | **omit** (optional) -- when specified with a value of "sheetHyperlinks", excludes this category from the response
+ | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created workspace:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source workspace are re-mapped to reference corresponding objects in the newly created workspace. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created workspace continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created workspace continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created workspace continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created workspace continue to point to the original source sheets / reports.</li></ul>
+<%= REQUEST %> | [ContainerDestination Object](#containerdestination-object), limited to the following attribute:<ul><li>newName (string) - required</li></ul>
+<%= RETURNS %> | [Result Object](#result-object) containing a [Workspace Object](#workspace-object) for the newly created Workspace
+
+## Create Workspace
+
+> Example Request: Create Workspace
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"name": "New workspace"}'
+```
+
+```javascript
+// Specify workspace name
+var workspace = {"name": "New workspace"};
+
+// Set options
+var options = {
+  body: workspace
+};
+
+// Create workspace
+smartsheet.workspaces.createWorkspace(options)
+  .then(function (newWorkspace) {
+    console.log(newWorkspace);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Specify workspace name
+Workspace workspaceSpecification = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
+
+// Create workspace
+Workspace newWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(workspaceSpecification);
+```
+
+```java
+// Specify workspace name
+Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
+
+// Create workspace
+Workspace newWorkspace = smartsheet.workspaceResources().createWorkspace(workspaceSpecification);
+```
+
+```python
+workspace = ss_client.Workspaces.create_workspace(
+  ss_client.models.Workspace({
+    'name': 'New workspace'
+  })
+)
+```
+
+```ruby
+# Specify details
+body = {
+  name: 'New workspace'
+}
+
+# Create the workspace
+response = smartsheet.workspaces.create(
+  body: body
+)
+workspace = response[:result]
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0,
+  "result": {
+    "accessLevel": "OWNER",
+    "id": 7960873114331012,
+    "name": "New workspace",
+    "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
+  }
+}
+```
+
+`POST /workspaces`
+
+Creates a Workspace.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Workspace Object](#workspace-object), limited to the following attribute:<ul><li>name (string) - required</li></ul>
+<%= RETURNS %> | [Result Object](#result-object) containing a [Workspace Object](#workspace-object) for the newly created Workspace
+
+
+## Delete Workspace
+
+> Example Request: Delete Workspace
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X DELETE
+```
+
+```javascript
+// Set options
+var options = {
+  workspaceId: 6621332407379844
+};
+
+// Delete workspace
+smartsheet.workspaces.deleteWorkspace(options)
+  .then(function (results) {
+    console.log(results);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+smartsheet.WorkspaceResources.DeleteWorkspace(
+  6621332407379844                // long workspaceId
+);
+```
+
+```java
+smartsheet.workspaceResources().deleteWorkspace(
+  6621332407379844L        // long workspaceId
+);
+```
+
+```python
+ss_client.Workspaces.delete_workspace(
+  6621332407379844)       # workspace_id
+```
+
+```ruby
+smartsheet.workspaces.delete(
+  workspace_id: 7116448184199044
+)
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0
+}
+```
+
+`DELETE /workspaces/{workspaceId}`
+
+Deletes the specified Workspace (and its contents).
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result Object](#result-object)
+
+## Get Workspace
+
+> Example Request: Get Workspace
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/{workspaceid} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+  workspaceId: 7116448184199044
+};
+
+// Get workspace
+smartsheet.workspaces.getWorkspace(options)
+  .then(function (workspace) {
+    console.log(workspace);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Sample 1: Omit 'loadAll' and 'include' parameters
+Workspace workspace = smartsheet.WorkspaceResources.GetWorkspace(
+  6621332407379844,           // long workspaceId
+  null,                       // Nullable<bool> loadAll,
+  null                        // IEnumerable<WorkspaceInclusion> include
+);
+
+// Sample 2: Specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source"
+Workspace workspace = smartsheet.WorkspaceResources.GetWorkspace(
+  6621332407379844,           // long workspaceId
+  false,                      // Nullable<bool> loadAll,
+  new WorkspaceInclusion[] { WorkspaceInclusion.SOURCE }
+);
+```
+
+```java
+// Sample 1: Omit 'loadAll' and 'include' parameters
+Workspace workspace = smartsheet.workspaceResources().getWorkspace(
+  6621332407379844L,      // long workspaceId
+  null,                   // Boolean loadAll
+  null                    // EnumSet<SourceInclusion> includes
+);
+
+// Sample 2: Specify 'loadAll' parameter with value of "false", and 'include' parameter with value of "source"
+Workspace workspace = smartsheet.workspaceResources().getWorkspace(
+  6621332407379844L,      // long workspaceId
+  false,                  // Boolean loadAll
+  EnumSet.of(SourceInclusion.SOURCE)
+);
+```
+
+```python
+workspace = ss_client.Workspaces.get_workspace(
+  6621332407379844)       # workspace_id
+```
+
+```ruby
+response = smartsheet.workspaces.get(
+  workspace_id: 7116448184199044
+)
+```
+
+> Example Response:
+
+```json
+{
+  "sheets": [
+    {
+      "id": 4583173393803140,
+      "name": "sheet 1",
+      "accessLevel": "OWNER",
+      "permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zg1",
+      "createdAt": "2015-06-05T20:05:29Z",
+      "modifiedAt": "2015-06-05T20:05:43Z"
+    }
+  ],
+  "accessLevel": "OWNER",
+  "id": 7116448184199044,
+  "name": "New workspace",
+  "permalink": "https://app.smartsheet.com/b/home?lx=8Z0XuFUEAkxmHCSsMw4Zgg"
+}
+```
+
+`GET /workspaces/{workspaceid}`
+
+Gets the specified Workspace (and lists its contents).
+
+<aside class="notice">By default, this operation only returns the top-level items in the Workspace. To load all of the contents, including nested Folders, include the <b>loadAll</b> query string parameter with a value of <b>true</b>.</aside>
+
+<aside class="notice">If no Folders, Sheets, Reports, Templates, or Sights are present in the Workspace, the corresponding attribute (for example, "folders", "sheets") is not present in the response.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **loadAll** (optional) -- **true** or **false** (defaults to **false**)
+	| **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
+<%= RETURNS %> | [Workspace Object](#workspace-object), populated according to the **include** parameter
+
+## List Workspaces
+
+> Example Request: List Workspaces
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+smartsheet.workspaces.listWorkspaces()
+	.then(function(workspaceList) {
+		console.log(workspaceList);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+// Omit pagination parameters
+PaginatedResult<Workspace> workspaces = smartsheet.WorkspaceResources.ListWorkspaces(
+  null                // PaginationParameters
+);
+```
+
+```java
+// Omit pagination parameters
+PagedResult<Workspace> workspaces = smartsheet.workspaceResources().listWorkspaces(
+  null        // PaginationParameters
+);
+```
+
+```python
+# Sample 1: List all
+response = ss_client.Workspaces.list_workspaces(include_all=True)
+workspaces = response.data
+
+# Sample 2: Paginate the list
+response = ss_client.Workspaces.list_workspaces(
+  page_size=20,
+  page=1)
+pages = response.total_pages
+workspaces = response.data
+```
+
+```ruby
+response = smartsheet.workspaces.list
+workspaces = response[:data]
+```
+
+> Example Response:
+
+```json
+{
+  "pageNumber": 1,
+  "pageSize": 100,
+  "totalPages": 1,
+  "totalCount": 2,
+	"data": [
+		{
+			"accessLevel": "OWNER",
+			"id": 3457273486960516,
+			"name": "workspace 1",
+			"permalink": "https://app.smartsheet.com/b/home?lx=JNL0bgXtXc0pzni9tzAc4g"
+		},
+		{
+			"accessLevel": "OWNER",
+			"id": 7960873114331012,
+			"name": "workspace 2",
+			"permalink": "https://app.smartsheet.com/b/home?lx=JLiJbgXtXc0pzni9tzAKiR"
+		}
+	]
+}
+```
+
+`GET /workspaces`
+
+Gets a list of Workspaces that the user has access to. The list contains an abbreviated Workspace Object for each Workspaces.
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li></ul><%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Workspace Objects](#workspace-object)
+
+## Share Workspace
+
+For details about Workspace sharing, see [Workspace Sharing](#workspace-sharing).
+
+## Update Workspace
+
+> Example Request: Update Workspace
+
+```shell
+curl https://api.smartsheet.com/2.0/workspaces/7960873114331012 \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X PUT \
+-d '{"name": "Updated workspace"}'
+```
+
+```javascript
+// Specify updated workspace properties
+var workspace = {"name": "Updated workspace"};
+
+// Set options
+var options = {
+  workspaceId: 7960873114331012,
+  body: workspace
+  };
+
+// Update workspace
+smartsheet.workspaces.updateWorkspace(options)
+  .then(function (updatedWorkspace) {
+    console.log(updatedWorkspace);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Specify updated workspace name
+Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder(
+    7960873114331012,           // long workspaceId
+    "Updated workspace")
+  .Build();
+
+// Update workspace
+Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(workspaceSpecification);
+```
+
+```java
+// Specify updated workspace properties
+Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder()
+  .setName("Updated workspace")
+  .setId(7960873114331012L)       // long workspaceId
+  .build();
+
+// Update workspace
+Workspace updatedWorkspace = smartsheet.workspaceResources().updateWorkspace(workspaceSpecification);
+```
+
+```python
+updated_workspace = ss_client.Workspaces.update_workspace(
+  7960873114331012,       # workspace_id
+  ss_client.models.Workspace({
+    'name': 'Updated workspace'
+  })
+)
+```
+
+```ruby
+# Specify updated workspace properties
+body = {
+  name: 'Updated workspace'
+}
+
+# Update workspace
+response = smartsheet.workspaces.update(
+  workspace_id: 7960873114331012,
+  body: body
+)
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0,
+  "result": {
+    "accessLevel": "OWNER",
+    "id": 7960873114331012,
+    "name": "Updated workspace",
+    "permalink": "https://app.smartsheet.com/b/home?lx=rBU8QqUVPCJ3geRgl7L8yQ"
+  }
+}
+```
+
+`PUT /workspaces/{workspaceId}`
+
+Updates the Workspace specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ADMIN_WORKSPACES
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [Workspace Object](#workspace-object) limited to the following attribute:<ul><li>name (string)</li></ul>
+<%= RETURNS %> | [Result Object](#result-object) containing the updated [Workspace Object](#workspace-object)
+
+## <%= RELATED %>
+
+### Workspace Folders
+
+For details about working with folders in a Workspace, see [Folders](#folders).
+
+### Workspace Sheets
+
+For details about working with sheets in a Workspace, see [Sheets](#sheets).</br>

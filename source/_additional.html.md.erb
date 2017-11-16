@@ -1,0 +1,476 @@
+# <span class="customTOCSectionHeading">Additional Reference</span>
+
+# Other Objects
+
+## AutoNumberFormat Object
+
+> Example AutoNumberFormat Object:
+
+```json
+{
+  "prefix": "ITEM-",
+  "fill": "0000",
+  "suffix": ""
+}
+```
+
+Object that describes how the the System Column type of "AUTO_NUMBER" is auto-generated.
+
+     |     |     |
+-----|-----|-----|
+**prefix** | string | The prefix. Can include the date tokens:<ul><li>{YY}</li><li>{YYYY}</li><li>{MM}</li><li>{DD}</li></ul>
+**suffix** | string | The suffix. Can include the date tokens:<ul><li>{YY}</li><li>{YYYY}</li><li>{MM}</li><li>{DD}</li></ul>
+**fill** | string | Indicates zero-padding. Must be between 0 and 10 "0" (zero) characters.
+**startingNumber** | number | The starting number for the auto-id
+
+## BulkItemFailure Object
+
+> Example BulkItemFailure Object:
+
+```json
+{
+  "index": 0,
+  "rowId": 564480076736388,
+  "error": {
+    "errorCode": 1042,
+    "message": "The value for cell in column 647615814625156, Mad Hatter, did not conform to the strict requirements for type PICKLIST.",
+    "refId": "136g6zxtcekx2"
+  }
+}
+```
+
+Object that contains information about an item that failed to be added or updated as specified by a bulk request.
+
+     |     |     |
+-----|-----|-----|
+**index** | number | The index of the failed item in the bulk request array
+**rowId** | number | The id of the [Row](#row-object) that failed.<br/>*Applicable only to bulk row operations* 
+**error** | [Error Object](#error-object) | The error caused by the failed item
+
+
+## ContainerDestination Object
+
+> Example ContainerDestination Object:
+
+```json
+{ 
+  "destinationType": "folder", 
+  "destinationId": 6137362003584900,
+  "newName": "New folder"
+}
+```
+
+Object that describes the destination container when a Sheet or Folder is moved, or when a Sheet, Folder, or Workspace is copied.
+
+     |     |     |
+-----|-----|-----|
+**destinationType** | string | Type of the destination container (when copying or moving a Sheet or a Folder). One of the following values:<ul><li>home</li><li>workspace</li><li>folder</li></ul>
+**destinationId** | number | Id of the destination container (when copying or moving a Sheet or a Folder). Required if **destinationType** is "folder" or "workspace" If **destinationType** is "home", this value must be null.
+**newName** | string | Name of the newly created object (when creating a copy of a Sheet, Folder, Sight, or Workspace). This attribute is not supported for "move" operations (that is, a moved Sheet, Folder, Sight, or Workspace retains its original name).
+ 
+## Error Object
+
+> Example Error Object:
+
+```json
+{
+  "errorCode": 1006,
+  "message": "Not Found",
+  "refId": "exlxshtxlpl8"
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**errorCode** | number | Custom error code from Smartsheet. See the <a href="#complete-error-code-list">Complete Error Code List</a>.
+**message** | string | Descriptive message.
+**refId** | string | Id of the specific error occurrence. Please include this information when contacting Smartsheet support.
+
+## IndexResult Object
+
+> Example IndexResult Object:
+
+```json
+{
+	"pageNumber": 1,
+	"pageSize": 100,
+	"totalPages": 1,
+	"totalCount": 2,
+	"data": []
+}
+```
+
+Object returned for all `GET` operations against index endpoints.  This object provides metadata which can be used to perform paging on potentially large data sets.  See the [Paging](#paging) section for more information.
+
+<%= partial "snippets/indexResult_object.md.erb" %>
+
+## Result Object
+
+> Example Result Object:
+
+```json
+{
+  "message": "PARTIAL_SUCCESS",
+  "resultCode": 3,
+  "result": [],
+  "version": 14,
+  "failedItems": []
+}
+```
+
+Object returned for all `PUT` operations and `POST` operations (and for some other operations). 
+
+     |     |     |
+-----|-----|-----|
+**message** | string | Message that indicates the outcome of the request. (One of SUCCESS or PARTIAL_SUCCESS)
+**resultCode** | number | 0 (zero) if successful, 3 for partial success of a bulk operation.
+**result** | Object | Object that was created or updated (if applicable)
+**version** | number | New version of the Sheet.<br/>*Applicable only for operations which update sheet data* 
+**failedItems** | [BulkItemFailure](#bulkitemfailure-object)[] | Array of BulkItemFailure Objects which represents the items that failed to be added or updated. See [Partial Success](#partial-success) for more information.<br/>*Applicable only for bulk operations that support partial success*
+
+# Complete Error Code List
+
+For an explanation of the logic behind Smartsheet error codes and error handling, see the [HTTP and REST](#http-and-rest) portion of the Introduction. 
+
+## 400-Level Error Codes
+
+400-level error codes generally indicate that there is something you should fix or add to your request before you try the request again.  
+
+HTTP status code | Smartsheet errorCode | Smartsheet message
+-----|-----|-----|
+401 | 1001 | An Access Token is required. 
+401 | 1002 | Your Access Token is invalid. 
+401 | 1003 | Your Access Token has expired. 
+403 | 1004 | You are not authorized to perform this action. 
+401 | 1005 | Single Sign-On is required for this account. 
+404 | 1006 | Not Found. 
+404 | 1007 | Version not supported.
+400 | 1008 | Unable to parse request. The following error occurred: {0} 
+400 | 1009 | A required parameter is missing from your request: {0}. 
+405 | 1010 | HTTP Method not supported. 
+400 | 1011 | A required header was missing or invalid: {0}
+400 | 1012 | A required object attribute is missing from your request: {0}. 
+403 | 1013 | The operation you are attempting to perform is not supported by your plan. 
+403 | 1014 | There are no licenses available on your account. 
+403 | 1015 | The user exists in another account. The user must be removed from that account before they can be added to yours. 
+403 | 1016 | The user is already a member of your account. 
+403 | 1017 | The user already has a paid account. The user must cancel that account before they can be added to yours.
+400 | 1018 | The value {0} was not valid for the parameter {1}.
+400 | 1019 | Cannot transfer to the user specified. User not found.
+404 | 1020 | User not found. 
+403 | 1021 | Cannot transfer to the user specified. They are not a member of your account. 
+403 | 1022 | Cannot delete the user specified. They are not a member of your account. 
+400 | 1023 | The sheet specified is shared at the Workspace level. 
+400 | 1024 | The HTTP request body is required for this Method. 
+400 | 1025 | The share already exists.
+403 | 1026 | Transferring ownership is not currently supported.
+404 | 1027 | Share not found. 
+400 | 1028 | You cannot edit the share of the owner.
+400 | 1029 | The parameter in the URI does not match the object in the request body. 
+401 | 1030 | You are unable to assume the user specified.
+400 | 1031 | The value {0} was not valid for the attribute {1}. 
+400 | 1032 | The attribute(s) {0} are not allowed for this operation. 
+404 | 1033 | The template was not found. 
+400 | 1034 | Invalid Row Id.
+400 | 1035 | Attachments and discussions cannot be POSTed with a row. 
+400 | 1036 | The columnId {0} is invalid. 
+400 | 1037 | The columnId {0} is included more than once in a single row. 
+400 | 1038 | Invalid Cell value. Must be numeric or a string. 
+403 | 1039 | Cannot edit a locked column {0}.
+400 | 1040 | Cannot edit your own share.
+400 | 1041 | The value for {0} must be {1} characters in length or less, but was {2}. 
+400 | 1042 | The value for cell in column {0}, {1}, did not conform to the strict requirements for type {2}.
+404 | 1043 | The row number you requested is blank and cannot be retrieved.
+400 | 1044 | Assume-User header is required for your Access Token.
+403 | 1045 | The resource specified is read-only.
+400 | 1046 | Cells containing formulas, links to other cells, system values, or Gantt values cannot be inserted or updated through the API.
+403 | 1047 | You cannot remove yourself from the account through the API.
+403 | 1048 | The user specified has declined the invitation to join your organization. You cannot modify declined invitations.
+403 | 1049 | You cannot remove admin permissions from yourself through the API.
+403 | 1050 | You cannot edit a locked row.
+400 | 1051 | Attachments of type FILE cannot be created using JSON.
+406 | 1052 | Invalid Accept header. Media type not supported.
+400 | 1053 | Unknown Paper size: {0}.
+400 | 1054 | The new sheet requires either a fromId or columns.
+400 | 1055 | One and only one column must be primary.
+400 | 1056 | Column titles must be unique.
+400 | 1057 | Primary columns must be of type TEXT_NUMBER. 
+400 | 1058 | Column type of {1} does not support symbol of type {0}.
+400 | 1059 | Column options are not allowed when a symbol is specified.
+400 | 1060 | Column options are not allowed for column type {0}.
+400 | 1061 | Max count exceeded for field {0}.
+400 | 1062 | Invalid row location.
+400 | 1063 | Invalid parentId: {0}.
+400 | 1064 | Invalid siblingId: {0}.
+400 | 1065 | The column specified cannot be deleted.
+400 | 1066 | You can only share to {0} users at a time.
+401 | 1067 | Invalid client_id 
+400 | 1068 | Unsupported grant type.
+400 | 1069 | Invalid Request. The authorization_code has expired.
+400 | 1070 | Invalid Request. Required parameter is missing: {0}.
+400 | 1071 | Invalid Grant. The authorization code or refresh token provided was invalid.
+400 | 1072 | Invalid hash value. The hash provided did not match the expected value.
+400 | 1073 | The redirect_uri did not match the expected value.
+400 | 1074 | You are trying to upload a file of {0}, but the API currently only supports {1}.
+400 | 1075 | The Content-Size provided did not match the file uploaded. This may be due to network issues or because the wrong Content-Size was specified.
+403 | 1076 | The user has created sheets and must be added as a licensed user.
+400 | 1077 | Duplicate system column type: {0}.
+400 | 1078 | System column type {0} not supported for {1} {2}.
+400 | 1079 | Column type {0} is not supported for system column type {1}.
+400 | 1080 | End Dates on dependency-enabled sheets cannot be created/updated. Please update either the Duration or Start Date column.
+403 | 1081 | You cannot delete or update another user's discussions, comments, or comment attachments.
+400 | 1082 | You cannot add options to the given column {0} because it is not a PICKLIST.
+400 | 1083 | Auto number formatting cannot be added to a column {0}.
+400 | 1084 | The auto number format is invalid.
+400 | 1085 | To change this column's type you must first disable Dependencies for this sheet.
+400 | 1086 | Google was not able to verify your access.
+400 | 1087 | The column specified is used in a conditional formatting rule, so the column cannot be deleted and its type cannot be changed.
+400 | 1088 | Invalid length for concatenated auto number format. Concatenated format is {0}, with a length of {1}. Must be less than or equal to 40.
+400 | 1089 | The type specified is only used with System Columns.
+400 | 1090 | Column.type is required when changing symbol, systemColumnType or options.
+400 | 1091 | Invalid Content-Type: {0}.
+403 | 1092 | You cannot delete this row. Either it or one or more of its children are locked.
+400 | 1095 | The Excel file is invalid/corrupt. This may be due to an invalid file extension, an outdated Excel format, or an invalid Content-Length.
+403 | 1096 | This Apple payment receipt has already been applied to a user's payment profile.
+403 | 1097 | A user must be a licensed sheet creator to be a resource viewer.
+400 | 1098 | To delete this column you must first disable Dependencies for this sheet.
+400 | 1099 | To delete this column you must first disable Resource Management for this sheet.
+400 | 1100 | Uploading new versions of a discussion comment attachment is not supported.
+400 | 1101 | Uploading new versions of non-FILE type attachments is not supported.
+403 | 1102 | A user must be a licensed sheet creator to be a group administrator.
+400 | 1103 | A group with the same name already exists.
+403 | 1104 | You must be a group administrator to create a group.
+400 | 1105 | The operation failed because one or more group members were not members of your account: {0}.
+404 | 1106 | Group not found.
+400 | 1107 | User specified in transferGroupsTo must be a group admin.
+400 | 1108 | transferGroupsTo must be provided because user being deleted owns one or more groups.
+400 | 1109 | Only one of cell.hyperlink or cell.linkInFromCell may be non-null.
+400 | 1110 | cell.value must be null if cell.linkInFromCell is non-null.
+400 | 1111 | Only one of cell.hyperlink.sheetId and cell.hyperlink.reportId may be non-null.
+400 | 1112 | cell.hyperlink.url must be null for sheet or report hyperlinks.
+400 | 1113 | cell.value must be a string when the cell is a hyperlink.
+404 | 1114 | Invalid sheetId or reportId: {0}.
+400 | 1115 | Row must contain either cell link updates or row/cell value updates; mixing of both update types in one API call is not supported.
+400 | 1116 | You cannot link a cell to its own sheet.
+400 | 1117 | One of the following cell.hyperlink fields must be non-null: url, sheetId, or reportId.
+400 | 1118 | You cannot set the value of a Gantt allocation column (id {0}) in a row that has child rows.
+500 | 1119 | Failed to complete copy.<br/>**NOTE**: may include a "detail" object containing "topContainerType" and "topContainerId" which represent the top-level folder or workspace that were partially copied.
+400 | 1120 | Too many sheets to copy.<br/>**NOTE**: includes a "detail" object containing "maxSheetCount" which represents the server-side limit on the number of sheets allowed in a single folder/workspace copy operation.
+400 | 1121 | transferTo must be provided because user being deleted owns one or more groups.
+405 | 1122 | Requested URL does not support this method: {0}.
+400 | 1123 | Specifying multiple row locations is not yet supported. Each row must use the same row location attribute and value (toBottom, toTop, parentId, siblingId, above).
+415 | 1124 | Invalid Content-Type header. Media type not supported.
+400 | 1125 | Each part in a multipart payload must have a name.
+400 | 1126 | Multipart payload contained duplicate part names: {0}.
+400 | 1127 | Required multipart part was missing: '{0}'
+400 | 1128 | Multipart upload size limit exceeded.
+400 | 1129 | The resource you tried to create already exists.
+400 | 1130 | One of cell.value or objectValue may be set, but not both.
+400 | 1131 | cell.{0} for column {1} was of the wrong object type. Allowed types: {2}.
+400 | 1132 | The token provided has previously been revoked.
+400 | 1133 | Column titles are not unique among input columns.
+400 | 1134 | Duplicate system column type among input columns.
+400 | 1135 | Input column index {0} is different from the first input column index {1}.
+400 | 1136 | Cannot copy or move row(s) within the same sheet.
+400 | 1137 | Input collection contains multiple instances of the same element.
+403 | 1138 | The user is not eligible for a trial organization.
+403 | 1139 | The user is an admin in another organization. Add 'allowInviteAccountAdmin=true' to the query string to invite their entire organization.
+403 | 1140 | The user must be added as a licensed user.
+403 | 1141 | Inviting users from an enterprise organization is not supported.
+400 | 1142 | Column type {0} is reserved for project sheets and may not be manually set on a column.
+400 | 1143 | To set {0}, you must first enable dependencies on the sheet.
+400 | 1144 | The user owns one or more groups and must be added as a Group Admin.
+400 | 1145 | Multipart upload request was invalid. Please check your request headers and payload.
+400 | 1146 | Unsupported operation: {0}.
+400 | 1147 | Multipart request contained an invalid part name: '{0}'
+400 | 1148 | Numeric cell values must be between {0} and {1}.
+400 | 1155 | You cannot set the '{0}' attribute for a cell in a 'Project Settings' column of a dependency-enabled sheet.
+400 | 1156 | Invalid email.
+400 | 1157 | This address is already associated with another Smartsheet account, so it cannot be added as an alternate address for this account.
+400 | 1158 | This address has not been confirmed yet, so it can't be set as the primary email address.
+400 | 1159 | The specified email address ({0}) is an alternate email address for a user with a primary email address of {1}.
+400 | 1160 | Invalid bulk request. See detail for more information.
+400 | 1161 | Cannot set altText for a cell that does not contain an image: row {0}, column {1}.
+400 | 1163 | If cell.image is non-null then value, objectValue, hyperlink, and linkInFromCell must all be null.
+400 | 1164 | Cannot add image to cell because this feature has been disabled by the org administrator.
+400 | 1165 | Cannot add image to cell with alt text larger than 100 characters.
+400 | 1166 | You cannot share Sights as an Editor.
+400 | 1167 | The resource you are attempting to access has expired.
+403 | 1173 | You must be in a Team/Enterprise account to specify a {0} value of '{1}'.
+403 | 1174 | The value for {0} is invalid because this publish option is configured to be restricted to users in this account.
+403 | 1175 | One or more publish options which you attempted to enable are disabled for this account.
+400 | 1176 | Array attribute(s) may not contain null elements: {0}.
+400 | 1177 | Arrays may not contain null elements.
+400 | 1178 | The following combination of attributes is not allowed for this operation: {0}.
+400 | 1179 | The schedule specified is invalid because endAt is earlier than the next send date.
+403 | 1180 | We are unable to process this request because the email has been associated with a different Smartsheet account.
+403 | 1181 | Only admins can edit shared filters.
+400 | 1182 | The specified sheet filter {0} does not exist for sheet {1}.
+400 | 1183 | Sheet filters must define at least one detail entry.
+400 | 1184 | Sheet {0} already has a filter named '{1}' of type {2}.
+400 | 1185 | Cannot create a child of a parent row that has no data in it.
+403 | 1186 | User's primary email address must be a validated domain.
+403 | 1187 | User's alternate address selected to be made primary must be a validated domain.
+403 | 1188 | The account status of the user specified is not active.
+400 | 1189 | Only Enterprise or Team accounts with security controls are able to change primary emails.
+400 | 1190 | Only Enterprise or Team accounts with special permission granted are able to change primary emails.
+400 | 1210 | Column validation is not supported for column type '{0}'.
+400 | 1211 | The value "{0}" could not be saved to column "{1}." This column is restricted to "{2}" values only.
+403 | 1212 | You must be a sheet admin to override validation.
+400 | 1213 | A(n) {0} could not be saved to column "{1}" since column validation is enabled as type "{2}".
+400 | 1214 | Dropdown and Contact List columns with data validation must have at least one option value.
+429 | 4003 | Rate limit exceeded.
+400 | 5xxx | Errors in the 5xxx range represent conditions that a developer cannot reasonably prevent or handle, most typically related to account status. These error messages are localized and can be displayed to the end-user to inform them of the condition that caused the error to occur.
+
+## 500-Level Error Codes
+
+500-level error codes indicate there is some kind of permanent error.
+
+HTTP status code | Smartsheet errorCode | Smartsheet message
+-----|-----|-----|
+500 | 1170 | The sheet referenced by this widget is unavailable or deleted.
+500 | 1171 | The report referenced by this widget is unavailable or deleted.
+500 | 1172 | The referenced cell is unavailable or deleted.
+500 | 4000 | An unexpected error has occurred. Please contact api@smartsheet.com for assistance.
+503 | 4001 | Smartsheet.com is currently offline for system maintenance. Please check back again shortly.
+500 | 4002 | Server timeout exceeded. Request has failed.
+500 | 4004 | An unexpected error has occurred. Please retry your request. If you encounter this error repeatedly, please contact api@smartsheet.com for assistance.<br/><br/>**Or**<br/><br/>Request failed because sheetId {0} is currently being updated by another request that uses the same access token. Please retry your request once the previous request has completed.
+
+# Formatting
+
+To set or read formatting programmatically, Smartsheet uses a compact format string, **cell.format**, which looks something like this: `",,1,1,,,,,,,,,,,,"`. The position and sample values in this string are explained in the following format descriptor table:
+
+## Format Descriptor Table
+
+**Position** | **Lookup Property** | **Example Value** | **Format String**
+-----|-----|-----|-----|
+0 | fontFamily | 0 = Arial, default | `"0,,,,,,,,,,,,,,,"`
+1 | fontSize | 0 = 8 pt, default | `",0,,,,,,,,,,,,,,"`
+2 | bold | 1 = on | `",,1,,,,,,,,,,,,,"`
+3 | italic | 1 = on | `",,,1,,,,,,,,,,,,"`
+4 | underline | 1 = on | `",,,,1,,,,,,,,,,,"`
+5 | strikethrough | 1 = on | `",,,,,1,,,,,,,,,,"`
+6 | horizontalAlign | 2 = center | `",,,,,,2,,,,,,,,,"`
+7 | verticalAlign | 2 = middle | `",,,,,,,2,,,,,,,,"`
+8 | color (text) | 4 = #FEEEF0 | `",,,,,,,,4,,,,,,,"`
+9 | color (background) | 8 = #E6F5FE | `",,,,,,,,,8,,,,,,"` 
+10 | color (taskbar) | 9 = #F3E5FA | `",,,,,,,,,,9,,,,,"`
+11 | currency | 13 = USD | `",,,,,,,,,,,13,,,,"`
+12 | decimalCount | 3 = three decimal places | `",,,,,,,,,,,,3,,,"`
+13 | thousandsSeparator | 1 = on | `",,,,,,,,,,,,,1,,"`
+14 | numberFormat | 2 = currency | `",,,,,,,,,,,,,,2,"`
+15 | textWrap | 1 = on | `",,,,,,,,,,,,,,,1"`
+
+<aside class="notice">Formats that have not been explicitly set are omitted in the descriptor string. For example, a cell that has been set to bold and italic, but has no other formats applied to it, has a format descriptor of <code>",,1,1,,,,,,,,,,,,"</code>.</aside>
+
+<aside class="notice">Use <b>GET /serverinfo</b> to return the <a href="#formattables-object">FormatTables Object</a>, which tells you both the default settings and what formatting options are available.</aside>
+
+## <%= OBJECTS %>
+
+### FormatTables Object
+
+> Example FormatTables Object:
+
+```json
+{
+	"formats": {
+		"defaults": "0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+		"fontFamily": [],
+		"fontSize": [],
+		"bold": [],
+		"italic": [],
+		"underline": [],
+		"strikethrough": [],
+		"horizontalAlign": [],
+		"verticalAlign": [],
+		"color": [],    // List of colors available, used in 3 positions of the format string
+		"currency": [],
+		"decimalCount": [],
+		"thousandsSeparator": [],
+		"numberFormat": [],
+		"textWrap": []
+	}
+}
+```
+
+Contains all of the lookup tables that the format descriptor indexes refer to.
+
+     |     |     |
+-----|-----|-----|
+**defaults** | string | A format descriptor where each element describes the formats the Smartsheet Web app displays for format values that have not been set.
+**fontFamily** | array of [FontFamily Objects](#fontfamily-object) | Font families with additional font information
+**fontSize** | array of strings | Font sizes in points
+**bold** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**italic** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**underline** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**strikethrough** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**horizontalAlign** | array of strings | Horizontal alignment, possible values:<ul><li>default</li><li>left</li><li>center</li><li>right</li></ul>Note: "default" is the default value, which is equivalent to "left".
+**verticalAlign** | array of strings | Vertical alignment, possible values:<ul><li>default</li><li>top</li><li>middle</li><li>bottom</li></ul>Note: "default" is the default value, which is equivalent to "top".
+**color** | array of strings | Color hex values. <br/><br/>Note: "none" is the default value for all colors.  Applications must handle this value and use app-defined colors (typically this is Black for text color and White for background color)
+**currency** | array of [Currency Objects](#currency-object) | Currency codes and symbols
+**decimalCount** | array of strings | All allowed decimal count values
+**thousandsSeparator** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+**numberFormat** | array of strings | Possible values:<ul><li>none</li><li>NUMBER</li><li>CURRENCY</li><li>PERCENT</li></ul>
+**textWrap** | array of strings | Possible values:<ul><li>none</li><li>on</li></ul>
+
+<aside class="notice">Indexes and their values are guaranteed never to change or be removed for a given major API version.  However, new values could potentially be added to the ends of lookup tables.<br/><br/>Because of this possibility, your code should handle the case where a cell might contain a format index value greater than the size of a lookup table your app has loaded.  Your application should check for that case and reload the format tables if necessary.</aside>
+
+### FontFamily Object
+
+> Example FontFamily Object:
+
+```json
+{
+  "fontFamily": [{
+    "name": "Arial",
+      "traits": [
+        "sans-serif"
+    ]
+  }]
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**name** | string | Name of the font family (for example, "Arial")
+**traits** | array | Platform-independent traits of the font family. One of the following values:<ul><li>serif</li><li>sans-serif</li>
+
+### Currency Object
+
+> Example Currency Object:
+
+```json
+{
+	"currency": [{
+		"code": "USD",
+		"symbol": "$"
+	}]
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**code** | string | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code (for example, "EUR")
+**symbol** | string | The currency symbol (for example, "€")
+
+## Get Formatting
+
+Use the "include=format" query-string parameter on API operations that return detailed objects, such as `GET /sheets/{sheetId}` or `GET sheets/{sheetId}/rows/{rowId}`. If there is formatting other than default settings, the return includes a **format** property. If an object has conditional formatting, the **format** property returned will have a **conditionalFormat** value.
+
+## Set Formatting for a Row or Column
+
+Setting the format of a row object or column object through the API simply sets the baseline format for new or blank cells in that row or column.  It does not affect cells that already have a value.
+ 
+If you want to change the formatting of cells that already have content, for instance you want to make a row bold, then you have to set the format for each cell individually.
+
+# Troubleshooting
+
+Should you encounter issues with the Smartsheet API while building an integration using a particular programming language (ex: Java, C#, PHP, Python, etc.), keep the following troubleshooting techniques in mind.
+
+1. Try executing the same API Request using a tool like [cURL](https://curl.haxx.se/) or [Postman](https://www.getpostman.com/). By taking your code out of the equation, you can isolate troubleshooting to the raw Request / Response.
+  * If you receive a similar error when you execute the Request using cURL or Postman, this suggests an issue with the Request format or contents. Once you have the Request working in cURL or Postman, update your code accordingly.
+  * If you can execute the Request successfully using cURL or Postman, but not via your code, this suggests that the Request your code is sending is somehow different than what you intend. Compare the (successful) Request from cURL or Postman with the (unsuccessful) Request that your code generates. (See step #2 below.)
+2. Examine the Request that your code is sending (including the HTTP verb, URI, headers, and Request body) and the Response that it's receiving back from Smartsheet (including the HTTP status code, headers, and response body).
+  * If you've implemented Request / Response logging in your application, inspect the full trace of Request and Response in the log file. Compare the Request that your application is logging with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+  * Alternatively, you may choose to use a tool like [Fiddler](https://www.telerik.com/fiddler) or [Charles HTTP Proxy](https://www.charlesproxy.com/) to inspect the full trace of Request and Response as it goes across the wire. Compare the Request trace that your application generates with the (successful) Request from cURL or Postman, and update your code to correct any discrepancies.
+3. Check for capitalization errors. Note that URL endpoints are all lower case, while object properties and query parameters are camelCase.
