@@ -544,7 +544,7 @@ Access Scope | Description |
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
 ADMIN_SIGHTS | Modify Sight structure.
 ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership.
-ADMIN_WEBHOOKS | Create, delete. and update webhooks; get all webhooks; reset shared secret. 
+ADMIN_WEBHOOKS | Create, delete, and update webhooks; get all webhooks; reset shared secret. 
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing.
 CREATE_SHEETS | Create new sheets.
 CREATE_SIGHTS | Create new Sights.
@@ -669,11 +669,14 @@ smartsheet.token.get(client_id: '{ your_client_id }', code: '{ your_code }', has
 
 ```json
 {
-  "access_token": "ll352u9jujauoqz4gstvsae05",
-  "token_type": "bearer",
-  "refresh_token": "e9x352a9mp4151le2505",
-  "expires_in": 604799
- }
+	"token": {
+		"access_token": "ll352u9jujauoqz4gstvsae05",
+		"token_type": "bearer",
+		"refresh_token": "e9x352a9mp4151le2505",
+		"expires_in": 604799,
+		"expires_at": "2017-11-21T23:32:22.180Z"
+	}
+}
 ```
 
 > Error Response:
@@ -772,14 +775,17 @@ smartsheet.token.refresh(
 
 ```json
 {
-  "access_token": "ll352u9jujauoqz4gstvsae05",
-  "token_type": "bearer",
-  "refresh_token": "e9x352a9mp4151le2505",
-  "expires_in": 604799
+	"token": {
+		"access_token": "ll352u9jujauoqz4gstvsae05",
+		"token_type": "bearer",
+		"refresh_token": "e9x352a9mp4151le2505",
+		"expires_in": 604799,
+		"expires_at": "2017-11-21T23:32:22.180Z"
+	}
 }
 ```
 
-Access tokens expire after 7 days. Use the refresh token to obtain a new access token. 
+Access tokens expire after 604799 seconds, which is approx 7 days. Use the refresh token to obtain a new access token. 
 Once you obtain the new access token, you must use it in place of the old one, which is no longer valid.
  
 To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
