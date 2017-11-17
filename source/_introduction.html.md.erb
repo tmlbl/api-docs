@@ -506,61 +506,35 @@ VIEWER | The user has read-only access to the resource.
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
  
-As a developer, you may be building applications that allow any Smartsheet user to access their Smartsheet data. The following sub-sections describe next steps.
+As a developer, you may be building applications that allow any Smartsheet user to access their Smartsheet data. There are three major steps you must complete before your app can work with Smartsheet:
 
-## Developer Registration
+1. You must register with Smartsheet as a developer so Smartsheet can give you access to the Developer Tools.
+2. You must register your app so your app can get a client Id and a client secret. 
+3. You must work through the OAuth Flow, which requires a client Id and client secret.
+
+## Register with Smartsheet as a Developer
 
 Third-party app registration and management is available via the Developer Tools. 
-To get access to Developer Tools, you must first [register](http://developers.smartsheet.com/register) as a Smartsheet developer. 
+To get access to Developer Tools, you must first [register](http://developers.smartsheet.com/register) with Smartsheet as a developer. 
 Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
  
 Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
 
 1. Click the **Account** button in the upper-right corner of your Smartsheet screen.
 2. Now that you are registered as a Smartsheet developer, click the new **Developer Tools** option in the dropdown menu to open Developer Tools.
-3. Before you can register your first app, you must complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.
+3. Before you can register your first app, you must complete your developer profile. The developer profile is a public profile that anyone can access to learn more about you and your applications.
 4. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
 
-## Register Your App
+## Register Your App Using Developer Tools
 
 To build a third-party app, you must first register it with Smartsheet using Developer Tools:
 
 1. Login to Smartsheet.
-2. Click the **Account** button in the upper-right corner of your Smartsheet screen and click **Developer Tools**.
+2. Click the **Account** button in the upper-right corner of your Smartsheet screen, and then click **Developer Tools**.
 3. Create a new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
 4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
 
 <img src="images/developer_tools.png" alt="Developer Tools dialog box">
-
-## Access Scopes
-
-To access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
-The Access Scopes enable your app to communicate to the end users what type of operations it is performing. 
-Access Scopes do not override existing Access Level restrictions. 
-For example, having the Access Scope of WRITE_SHEETS does not allow your app to update a sheet on which the end user has VIEWER access level.
- 
-The Access Scopes are as follows:
-
-Access Scope | Description |
------|-----|
-ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
-ADMIN_SIGHTS | Modify Sight structure.
-ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership.
-ADMIN_WEBHOOKS | Create, delete, and update webhooks; get all webhooks; reset shared secret. 
-ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing.
-CREATE_SHEETS | Create new sheets.
-CREATE_SIGHTS | Create new Sights.
-DELETE_SHEETS | Delete sheets.
-DELETE_SIGHTS | Delete Sight.
-READ_CONTACTS | Retrieve contacts.
-READ_SHEETS | Read all sheet data, including attachments, discussions, and cell data.
-READ_SIGHTS | Read all Sight data.
-READ_USERS | Retrieve users and groups for your Smartsheet organization.
-SHARE_SHEETS | Share sheets, including sending sheets as attachments.
-SHARE_SIGHTS | Share Sight.
-WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
-
-<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
 ## OAuth Flow
 
@@ -613,6 +587,36 @@ Value | Description |
 -----|-----|
 unsupported_response_type | response_type must be set to "code".
 invalid_scope | One or more of the requested access scopes are invalid. Please check the list of access scopes.
+
+#### Access Scopes
+
+To access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
+The Access Scopes enable your app to communicate to the end users what type of operations it is performing. 
+Access Scopes do not override existing Access Level restrictions. 
+For example, having the Access Scope of WRITE_SHEETS does not allow your app to update a sheet on which the end user has VIEWER access level.
+ 
+The Access Scopes are as follows:
+
+Access Scope | Description |
+-----|-----|
+ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
+ADMIN_SIGHTS | Modify Sight structure.
+ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership.
+ADMIN_WEBHOOKS | Create, delete, and update webhooks; get all webhooks; reset shared secret. 
+ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing.
+CREATE_SHEETS | Create new sheets.
+CREATE_SIGHTS | Create new Sights.
+DELETE_SHEETS | Delete sheets.
+DELETE_SIGHTS | Delete Sight.
+READ_CONTACTS | Retrieve contacts.
+READ_SHEETS | Read all sheet data, including attachments, discussions, and cell data.
+READ_SIGHTS | Read all Sight data.
+READ_USERS | Retrieve users and groups for your Smartsheet organization.
+SHARE_SHEETS | Share sheets, including sending sheets as attachments.
+SHARE_SIGHTS | Share Sight.
+WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
+
+<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
 ### Obtain an Access Token
 
