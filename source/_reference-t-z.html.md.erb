@@ -100,11 +100,13 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 
      |     |
 -----|-----|
+<%= HEADERS %> | Content-Type must be set to 'application/x-www-form-urlencoded'.
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned during the OAuth Flow.
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
+ | **redirect_uri** (deprecated) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
+<%= RETURNS %> | [Token Object](#token_object) containing an access token and a refresh token.
 
 ## Refresh Access Token
 
@@ -186,11 +188,13 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 
      |     |
 -----|-----|
+<%= HEADERS %> | Content-Type must be set to 'application/x-www-form-urlencoded'.
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
  | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://")
  | **hash** (required) -- [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value
+<%= RETURNS %> | [Token Object](#token_object) containing an access token and a refresh token.
 
 ## Revoke Access Token
 
