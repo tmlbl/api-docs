@@ -545,15 +545,15 @@ The following sub-sections describe next steps.
 
 ### Request Authorization From the User and Get an Authorization Code
 
-To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
+To request authorization from an end user and get an authorization code in return, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
 
 Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
 client_id<br/>(required) | Client Id for your app.
-redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 
 Here is an example of a URL to send your user as a `GET` request:
  
@@ -587,7 +587,7 @@ state | **state** string specified earlier.
 
 To access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
 The Access Scopes enable your app to communicate to the end users what type of operations it is performing. 
-Access Scopes do not override existing Access Level restrictions. 
+Access Scopes do not override existing [access level restrictions](#access-levels). 
 For example, having the Access Scope of WRITE_SHEETS does not allow your app to update a sheet on which the end user has VIEWER access level.
  
 The Access Scopes are as follows:
@@ -700,8 +700,8 @@ Value | Description |
 grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app.
 code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
-redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -789,8 +789,8 @@ Value | Description |
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
-redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 hash<br/>(required)| [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
+redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -801,7 +801,7 @@ If your request is successful, the response will contain a [Token Object](#token
 Value | Description |
 -----|-----|
 invalid_client | The client information is invalid. Ensure your client id is correct.
-invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the app secret and/or code.
+invalid_grant | The authorization code or refresh token is invalid or expired or the hash value does not match the app secret and/or code.
 invalid_request | The request parameters are invalid or missing.
 invalid_scope | One or more of the requested access scopes are invalid. Please check the list of [access scopes](#access_scopes).
 unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
