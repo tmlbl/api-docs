@@ -543,7 +543,7 @@ The following sub-sections describe next steps.
 
 <aside class="notice">App registration and OAuth flow require HTTPS.</aside>
 
-### Request Authorization From the User
+### Request Authorization From the User and Get an Authorization Code
 
 To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
 
@@ -560,13 +560,13 @@ Here is an example of a URL to send your user as a `GET` request:
 `https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
  
 If your user has not logged in to Smartsheet, they are first directed to the Smartsheet login page. 
-After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested.
+After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested, as in the following example:
 
 <img src="images/allow-deny.png" alt="Dialog box to allow or deny scopes">
 
-### Obtain the Authorization Code
+#### If the User Clicks Allow
 
-During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the Redirect URL with the following parameters:
+If the user clicks "Allow", Smartsheet redirects the user to the Redirect URL with the following parameters:
 
 Value | Description |
 -----|-----|
@@ -574,19 +574,14 @@ code | Authorization code required to obtain access token.
 expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes - you must obtain an access token within that time.
 state | **state** string specified earlier.
 
+#### If the User Clicks Deny
+
 If the user clicks "Deny", Smartsheet redirects the user to the Redirect URL with the following parameters:
 
 Value | Description |
 -----|-----|
 error | "access_denied".
 state | **state** string specified earlier.
-
-Other errors that may be returned include:
-
-Value | Description |
------|-----|
-unsupported_response_type | response_type must be set to "code".
-invalid_scope | One or more of the requested access scopes are invalid. Please check the list of access scopes.
 
 #### Access Scopes
 
@@ -712,15 +707,6 @@ hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of you
 
 If your request is successful, the response will contain a [Token Object](#token-object). You can see an example of the Token Object in the dark-blue area in the rightmost pane. 
 
-Possible OAuth error types:
-
-Value | Description |
------|-----|
-invalid_request | The request parameters are invalid or missing.
-invalid_client | The client information is invalid. Ensure your client id is correct.
-invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the app secret and/or code.
-unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
-
 ### Refresh an Access Token
 
 > Refresh an access token:
@@ -810,8 +796,16 @@ hash<br/>(required)| [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your
 
 If your request is successful, the response will contain a [Token Object](#token-object). You can see an example of the Token Object in the dark-blue area in the rightmost pane. 
 
-### Get Basic User Info
-Once you have obtained an access token on behalf of the user, you can fetch basic information (including user Id, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
+### OAuth Error Types
+
+Value | Description |
+-----|-----|
+invalid_client | The client information is invalid. Ensure your client id is correct.
+invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the app secret and/or code.
+invalid_request | The request parameters are invalid or missing.
+invalid_scope | One or more of the requested access scopes are invalid. Please check the list of [access scopes](#access_scopes).
+unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
+unsupported_response_type | response_type must be set to "code".
 
 # Work at Scale 
 
