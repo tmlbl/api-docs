@@ -534,7 +534,7 @@ To give your app access to Smartsheet, you must first register it using Develope
 1. Login to Smartsheet.
 2. Click the **Account** button in the upper-right corner of your Smartsheet screen, and then click **Developer Tools**.
 3. Create a new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
-4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and how to hash the **secret** to do that.
+4. Use the generated app **client id**, such as, '1samp48lel5for68you', and **secret**, such as, '9samp7le3for71you', to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and how to hash the **secret** to do that.
 
 <img src="images/developer_tools.png" alt="Developer Tools dialog box">
 
@@ -552,7 +552,7 @@ To request authorization from an end user and get an authorization code in retur
 Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
-client_id<br/>(required) | Client Id for your app. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
+client_id<br/>(required) | Client Id for your app, such as '1samp48lel5for68you'. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
@@ -572,7 +572,7 @@ If the user clicks "Allow", Smartsheet redirects the user to the Redirect URL wi
 
 Value | Description |
 -----|-----|
-code | Authorization code required to obtain access token.
+code | Authorization code required to obtain access token, such as 'sample6p9qisx6a'.
 expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes--you must obtain an access token within that time.
 state | **state** string specified earlier.
 
@@ -629,14 +629,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Received Authorization Code')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+    // ('Your App Secret' + '|' + 'Received Authorization Code')
     .digest('hex');
  
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    code: 'Received Authorization Code',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    code: 'sample6p9qisx6a',            // Received Authorization Code
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'
@@ -665,8 +666,13 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{ your_app_secret }|{ your_code }'
-smartsheet.token.get(client_id: '{ your_client_id }', code: '{ your_code }', hash: hash)
+hash = Digest::SHA256.hexdigest '{ 9samp7le3for71you }|{ sample6p9qisx6a }'
+# '{ your_app_secret }|{ your_code }
+smartsheet.token.get(
+  client_id: '{ 1samp48lel5for68you }',
+  code: '{ sample6p9qisx6a }',
+  hash: hash
+)
 ```
 
 
@@ -723,14 +729,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Your App Refresh Token')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+    // ('Your App Secret' + '|' + 'Your App Refresh Token')
     .digest('hex');
  
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    refresh_token: 'Your App Refresh Token',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    refresh_token: 'e9x352a9mp4151le2505',
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'    
@@ -759,10 +766,11 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{ your_app_secret }|{ refresh_token }'
+hash = Digest::SHA256.hexdigest '{ 9samp7le3for71you }|{ e9x352a9mp4151le2505 }'
+# '{ your_app_secret }|{ refresh_token }
 smartsheet.token.refresh(
-  client_id: '{ your_client_id }',
-  refresh_token: '{ refresh_token }',
+  client_id: '{ 1samp48lel5for68you }',
+  refresh_token: '{ e9x352a9mp4151le2505 }',
   hash: hash
 )
 ```
@@ -772,9 +780,9 @@ smartsheet.token.refresh(
 ```json
 {
 	"token": {
-		"access_token": "ll352u9jujauoqz4gstvsae05",
+		"access_token": "new52u9jujauoqz4gstvsae05",
 		"token_type": "bearer",
-		"refresh_token": "e9x352a9mp4151le2505",
+		"refresh_token": "new352a9mp4151le2505",
 		"expires_in": 604799,
 		"expires_at": "2017-11-21T23:32:22.180Z"
 	}

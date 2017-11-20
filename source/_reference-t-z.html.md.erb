@@ -40,14 +40,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Received Authorization Code')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+    // ('Your App Secret' + '|' + 'Received Authorization Code')
     .digest('hex');
  
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    code: 'Received Authorization Code',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    code: 'sample6p9qisx6a',            // Received Authorization Code
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'
@@ -56,9 +57,9 @@ var options = {
 // Get access token
 smartsheet.tokens.getAccessToken(options)
   .then(function(token) {
-    console.log(token);
-  })
-  .catch(function(error) {
+  console.log(token);
+})
+.catch(function(error) {
     console.log(error);
   });
 ```
@@ -76,8 +77,13 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{your_app_secret}|{your_code}'
-smartsheet.token.get(client_id: '{your_client_id}', code: '{your_code}', hash: hash)
+hash = Digest::SHA256.hexdigest '{ 9samp7le3for71you }|{ sample6p9qisx6a }'
+# '{ your_app_secret }|{ your_code }
+smartsheet.token.get(
+  client_id: '{ 1samp48lel5for68you }',
+  code: '{ sample6p9qisx6a }',
+  hash: hash
+)
 ```
 
 > Example Response:
@@ -124,14 +130,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Your App Refresh Token')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+    // ('Your App Secret' + '|' + 'Your App Refresh Token')
     .digest('hex');
-
+ 
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    refresh_token: 'Your App Refresh Token',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    refresh_token: 'e9x352a9mp4151le2505',
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'    
@@ -140,10 +147,10 @@ var options = {
 // Refresh access token
 smartsheet.tokens.refreshAccessToken(options)
   .then(function(updatedToken) {
-    console.log(updatedToken);
+      console.log(updatedToken);
   })
   .catch(function(error) {
-    console.log(error);
+      console.log(error);
   });
 ```
 
@@ -160,10 +167,11 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{your_app_secret}|{refresh_token}'
+hash = Digest::SHA256.hexdigest '{ 9samp7le3for71you }|{ e9x352a9mp4151le2505 }'
+# '{ your_app_secret }|{ refresh_token }
 smartsheet.token.refresh(
-  client_id: '{your_client_id}',
-  refresh_token: '{refresh_token}',
+  client_id: '{ 1samp48lel5for68you }',
+  refresh_token: '{ e9x352a9mp4151le2505 }',
   hash: hash
 )
 ```
@@ -173,9 +181,9 @@ smartsheet.token.refresh(
 ```json
 {
 	"token": {
-		"access_token": "ll352u9jujauoqz4gstvsae05",
+		"access_token": "new52u9jujauoqz4gstvsae05",
 		"token_type": "bearer",
-		"refresh_token": "e9x352a9mp4151le2505",
+		"refresh_token": "new352a9mp4151le2505",
 		"expires_in": 604799,
 		"expires_at": "2017-11-21T23:32:22.180Z"
 	}
