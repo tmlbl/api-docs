@@ -510,29 +510,31 @@ As a developer, you may be building applications that allow any Smartsheet user 
 
 1. You must register with Smartsheet as a developer so Smartsheet can give you access to the Developer Tools.
 2. You must register your app so your app can get a client Id and a client secret. 
-3. You must work through the OAuth Flow, which requires a client Id and client secret.
+3. You must work through the OAuth Flow, which requires a client Id and a hashed client secret.
 
 ## Register with Smartsheet as a Developer
 
-Third-party app registration and management is available via the Developer Tools. 
-To get access to Developer Tools, you must first [register](http://developers.smartsheet.com/register) with Smartsheet as a developer. 
+If you want your app to work with Smartsheet, you must first [register](http://developers.smartsheet.com/register) with Smartsheet as a developer. This will give you access to Developer Tools, which is where you can register and manage your third-party app. 
 Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
  
-Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
+Once you complete the developer registration, log in to Smartsheet using your developer account.
 
-1. Click the **Account** button in the upper-right corner of your Smartsheet screen.
-2. Now that you are registered as a Smartsheet developer, click the new **Developer Tools** option in the dropdown menu to open Developer Tools.
-3. Before you can register your first app, you must complete your developer profile. The developer profile is a public profile that anyone can access to learn more about you and your applications.
-4. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
+### To Open Developer Tools
+
+<aside class="notice">You must be registered with Smartsheet as a developer and you must be logged in using your developer account to see the Developer Tools option.</aside>
+
+1. Click the **Account** button in the upper-right corner of your Smartsheet screen, and then click the **Developer Tools** option in the dropdown menu.
+2. Before you can register your first app, you must complete your developer profile. The developer profile is a public profile that anyone can access to learn more about you and your applications.
+3. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
 
 ## Register Your App Using Developer Tools
 
-To build a third-party app, you must first register it with Smartsheet using Developer Tools:
+To give your app access to Smartsheet, you must first register it using Developer Tools:
 
 1. Login to Smartsheet.
 2. Click the **Account** button in the upper-right corner of your Smartsheet screen, and then click **Developer Tools**.
 3. Create a new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
-4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
+4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and how to hash the **secret** to do that.
 
 <img src="images/developer_tools.png" alt="Developer Tools dialog box">
 
@@ -550,7 +552,7 @@ To request authorization from an end user and get an authorization code in retur
 Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
-client_id<br/>(required) | Client Id for your app.
+client_id<br/>(required) | Client Id for your app. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
 redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
@@ -571,7 +573,7 @@ If the user clicks "Allow", Smartsheet redirects the user to the Redirect URL wi
 Value | Description |
 -----|-----|
 code | Authorization code required to obtain access token.
-expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes - you must obtain an access token within that time.
+expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes--you must obtain an access token within that time.
 state | **state** string specified earlier.
 
 #### If the User Clicks Deny
@@ -611,7 +613,7 @@ SHARE_SHEETS | Share sheets, including sending sheets as attachments.
 SHARE_SIGHTS | Share Sight.
 WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
 
-<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
+<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted for all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
 ### Obtain an Access Token
 
@@ -698,7 +700,7 @@ To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with t
 Value | Description |
 -----|-----|
 grant_type<br/>(required) | Must be set to "authorization_code".
-client_id<br/>(required) | Client Id for your app.
+client_id<br/>(required) | Client Id for your app. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
 code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
 hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
