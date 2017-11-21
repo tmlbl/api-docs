@@ -32,7 +32,7 @@ The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An *
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&hash={SHA_256(app_secret|code)}' \
 -X POST
 ```
 
@@ -138,8 +138,8 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
  | **code** (required) -- authorization code returned during the OAuth Flow.
- | **redirect_uri** (deprecated) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
  | **hash** (required) -- [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
+ | **redirect_uri** (deprecated) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
 <%= RETURNS %> | [Token Object](#token_object) containing an access token and a refresh token.
 
 ## Refresh Access Token
@@ -149,7 +149,7 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 ```shell
 curl https://api.smartsheet.com/2.0/token \
 -d 'grant_type=refresh_token&refresh_token={your_refresh_token}
-&client_id={your_client_id}&redirect_uri={redirect_uri}
+&client_id={your_client_id}
 &hash={SHA_256(app_secret|refresh_token)}' \
 -X POST
 ```
@@ -256,8 +256,8 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://")
  | **hash** (required) -- [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value
+ | **redirect_uri** (deprecated) -- redirect URL registered for your app, including the protocol (for example, "https://")
 <%= RETURNS %> | [Token Object](#token_object) containing an access token and a refresh token.
 
 ## Revoke Access Token
