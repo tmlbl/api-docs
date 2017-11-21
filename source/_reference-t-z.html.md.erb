@@ -65,7 +65,35 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```csharp
-// [todo]
+public async Task<HttpResponseMessage> ObtainAccessToken(
+  string url,
+  string code,
+  string clientId,
+  string clientSecret,
+  string redirectUri = ""
+)
+{
+  if (string.IsNullOrWhiteSpace(code))
+  {
+    throw new Exception("Provided Smartsheet Code cannot be null");
+  }
+
+  var hash = SHA.GenerateSHA256String(clientSecret + "|" + code);
+
+  var content = new FormUrlEncodedContent(new[]
+  {
+    new KeyValuePair<string, string>("grant_type", "authorization_code"),
+    new KeyValuePair<string, string>("client_id", clientId),
+    new KeyValuePair<string, string>("code", code),
+    new KeyValuePair<string, string>("hash", hash)
+  });
+
+  content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+  var response = await this._HttpClient.PostAsync(url, content);
+
+  return response;
+}
 ```
 
 ```java
@@ -155,7 +183,35 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```csharp
-// [todo]
+public async Task<HttpResponseMessage> RefreshAccessToken(
+  string url,
+  string refreshToken,
+  string clientId,
+  string clientSecret,
+  string redirectUri = ""
+)
+{
+  if (string.IsNullOrWhiteSpace(refreshToken))
+  {
+    throw new Exception("Provided Smartsheet Refresh Token cannot be null");
+  }
+
+  var hash = SHA.GenerateSHA256String(clientSecret + "|" + refreshToken);
+
+  var content = new FormUrlEncodedContent(new[]
+  {
+    new KeyValuePair<string, string>("grant_type", "refresh_token"),
+    new KeyValuePair<string, string>("client_id", clientId),
+    new KeyValuePair<string, string>("code", refreshToken),
+    new KeyValuePair<string, string>("hash", hash)
+  });
+
+  content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+  var response = await this._HttpClient.PostAsync(url, content);
+
+  return response;
+}
 ```
 
 ```java
