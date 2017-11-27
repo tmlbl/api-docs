@@ -1,3 +1,153 @@
+# Templates
+
+A Template can be used to create a Sheet, as described in [Create Sheet from Template](#create-sheet-from-template).
+
+## <%= OBJECTS %>
+
+### Template Object
+
+> Example Template Object:
+
+```json
+{
+	"id": 3457273486960516,
+	"name": "template 1",
+	"accessLevel": "OWNER",
+	"description": "This is template 1"
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | number | Template Id
+**name** | string | Template name
+**description** | string | Template description
+**accessLevel** | string | User's permissions on the Template
+**image** | string | URL to the small preview image for this template<br/>*Only applicable to non-blank public templates*
+**largeImage** | string | URL to the large preview image for this template<br/>*Only applicable to non-blank public templates*
+**locale** | string | Locale of the template<br/>*Only applicable to public templates*
+**type** | string | Type of the template. One of "sheet" or "report"<br/>*Only applicable to public templates*
+**tags** | string[] | List of search tags for this template<br/>*Only applicable to non-blank public templates*
+**categories** | string[] | List of categories this template belongs to<br/>*Only applicable to public templates*
+**blank** | Boolean | Flag indicating whether the template is blank<br/>*Only applicable to public templates*
+**globalTemplate** | string | Type of global template. One of: "BLANK_SHEET", "TASK_LIST", or "PROJECT_SHEET"<br/>*Only applicable to blank public templates*
+
+## List Public Templates
+
+> Example Request: List Public Templates
+
+```shell
+curl https://api.smartsheet.com/2.0/templates/public \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+smartsheet.templates.listPublicTemplates()
+  .then(function (templateList) {
+    console.log(templateList);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Omit pagination parameters
+PaginatedResult<Template> templates = smartsheet.TemplateResources.ListPublicTemplates(
+  null            // PaginationParameters
+);
+```
+
+```java
+// Omit pagination parameters
+PagedResult<Template> templates = smartsheet.templateResources().listPublicTemplates(
+  null        // PaginationParameters
+);
+```
+
+```python
+response = ss_client.Templates.list_public_templates(
+  page_size=10,
+  page=1)
+pages = response.total_pages
+templates = response.data
+```
+
+```ruby
+response = smartsheet.templates.list_public
+templates = response[:data]
+```
+
+> Example Response:
+
+<%= partial "snippets/listTemplates_response.md.erb" %>
+
+`GET /templates/public`
+
+Gets a list of public Templates that the user has access to.
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+
+<%= partial "snippets/listTemplates_table.md.erb" %>
+
+## List User-created Templates
+
+> Example Request: List User-created Templates
+
+```shell
+curl https://api.smartsheet.com/2.0/templates \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+smartsheet.templates.listUserCreatedTemplates()
+  .then(function (templateList) {
+    console.log(templateList);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+```csharp
+// Omit pagination parameters
+PaginatedResult<Template> templates = smartsheet.TemplateResources.ListUserCreatedTemplates(
+  null                // PaginationParameters
+);
+```
+
+```java
+// Omit pagination parameters
+PagedResult<Template> templates = smartsheet.templateResources().listUserCreatedTemplates(
+  null        // PaginationParameters
+);
+```
+
+```python
+response = ss_client.Templates.list_user_created_templates(
+  page_size=10,
+  page=1)
+pages = response.total_pages
+templates = response.data
+```
+
+```ruby
+response = smartsheet.templates.list
+templates = response[:data]
+```
+
+> Example Response:
+
+<%= partial "snippets/listTemplates_response.md.erb" %>
+
+`GET /templates`
+
+Gets a list of user-created Templates that the user has access to.
+
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+
+<%= partial "snippets/listTemplates_table.md.erb" %>
+
 # Token
 
 The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate all API requests except for the requests to Get Access Token or Refresh Access Token.  For more information, see [Authentication](#authentication-and-access-tokens).
