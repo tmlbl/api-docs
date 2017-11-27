@@ -647,10 +647,10 @@ To get an authorization code, you must first request authorization from the user
 Value | Description |
 -----|-----|
 response_type<br/>(required) | Must be set to "code".
-client_id<br/>(required) | Client Id for your app, such as '1samp48lel5for68you'. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
+client_id<br/>(required) | Client Id for your app, such as '1samp48lel5for68you'. If you do not have a client Id, see [Register Your App Using Developer Tools](#register-your-app-using-developer-tools).
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
 state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
-redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app-using-developer-tools) for your app.
 
 If your user has not logged in to Smartsheet, they are first directed to the Smartsheet login page. 
 After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested, as in the following example:
@@ -798,9 +798,9 @@ Value | Description |
 -----|-----|
 grant_type<br/>(required) | Must be set to "authorization_code".
 client_id<br/>(required) | Client Id for your app. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
-code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
+code<br/>(required) | Authorization code returned in the [previous step](#request-an-authorization-code).
 hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
-redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app-using-developer-tools) for your app.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -890,8 +890,8 @@ Value | Description |
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
-hash<br/>(required)| [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
-redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
+hash<br/>(required)| [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App Using Developer Tools](#register-your-app-using-developer-tools).
+redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app-using-developer-tools) for your app.
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
@@ -904,7 +904,7 @@ Value | Description |
 invalid_client | The client information is invalid. Ensure your client id is correct.
 invalid_grant | The authorization code or refresh token is invalid or expired or the hash value does not match the app secret and/or code.
 invalid_request | The request parameters are invalid or missing.
-invalid_scope | One or more of the requested access scopes are invalid. Please check the list of [access scopes](#access_scopes).
+invalid_scope | One or more of the requested access scopes are invalid. Please check the list of [access scopes](#access-scopes).
 unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
 unsupported_response_type | response_type must be set to "code".
 
