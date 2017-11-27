@@ -1,6 +1,30 @@
 # Token
 
-The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate requests.  For more information, see [Authentication](#authentication-and-access-tokens).
+The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An **Authorization** HTTP header containing an Access Token is required to authenticate all API requests except for the requests to Get Access Token or Refresh Access Token.  For more information, see [Authentication](#authentication-and-access-tokens).
+
+## <%= OBJECTS %>
+
+### Token Object
+
+> Example User Object:
+
+```json
+{
+  "access_token": "ll352u9jujauoqz4gstvsae05",
+  "token_type": "bearer",
+  "refresh_token": "e9x352a9mp4151le2505",
+  "expires_in": 604799,
+  "expires_at": "2017-11-21T23:32:22.180Z"
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**access_token** | string | A credential that can be used by a client to access the Smartsheet API.
+**token_type** | enum | How an access token will be generated and presented. Smartsheet uses the bearer parameter, which means essentially "give access to the bearer of this token."
+**refresh_token** | string | A credential tied to the access token that can be used to obtain a fresh access token with the same permissions, without further involvement from a user.
+**expires_in** | number | Number of seconds token is valid once issued; this is currently 604799 seconds, or approx. 7 days.
+**expires_at** | timestamp | The date, time, and time zone for when the access token expires.
 
 ## Get Access Token
 
@@ -8,7 +32,7 @@ The Smartsheet API utilizes OAuth 2.0 for Authentication and Authorization. An *
 
 ```shell
 curl https://api.smartsheet.com/2.0/token \
--d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&redirect_uri={redirect_uri}&hash={SHA_256(app_secret|code)}' \
+-d 'grant_type=authorization_code&code={your_code}&client_id={your_client_id}&hash={SHA_256(app_secret|code)}' \
 -X POST
 ```
 
@@ -16,14 +40,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Received Authorization Code')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+        // ('Your App Secret' + '|' + 'Received Authorization Code')
     .digest('hex');
  
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    code: 'Received Authorization Code',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    code: 'sample6p9qisx6a',            // Received Authorization Code
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'
@@ -32,9 +57,9 @@ var options = {
 // Get access token
 smartsheet.tokens.getAccessToken(options)
   .then(function(token) {
-    console.log(token);
-  })
-  .catch(function(error) {
+  console.log(token);
+})
+.catch(function(error) {
     console.log(error);
   });
 ```
@@ -52,18 +77,26 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{your_app_secret}|{your_code}'
-smartsheet.token.get(client_id: '{your_client_id}', code: '{your_code}', hash: hash)
+hash = Digest::SHA256.hexdigest '9samp7le3for71you|sample6p9qisx6a'
+                                # your_app_secret|your_code
+smartsheet.token.get(
+  client_id: '1samp48lel5for68you',
+  code: 'sample6p9qisx6a',
+  hash: hash
+)
 ```
 
 > Example Response:
 
 ```json
 {
-  "access_token": "ll352u9jujauoqz4gstvsae05",
-  "token_type": "bearer",
-  "refresh_token": "e9x352a9mp4151le2505",
-  "expires_in": 604799
+	"token": {
+		"access_token": "ll352u9jujauoqz4gstvsae05",
+		"token_type": "bearer",
+		"refresh_token": "e9x352a9mp4151le2505",
+		"expires_in": 604799,
+		"expires_at": "2017-11-21T23:32:22.180Z"
+	}
 }
 ```
 
@@ -73,11 +106,13 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 
      |     |
 -----|-----|
+<%= HEADERS %> | **Content-Type**: application/x-www-form-urlencoded
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "authorization_code"
  | **client_id** (required) -- client id for your app
- | **code** (required) -- authorization code returned in the previous step
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
- | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
+ | **code** (required) -- authorization code returned during the OAuth Flow.
+ | **hash** (required) -- [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request.
+ | **redirect_uri** (deprecated) -- redirect URL registered for your app, including the protocol (for example, "https://"); if not provided, the redirect URL set during registration is used.
+<%= RETURNS %> | [Token Object](#token_object) containing an access token and a refresh token.
 
 ## Refresh Access Token
 
@@ -86,7 +121,7 @@ Gets an access token, as part of the OAuth process. For more information, see [O
 ```shell
 curl https://api.smartsheet.com/2.0/token \
 -d 'grant_type=refresh_token&refresh_token={your_refresh_token}
-&client_id={your_client_id}&redirect_uri={redirect_uri}
+&client_id={your_client_id}
 &hash={SHA_256(app_secret|refresh_token)}' \
 -X POST
 ```
@@ -95,14 +130,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Your App Refresh Token')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+        // ('Your App Secret' + '|' + 'Your App Refresh Token')
     .digest('hex');
-
+ 
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    refresh_token: 'Your App Refresh Token',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    refresh_token: 'e9x352a9mp4151le2505',
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'    
@@ -111,10 +147,10 @@ var options = {
 // Refresh access token
 smartsheet.tokens.refreshAccessToken(options)
   .then(function(updatedToken) {
-    console.log(updatedToken);
+      console.log(updatedToken);
   })
   .catch(function(error) {
-    console.log(error);
+      console.log(error);
   });
 ```
 
@@ -131,10 +167,11 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{your_app_secret}|{refresh_token}'
+hash = Digest::SHA256.hexdigest '9samp7le3for71you|e9x352a9mp4151le2505'
+                              # 'your_app_secret|refresh_token
 smartsheet.token.refresh(
-  client_id: '{your_client_id}',
-  refresh_token: '{refresh_token}',
+  client_id: '1samp48lel5for68you',
+  refresh_token: 'e9x352a9mp4151le2505',
   hash: hash
 )
 ```
@@ -143,10 +180,13 @@ smartsheet.token.refresh(
 
 ```json
 {
-  "access_token": "ll352u9jujauoqz4gstvsae05",
-  "token_type": "bearer",
-  "refresh_token": "e9x352a9mp4151le2505",
-  "expires_in": 604799
+	"token": {
+		"access_token": "new52u9jujauoqz4gstvsae05",
+		"token_type": "bearer",
+		"refresh_token": "new352a9mp4151le2505",
+		"expires_in": 604799,
+		"expires_at": "2017-11-21T23:32:22.180Z"
+	}
 }
 ```
 
@@ -156,11 +196,13 @@ Refreshes an access token, as part of the OAuth process. For more information, s
 
      |     |
 -----|-----|
+<%= HEADERS %> | **Content-Type**: application/x-www-form-urlencoded
 <%= PARAMETERS %> | **grant_type** (required) -- must be set to "refresh_token"
  | **client_id** (required) -- client id for your app
  | **refresh_token** (required) -- refresh_token value that came with the access token
- | **redirect_uri** (optional) -- redirect URL registered for your app, including the protocol (for example, "https://")
- | **hash** (required) -- SHA-256 hash of your app secret concatenated with a pipe and the refresh token value
+ | **hash** (required) -- [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value
+ | **redirect_uri** (deprecated) -- redirect URL registered for your app, including the protocol (for example, "https://")
+<%= RETURNS %> | [Token Object](#token_object) containing an access token and a refresh token.
 
 ## Revoke Access Token
 

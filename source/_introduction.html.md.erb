@@ -200,7 +200,7 @@ If you want to get started quickly, or are developing a standalone application t
 1. Click the Account button in the upper-right corner of your Smartsheet screen and click Personal Settings. Click the "API Access" tab.
 2. Click the "Generate new access token" button to obtain an access token.
 
-The access token must be sent with every API call in an HTTPS authorization header. Once you have an Access Token, include it in the **Authorization** header for every request you make:
+The access token must be sent with every API call in an HTTP authorization header (except for the requests to Get Access Token or Refresh Access Token). Once you have an Access Token, include it in the **Authorization** header for every request you make:
 
 `Authorization: Bearer ll352u9jujauoqz4gstvsae05`
 
@@ -506,35 +506,183 @@ VIEWER | The user has read-only access to the resource.
 
 In addition to being a powerful work management tool, Smartsheet is a powerful application platform. 
  
-As a developer, you may be building applications that allow any Smartsheet user to access their Smartsheet data. The following sub-sections describe next steps.
+As a developer, you may be building applications that allow any Smartsheet user to access their Smartsheet data. There are three major steps you must complete before your app can work with Smartsheet:
 
-## Developer Registration
+1. You must register with Smartsheet as a developer so Smartsheet can give you access to the Developer Tools.
+2. You must register your app so your app can get a client Id and a client secret. 
+3. You must work through the OAuth Flow, which requires a client Id and a hashed client secret.
 
-Third-party app registration and management is available via the Developer Tools. 
-To get access to Developer Tools, you must first [register](http://developers.smartsheet.com/register) as a Smartsheet developer. 
+## Register with Smartsheet as a Developer
+
+If you want your app to work with Smartsheet, you must first [register](http://developers.smartsheet.com/register) with Smartsheet as a developer. This will give you access to Developer Tools, which is where you can register and manage your third-party app. 
 Follow the instructions on the registration form to add Developer Tools to an existing Smartsheet account or create a new Smartsheet developer account.
  
-Once you complete the developer registration, log in to Smartsheet to access Developer Tools.  
+Once you complete the developer registration, log in to Smartsheet using your developer account.
 
-1. Click the **Account** button in the upper-right corner of your Smartsheet screen.
-2. Now that you are registered as a Smartsheet developer, click the new **Developer Tools** option in the dropdown menu to open Developer Tools.
-3. Before you can register your first app, you must complete your developer profile. Developer profile is a public profile that anyone can access to learn more about you and your applications.
-4. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
+### To Open Developer Tools
 
-## Register Your App
+<aside class="notice">You must be registered with Smartsheet as a developer and you must be logged in using your developer account to see the Developer Tools option.</aside>
 
-To build a third-party app, you must first register it with Smartsheet using Developer Tools:
+1. Click the **Account** button in the upper-right corner of your Smartsheet screen, and then click the **Developer Tools** option in the dropdown menu.
+2. Before you can register your first app, you must complete your developer profile. The developer profile is a public profile that anyone can access to learn more about you and your applications.
+3. Once your developer profile is complete, you can use **Developer Tools** to register and manage your apps.
+
+## Register Your App Using Developer Tools
+
+To give your app access to Smartsheet, you must first register it using Developer Tools:
 
 1. Login to Smartsheet.
-2. Click the **Account** button in the upper-right corner of your Smartsheet screen and click **Developer Tools**.
+2. Click the **Account** button in the upper-right corner of your Smartsheet screen, and then click **Developer Tools**.
 3. Create a new app and provide the required information, including name, description, contact info and a redirect URL. Redirect URL (also known as the "callback URL") is the URL in your app where Smartsheet must redirect after authentication is complete.
-4. Use the generated app **client id** and **secret** to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and **secret** to do that.
+4. Use the generated app **client id**, such as, '1samp48lel5for68you', and **secret**, such as, '9samp7le3for71you', to connect your app to Smartsheet. See [OAuth Flow](#oauth-flow) for details on how to use **client id** and how to hash the **secret** to do that.
 
-## Access Scopes
+<img src="images/developer_tools3.png" alt="Developer Tools dialog box">
+
+## OAuth Flow
+
+Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
+The following diagram has an overview of the OAuth flow:
+
+<img src="images/OAuth_flow.png" alt="Simplified graphic showing what data is passed back and forth during OAuth flow">
+
+<aside class="notice">App registration and OAuth flow require HTTPS.</aside>
+
+### Request an Authorization Code
+
+> Request an authorization code:
+
+```shell
+curl https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE \
+-X POST
+```
+
+```javascript
+'use strict';
+
+const config = require('./config');
+const express = require('express');
+const simpleOauthModule = require('simple-oauth2');
+
+const app = express();
+const oauth2 = simpleOauthModule.create({
+  client: {
+    id: config.CLIENT_ID,
+    secret: config.CLIENT_SECRET
+  },
+  auth: {
+    tokenHost: 'https://api.smartsheet.com',
+    tokenPath: '/2.0/token',
+    authorizeHost: 'https://app.smartsheet.com',
+    authorizePath: '/b/authorize',
+  },
+});
+
+// Authorization uri definition
+const authorizationUri = oauth2.authorizationCode.authorizeURL({
+  redirect_uri: 'http://localhost:3000/callback',
+  scope: 'CREATE_SHEETS WRITE_SHEETS',
+});
+
+// Initial page redirecting to Smartsheet with params in URL
+app.get('/auth', (req, res) => {
+  console.log(authorizationUri);
+  res.redirect(authorizationUri);
+});
+```
+
+```csharp
+// [todo]
+```
+
+```java
+// [todo]
+```
+
+```python
+# [todo]
+```
+
+```ruby
+# [todo]
+```
+
+> Successful Response:
+
+```shell
+'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&expires_in=599080&state=MY_STATE'
+```
+
+```javascript
+'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&expires_in=599080&state=MY_STATE'
+```
+
+```csharp
+'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&expires_in=599080&state=MY_STATE'
+```
+
+```java
+'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&expires_in=599080&state=MY_STATE'
+```
+
+```python
+'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&expires_in=599080&state=MY_STATE'
+```
+
+```ruby
+'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&expires_in=599080&state=MY_STATE'
+```
+
+```json
+{
+	"token": {
+		"access_token": "33im5t2fvm7265x9vm5o35qup9",
+		"token_type": "bearer",
+		"refresh_token": "nbxgih0vkc56exxq8awleafp",
+		"expires_in": 604799,
+		"expires_at": "2017-11-28T18:59:30.217Z"
+	}
+}
+```
+
+To get an authorization code, you must first request authorization from the user. To start that process, send an authorization URL including access scopes to the user. You can use a GET or a POST.
+
+Value | Description |
+-----|-----|
+response_type<br/>(required) | Must be set to "code".
+client_id<br/>(required) | Client Id for your app, such as '1samp48lel5for68you'. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
+scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
+state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
+redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
+
+If your user has not logged in to Smartsheet, they are first directed to the Smartsheet login page. 
+After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested, as in the following example:
+
+<img src="images/allow-deny2.png" alt="Dialog box to allow or deny scopes">
+
+#### If the User Clicks Allow
+
+If the user clicks "Allow", Smartsheet redirects the user to the Redirect URL with the following parameters:
+
+Value | Description |
+-----|-----|
+code | Authorization code required to obtain access token, such as 'sample6p9qisx6a'.
+expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes--you must obtain an access token within that time.
+state | **state** string specified earlier.
+
+#### If the User Clicks Deny
+
+If the user clicks "Deny", Smartsheet redirects the user to the Redirect URL with the following parameters:
+
+Value | Description |
+-----|-----|
+error | "access_denied".
+state | **state** string specified earlier.
+
+#### Access Scopes
 
 To access an end user's Smartsheet data, your application must explicitly ask for specific Access Scopes. 
 The Access Scopes enable your app to communicate to the end users what type of operations it is performing. 
-Access Scopes do not override existing Access Level restrictions. 
+Access Scopes do not override existing [access level restrictions](#access-levels). 
 For example, having the Access Scope of WRITE_SHEETS does not allow your app to update a sheet on which the end user has VIEWER access level.
  
 The Access Scopes are as follows:
@@ -544,7 +692,7 @@ Access Scope | Description |
 ADMIN_SHEETS | Modify sheet structure, including column definition, publish state, etc.
 ADMIN_SIGHTS | Modify Sight structure.
 ADMIN_USERS | Add and remove users from your Smartsheet organization; create groups and manage membership.
-ADMIN_WEBHOOKS | Create, delete. and update webhooks; get all webhooks; reset shared secret. 
+ADMIN_WEBHOOKS | Create, delete, and update webhooks; get all webhooks; reset shared secret. 
 ADMIN_WORKSPACES | Create and manage workspaces and folders, including sharing.
 CREATE_SHEETS | Create new sheets.
 CREATE_SIGHTS | Create new Sights.
@@ -558,59 +706,9 @@ SHARE_SHEETS | Share sheets, including sending sheets as attachments.
 SHARE_SIGHTS | Share Sight.
 WRITE_SHEETS | Insert and modify sheet data, including attachments, discussions, and cell data.
 
-<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
+<aside class="notice"><b>Additional Info:</b><ul><li>User-generated Access Tokens are granted for all of these permissions.</li><li>Third-party apps must request at least one access scope, but should only request the scopes necessary.</li><li>Once a third-party app attains a valid access token, it can execute a <a href="#get-current-user">Get Current User</a> operation, regardless of which access scopes were requested.</li></ul></aside>
 
-## OAuth Flow
-
-Your app must implement a 3-legged OAuth flow to retrieve an access token that can be used to access Smartsheet data on behalf of an end user. 
-The following sub-sections describe next steps.
-
-<aside class="notice">App registration and OAuth flow require HTTPS.</aside>
-
-### Request Authorization From the User
-
-To request authorization from an end user, direct your user to `https://app.smartsheet.com/b/authorize` with the following parameters through either a `GET` or `POST`. The parameter values must be URL-encoded:
-
-Value | Description |
------|-----|
-response_type<br/>(required) | Must be set to "code".
-client_id<br/>(required) | Client Id for your app.
-redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
-scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access (note the spaces must be URL-encoded as "%20").
-state<br/>(optional) | Arbitrary string returned to your app; intended to be used by you to ensure that this redirect is indeed from an OAuth flow that you initiated.
-
-Here is an example of a URL to send your user as a `GET` request:
- 
-`https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3dmkd32fhxme&scope=READ_SHEETS%20WRITE_SHEETS&state=MY_STATE`
- 
-If your user has not logged in to Smartsheet, they are first directed to the Smartsheet login page. 
-After a successful login, Smartsheet prompts your user to allow or deny the access scopes you requested.
-
-### Obtain the Authorization Code
-
-During the above steps for requesting authorization from the user, if the user clicks "Allow", Smartsheet redirects the user to the Redirect URL with the following parameters:
-
-Value | Description |
------|-----|
-code | Authorization code required to obtain access token.
-expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes - you must obtain an access token within that time.
-state | **state** string specified earlier.
-
-If the user clicks "Deny", Smartsheet redirects the user to the Redirect URL with the following parameters:
-
-Value | Description |
------|-----|
-error | "access_denied".
-state | **state** string specified earlier.
-
-Other errors that may be returned include:
-
-Value | Description |
------|-----|
-unsupported_response_type | response_type must be set to "code".
-invalid_scope | One or more of the requested access scopes are invalid. Please check the list of access scopes.
-
-### Obtain an Access Token
+### Request an Access Token
 
 > Request an access token:
 
@@ -624,14 +722,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Received Authorization Code')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+        // ('Your App Secret' + '|' + 'Received Authorization Code')
     .digest('hex');
  
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    code: 'Received Authorization Code',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    code: 'sample6p9qisx6a',            // Received Authorization Code
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'
@@ -660,8 +759,13 @@ smartsheet.tokens.getAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{ your_app_secret }|{ your_code }'
-smartsheet.token.get(client_id: '{ your_client_id }', code: '{ your_code }', hash: hash)
+hash = Digest::SHA256.hexdigest '9samp7le3for71you|sample6p9qisx6a'
+                              # your_app_secret|your_code
+smartsheet.token.get(
+  client_id: '1samp48lel5for68you',
+  code: 'sample6p9qisx6a',
+  hash: hash
+)
 ```
 
 
@@ -669,11 +773,14 @@ smartsheet.token.get(client_id: '{ your_client_id }', code: '{ your_code }', has
 
 ```json
 {
-  "access_token": "ll352u9jujauoqz4gstvsae05",
-  "token_type": "bearer",
-  "refresh_token": "e9x352a9mp4151le2505",
-  "expires_in": 604799
- }
+	"token": {
+		"access_token": "ll352u9jujauoqz4gstvsae05",
+		"token_type": "bearer",
+		"refresh_token": "e9x352a9mp4151le2505",
+		"expires_in": 604799,
+		"expires_at": "2017-11-21T23:32:22.180Z"
+	}
+}
 ```
 
 > Error Response:
@@ -692,23 +799,14 @@ To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with t
 Value | Description |
 -----|-----|
 grant_type<br/>(required) | Must be set to "authorization_code".
-client_id<br/>(required) | Client Id for your app.
+client_id<br/>(required) | Client Id for your app. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
 code<br/>(required) | Authorization code returned in the [previous step](#obtain-the-authorization-code).
+hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
-hash<br/>(required) | SHA-256 hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
-Reminder: you can see what a success call looks like in the dark-blue area in the rightmost pane. 
-
-Possible OAuth error types:
-
-Value | Description |
------|-----|
-invalid_request | The request parameters are invalid or missing.
-invalid_client | The client information is invalid. Ensure your client id is correct.
-invalid_grant | The authorization code or refresh token is invalid or expired, the redirect_uri does not match, or the hash value does not match the app secret and/or code.
-unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
+If your request is successful, the response will contain a [Token Object](#token-object). You can see an example of the Token Object in the dark-blue area in the rightmost pane. 
 
 ### Refresh an Access Token
 
@@ -724,14 +822,15 @@ curl https://api.smartsheet.com/2.0/token \
 // Create hash
 var hash =
   crypto.createHash('sha256')
-    .update('Your App Secret' + '|' + 'Your App Refresh Token')
+    .update('9samp7le3for71you' + '|' + 'sample6p9qisx6a')
+        // ('Your App Secret' + '|' + 'Your App Refresh Token')
     .digest('hex');
  
 // Set options
 var options = {
   queryParameters: {
-    client_id: 'Your App Client ID',
-    refresh_token: 'Your App Refresh Token',
+    client_id: '1samp48lel5for68you',   // Your App Client ID
+    refresh_token: 'e9x352a9mp4151le2505',
     hash: hash
   },
   contentType: 'application/x-www-form-urlencoded'    
@@ -760,10 +859,11 @@ smartsheet.tokens.refreshAccessToken(options)
 ```
 
 ```ruby
-hash = Digest::SHA256.hexdigest '{ your_app_secret }|{ refresh_token }'
+hash = Digest::SHA256.hexdigest '9samp7le3for71you|e9x352a9mp4151le2505'
+                                # your_app_secret|refresh_token
 smartsheet.token.refresh(
-  client_id: '{ your_client_id }',
-  refresh_token: '{ refresh_token }',
+  client_id: '1samp48lel5for68you',
+  refresh_token: 'e9x352a9mp4151le2505',
   hash: hash
 )
 ```
@@ -772,15 +872,18 @@ smartsheet.token.refresh(
 
 ```json
 {
-  "access_token": "ll352u9jujauoqz4gstvsae05",
-  "token_type": "bearer",
-  "refresh_token": "e9x352a9mp4151le2505",
-  "expires_in": 604799
+	"token": {
+		"access_token": "new52u9jujauoqz4gstvsae05",
+		"token_type": "bearer",
+		"refresh_token": "new352a9mp4151le2505",
+		"expires_in": 604799,
+		"expires_at": "2017-11-21T23:32:22.180Z"
+	}
 }
 ```
 
-Access tokens expire after 7 days. Use the refresh token to obtain a new access token. 
-Once you obtain the new access token, you must use it in place of the old one, which is no longer valid.
+Access tokens expire after 604799 seconds, which is approx 7 days. Use the refresh token to obtain a new access token. 
+Once you obtain the new access token and new refresh token, you must use them in place of the old ones, which are no longer valid.
  
 To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
@@ -789,13 +892,23 @@ Value | Description |
 grant_type<br/>(required)| Must be set to "refresh_token".
 client_id<br/>(required)| Client Id for your app.
 refresh_token<br/>(required)| refresh_token value that came with the access token.
+hash<br/>(required)| [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
 redirect_uri<br/>(deprecated)| If supplied, must match the redirect URL you [registered](#register-your-app) for your app.
-hash<br/>(required)| SHA-256 hash of your app secret concatenated with a pipe and the refresh token value. To obtain an app_secret, see [Register Your App](#register-your-app).
 
 <aside class="notice">The "Refresh Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
-### Get Basic User Info
-Once you have obtained an access token on behalf of the user, you can fetch basic information (including user Id, name, etc.) about the caller using the [Get Current User](#get-current-user) operation.
+If your request is successful, the response will contain a [Token Object](#token-object). You can see an example of the Token Object in the dark-blue area in the rightmost pane. 
+
+### OAuth Error Types
+
+Value | Description |
+-----|-----|
+invalid_client | The client information is invalid. Ensure your client id is correct.
+invalid_grant | The authorization code or refresh token is invalid or expired or the hash value does not match the app secret and/or code.
+invalid_request | The request parameters are invalid or missing.
+invalid_scope | One or more of the requested access scopes are invalid. Please check the list of [access scopes](#access_scopes).
+unsupported_grant_type | grant_type must equal "authorization_code" or "refresh_token".
+unsupported_response_type | response_type must be set to "code".
 
 # Work at Scale 
 
