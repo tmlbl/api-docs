@@ -513,7 +513,7 @@ Before you can start using OAuth 2.0 with your app, Smartsheet needs the followi
 1. You must [register](http://developers.smartsheet.com/register) with Smartsheet to get a developer account. The developer account gives you access to Developer Tools, which is where you manage your app.
 2. In Developer Tools, complete your developer profile. This profile is public and anyone can access it to learn about you and your apps.
 3. In Developer Tools, register your app so Smartsheet can assign a client Id and a client secret to the app.
-4. Review the list of Access Scopes. You'll need to choose which ones your app needs to get to a user's Smartsheet data, and then ask the user to allow or deny that access.
+4. Review the list of Access Scopes. You'll need to choose which ones your app needs to get to a user's Smartsheet data, and then ask the user to consent to that access.
 
 After you've worked through these steps, you'll be ready to implement the [OAuth Flow](#oauth-flow).
 
@@ -673,45 +673,51 @@ app.get('/auth', (req, res) => {
 }
 ```
 
-To get an authorization code, send this authorization URL, https://app.smartsheet.com/b/authorize, to the user through either a POST or a GET request with the following parameters:
+To get an authorization code, send this authorization URL, `https://app.smartsheet.com/b/authorize`, to the user through either a `POST` or a `GET` request with the following parameters:
 
-<aside class="notice">For POST, include the parameters in the POST body. For GET, include the parameters as query parameters. In both cases, [URL encode](https://en.wikipedia.org/wiki/Percent-encoding) the parameters.</aside>
+<aside class="notice">For POST, include the parameters in the POST body. For GET, include the parameters as query parameters. In both cases, <a href="https://en.wikipedia.org/wiki/Percent-encoding">URL encode</a> the parameters.</aside>
 
 Value | Description |
 -----|-----|
 response_type<br/>(required) | Whether the endpoint returns an authorization code. Must be set to "code".
-client_id<br/>(required) | The client Id you obtained when your registered your app.
+client_id<br/>(required) | The client Id you obtained when you registered your app.
 scope<br/>(required) | Space-delimited list of [access scopes](#access-scopes) to which you are asking the user to grant access.
 state<br/>(optional) | An arbitrary string of your choosing that is returned to your app; a successful roundtrip of this string helps ensure that your app initiated the request.
 redirect_uri<br/>(deprecated) | An HTTPS URI or custom URL for where the response will be redirected. Must match the redirect URL used when you registered your app.
 
-You can view code examples by clicking the corresponding tab in the dark-blue area in the rightmost pane. The cURL example shows a GET.
+You can view code examples by clicking the corresponding tab in the dark-blue area in the rightmost pane. The cURL example shows a `GET`.
 
 At this point, you've forwarded the user to Smartsheet's login page.
 After a successful login, Smartsheet displays a consent page where the user can authorize your app to access their Smartsheet account, as in the following example:
 
 <img src="images/developer_tools3.png" alt="Dialog box to allow or deny scopes">
 
-After clicking **Allow** or **Deny**, you'll receive a response from Smartsheet outlined in the next sections.
+After the user clicks **Allow** or **Deny**, you'll receive a response from Smartsheet outlined in the next sections.
 
 #### If the User Clicks Allow
 
-If the user clicks **Allow**, Smartsheet redirects the user to the Redirect URL with the following parameters:
+If the user clicks **Allow**, Smartsheet redirects the user to the callback URL with the following parameters:
 
 Value | Description |
 -----|-----|
 code | Authorization code required to obtain access token, such as 'sample6p9qisx6a'.
 expires_in | Number of milliseconds code is valid once issued; this is currently 599135 milliseconds, or approx. 10 minutes--you must obtain an access token within that time.
-state | **state** string specified earlier.
+state | The same value for `state` that you sent when you requested the authorization code.
+
+At this point, you should verify the `state` value matches what you sent to the user when you requested the authorization code. This helps you determine that the response came from the user and not a malicious script. If the values do not match, you should reject the response.
+
+For other error conditions, see the list of [OAuth Error Types](#oauth-error-types).
 
 #### If the User Clicks Deny
 
-If the user clicks **Deny**, Smartsheet redirects the user to the Redirect URL with the following parameters:
+If the user clicks **Deny**, Smartsheet redirects the user to the callback URL with the following parameters:
 
 Value | Description |
 -----|-----|
 error | "access_denied".
-state | **state** string specified earlier.
+state | The same value for `state` that you sent when you requested the authorization code.
+
+For other error conditions, see the list of [OAuth Error Types](#oauth-error-types).
 
 ### Request an Access Token
 
@@ -798,20 +804,22 @@ smartsheet.token.get(
 }
 ```
 
-Once you’ve successfully obtained an authorization code, the next step is to obtain an access token. 
+Once you’ve successfully obtained an authorization code, the next step is to exchange the code for an access token. (Remember, the authorization code expires after 599135 milliseconds.) 
 To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
 Value | Description |
 -----|-----|
 grant_type<br/>(required) | Must be set to "authorization_code".
-client_id<br/>(required) | Client Id for your app. If you do not have a client Id, see [Register Your App](#register-your-app-using-developer-tools).
+client_id<br/>(required) | The client Id you obtained when you registered your app.
 code<br/>(required) | Authorization code returned in the [previous step](#request-an-authorization-code).
-hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. To obtain an app_secret, see [Register Your App](#register-your-app-using-developer-tools).
-redirect_uri<br/>(deprecated) | If supplied, must match the redirect URL you [registered](#register-your-app-using-developer-tools) for your app.
+hash<br/>(required) | [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash of your app secret concatenated with a pipe and the authorization code.  The app_secret is never sent with the request. This is the `app_secret` you obtained when you [registered your app](#register-your-app-using-developer-tools).
+redirect_uri<br/>(deprecated) | An HTTPS URI or custom URL for where the response will be redirected. Must match the redirect URL used when you registered your app.
 
 <aside class="notice">The "Get Token" request must have the <b>Content-Type</b> header set to 'application/x-www-form-urlencoded'.</aside>
 
 If your request is successful, the response will contain a [Token Object](#token-object). You can see an example of the Token Object in the dark-blue area in the rightmost pane. 
+
+For possible error conditions, see the list of [OAuth Error Types](#oauth-error-types).
 
 ### Refresh an Access Token
 
@@ -887,8 +895,8 @@ smartsheet.token.refresh(
 }
 ```
 
-Access tokens expire after 604799 seconds, which is approx 7 days. Use the refresh token to obtain a new access token. 
-Once you obtain the new access token and new refresh token, you must use them in place of the old ones, which are no longer valid.
+Access tokens expire after 604799 seconds, which is approx 7 days. Use the refresh token to obtain a new access token and a new refresh token. 
+Once you obtain the new tokens, you must use them in place of the old ones, which are no longer valid.
  
 To do so, make a `POST` request to `https://api.smartsheet.com/2.0/token` with the following parameters:
 
