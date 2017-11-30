@@ -2654,25 +2654,6 @@ A Column is a component of a Sheet or Report.
 
 <aside class="notice"> Either **name* or **email** (or both) must be specified.</aside>
 
-### Criteria Object
-
-     |     |     |
------|-----|-----|
-**operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
-**value1** | string or number | Optional. Present if a custom filter criteria's operator has one or more arguments.
-**value2** | string or number | Optional.  Present if a custom filter criteria's operator has two arguments.
-
-### Filter Object
-
-Smartsheet users can define and save personal column filters on sheets they can view.  When any API operation that returns columns is invoked with the "include=filters" query string parameter, the column includes any active filters the user has defined for the sheet.
-
-     |     |     |
------|-----|-----|
-**type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
-**excludeSelected** | Boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
-**values** | object[] containing strings, numbers, and Booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter matches against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.
-**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.
-
 ## Add Columns
 
 > Example Request: Add Columns
@@ -3025,7 +3006,6 @@ Gets the Column specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response includes the [Filter](#filter-object) that the user has applied to the column (if any)
 <%= RETURNS %> | [Column Object](#column-object)
 
 ## List Columns
@@ -3131,7 +3111,7 @@ Gets a list of all Columns belonging to the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response includes the [Filter](#filter-object) that the user has applied to each column (if any)<br/><br/><%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Column Objects](#column-object)
 
 ## Update Column
