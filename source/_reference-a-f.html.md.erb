@@ -991,8 +991,8 @@ attachment = smartsheet.sheets.attachments.get(
 
 ```json
 {
-  "name": "at3.png",
-  "url": "URL_TO_ATTACHMENT",
+  "name": "expense_report_sample.png",
+  "url": "https://api.smartsheet.com/download/aa402974cdb74cb58d9",
   "attachmentType": "FILE",
   "mimeType": "image/png",
   "id": 4583173393803140,
@@ -1002,7 +1002,7 @@ attachment = smartsheet.sheets.attachments.get(
 
 `GET /sheets/{sheetId}/attachments/{attachmentId}`
 
-Fetches the Attachment specified in the URL.
+Fetches a temporary URL that allows you to download an Attachment. The `urlExpiresInMillis` attribute tells you how long the URL is valid.
 
      |     |
 -----|-----|
@@ -1785,7 +1785,7 @@ This object itself is not used directly.
 > Example Update Row Request for a Predecessor Cell:
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?include=objectValue \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?include=objectValue' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X PUT \
@@ -1868,7 +1868,7 @@ In a project sheet, represents a value in a duration cell, or a lag value of a p
 > Example Request: Get Cell History
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history?include=columnType \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/history?include=columnType' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -2213,7 +2213,7 @@ A 'cell image' is an image that has been uploaded to a Cell within a Sheet.
 > Example Request: Add Image to Cell
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/cellimages?altText=my%20image \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/columns/{columnId}/cellimages?altText=my%20image' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/jpeg" \
 -H 'Content-Disposition: attachment; filename="picture.jpg"' \
@@ -2627,7 +2627,7 @@ A Column is a component of a Sheet or Report.
      |     |     |
 -----|-----|-----|
 **id** | number | Column Id
-**index** | number | Column index
+**index** | number | Column index or position. This number is zero-based. 
 **title** | string | Column title
 **primary** | Boolean | Returned only if the column is the Primary Column (value = `true`)
 **type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
@@ -2653,25 +2653,6 @@ A Column is a component of a Sheet or Report.
 **email** | string | Optional.  A parsable email address.
 
 <aside class="notice"> Either **name* or **email** (or both) must be specified.</aside>
-
-### Criteria Object
-
-     |     |     |
------|-----|-----|
-**operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
-**value1** | string or number | Optional. Present if a custom filter criteria's operator has one or more arguments.
-**value2** | string or number | Optional.  Present if a custom filter criteria's operator has two arguments.
-
-### Filter Object
-
-Smartsheet users can define and save personal column filters on sheets they can view.  When any API operation that returns columns is invoked with the "include=filters" query string parameter, the column includes any active filters the user has defined for the sheet.
-
-     |     |     |
------|-----|-----|
-**type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
-**excludeSelected** | Boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
-**values** | object[] containing strings, numbers, and Booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter matches against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.
-**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.
 
 ## Add Columns
 
@@ -3025,7 +3006,6 @@ Gets the Column specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response includes the [Filter](#filter-object) that the user has applied to the column (if any)
 <%= RETURNS %> | [Column Object](#column-object)
 
 ## List Columns
@@ -3131,7 +3111,7 @@ Gets a list of all Columns belonging to the Sheet specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional): when specified with a value of "filters", response includes the [Filter](#filter-object) that the user has applied to each column (if any)<br/><br/><%= PAGING_PARAMETERS %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Column Objects](#column-object)
 
 ## Update Column
@@ -3275,7 +3255,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index (column's new index in the sheet)</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
 
 ## <%= RELATED %>
@@ -4527,7 +4507,7 @@ Deletes the Discussion specified in the URL.
 > Example Request: List Discussions
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comments,attachments \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions?include=comments,attachments' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -4710,7 +4690,7 @@ Gets the Discussion specified in the URL.
 > Example Request: List Row Discussions
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?include=comments,attachments \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions?include=comments,attachments' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -5423,7 +5403,7 @@ Removes a single Workspace from the user's list of Favorite items.
 > Example Request: Remove Multiple Favorite Folders
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/folder?objectIds=folderId1,folderId2 \
+curl 'https://api.smartsheet.com/2.0/favorites/folder?objectIds=folderId1,folderId2' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -5488,7 +5468,7 @@ Removes multiple Folders from the user's list of Favorite items.
 > Example Request: Remove Multiple Favorite Reports
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/report?objectIds=reportId1,reportId2 \
+curl 'https://api.smartsheet.com/2.0/favorites/report?objectIds=reportId1,reportId2' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -5553,7 +5533,7 @@ Removes multiple Reports from the user's list of Favorite items.
 > Example Request: Remove Multiple Favorite Sheets
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/sheet?objectIds=sheetId1,sheetId2 \
+curl 'https://api.smartsheet.com/2.0/favorites/sheet?objectIds=sheetId1,sheetId2' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -5618,7 +5598,7 @@ Removes multiple Sheets from the user's list of Favorite items.
 > Example Request: Remove Multiple Favorite Sights
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/sight?objectIds=sightId1,sightId2 \
+curl 'https://api.smartsheet.com/2.0/favorites/sight?objectIds=sightId1,sightId2' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -5677,7 +5657,7 @@ Removes multiple Sights from the user's list of Favorite items.
 > Example Request: Remove Multiple Favorite Templates
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/template?objectIds=templateId1,templateId2 \
+curl 'https://api.smartsheet.com/2.0/favorites/template?objectIds=templateId1,templateId2' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -5742,7 +5722,7 @@ Removes multiple Templates from the user's list of Favorite items.
 > Example Request: Remove Multiple Favorite Workspaces
 
 ```shell
-curl https://api.smartsheet.com/2.0/favorites/workspace?objectIds=workspaceId1,workspaceId2 \
+curl 'https://api.smartsheet.com/2.0/favorites/workspace?objectIds=workspaceId1,workspaceId2' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X DELETE
 ```
@@ -5838,7 +5818,7 @@ A Folder can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](
 > Example Request: Copy Folder
 
 ```shell
-curl https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=data
+curl 'https://api.smartsheet.com/2.0/folders/{folderId}/copy?include=data'
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 -H "Content-Type: application/json"
 -d '{
@@ -5980,19 +5960,19 @@ Creates a copy of the specified Folder.
 -----|-----|
 <%= SCOPE %> | ADMIN_WORKSPACES
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients, must also include **rules** when using this attribute</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
  | **omit** (optional) -- when specified with a value of "sheetHyperlinks", excludes this category from the response
- | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>Sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source folder are re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder continue to point to the original source sheets.</li><li>If "Sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created folder continue to point to the original source sheets / reports.</li></ul>
+ | **skipRemap** (optional) -- comma-separated list of references to NOT re-map for the newly created folder:<ul><li>cellLinks</li><li>reports</li><li>sheetHyperlinks</li><li>sights</li></ul>By default, all cell links, reports, sheet hyperlinks, and Sights that reference objects in the source folder are re-mapped to reference corresponding objects in the newly created folder. The **skipRemap** parameter can be specified to change that default behavior:<ul><li>If "cellLinks" is specified in the <b>skipRemap</b> parameter value, the cell links within the newly created folder continue to point to the original source sheets.</li><li>If "reports" is specified in the <b>skipRemap</b> parameter value, the reports within the newly created folder continue to point to the original source sheets.</li><li>If "sheetHyperlinks" is specified in the <b>skipRemap</b> parameter value, the sheet hyperlinks within the newly created folder continue to point to the original source sheets.</li><li>If "sights" is specified in the <b>skipRemap</b> parameter value, the widgets within Sights in the newly created folder continue to point to the original source sheets / reports.</li></ul>
 <%= REQUEST %> | [ContainerDestination Object](#containerdestination-object)</li></ul>
 <%= RETURNS %> | [Result Object](#result-object) containing a [Folder Object](#folder-object) for the newly created Folder
 
-## Create Child Folder
+## Create Folder
 
 A Folder can be created in the user's **Sheets** folder ([Home](#home)), in another Folder, or in a Workspace.
 
-### Create Folder
+### Create Folder (Sheets Level)
 
-> Example Request: Create Folder
+> Example Request: Create Folder (Sheets Level)
 
 ```shell
 curl https://api.smartsheet.com/2.0/home/folders \
@@ -6061,9 +6041,9 @@ Creates a Folder in the user's **Sheets** folder ([Home](#home)).
 
 <%= partial "snippets/createFolder_table.md.erb" %>
 
-### Create Folder (Folder)
+### Create Folder (Subfolder)
 
-> Example Request: Create Folder (Folder)
+> Example Request: Create Folder (Subfolder)
 
 ```shell
 curl https://api.smartsheet.com/2.0/folders/{folderid}/folders \
@@ -6409,13 +6389,13 @@ Gets the specified Folder (and lists its contents).
 <%= PARAMETERS %> | **include** (optional) -- a comma-separated list of optional elements to include in the response:<ul><li>ownerInfo - owner's email address and user Id for each sheet</li><li>sheetVersion - current version number of each sheet, should not be combined with pagination</li><li>source - the [source](#source-object) for any sheet that was created from another sheet or template</li></ul>
 <%= RETURNS %> | [Folder Object](#folder-object), populated according to the **include** parameter<br/><br/>Note: If no folders, sheets, reports, templates, or Sights are present in the Folder, the corresponding attribute (for example, "folders", "sheets") is not present in the response.
 
-## Get All Child Folders
+## List Folders
 
 Gets a list of top-level child Folders from the user's **Sheets** folder ([Home](#home)), from another Folder, or from a Workspace.
 
-### List Folders
+### List Folders (Sheet Level)
 
-> Example Request: List Folders
+> Example Request: List Folders (Sheet Level)
 
 ```shell
 curl https://api.smartsheet.com/2.0/home/folders \
@@ -6477,9 +6457,9 @@ Gets a list of the top-level child Folders within the user's **Sheets** folder (
 
 <%= partial "snippets/listFolders_table.md.erb" %>
 
-### List Folders (Folder)
+### List Folders (Subfolder)
 
-> Example Request: List Folders (Folder)
+> Example Request: List Folders (Subfolder)
 
 ```shell
 curl https://api.smartsheet.com/2.0/folders/{folderId}/folders \
@@ -6639,9 +6619,9 @@ Gets a list of the top-level child Folders within the specified Workspace.
 curl https://api.smartsheet.com/2.0/folders/{folderId}/move \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
--d '{ \
-  "destinationType": "folder", \
-  "destinationId": 7960873114331012 \
+-d '{ 
+  "destinationType": "folder", 
+  "destinationId": 7960873114331012 
 }' \
 -X POST
 ```

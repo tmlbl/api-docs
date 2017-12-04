@@ -776,7 +776,7 @@ In the Smartsheet UI, the "Home" tab shows all objects a User has access to, inc
 > Example Request: List Contents
 
 ```shell
-curl https://api.smartsheet.com/2.0/home?include=source \
+curl 'https://api.smartsheet.com/2.0/home?include=source' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -1593,6 +1593,8 @@ A Row is a component of a Sheet or Report. Each Row is composed of a collection 
 }
 ```
 
+If you specify the **parentId** attribute or the **siblingId** attribute, you can set one or the other, but not both.
+
      |     |     |
 -----|-----|-----|
 **id** | number | Row Id
@@ -2051,7 +2053,7 @@ Copies Rows from the Sheet specified in the URL to (the bottom of) another sheet
 > Example Request: Delete Rows
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}&ignoreRowsNotFound=true \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/rows?ids={rowId1},{rowId2},{rowId3}&ignoreRowsNotFound=true' \
 -X DELETE
 ```
 
@@ -2138,7 +2140,7 @@ Deletes one or more rows from the Sheet specified in the URL.
 > Example Request: Get Row
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns,columnType \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}?include=discussions,attachments,columns,columnType' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -2251,7 +2253,7 @@ Gets the Row specified in the URL.
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which adds a columns array that specifies all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag may be used in conjunction with **columns** to include the user's column [filters](#filter-object) with the columns.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/><br/>See [Row Include Flags](#row-include-flags).<br/>Also supports the **columns** include flag, which adds a columns array that specifies all of the columns for the sheet. This enables you to have the full context of the cells in the row.<br/><br/>The **filters** include flag returns a **filteredOut** attribute indicating if the row should be displayed or hidden according to the sheet's filters.
   | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**include=format&exclude=nonexistentCells**: excludes cells that have never contained data yet returns those cells if they have formatting or conditional formatting</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
 <%= RETURNS %> | [Row Object](#row-object), populated according to the specified parameters
 
@@ -2701,14 +2703,12 @@ Row Attribute | Type | Description
 -------|--------|--------
 **toTop** | Boolean | Add or move the row to the top of the sheet.
 **toBottom** | Boolean | Add or move the row to the bottom of the sheet.
-**parentId** | Number | Add or move the row so that it is the first child row of the specified parent row. 
+**parentId** | Number | Add or move the row so that it is the first child row of the specified parent row. (Cannot be used with a **siblingId**.) 
 **parentId** +<br/>**toBottom** | Number + Boolean | Add or move the row so that it is the last child row of the specified parent row. 
-**siblingId** | Number | Add or move the row directly below the sibling row (at the same indent level as the specified row). 
+**siblingId** | Number | Add or move the row directly below the sibling row (at the same indent level as the specified row). (Cannot be used with **parentId**. **toTop**, or **toBottom**.) 
 **siblingId** +<br/>**above** | Number + Boolean | Add or move the row directly above the sibling row (at the same indent level as the specified row). 
-**indent** | Number | Number of levels to indent an existing row.
-**outdent** | Number | Number of levels to outdent an existing row.
-
-<aside class="notice">If you set a siblingId, you cannot also set the toTop or toBottom attribute.</aside>
+**indent** | Number | Number of levels to indent an existing row. For new rows, use **parentId**.
+**outdent** | Number | Number of levels to outdent an existing row. For new rows, use **parentId**.
 
 # Search
 
@@ -2761,7 +2761,7 @@ Use the *Search* operations to search a specific Sheet or to search across all S
 > Example Request: Search Everything
 
 ```shell
-curl https://api.smartsheet.com/2.0/search?query=stuff \
+curl 'https://api.smartsheet.com/2.0/search?query=stuff' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -3303,7 +3303,7 @@ Gets a list of all Users and Groups to whom the specified Report is shared, and 
 > Example Request: Share Report
 
 ```shell
-curl https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true \
+curl 'https://api.smartsheet.com/2.0/reports/{reportId}/shares?sendEmail=true' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -3703,7 +3703,7 @@ Gets a list of all Users and Groups to whom the specified Sheet is shared, and t
 > Example Request: Share Sheet
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/shares?sendEmail=true' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -4102,7 +4102,7 @@ Gets a list of all Users and Groups to whom the specified Sight is shared, and t
 > Example Request: Share Sight
 
 ```shell
-curl https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true
+curl 'https://api.smartsheet.com/2.0/sights/{sightId}/shares?sendEmail=true'
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 -H "Content-Type: application/json"
 -X POST
@@ -4504,7 +4504,7 @@ Gets a list of all Users and Groups to whom the specified Workspace is shared, a
 > Example Request: Share Workspace
 
 ```shell
-curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=true \
+curl 'https://api.smartsheet.com/2.0/workspaces/{workspaceId}/shares?sendEmail=true' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -4759,6 +4759,35 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
 **fromId** | number | The Id of the Template from which to create the Sheet. This attribute can be specified in a request, but is never present in a response.
 
+### Criteria Object
+
+     |     |     |
+-----|-----|-----|
+**operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
+**value1** | string or number | Optional. Present if a custom filter criteria's operator has one or more arguments.
+**value2** | string or number | Optional.  Present if a custom filter criteria's operator has two arguments.
+
+### Filter Object
+
+Smartsheet users can define and save personal column filters on sheets they can view. To see whether a row has been included or excluded with a filter, invoke the "include=filters" query string, which returns a `row.filteredOut` = `true` or `false` response for rows that are excluded by a filter. To see how the filter has been defined, invoke the "include=filterDefinitions" query string parameter.
+
+     |     |     |
+-----|-----|-----|
+**type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
+**excludeSelected** | Boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
+**values** | object[] containing strings, numbers, and Booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter matches against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.
+**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.
+
+### ProjectSettings Object
+
+Represents the project settings dependencies for a specific sheet.  Project settings may be updated on sheets that the user has editor access.
+
+     |     |     |
+-----|-----|-----|
+**workingDays** | String[] | Working days of a week for a project sheet. Valid values must be an array of strings of days of the week: <ul><li>MONDAY</li><li>TUESDAY</li><li>WEDNESDAY</li><li>THURSDAY</li><li>FRIDAY</li><li>SATURDAY</li><li>SUNDAY</li></ul>
+**nonWorkingDays** | timestamp[] | Non-working days for a project sheet. The format for the timestamp array must be an array of strings that are valid [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) dates ('YYYY-MM-DD').
+**lengthOfDay** | number | Length of a workday for a project sheet. Valid value must be above or equal to 1 hour, and less than or equal to 24 hours.
+
 ### SheetPublish Object 
 
      |     |     |
@@ -4788,16 +4817,6 @@ Represents individual user settings for a specific sheet.  User settings may be 
 **criticalPathEnabled** | Boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
 **displaySummaryTasks** | Boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
 
-### ProjectSettings Object
-
-Represents the project settings dependencies for a specific sheet.  Project settings may be updated on sheets that the user has editor access.
-
-     |     |     |
------|-----|-----|
-**workingDays** | String[] | Working days of a week for a project sheet. Valid values must be an array of strings of days of the week: <ul><li>MONDAY</li><li>TUESDAY</li><li>WEDNESDAY</li><li>THURSDAY</li><li>FRIDAY</li><li>SATURDAY</li><li>SUNDAY</li></ul>
-**nonWorkingDays** | timestamp[] | Non-working days for a project sheet. The format for the timestamp array must be an array of strings that are valid [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) dates ('YYYY-MM-DD').
-**lengthOfDay** | number | Length of a workday for a project sheet. Valid value must be above or equal to 1 hour, and less than or equal to 24 hours.
-
 ### Source Object
 
      |     |     |
@@ -4810,7 +4829,7 @@ Represents the project settings dependencies for a specific sheet.  Project sett
 > Example Request: Copy Sheet
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=data,attachments
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}/copy?include=data,attachments'
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 -H "Content-Type: application/json"
 -d '{
@@ -4943,7 +4962,7 @@ Creates a copy of the specified Sheet.
 -----|-----|
 <%= SCOPE %> | CREATE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
+<%= PARAMETERS %> | **include** (optional) -- comma-separated list of elements to copy:<ul><li>attachments</li><li>cellLinks</li><li>data -- includes formatting</li><li>discussions -- includes comments</li><li>forms</li><li>ruleRecipients -- includes notification recipients, must also include **rules** when using this attribute</li><li>rules -- includes notifications and workflow rules</li><li>shares</li><li>all - deprecated</li></ul><i>Note</i>: Cell history is not copied, regardless of which **include** parameter values are specified.
  | **omit** (optional) -- when specified with a value of "sheetHyperlinks", excludes this category from the response
 <%= REQUEST %> | [ContainerDestination Object](#containerdestination-object)
 <%= RETURNS %> | [Result Object](#result-object) containing a [Sheet Object](#sheet-object) for the newly created Sheet, limited to the following attributes:<ul><li>id</li><li>name</li><li>accessLevel</li><li>permalink</li></ul>
@@ -5400,7 +5419,7 @@ Creates a Sheet from scratch at the top-level of the specified Workspace. For su
 > Example Request: Create Sheet in "Sheets" Folder From Template
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions \
+curl 'https://api.smartsheet.com/2.0/sheets?include=data,attachments,discussions' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -5511,7 +5530,7 @@ Creates a Sheet in the user's **Sheets** folder ([Home](#home)), from the specif
 > Example Request: Create Sheet in Folder From Template
 
 ```shell
-curl https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attachments,discussions \
+curl 'https://api.smartsheet.com/2.0/folders/{folderId}/sheets?include=data,attachments,discussions' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -5629,7 +5648,7 @@ Creates a Sheet in the specified Folder, from the specified Template.
 > Example Request: Create Sheet in Workspace From Template
 
 ```shell
-curl https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data,attachments,discussions \
+curl 'https://api.smartsheet.com/2.0/workspaces/{workspaceId}/sheets?include=data,attachments,discussions' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
@@ -6003,7 +6022,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [column filters](#filter-object), and [row.filteredOut](#row-object) attribute</li><li>**filterDefinitions**: includes type of filter, operators used, and criteria</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes the metadata for sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [row.filteredOut](#row-object) attribute</li><li>**filterDefinitions**: includes type of filter, operators used, and criteria</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**include=format&exclude=nonexistentCells**: excludes cells that have never contained data yet returns those cells if they have formatting or conditional formatting</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
   | **rowIds** (optional): a comma-separated list of Row Ids on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
@@ -6102,7 +6121,7 @@ File.open('output.xlsx', 'w') {|f| f.write(file_contents)}
 > Example Request: Get Sheet as PDF
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1 \
+curl 'https://api.smartsheet.com/2.0/sheets/{sheetId}?paperSize=A1' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Accept: application/pdf" 
 -o  output.pdf
@@ -6413,9 +6432,9 @@ Gets a list of all Sheets that the User has access to in alphabetical order by n
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/move \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
--d '{ \
-  "destinationType": "folder", \
-  "destinationId": 7960873114331012, \
+-d '{ 
+  "destinationType": "folder", 
+  "destinationId": 7960873114331012, 
 }' \
 -X POST
 ```
@@ -6749,12 +6768,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X PUT \
--d '{"name":"New Sheet Name", \
-  "userSettings": {"criticalPathEnabled": true}, \
-  "projectSettings":{ \
-    "workingDays": ["MONDAY", "TUESDAY", "WEDNESDAY"], \
-    "nonWorkingDays": ["2018-01-01"], \
-    "lengthOfDay": 6 \
+-d '{"name":"New Sheet Name", 
+  "userSettings": {"criticalPathEnabled": true}, 
+  "projectSettings":{ 
+    "workingDays": ["MONDAY", "TUESDAY", "WEDNESDAY"], 
+    "nonWorkingDays": ["2018-01-01"], 
+    "lengthOfDay": 6 
   } \
 }'
 ```
@@ -7061,10 +7080,10 @@ htmlContent | string | HTML snippet to render Report
 curl https://api.smartsheet.com/2.0/sights/{sightId}/copy \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json"
--d '{ \
-  "destinationType": "workspace", \
-  "destinationId": 7960873114331012, \
-  "newName": "newSightName" \
+-d '{ 
+  "destinationType": "workspace", 
+  "destinationId": 7960873114331012, 
+  "newName": "newSightName" 
 }' \
 -X POST
 ```
@@ -7448,9 +7467,9 @@ Gets a list of all Sights that the User has access to.
 curl https://api.smartsheet.com/2.0/sights/{sightId}/move \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json"
--d '{ \
-  "destinationType": "folder", \
-  "destinationId": workspace_or_folder_id \
+-d '{ 
+  "destinationType": "folder", 
+  "destinationId": workspace_or_folder_id 
 }' \
 -X POST
 ```
@@ -7635,9 +7654,9 @@ curl https://api.smartsheet.com/2.0/sights/{sightId}/publish \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 -H "Content-Type: application/json"
 -X PUT
--d '{ \
-  "readOnlyFullEnabled": true, \
-  "readOnlyFullAccessibleBy": "ALL" \
+-d '{ 
+  "readOnlyFullEnabled": true, 
+  "readOnlyFullAccessibleBy": "ALL" 
 }' \
 ```
 
