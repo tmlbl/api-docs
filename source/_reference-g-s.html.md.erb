@@ -440,10 +440,12 @@ smartsheet.groups.updateGroup(options)
 
 ```csharp
 // Specify the name and description of the group
-Group groupSpecification = new Group();
-groupSpecification.Id = 2331373580117892;
-groupSpecification.Name = "Renamed Group";
-groupSpecification.Description = "Some new description";
+Group groupSpecification = new Group
+{
+  Id = 2331373580117892,
+  Name = "Renamed Group",
+  Description = "Some new description"
+};
 
 // Update group
 Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
@@ -2469,61 +2471,62 @@ smartsheet.sheets.updateRow(options)
 ```
 
 ```csharp
-// Specify updated cell values for first row
-Cell[] cellsA = new Cell[] {
-  new Cell.UpdateCellBuilder(
-      7518312134403972,                               // long columnId
-      "new value")                                    // value
-    .Build(),
-  new Cell.UpdateCellBuilder(1888812600190852, "A")       // long columnId, value
-    .Build()
+// Specify updated value for first cell
+var cellToUpdateA = new Cell
+{
+  ColumnId = 7518312134403972,
+  Value = "new value"
 };
 
-// Specify updated contents of first row
-Row rowA = new Row.UpdateRowBuilder(6572427401553796)       // long rowId
-  .SetCells(cellsA)
-  .Build();
-
-// Specify updated cell values for second row
-Cell[] cellsB = new Cell[] {
-  new Cell.UpdateCellBuilder(7518312134403972, "desc_updated")
-    .Build(),
-  new Cell.UpdateCellBuilder(1888812600190852, "B")
-    .Build()
+// Specify updated value for second cell
+var cellToUpdateB = new Cell
+{
+  ColumnId = 1888812600190852,
+  Value = "A"
 };
 
-// Specify updated contents of second row
-Row rowB = new Row.UpdateRowBuilder(3428827774183300)       // long rowId
-  .SetCells(cellsB)
-  .Build();
+// Identify row and add new cell values to it
+var rowToUpdate = new Row
+{
+  Id = 6572427401553796,
+  Cells = new Cell[] { cellToUpdateA, cellToUpdateB }
+};
 
-// Update rows in sheet
-IList<Row> updatedRows = smartsheet.SheetResources.RowResources.UpdateRows(
-  2068827774183300,                                       // long sheetId
-  new Row[] { rowA, rowB }                                // IEnumerable<Row> rowsToUpdate
+IList<Row> updatedRow = smartsheet.SheetResources.RowResources.UpdateRows(
+  2068827774183300,    // sheet Id
+  new Row[] {rowToUpdate}
 );
 ```
 
 ```java
-// Specify updated value for first cell
-var cellToUpdateA = new Cell();
-cellToUpdateA.ColumnId = 7036894123976580;
-cellToUpdateA.Value = "new value";
+// Specify updated cell values for first row
+List<Cell> cellsA = new Cell.UpdateRowCellsBuilder()
+  .addCell(7518312134403972L, "new value")        // long columnId
+  .addCell(1888812600190852L, "A")                // long columnId
+  .build();
 
-// Specify updated value for second cell
-var cellToUpdateB = new Cell();
-cellToUpdateB.ColumnId = 2297265684539268;
-cellToUpdateB.Value = "A";
+// Specify updated contents of first row
+Row rowA = new Row.UpdateRowBuilder()
+  .setCells(cellsA)
+  .setRowId(6572427401553796L)                    // long rowId
+  .build();
 
-// Identify row and add new cell values to it
-var rowToUpdate = new Row();
-rowToUpdate.Id = 6809535313667972;
-rowToUpdate.Cells = new Cell[] { cellToUpdateA, cellToUpdateB };
+// Specify updated cell values for second row
+List<Cell> cellsB = new Cell.UpdateRowCellsBuilder()
+  .addCell(7518312134403972L, "desc_updated")     // long columnId
+  .addCell(1888812600190852L, "B")                // long columnId
+  .build();
 
-IList<Row> updatedRow = smartsheet.SheetResources.RowResources.UpdateRows(
-  2068827774183300,        // sheet Id
-  new Row[] {rowToUpdate}
-);
+// Specify updated contents of second row
+Row rowB = new Row.UpdateRowBuilder()
+  .setCells(cellsB)
+  .setRowId(2068827774183300L)                    // long rowId
+  .build();
+
+// Update rows in sheet
+List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
+  2068827774183300L,                              // long sheetId
+  Arrays.asList(rowA, rowB)
 ```
 
 ```python
@@ -3424,9 +3427,11 @@ smartsheet.reports.updateShare(options)
 
 ```csharp
 // Set the access level to Viewer
-Share shareSpecification = new Share();
-shareSpecification.Id = "AAAFeF82FOeE";
-shareSpecification.AccessLevel = AccessLevel.VIEWER;
+Share shareSpecification = new Share
+{
+  Id = "AAAFeF82FOeE",
+  AccessLevel = AccessLevel.VIEWER
+};
 
 // Update report share
 Share updatedShare = smartsheet.ReportResources.ShareResources.UpdateShare(
@@ -3826,9 +3831,12 @@ smartsheet.sheets.updateShare(options)
 ```
 
 ```csharp
-Share shareSpecification = new Share();
-shareSpecification.Id = "AAABbMomFOeE";
-shareSpecification.AccessLevel = AccessLevel.VIEWER;
+// Set the access level to Viewer
+Share shareSpecification = new Share
+{
+  Id = "AAAFeF82FOeE",
+  AccessLevel = AccessLevel.VIEWER
+};
 
 // Update sheet share
 Share updatedShare = smartsheet.SheetResources.ShareResources.UpdateShare(
@@ -4634,10 +4642,12 @@ smartsheet.workspaces.updateShare(options)
 ```
 
 ```csharp
-// Set access level to Viewer
-Share shareSpecification = new Share();
-shareSpecification.Id = "AAABbMomFOeE";
-shareSpecification.AccessLevel = AccessLevel.VIEWER;
+// Set the access level to Viewer
+Share shareSpecification = new Share
+{
+  Id = "AAAFeF82FOeE",
+  AccessLevel = AccessLevel.VIEWER
+};
 
 // Update workspace share
 Share updatedShare = smartsheet.WorkspaceResources.ShareResources.UpdateShare(
@@ -6796,10 +6806,12 @@ smartsheet.sheets.updateSheet(options)
 
 ```csharp
 // Specify updated sheet properties
-Sheet sheetSpecification = new Sheet();
-sheetSpecification.Id = 7960873114331012;
-sheetSpecification.Name = "New Sheet Name";
-sheetSpecification.UserSettings = new SheetUserSettings{CriticalPathEnabled = true};
+Sheet sheetSpecification = new Sheet
+{
+  Id = 4583173393803140,
+  Name = "New Sheet Name",
+  UserSettings = new SheetUserSettings{CriticalPathEnabled = true}
+};
 
 // Update sheet
 Sheet updatedSheet = smartsheet.SheetResources.UpdateSheet(sheetSpecification);
