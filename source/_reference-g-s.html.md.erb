@@ -440,11 +440,10 @@ smartsheet.groups.updateGroup(options)
 
 ```csharp
 // Specify the name and description of the group
-Group groupSpecification = new Group.UpdateGroupBuilder(
-    2331373580117892)               // long groupId
-  .SetName ("Renamed Group")
-  .SetDescription ("Some new description")
-  .Build();
+Group groupSpecification = new Group();
+groupSpecification.Id = 2331373580117892;
+groupSpecification.Name = "Renamed Group";
+groupSpecification.Description = "Some new description";
 
 // Update group
 Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
@@ -3425,7 +3424,9 @@ smartsheet.reports.updateShare(options)
 
 ```csharp
 // Set the access level to Viewer
-Share shareSpecification = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
+Share shareSpecification = new Share();
+shareSpecification.Id = "AAAFeF82FOeE";
+shareSpecification.AccessLevel = AccessLevel.VIEWER;
 
 // Update report share
 Share updatedShare = smartsheet.ReportResources.ShareResources.UpdateShare(
@@ -3825,8 +3826,9 @@ smartsheet.sheets.updateShare(options)
 ```
 
 ```csharp
-// Set access level to Viewer
-Share shareSpecification = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
+Share shareSpecification = new Share();
+shareSpecification.Id = "AAABbMomFOeE";
+shareSpecification.AccessLevel = AccessLevel.VIEWER;
 
 // Update sheet share
 Share updatedShare = smartsheet.SheetResources.ShareResources.UpdateShare(
@@ -4633,10 +4635,9 @@ smartsheet.workspaces.updateShare(options)
 
 ```csharp
 // Set access level to Viewer
-Share shareSpecification = new Share.UpdateShareBuilder(
-    "AAAFeF82FOeE",           // string shareId
-    AccessLevel.VIEWER)
-  .Build();
+Share shareSpecification = new Share();
+shareSpecification.Id = "AAABbMomFOeE";
+shareSpecification.AccessLevel = AccessLevel.VIEWER;
 
 // Update workspace share
 Share updatedShare = smartsheet.WorkspaceResources.ShareResources.UpdateShare(
@@ -6795,11 +6796,10 @@ smartsheet.sheets.updateSheet(options)
 
 ```csharp
 // Specify updated sheet properties
-Sheet sheetSpecification = new Sheet.UpdateSheetBuilder(sheetId)
-  .SetName("New Sheet Name")
-  .SetUserSettings(
-    new SheetUserSettings{ CriticalPathEnabled = true })
-  .Build();
+Sheet sheetSpecification = new Sheet();
+sheetSpecification.Id = 7960873114331012;
+sheetSpecification.Name = "New Sheet Name";
+sheetSpecification.UserSettings = new SheetUserSettings{CriticalPathEnabled = true};
 
 // Update sheet
 Sheet updatedSheet = smartsheet.SheetResources.UpdateSheet(sheetSpecification);

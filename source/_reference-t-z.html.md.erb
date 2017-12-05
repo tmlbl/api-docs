@@ -1464,15 +1464,13 @@ smartsheet.users.updateUser(options)
 
 ```csharp
 // Specify updated user properties
-User userSpecification = new User.UpdateUserBuilder(
-    82349925918590,             // long userId
-    true,                       // Nullable<bool> admin
-    true)                       // Nullable<bool> licensedSheetCreator
-  .Build();
+User userSpecification = new User();
+userSpecification.Id = 82349925918590;
+userSpecification.Admin = true;
+userSpecification.LicensedSheetCreator = true;
 
 // Update user
 User updatedUser = smartsheet.UserResources.UpdateUser(
-  82349925918590,             // long userId
   userSpecification
 );
 ```
@@ -2100,13 +2098,14 @@ smartsheet.workspaces.updateWorkspace(options)
 
 ```csharp
 // Specify updated workspace name
-Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder(
-    7960873114331012,           // long workspaceId
-    "Updated workspace")
-  .Build();
+Workspace workspaceSpecification = new Workspace();
+workspaceSpecification.Id = 7960873114331012;
+workspaceSpecification.Name = "Updated workspace";
 
 // Update workspace
-Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(workspaceSpecification);
+Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(
+  workspaceSpecification
+);
 ```
 
 ```java
