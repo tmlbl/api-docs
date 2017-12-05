@@ -2506,34 +2506,24 @@ IList<Row> updatedRows = smartsheet.SheetResources.RowResources.UpdateRows(
 ```
 
 ```java
-// Specify updated cell values for first row
-List<Cell> cellsA = new Cell.UpdateRowCellsBuilder()
-  .addCell(7518312134403972L, "new value")        // long columnId
-  .addCell(1888812600190852L, "A")                // long columnId
-  .build();
+// Specify updated value for first cell
+var cellToUpdateA = new Cell();
+cellToUpdateA.ColumnId = 7036894123976580L;
+cellToUpdateA.Value = "new value";
 
-// Specify updated contents of first row
-Row rowA = new Row.UpdateRowBuilder()
-  .setCells(cellsA)
-  .setRowId(6572427401553796L)                    // long rowId
-  .build();
+// Specify updated value for second cell
+var cellToUpdateB = new Cell();
+cellToUpdateB.ColumnId = 2297265684539268L;
+cellToUpdateB.Value = "A";
 
-// Specify updated cell values for second row
-List<Cell> cellsB = new Cell.UpdateRowCellsBuilder()
-  .addCell(7518312134403972L, "desc_updated")     // long columnId
-  .addCell(1888812600190852L, "B")                // long columnId
-  .build();
+// Identify row and add new cell values to it
+var rowToUpdate = new Row();
+rowToUpdate.Id = 6809535313667972L;
+rowToUpdate.Cells = new Cell[] { cellToUpdateA, cellToUpdateB };
 
-// Specify updated contents of second row
-Row rowB = new Row.UpdateRowBuilder()
-  .setCells(cellsB)
-  .setRowId(2068827774183300L)                    // long rowId
-  .build();
-
-// Update rows in sheet
-List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
-  2068827774183300L,                              // long sheetId
-  Arrays.asList(rowA, rowB)
+IList<Row> updatedRow = smartsheet.SheetResources.RowResources.UpdateRows(
+  2068827774183300L,        // sheet Id
+  new Row[] {rowToUpdate}
 );
 ```
 
