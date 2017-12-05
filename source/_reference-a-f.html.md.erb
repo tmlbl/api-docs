@@ -3153,14 +3153,13 @@ smartsheet.sheets.updateColumn(options)
 
 ```csharp
 // Specify column properties
-Column columnSpecification = new Column.UpdateColumnBuilder(
-      5005385858869124,   // columnId
-      "First Column",
-      0)                  // column index
-  .SetType(ColumnType.PICKLIST)
-  .SetOptions( new string[] { "One", "Two" })
-  .Build();
-
+Column columnSpecification = new Column();
+columnSpecification.Id = 242441660983172;
+columnSpecification.Title = "First Column";
+columnSpecification.Index = 0;
+columnSpecification.Type = ColumnType.PICKLIST;
+columnSpecification.Options = new string[] { "One", "Two" };
+            
 // Update column
 Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
   2252168947361668,   // sheetId
@@ -6763,10 +6762,9 @@ smartsheet.folders.updateFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.UpdateFolderBuilder(
-  7960873114331012,               // long folderId
-  "New name for folder")
-  .Build();
+Folder folderSpecification = new Folder();
+folderSpecification.Id = 7960873114331012;
+folderSpecification.Name = "New name for folder";
 
 // Update folder
 Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecification);
