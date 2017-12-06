@@ -566,9 +566,12 @@ smartsheet.sheets.addCommentAttachment(options)
 	
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine"
+};
 
 // Attach URL to comment
 Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
@@ -676,10 +679,12 @@ smartsheet.sheets.addRowAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .SetDescription("A popular search engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine"
+};
 
 // Attach URL to row
 Attachment updatedAttachment = smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
@@ -789,10 +794,13 @@ smartsheet.sheets.addAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .SetDescription("A popular search engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine",
+  Description = "A popular search engine"
+};
 
 // Attach URL to sheet
 Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.AttachUrl(
@@ -2705,12 +2713,21 @@ smartsheet.sheets.addColumn(options)
 
 ```csharp
 // Create a column
-Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST)
-  .SetOptions( new string[] { "First", "Second", "Third" })
-  .Build();
+Column columnA = new Column
+{
+  Title = "New Picklist Column 1",
+  Index = 4,
+  Type = ColumnType.PICKLIST,
+  Options = new string[] { "First", "Second", "Third" }
+};
 
 // Create another column
-Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
+Column columnB = new Column
+{
+  Title = "New Date Column",
+  Index = 4,
+  Type = ColumnType.DATE
+};
 
 // Add columns to the sheet
 IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
