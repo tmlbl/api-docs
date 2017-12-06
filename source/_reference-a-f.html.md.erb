@@ -3420,7 +3420,10 @@ smartsheet.sheets.addDiscussionComment(options)
 
 ```csharp
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This is a new comment."
+};
 
 // Add comment to discussion
 Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
@@ -3489,7 +3492,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 ```csharp
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This is a new comment."
+};
 
 // Add comment (with attachment) to discussion
 Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(
@@ -4840,7 +4846,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>sight</li></ul>
 **objectId** | number | Id of the favorited item.  If **type** is "template", only private sheet-type template Id is allowed.
 
 ## Add Favorites
@@ -4881,15 +4887,17 @@ smartsheet.favorites.addItemsToFavorites(options)
 
 ```csharp
 // Specify favorites
-Favorite[] favoritesSpecification = new Favorite[] {
-  new Favorite.AddFavoriteBuilder(
-    ObjectType.SHEET,
-    8400677765441412)           // long objectId (in this case, the sheetId)
-  .Build()
+IList<Favorite> favoritesSpecification = new Favorite[]
+{
+  new Favorite
+  {
+    Type = ObjectType.SHEET,
+    ObjectId = 8400677765441412
+  }
 };
 
 // Add items to favorites
-Favorite newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
+IList<Favorite> newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
 ```
 
 ```java
