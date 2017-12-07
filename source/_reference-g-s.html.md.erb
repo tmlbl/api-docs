@@ -73,12 +73,21 @@ smartsheet.groups.createGroup(options)
 
 ```csharp
 // Create group member
-GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
+GroupMember memberSpecification = new GroupMember
+{
+  Email = "john.doe@smartsheet.com"
+};
 
 // Add member to group
-Group groupSpecification = new Group.CreateGroupBuilder("API-created Group", "Group created via API")
-  .SetMembers(new GroupMember[] { memberSpecification })
-  .Build();
+Group groupSpecification = new Group
+{
+  Name = "API-created Group",
+  Description = "Group created via API",
+  Members = new GroupMember[]
+  {
+    memberSpecification
+  }
+};
 
 // Create group
 Group newGroup = smartsheet.GroupResources.CreateGroup(groupSpecification);
@@ -589,7 +598,10 @@ smartsheet.groups.addGroupMembers(options)
 
 ```csharp
 // Create group member
-GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
+GroupMember memberSpecification = new GroupMember
+{
+  Email = "jane.doe@smartsheet.com"
+};
 
 // Add members to group
 IList<GroupMember> newMembers = smartsheet.GroupResources.AddGroupMembers(
