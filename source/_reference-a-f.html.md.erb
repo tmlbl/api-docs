@@ -4109,11 +4109,16 @@ smartsheet.sheets.createRowDiscussion(options)
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
-
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = new Comment
+    {
+      Text = "This text is the body of the first comment"
+    },
+  Comments = null         // workaround for SDK issue
+};
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
@@ -4305,11 +4310,16 @@ smartsheet.sheets.createDiscussion(options)
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
-
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
+};
 
 // Add discussion to sheet
 Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
