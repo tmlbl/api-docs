@@ -5506,10 +5506,11 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
-    "new sheet title",
-    7679398137620356)           // long templateId
-  .Build();
+Sheet sheetSpecification = new Sheet
+{
+  Name = "new sheet title",
+  FromId = 7679398137620356     // template Id
+};
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.SheetResources.CreateSheetFromTemplate(
@@ -5618,10 +5619,11 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
-    "new sheet title",
-    7679398137620356).              // long templateId
-  Build();
+Sheet sheetSpecification = new Sheet
+{
+  Name = "new sheet title",
+  FromId = 7679398137620356     // template Id
+};
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
@@ -5736,10 +5738,11 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
-    "new sheet name",           // sheet title visible to user
-    7679398137620356)           // long templateId
-  .Build();
+Sheet sheetSpecification = new Sheet
+{
+  Name = "new sheet title",
+  FromId = 7679398137620356     // template Id
+};
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
@@ -6710,12 +6713,13 @@ smartsheet.sheets.setPublishStatus(options)
 
 ```csharp
 // Specify sheet publish status properties
-SheetPublish publishSpecification = new SheetPublish.PublishStatusBuilder(
-    true,               // Nullable<bool> readOnlyLiteEnabled
-    false,              // Nullable<bool> readOnlyFullEnabled
-    false,              // Nullable<bool> readWriteEnabled
-    false)              // Nullable<bool> icalEnabled
-  .Build();
+SheetPublish publishSpecification = new SheetPublish
+{
+  ReadOnlyLiteEnabled = true,
+  ReadOnlyFullEnabled = false,
+  ReadWriteEnabled = false,
+  IcalEnabled = false
+};
 
 // Set sheet publish status
 SheetPublish updatedStatus = smartsheet.SheetResources.UpdatePublishStatus(
