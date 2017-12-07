@@ -1728,40 +1728,57 @@ smartsheet.sheets.addRows(options)
 ```csharp
 // Specify cell values for first row
 Cell[] cellsA = new Cell[] {
-  new Cell.AddCellBuilder(7960873114331012, true)             // columnId, value
-    .Build(),
-  new Cell.AddCellBuilder(642523719853956, "New status")      // columnId, value
-    .SetStrict(false)
-    .Build()
+    new Cell
+    {
+        ColumnId = 7960873114331012,
+        Value = true
+    },
+    new Cell
+    {
+        ColumnId = 642523719853956,
+        Value = "New status"
+    }
 };
 
 // Specify contents of first row
-Row rowA = new Row.AddRowBuilder(
-    true,                       // Nullable<bool> toTop
-    null,                       // Nullable<bool> toBottom
-    null,                       // Nullable<long> parentId
-    null,                       // Nullable<long> siblingId
-    null)                       // Nullable<bool> above
-  .SetCells(cellsA)
-  .Build();
+Row rowA = new Row
+{
+    ToTop = true,
+    ToBottom = null,
+    ParentId = null,
+    SiblingId = null,
+    Above = null,
+    Cells = cellsA
+};
 
 // Specify cell values of second row
 Cell[] cellsB = new Cell[] {
-  new Cell.AddCellBuilder(7960873114331012, true)
-    .Build(),
-  new Cell.AddCellBuilder(642523719853956, "New status")
-    .SetStrict(false)
-    .Build()
+    new Cell
+    {
+        ColumnId = 7960873114331012,
+        Value = true
+    },
+    new Cell
+    {
+        ColumnId = 642523719853956,
+        Value = "New status"
+    }
 };
 
 // Specify contents of second row
-Row rowB = new Row.AddRowBuilder(true, null, null, null, null)
-  .SetCells(cellsB)
-  .Build();
+Row rowB = new Row
+{
+    ToTop = true,
+    ToBottom = null,
+    ParentId = null,
+    SiblingId = null,
+    Above = null,
+    Cells = cellsB
+};
 
 // Add rows to sheet
 IList<Row> newRows = smartsheet.SheetResources.RowResources.AddRows(
-  873476834787,                   // long sheetId
+  2331373580117892,               // long sheetId
   new Row[] { rowA, rowB }        // IEnumerable<Row> rowsToAdd
 );
 ```
@@ -3341,7 +3358,12 @@ smartsheet.reports.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share
+  {
+    Email = "jane.doe@smartsheet.com",
+    AccessLevel = AccessLevel.EDITOR
+  }
+};
 
 // Share report
 IList<Share> addressList = smartsheet.ReportResources.ShareResources.ShareTo(
@@ -3745,7 +3767,12 @@ smartsheet.sheets.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share
+  {
+    Email = "jane.doe@smartsheet.com",
+    AccessLevel = AccessLevel.EDITOR
+  }
+};
 
 // Share sheet
 IList<Share> addressList = smartsheet.SheetResources.ShareResources.ShareTo(
@@ -4550,7 +4577,12 @@ smartsheet.workspaces.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share
+  {
+    Email = "jane.doe@smartsheet.com",
+    AccessLevel = AccessLevel.EDITOR
+  }
+};
 
 // Share workspace
 IList<Share> addressList = smartsheet.WorkspaceResources.ShareResources.ShareTo(
@@ -5029,26 +5061,29 @@ smartsheet.sheets.createSheet(options)
 
 ```csharp
 // Specify properties of the first column
-Column columnA = new Column.CreateSheetColumnBuilder(
-    "Favorite",             // column title
-    null,                   // Nullable(bool) isPrimary
-    ColumnType.CHECKBOX)
-  .SetSymbol(
-    Symbol.STAR)
-  .Build(),
+Column columnA = new Column
+{
+  Title = "Favorite",
+  Primary = false,
+  Type = ColumnType.CHECKBOX,
+  Symbol = Symbol.STAR
+};
 
 // Specify properties of the second column
-Column columnB = new Column.CreateSheetColumnBuilder(
-    "Primary Column",
-    true,
-    ColumnType.TEXT_NUMBER)
-  .Build(),
+Column columnB = new Column
+{
+  Title = "Primary Column",
+  Primary = true,
+  Type = ColumnType.TEXT_NUMBER
+};
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
-Sheet newSheet = smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
-    "newsheet",
-    new Column[] { columnA, columnB })
-  .Build());
+Sheet newSheet = smartsheet.SheetResources.CreateSheet(new Sheet
+{
+  Name = "newsheet",
+  Columns = new Column[] { columnA, columnB }
+}
+);
 ```
 
 ```java
@@ -5174,28 +5209,31 @@ smartsheet.sheets.createSheetInFolder(options)
 
 ```csharp
 // Specify properties of the first column
-Column columnA = new Column.CreateSheetColumnBuilder(
-    "Favorite",
-    null,               // Nullable(bool) primary
-    ColumnType.CHECKBOX)
-  .SetSymbol(
-    Symbol.STAR)
-  .Build(),
+Column columnA = new Column
+{
+  Title = "Favorite",
+  Primary = false,
+  Type = ColumnType.CHECKBOX,
+  Symbol = Symbol.STAR
+};
 
 // Specify properties of the second column
-Column columnB = new Column.CreateSheetColumnBuilder(
-    "Primary Column",
-    true,
-    ColumnType.TEXT_NUMBER)
-  .Build(),
+Column columnB = new Column
+{
+  Title = "Primary Column",
+  Primary = true,
+  Type = ColumnType.TEXT_NUMBER
+};
 
 // Create sheet in folder (specifying the 2 columns to include in the sheet)
 Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheet(
   3734419270854532,                   // long folderId
-  new Sheet.CreateSheetBuilder(
-    "new sheet title",
-    new Column[] { columnA, columnB })
-  .Build());
+  new Sheet
+    {
+      Name = "new sheet title",
+      Columns = new Column[] { columnA, columnB }
+    }
+);
 ```
 
 ```java
@@ -5324,26 +5362,31 @@ smartsheet.sheets.createSheetInWorkspace(options)
 
 ```csharp
 // Specify properties of the first column
-Column columnA = new Column.CreateSheetColumnBuilder(
-    "Favorite",
-    null,               // Nullable(bool) primary
-    ColumnType.CHECKBOX)
-  .SetSymbol(
-    Symbol.STAR)
-  .Build(),
+Column columnA = new Column
+{
+  Title = "Favorite",
+  Primary = false,
+  Type = ColumnType.CHECKBOX,
+  Symbol = Symbol.STAR
+};
 
 // Specify properties of the second column
-Column columnB = new Column.CreateSheetColumnBuilder(
-    "Primary Column",
-    true,
-    ColumnType.TEXT_NUMBER)
-  .Build(),
+Column columnB = new Column
+{
+  Title = "Primary Column",
+  Primary = true,
+  Type = ColumnType.TEXT_NUMBER
+};
 
 // Create sheet in workspace (specifying the 2 columns to include in the sheet)
 Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheet(
-    3734419270854532,               // long workspaceId
-    new Sheet.CreateSheetBuilder("new sheet title", new Column[] { columnA, columnB })
-  .Build());
+  3734419270854532,                   // long workspaceId
+  new Sheet
+    {
+      Name = "new sheet title",
+      Columns = new Column[] { columnA, columnB }
+    }
+);
 ```
 
 ```java
