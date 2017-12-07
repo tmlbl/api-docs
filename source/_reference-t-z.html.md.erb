@@ -565,13 +565,14 @@ smartsheet.users.addUser(options)
 
 ```csharp
 // Set user properties
-User userSpecification = new User.AddUserBuilder(
-    "john.doe@smartsheet.com",
-    false,              // Nullable<bool> admin
-    true)               // Nullable<bool> licensedSheetCreator
-  .SetFirstName ("John")
-  .SetLastName ("Doe")
-  .Build();
+User userSpecification = new User
+{
+  Email = "john.doe@smartsheet.com",
+  Admin = false,
+  LicensedSheetCreator = true,
+  FirstName = "John",
+  LastName = "Doe"
+};
 
 // Add user
 User newUser = smartsheet.UserResources.AddUser(
@@ -1464,15 +1465,15 @@ smartsheet.users.updateUser(options)
 
 ```csharp
 // Specify updated user properties
-User userSpecification = new User.UpdateUserBuilder(
-    82349925918590,             // long userId
-    true,                       // Nullable<bool> admin
-    true)                       // Nullable<bool> licensedSheetCreator
-  .Build();
+User userSpecification = new User
+{
+  Id = 82349925918590,
+  Admin = true,
+  LicensedSheetCreator = true
+};
 
 // Update user
 User updatedUser = smartsheet.UserResources.UpdateUser(
-  82349925918590,             // long userId
   userSpecification
 );
 ```
@@ -1738,7 +1739,7 @@ smartsheet.workspaces.createWorkspace(options)
 
 ```csharp
 // Specify workspace name
-Workspace workspaceSpecification = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
+Workspace workspaceSpecification = new Workspace { Name = "New workspace" };
 
 // Create workspace
 Workspace newWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(workspaceSpecification);
@@ -2100,13 +2101,16 @@ smartsheet.workspaces.updateWorkspace(options)
 
 ```csharp
 // Specify updated workspace name
-Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder(
-    7960873114331012,           // long workspaceId
-    "Updated workspace")
-  .Build();
+Workspace workspaceSpecification = new Workspace
+{
+  Id = 7960873114331012,
+  Name = "Updated Workspace"
+};
 
 // Update workspace
-Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(workspaceSpecification);
+Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(
+  workspaceSpecification
+);
 ```
 
 ```java

@@ -73,12 +73,15 @@ smartsheet.groups.createGroup(options)
 
 ```csharp
 // Create group member
-GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder("john.doe@smartsheet.com").Build();
+GroupMember memberSpecification = new GroupMember { Email = "john.doe@smartsheet.com" };
 
 // Add member to group
-Group groupSpecification = new Group.CreateGroupBuilder("API-created Group", "Group created via API")
-  .SetMembers(new GroupMember[] { memberSpecification })
-  .Build();
+Group groupSpecification = new Group
+{
+  Name = "API-created Group",
+  Description = "Group created via API",
+  Members = new GroupMember[] { memberSpecification }
+};
 
 // Create group
 Group newGroup = smartsheet.GroupResources.CreateGroup(groupSpecification);
@@ -440,11 +443,12 @@ smartsheet.groups.updateGroup(options)
 
 ```csharp
 // Specify the name and description of the group
-Group groupSpecification = new Group.UpdateGroupBuilder(
-    2331373580117892)               // long groupId
-  .SetName ("Renamed Group")
-  .SetDescription ("Some new description")
-  .Build();
+Group groupSpecification = new Group
+{
+  Id = 2331373580117892,
+  Name = "Renamed Group",
+  Description = "Some new description"
+};
 
 // Update group
 Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
@@ -588,7 +592,7 @@ smartsheet.groups.addGroupMembers(options)
 
 ```csharp
 // Create group member
-GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder("jane.doe@smartsheet.com").Build();
+GroupMember memberSpecification = new GroupMember { Email = "jane.doe@smartsheet.com" };
 
 // Add members to group
 IList<GroupMember> newMembers = smartsheet.GroupResources.AddGroupMembers(
@@ -1715,40 +1719,49 @@ smartsheet.sheets.addRows(options)
 ```csharp
 // Specify cell values for first row
 Cell[] cellsA = new Cell[] {
-  new Cell.AddCellBuilder(7960873114331012, true)             // columnId, value
-    .Build(),
-  new Cell.AddCellBuilder(642523719853956, "New status")      // columnId, value
-    .SetStrict(false)
-    .Build()
+  new Cell
+  {
+    ColumnId = 7960873114331012,
+    Value = true
+  },
+  new Cell
+  {
+    ColumnId = 642523719853956,
+    Value = "New status"
+  }
 };
 
 // Specify contents of first row
-Row rowA = new Row.AddRowBuilder(
-    true,                       // Nullable<bool> toTop
-    null,                       // Nullable<bool> toBottom
-    null,                       // Nullable<long> parentId
-    null,                       // Nullable<long> siblingId
-    null)                       // Nullable<bool> above
-  .SetCells(cellsA)
-  .Build();
+Row rowA = new Row
+{
+  ToTop = true,
+  Cells = cellsA
+};
 
 // Specify cell values of second row
 Cell[] cellsB = new Cell[] {
-  new Cell.AddCellBuilder(7960873114331012, true)
-    .Build(),
-  new Cell.AddCellBuilder(642523719853956, "New status")
-    .SetStrict(false)
-    .Build()
+  new Cell
+  {
+    ColumnId = 7960873114331012,
+    Value = true
+  },
+  new Cell
+  {
+    ColumnId = 642523719853956,
+    Value = "New status"
+  }
 };
 
 // Specify contents of second row
-Row rowB = new Row.AddRowBuilder(true, null, null, null, null)
-  .SetCells(cellsB)
-  .Build();
+Row rowB = new Row
+{
+  ToTop = true,
+  Cells = cellsB
+};
 
 // Add rows to sheet
 IList<Row> newRows = smartsheet.SheetResources.RowResources.AddRows(
-  873476834787,                   // long sheetId
+  2331373580117892,               // long sheetId
   new Row[] { rowA, rowB }        // IEnumerable<Row> rowsToAdd
 );
 ```
@@ -2470,38 +2483,30 @@ smartsheet.sheets.updateRow(options)
 ```
 
 ```csharp
-// Specify updated cell values for first row
-Cell[] cellsA = new Cell[] {
-  new Cell.UpdateCellBuilder(
-      7518312134403972,                               // long columnId
-      "new value")                                    // value
-    .Build(),
-  new Cell.UpdateCellBuilder(1888812600190852, "A")       // long columnId, value
-    .Build()
+// Specify updated value for first cell
+var cellToUpdateA = new Cell
+{
+  ColumnId = 7518312134403972,
+  Value = "new value"
 };
 
-// Specify updated contents of first row
-Row rowA = new Row.UpdateRowBuilder(6572427401553796)       // long rowId
-  .SetCells(cellsA)
-  .Build();
-
-// Specify updated cell values for second row
-Cell[] cellsB = new Cell[] {
-  new Cell.UpdateCellBuilder(7518312134403972, "desc_updated")
-    .Build(),
-  new Cell.UpdateCellBuilder(1888812600190852, "B")
-    .Build()
+// Specify updated value for second cell
+var cellToUpdateB = new Cell
+{
+  ColumnId = 1888812600190852,
+  Value = "A"
 };
 
-// Specify updated contents of second row
-Row rowB = new Row.UpdateRowBuilder(3428827774183300)       // long rowId
-  .SetCells(cellsB)
-  .Build();
+// Identify row and add new cell values to it
+var rowToUpdate = new Row
+{
+  Id = 6572427401553796,
+  Cells = new Cell[] { cellToUpdateA, cellToUpdateB }
+};
 
-// Update rows in sheet
-IList<Row> updatedRows = smartsheet.SheetResources.RowResources.UpdateRows(
-  2068827774183300,                                       // long sheetId
-  new Row[] { rowA, rowB }                                // IEnumerable<Row> rowsToUpdate
+IList<Row> updatedRow = smartsheet.SheetResources.RowResources.UpdateRows(
+  2068827774183300,    // sheet Id
+  new Row[] {rowToUpdate}
 );
 ```
 
@@ -2534,7 +2539,6 @@ Row rowB = new Row.UpdateRowBuilder()
 List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
   2068827774183300L,                              // long sheetId
   Arrays.asList(rowA, rowB)
-);
 ```
 
 ```python
@@ -3337,7 +3341,12 @@ smartsheet.reports.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share
+  {
+    Email = "jane.doe@smartsheet.com",
+    AccessLevel = AccessLevel.EDITOR
+  }
+};
 
 // Share report
 IList<Share> addressList = smartsheet.ReportResources.ShareResources.ShareTo(
@@ -3435,7 +3444,11 @@ smartsheet.reports.updateShare(options)
 
 ```csharp
 // Set the access level to Viewer
-Share shareSpecification = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
+Share shareSpecification = new Share
+{
+  Id = "AAAFeF82FOeE",
+  AccessLevel = AccessLevel.VIEWER
+};
 
 // Update report share
 Share updatedShare = smartsheet.ReportResources.ShareResources.UpdateShare(
@@ -3737,7 +3750,12 @@ smartsheet.sheets.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share
+  {
+    Email = "jane.doe@smartsheet.com",
+    AccessLevel = AccessLevel.EDITOR
+  }
+};
 
 // Share sheet
 IList<Share> addressList = smartsheet.SheetResources.ShareResources.ShareTo(
@@ -3835,8 +3853,12 @@ smartsheet.sheets.updateShare(options)
 ```
 
 ```csharp
-// Set access level to Viewer
-Share shareSpecification = new Share.UpdateShareBuilder(shareId, AccessLevel.VIEWER).Build();
+// Set the access level to Viewer
+Share shareSpecification = new Share
+{
+  Id = "AAAFeF82FOeE",
+  AccessLevel = AccessLevel.VIEWER
+};
 
 // Update sheet share
 Share updatedShare = smartsheet.SheetResources.ShareResources.UpdateShare(
@@ -4538,7 +4560,12 @@ smartsheet.workspaces.share(options)
 
 ```csharp
 // Specify share (to one user as Editor)
-Share[] shareSpecification = new Share[] { new Share.CreateShareBuilder("jane.doe@smartsheet.com", AccessLevel.EDITOR).Build()};
+Share[] shareSpecification = new Share[] { new Share
+  {
+    Email = "jane.doe@smartsheet.com",
+    AccessLevel = AccessLevel.EDITOR
+  }
+};
 
 // Share workspace
 IList<Share> addressList = smartsheet.WorkspaceResources.ShareResources.ShareTo(
@@ -4642,11 +4669,12 @@ smartsheet.workspaces.updateShare(options)
 ```
 
 ```csharp
-// Set access level to Viewer
-Share shareSpecification = new Share.UpdateShareBuilder(
-    "AAAFeF82FOeE",           // string shareId
-    AccessLevel.VIEWER)
-  .Build();
+// Set the access level to Viewer
+Share shareSpecification = new Share
+{
+  Id = "AAAFeF82FOeE",
+  AccessLevel = AccessLevel.VIEWER
+};
 
 // Update workspace share
 Share updatedShare = smartsheet.WorkspaceResources.ShareResources.UpdateShare(
@@ -5016,26 +5044,29 @@ smartsheet.sheets.createSheet(options)
 
 ```csharp
 // Specify properties of the first column
-Column columnA = new Column.CreateSheetColumnBuilder(
-    "Favorite",             // column title
-    null,                   // Nullable(bool) isPrimary
-    ColumnType.CHECKBOX)
-  .SetSymbol(
-    Symbol.STAR)
-  .Build(),
+Column columnA = new Column
+{
+  Title = "Favorite",
+  Primary = false,
+  Type = ColumnType.CHECKBOX,
+  Symbol = Symbol.STAR
+};
 
 // Specify properties of the second column
-Column columnB = new Column.CreateSheetColumnBuilder(
-    "Primary Column",
-    true,
-    ColumnType.TEXT_NUMBER)
-  .Build(),
+Column columnB = new Column
+{
+  Title = "Primary Column",
+  Primary = true,
+  Type = ColumnType.TEXT_NUMBER
+};
 
 // Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)
-Sheet newSheet = smartsheet.SheetResources.CreateSheet( new Sheet.CreateSheetBuilder(
-    "newsheet",
-    new Column[] { columnA, columnB })
-  .Build());
+Sheet newSheet = smartsheet.SheetResources.CreateSheet(new Sheet
+{
+  Name = "newsheet",
+  Columns = new Column[] { columnA, columnB }
+}
+);
 ```
 
 ```java
@@ -5161,28 +5192,31 @@ smartsheet.sheets.createSheetInFolder(options)
 
 ```csharp
 // Specify properties of the first column
-Column columnA = new Column.CreateSheetColumnBuilder(
-    "Favorite",
-    null,               // Nullable(bool) primary
-    ColumnType.CHECKBOX)
-  .SetSymbol(
-    Symbol.STAR)
-  .Build(),
+Column columnA = new Column
+{
+  Title = "Favorite",
+  Primary = false,
+  Type = ColumnType.CHECKBOX,
+  Symbol = Symbol.STAR
+};
 
 // Specify properties of the second column
-Column columnB = new Column.CreateSheetColumnBuilder(
-    "Primary Column",
-    true,
-    ColumnType.TEXT_NUMBER)
-  .Build(),
+Column columnB = new Column
+{
+  Title = "Primary Column",
+  Primary = true,
+  Type = ColumnType.TEXT_NUMBER
+};
 
 // Create sheet in folder (specifying the 2 columns to include in the sheet)
 Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheet(
   3734419270854532,                   // long folderId
-  new Sheet.CreateSheetBuilder(
-    "new sheet title",
-    new Column[] { columnA, columnB })
-  .Build());
+  new Sheet
+    {
+      Name = "new sheet title",
+      Columns = new Column[] { columnA, columnB }
+    }
+);
 ```
 
 ```java
@@ -5311,26 +5345,31 @@ smartsheet.sheets.createSheetInWorkspace(options)
 
 ```csharp
 // Specify properties of the first column
-Column columnA = new Column.CreateSheetColumnBuilder(
-    "Favorite",
-    null,               // Nullable(bool) primary
-    ColumnType.CHECKBOX)
-  .SetSymbol(
-    Symbol.STAR)
-  .Build(),
+Column columnA = new Column
+{
+  Title = "Favorite",
+  Primary = false,
+  Type = ColumnType.CHECKBOX,
+  Symbol = Symbol.STAR
+};
 
 // Specify properties of the second column
-Column columnB = new Column.CreateSheetColumnBuilder(
-    "Primary Column",
-    true,
-    ColumnType.TEXT_NUMBER)
-  .Build(),
+Column columnB = new Column
+{
+  Title = "Primary Column",
+  Primary = true,
+  Type = ColumnType.TEXT_NUMBER
+};
 
 // Create sheet in workspace (specifying the 2 columns to include in the sheet)
 Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheet(
-    3734419270854532,               // long workspaceId
-    new Sheet.CreateSheetBuilder("new sheet title", new Column[] { columnA, columnB })
-  .Build());
+  3734419270854532,                   // long workspaceId
+  new Sheet
+    {
+      Name = "new sheet title",
+      Columns = new Column[] { columnA, columnB }
+    }
+);
 ```
 
 ```java
@@ -5450,10 +5489,11 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
-    "new sheet title",
-    7679398137620356)           // long templateId
-  .Build();
+Sheet sheetSpecification = new Sheet
+{
+  Name = "new sheet title",
+  FromId = 7679398137620356     // template Id
+};
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.SheetResources.CreateSheetFromTemplate(
@@ -5562,10 +5602,11 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
-    "new sheet title",
-    7679398137620356).              // long templateId
-  Build();
+Sheet sheetSpecification = new Sheet
+{
+  Name = "new sheet title",
+  FromId = 7679398137620356     // template Id
+};
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.FolderResources.SheetResources.CreateSheetFromTemplate(
@@ -5680,10 +5721,11 @@ smartsheet.sheets.createSheetFromExisting(options)
 
 ```csharp
 // Specify name for the sheet and Id of the template
-Sheet sheetSpecification = new Sheet.CreateSheetFromTemplateBuilder(
-    "new sheet name",           // sheet title visible to user
-    7679398137620356)           // long templateId
-  .Build();
+Sheet sheetSpecification = new Sheet
+{
+  Name = "new sheet title",
+  FromId = 7679398137620356     // template Id
+};
 
 // Sample 1: Omit 'include' parameter
 Sheet newSheet = smartsheet.WorkspaceResources.SheetResources.CreateSheetFromTemplate(
@@ -6654,12 +6696,13 @@ smartsheet.sheets.setPublishStatus(options)
 
 ```csharp
 // Specify sheet publish status properties
-SheetPublish publishSpecification = new SheetPublish.PublishStatusBuilder(
-    true,               // Nullable<bool> readOnlyLiteEnabled
-    false,              // Nullable<bool> readOnlyFullEnabled
-    false,              // Nullable<bool> readWriteEnabled
-    false)              // Nullable<bool> icalEnabled
-  .Build();
+SheetPublish publishSpecification = new SheetPublish
+{
+  ReadOnlyLiteEnabled = true,
+  ReadOnlyFullEnabled = false,
+  ReadWriteEnabled = false,
+  IcalEnabled = false
+};
 
 // Set sheet publish status
 SheetPublish updatedStatus = smartsheet.SheetResources.UpdatePublishStatus(
@@ -6805,11 +6848,12 @@ smartsheet.sheets.updateSheet(options)
 
 ```csharp
 // Specify updated sheet properties
-Sheet sheetSpecification = new Sheet.UpdateSheetBuilder(sheetId)
-  .SetName("New Sheet Name")
-  .SetUserSettings(
-    new SheetUserSettings{ CriticalPathEnabled = true })
-  .Build();
+Sheet sheetSpecification = new Sheet
+{
+  Id = 4583173393803140,
+  Name = "New Sheet Name",
+  UserSettings = new SheetUserSettings{CriticalPathEnabled = true}
+};
 
 // Update sheet
 Sheet updatedSheet = smartsheet.SheetResources.UpdateSheet(sheetSpecification);

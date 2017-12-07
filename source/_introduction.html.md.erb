@@ -146,9 +146,9 @@ smartsheet.users.getCurrentUser()
 
 ```csharp
 // Set the access token
-Token token = new Token();
-token.AccessToken = "ll352u9jujauoqz4gstvsae05";
-SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(token.AccessToken).Build();
+String accessToken = "ll352u9jujauoqz4gstvsae05";
+
+SmartsheetClient smartsheet = new SmartsheetBuilder().SetAccessToken(accessToken).Build();
 
 // Get current user
 UserProfile userProfile = smartsheet.UserResources.GetCurrentUser();
@@ -588,38 +588,26 @@ curl 'https://app.smartsheet.com/b/authorize?response_type=code&client_id=dheu3d
 ```
 
 ```javascript
-'use strict';
+const qs = require('querystring');
 
-const config = require('./config');
-const express = require('express');
-const simpleOauthModule = require('simple-oauth2');
+function authorizeURL(params) {
+    const authUrl = 'https://app.smartsheet.com/b/authorize';
+    return `${authUrl}?${qs.stringify(params)}`;
+}
 
-const app = express();
-const oauth2 = simpleOauthModule.create({
-  client: {
-    id: config.CLIENT_ID,
-    secret: config.CLIENT_SECRET
-  },
-  auth: {
-    tokenHost: 'https://api.smartsheet.com',
-    tokenPath: '/2.0/token',
-    authorizeHost: 'https://app.smartsheet.com',
-    authorizePath: '/b/authorize',
-  },
+const authorizationUri = authorizeURL({
+    response_type: 'code',
+    client_id: 'll352u9jujauoqz4gstvsae05',
+    redirect_uri: 'http://localhost:3000/callback',
+    scope: 'CREATE_SHEETS WRITE_SHEETS',
 });
 
-// Authorization uri definition
-const authorizationUri = oauth2.authorizationCode.authorizeURL({
-  redirect_uri: 'http://localhost:3000/callback',
-  scope: 'CREATE_SHEETS WRITE_SHEETS',
-});
-
-// Initial page redirecting to Smartsheet with params in URL
+// Initial page redirecting to Smartsheet
 app.get('/auth', (req, res) => {
-  console.log(authorizationUri);
-  res.redirect(authorizationUri);
+    console.log(authorizationUri);
+    res.redirect(authorizationUri);
 });
-```
+``
 
 ```csharp
 // [todo]

@@ -566,9 +566,12 @@ smartsheet.sheets.addCommentAttachment(options)
 	
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine"
+};
 
 // Attach URL to comment
 Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
@@ -676,10 +679,12 @@ smartsheet.sheets.addRowAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .SetDescription("A popular search engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine"
+};
 
 // Attach URL to row
 Attachment updatedAttachment = smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
@@ -789,10 +794,13 @@ smartsheet.sheets.addAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .SetDescription("A popular search engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine",
+  Description = "A popular search engine"
+};
 
 // Attach URL to sheet
 Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.AttachUrl(
@@ -2705,12 +2713,21 @@ smartsheet.sheets.addColumn(options)
 
 ```csharp
 // Create a column
-Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST)
-  .SetOptions( new string[] { "First", "Second", "Third" })
-  .Build();
+Column columnA = new Column
+{
+  Title = "New Picklist Column 1",
+  Index = 4,
+  Type = ColumnType.PICKLIST,
+  Options = new string[] { "First", "Second", "Third" }
+};
 
 // Create another column
-Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
+Column columnB = new Column
+{
+  Title = "New Date Column",
+  Index = 4,
+  Type = ColumnType.DATE
+};
 
 // Add columns to the sheet
 IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
@@ -3153,14 +3170,15 @@ smartsheet.sheets.updateColumn(options)
 
 ```csharp
 // Specify column properties
-Column columnSpecification = new Column.UpdateColumnBuilder(
-      5005385858869124,   // columnId
-      "First Column",
-      0)                  // column index
-  .SetType(ColumnType.PICKLIST)
-  .SetOptions( new string[] { "One", "Two" })
-  .Build();
-
+Column columnSpecification = new Column
+{
+  Id = 5005385858869124,
+  Title = "First Column",
+  Index = 0,
+  Type = ColumnType.PICKLIST,
+  Options = new string[] { "One", "Two"}
+};
+            
 // Update column
 Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
   2252168947361668,   // sheetId
@@ -3402,7 +3420,10 @@ smartsheet.sheets.addDiscussionComment(options)
 
 ```csharp
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This is a new comment."
+};
 
 // Add comment to discussion
 Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
@@ -3471,7 +3492,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 ```csharp
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This is a new comment."
+};
 
 // Add comment (with attachment) to discussion
 Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(
@@ -4085,11 +4109,16 @@ smartsheet.sheets.createRowDiscussion(options)
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
-
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = new Comment
+    {
+      Text = "This text is the body of the first comment"
+    },
+  Comments = null         // workaround for SDK issue
+};
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
@@ -4281,11 +4310,16 @@ smartsheet.sheets.createDiscussion(options)
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
-
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
+};
 
 // Add discussion to sheet
 Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
@@ -4822,7 +4856,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>sight</li></ul>
 **objectId** | number | Id of the favorited item.  If **type** is "template", only private sheet-type template Id is allowed.
 
 ## Add Favorites
@@ -4863,15 +4897,17 @@ smartsheet.favorites.addItemsToFavorites(options)
 
 ```csharp
 // Specify favorites
-Favorite[] favoritesSpecification = new Favorite[] {
-  new Favorite.AddFavoriteBuilder(
-    ObjectType.SHEET,
-    8400677765441412)           // long objectId (in this case, the sheetId)
-  .Build()
+IList<Favorite> favoritesSpecification = new Favorite[]
+{
+  new Favorite
+  {
+    Type = ObjectType.SHEET,
+    ObjectId = 8400677765441412
+  }
 };
 
 // Add items to favorites
-Favorite newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
+IList<Favorite> newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
 ```
 
 ```java
@@ -6005,7 +6041,7 @@ smartsheet.home.createFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder { Name = "New folder" };
 
 // Create folder in "Sheets" folder (Home)
 Folder newFolder = smartsheet.HomeResources.FolderResources.CreateFolder(folderSpecification);
@@ -6077,7 +6113,7 @@ smartsheet.folders.createChildFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder { Name = "New folder" };
 
 // Create folder in another folder
 Folder newFolder = smartsheet.FolderResources.CreateFolder(
@@ -6160,7 +6196,7 @@ smartsheet.workspaces.createFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder { Name = "New folder" };
 
 // Create folder in a workspace
 Folder newFolder = smartsheet.WorkspaceResources.FolderResources.CreateFolder(
@@ -6763,10 +6799,11 @@ smartsheet.folders.updateFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.UpdateFolderBuilder(
-  7960873114331012,               // long folderId
-  "New name for folder")
-  .Build();
+Folder folderSpecification = new Folder
+{
+  Id = 7960873114331012,
+  Name = "New name for folder"
+};
 
 // Update folder
 Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecification);
