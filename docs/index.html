@@ -352,6 +352,12 @@
                                 <a href="#request-an-authorization-code" class="toc-h3 toc-link" data-title="Request an Authorization Code">Request an Authorization Code</a>
                             </li>
                             <li>
+                                <a href="#if-the-user-clicks-allow" class="toc-h3 toc-link" data-title="If the User Clicks Allow">If the User Clicks Allow</a>
+                            </li>
+                            <li>
+                                <a href="#if-the-user-clicks-deny" class="toc-h3 toc-link" data-title="If the User Clicks Deny">If the User Clicks Deny</a>
+                            </li>
+                            <li>
                                 <a href="#request-an-access-token" class="toc-h3 toc-link" data-title="Request an Access Token">Request an Access Token</a>
                             </li>
                             <li>
@@ -1763,7 +1769,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='smartsheet-api-2-0'><span class="customTOCSectionHeading">Smartsheet API 2.0</span></h1>
-<p>Updated 2017-12-04
+<p>Updated 2017-12-07
 <h1 id='overview'>Overview</h1><h2 id='introduction'>Introduction</h2>
 <blockquote>
 <p>Click the corresponding tab above to see sample code in the language of your choice. For more detail, see <a href="#sdks-and-sample-code">SDKs and Sample Code</a>)</p>
@@ -1974,9 +1980,9 @@
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set the access token</span>
-<span class="n">Token</span> <span class="n">token</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Token</span><span class="p">();</span>
-<span class="n">token</span><span class="p">.</span><span class="n">AccessToken</span> <span class="p">=</span> <span class="s">"ll352u9jujauoqz4gstvsae05"</span><span class="p">;</span>
-<span class="n">SmartsheetClient</span> <span class="n">smartsheet</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SmartsheetBuilder</span><span class="p">().</span><span class="nf">SetAccessToken</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="n">AccessToken</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">String</span> <span class="n">accessToken</span> <span class="p">=</span> <span class="s">"ll352u9jujauoqz4gstvsae05"</span><span class="p">;</span>
+
+<span class="n">SmartsheetClient</span> <span class="n">smartsheet</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SmartsheetBuilder</span><span class="p">().</span><span class="nf">SetAccessToken</span><span class="p">(</span><span class="n">accessToken</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
 
 <span class="c1">// Get current user</span>
 <span class="n">UserProfile</span> <span class="n">userProfile</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">UserResources</span><span class="p">.</span><span class="nf">GetCurrentUser</span><span class="p">();</span>
@@ -2487,52 +2493,38 @@ The following diagram has an overview of the OAuth flow:</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code>curl <span class="s1">'https://app.smartsheet.com/b/authorize?response_type=code&amp;client_id=dheu3dmkd32fhxme&amp;scope=READ_SHEETS%20WRITE_SHEETS&amp;state=MY_STATE'</span> <span class="se">\</span>
 -X GET
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="s1">'use strict'</span><span class="p">;</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="kr">const</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'querystring'</span><span class="p">);</span>
 
-<span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./config'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'express'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">simpleOauthModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'simple-oauth2'</span><span class="p">);</span>
+<span class="kd">function</span> <span class="nx">authorizeURL</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">authUrl</span> <span class="o">=</span> <span class="s1">'https://app.smartsheet.com/b/authorize'</span><span class="p">;</span>
+    <span class="k">return</span> <span class="s2">`</span><span class="p">${</span><span class="nx">authUrl</span><span class="p">}</span><span class="s2">?</span><span class="p">${</span><span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">params</span><span class="p">)}</span><span class="s2">`</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
-<span class="kr">const</span> <span class="nx">oauth2</span> <span class="o">=</span> <span class="nx">simpleOauthModule</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
-  <span class="na">client</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">id</span><span class="p">:</span> <span class="nx">config</span><span class="p">.</span><span class="nx">CLIENT_ID</span><span class="p">,</span>
-    <span class="na">secret</span><span class="p">:</span> <span class="nx">config</span><span class="p">.</span><span class="nx">CLIENT_SECRET</span>
-  <span class="p">},</span>
-  <span class="na">auth</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">tokenHost</span><span class="p">:</span> <span class="s1">'https://api.smartsheet.com'</span><span class="p">,</span>
-    <span class="na">tokenPath</span><span class="p">:</span> <span class="s1">'/2.0/token'</span><span class="p">,</span>
-    <span class="na">authorizeHost</span><span class="p">:</span> <span class="s1">'https://app.smartsheet.com'</span><span class="p">,</span>
-    <span class="na">authorizePath</span><span class="p">:</span> <span class="s1">'/b/authorize'</span><span class="p">,</span>
-  <span class="p">},</span>
+<span class="kr">const</span> <span class="nx">authorizationUri</span> <span class="o">=</span> <span class="nx">authorizeURL</span><span class="p">({</span>
+    <span class="na">response_type</span><span class="p">:</span> <span class="s1">'code'</span><span class="p">,</span>
+    <span class="na">client_id</span><span class="p">:</span> <span class="s1">'1samp48lel5for68you'</span><span class="p">,</span>
+    <span class="na">redirect_uri</span><span class="p">:</span> <span class="s1">'http://localhost:3000/callback'</span><span class="p">,</span>
+    <span class="na">scope</span><span class="p">:</span> <span class="s1">'CREATE_SHEETS WRITE_SHEETS'</span><span class="p">,</span>
 <span class="p">});</span>
 
-<span class="c1">// Authorization uri definition</span>
-<span class="kr">const</span> <span class="nx">authorizationUri</span> <span class="o">=</span> <span class="nx">oauth2</span><span class="p">.</span><span class="nx">authorizationCode</span><span class="p">.</span><span class="nx">authorizeURL</span><span class="p">({</span>
-  <span class="na">redirect_uri</span><span class="p">:</span> <span class="s1">'http://localhost:3000/callback'</span><span class="p">,</span>
-  <span class="na">scope</span><span class="p">:</span> <span class="s1">'CREATE_SHEETS WRITE_SHEETS'</span><span class="p">,</span>
-<span class="p">});</span>
-
-<span class="c1">// Initial page redirecting to Smartsheet with params in URL</span>
+<span class="c1">// Initial page redirecting to Smartsheet</span>
 <span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/auth'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">authorizationUri</span><span class="p">);</span>
-  <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="nx">authorizationUri</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">authorizationUri</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="nx">authorizationUri</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// [todo]</span>
-</code></pre><pre class="highlight java tab-java"><code><span class="c1">// [todo]</span>
+<span class="s2">``</span>
+
+<span class="s2">```csharp
+// [todo]
+</span></code></pre><pre class="highlight java tab-java"><code><span class="c1">// [todo]</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># [todo]</span>
 </code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># [todo]</span>
 </code></pre>
 <blockquote>
 <p>Successful Response:</p>
 </blockquote>
-<pre class="highlight shell tab-shell"><code><span class="s1">'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&amp;expires_in=599080&amp;state=MY_STATE'</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="s1">'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&amp;expires_in=599080&amp;state=MY_STATE'</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="err">'</span><span class="n">http</span><span class="p">:</span><span class="c1">//localhost:3000/callback?code=eqmqxzx7z4uwnf1&amp;expires_in=599080&amp;state=MY_STATE'</span>
-</code></pre><pre class="highlight java tab-java"><code><span class="err">'</span><span class="nl">http:</span><span class="c1">//localhost:3000/callback?code=eqmqxzx7z4uwnf1&amp;expires_in=599080&amp;state=MY_STATE'</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="s">'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&amp;expires_in=599080&amp;state=MY_STATE'</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="s1">'http://localhost:3000/callback?code=eqmqxzx7z4uwnf1&amp;expires_in=599080&amp;state=MY_STATE'</span>
-</code></pre>
+<pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">The</span><span class="w"> </span><span class="err">user</span><span class="w"> </span><span class="err">sees</span><span class="w"> </span><span class="err">your</span><span class="w"> </span><span class="err">app's</span><span class="w"> </span><span class="err">consent</span><span class="w"> </span><span class="err">page</span><span class="w">
+</span></code></pre>
 <p><code>GET https://app.smartsheet.com/b/authorize</code></p>
 
 <p><code>POST https://app.smartsheet.com/b/authorize</code></p>
@@ -2573,7 +2565,17 @@ Smartsheet will redirect this URL to display your app&#39;s consent page with an
 <p><img src="images/developer_tools3.png" alt="Dialog box to allow or deny scopes"></p>
 
 <p>After the user clicks <strong>Allow</strong> or <strong>Deny</strong>, you&#39;ll receive a response from Smartsheet outlined in the next sections.</p>
-<h4 id='if-the-user-clicks-allow'>If the User Clicks Allow</h4>
+<h3 id='if-the-user-clicks-allow'>If the User Clicks Allow</h3>
+<blockquote>
+<p>Successful Response:</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code><span class="s1">'http://localhost:3000/callback?code=sample6p9qisx6a&amp;expires_in=599080&amp;state=MY_STATE'</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="s1">'http://localhost:3000/callback?code=sample6p9qisx6a&amp;expires_in=599080&amp;state=MY_STATE'</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="err">'</span><span class="n">http</span><span class="p">:</span><span class="c1">//localhost:3000/callback?code=sample6p9qisx6a&amp;expires_in=599080&amp;state=MY_STATE'</span>
+</code></pre><pre class="highlight java tab-java"><code><span class="err">'</span><span class="nl">http:</span><span class="c1">//localhost:3000/callback?code=sample6p9qisx6a&amp;expires_in=599080&amp;state=MY_STATE'</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="s">'http://localhost:3000/callback?code=sample6p9qisx6a&amp;expires_in=599080&amp;state=MY_STATE'</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="s1">'http://localhost:3000/callback?code=sample6p9qisx6a&amp;expires_in=599080&amp;state=MY_STATE'</span>
+</code></pre>
 <p>If the user clicks <strong>Allow</strong>, Smartsheet redirects the user to the callback URL with the following parameters:</p>
 
 <table><thead>
@@ -2599,7 +2601,7 @@ Smartsheet will redirect this URL to display your app&#39;s consent page with an
 <p>At this point, you should verify the <code>state</code> value matches what you sent to the user when you requested the authorization code. This helps you determine that the response came from the user and not a malicious script. If the values do not match, you should reject the response.</p>
 
 <p>For other error conditions, see the list of <a href="#oauth-error-types">OAuth Error Types</a>.</p>
-<h4 id='if-the-user-clicks-deny'>If the User Clicks Deny</h4>
+<h3 id='if-the-user-clicks-deny'>If the User Clicks Deny</h3>
 <p>If the user clicks <strong>Deny</strong>, Smartsheet redirects the user to the callback URL with the following parameters:</p>
 
 <table><thead>
@@ -3632,9 +3634,12 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create attachment</span>
-<span class="n">Attachment</span> <span class="n">attachmentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Attachment</span><span class="p">.</span><span class="nf">CreateAttachmentBuilder</span><span class="p">(</span><span class="s">"http://www.google.com"</span><span class="p">,</span> <span class="n">AttachmentType</span><span class="p">.</span><span class="n">LINK</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetName</span><span class="p">(</span><span class="s">"Search Engine"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Attachment</span> <span class="n">attachmentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Attachment</span>
+<span class="p">{</span>
+  <span class="n">Url</span> <span class="p">=</span> <span class="s">"http://www.google.com"</span><span class="p">,</span>
+  <span class="n">AttachmentType</span> <span class="p">=</span> <span class="n">AttachmentType</span><span class="p">.</span><span class="n">LINK</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"Search Engine"</span>
+<span class="p">};</span>
 
 <span class="c1">// Attach URL to comment</span>
 <span class="n">Attachment</span> <span class="n">updatedAttachment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">CommentResources</span><span class="p">.</span><span class="n">AttachmentResources</span><span class="p">.</span><span class="nf">AttachUrl</span><span class="p">(</span>
@@ -3781,10 +3786,12 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create attachment</span>
-<span class="n">Attachment</span> <span class="n">attachmentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Attachment</span><span class="p">.</span><span class="nf">CreateAttachmentBuilder</span><span class="p">(</span><span class="s">"http://www.google.com"</span><span class="p">,</span> <span class="n">AttachmentType</span><span class="p">.</span><span class="n">LINK</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetName</span><span class="p">(</span><span class="s">"Search Engine"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetDescription</span><span class="p">(</span><span class="s">"A popular search engine"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Attachment</span> <span class="n">attachmentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Attachment</span>
+<span class="p">{</span>
+  <span class="n">Url</span> <span class="p">=</span> <span class="s">"http://www.google.com"</span><span class="p">,</span>
+  <span class="n">AttachmentType</span> <span class="p">=</span> <span class="n">AttachmentType</span><span class="p">.</span><span class="n">LINK</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"Search Engine"</span>
+<span class="p">};</span>
 
 <span class="c1">// Attach URL to row</span>
 <span class="n">Attachment</span> <span class="n">updatedAttachment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">RowResources</span><span class="p">.</span><span class="n">AttachmentResources</span><span class="p">.</span><span class="nf">AttachUrl</span><span class="p">(</span>
@@ -3933,10 +3940,13 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create attachment</span>
-<span class="n">Attachment</span> <span class="n">attachmentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Attachment</span><span class="p">.</span><span class="nf">CreateAttachmentBuilder</span><span class="p">(</span><span class="s">"http://www.google.com"</span><span class="p">,</span> <span class="n">AttachmentType</span><span class="p">.</span><span class="n">LINK</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetName</span><span class="p">(</span><span class="s">"Search Engine"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetDescription</span><span class="p">(</span><span class="s">"A popular search engine"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Attachment</span> <span class="n">attachmentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Attachment</span>
+<span class="p">{</span>
+  <span class="n">Url</span> <span class="p">=</span> <span class="s">"http://www.google.com"</span><span class="p">,</span>
+  <span class="n">AttachmentType</span> <span class="p">=</span> <span class="n">AttachmentType</span><span class="p">.</span><span class="n">LINK</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"Search Engine"</span><span class="p">,</span>
+  <span class="n">Description</span> <span class="p">=</span> <span class="s">"A popular search engine"</span>
+<span class="p">};</span>
 
 <span class="c1">// Attach URL to sheet</span>
 <span class="n">Attachment</span> <span class="n">updatedAttachment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">AttachmentResources</span><span class="p">.</span><span class="nf">AttachUrl</span><span class="p">(</span>
@@ -6330,12 +6340,21 @@ curl -o <span class="s2">"stanley_hotel"</span> <span class="s2">"https://aws.sm
       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create a column</span>
-<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">AddColumnBuilder</span><span class="p">(</span><span class="s">"New Picklist Column 1"</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">PICKLIST</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetOptions</span><span class="p">(</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"First"</span><span class="p">,</span> <span class="s">"Second"</span><span class="p">,</span> <span class="s">"Third"</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"New Picklist Column 1"</span><span class="p">,</span>
+  <span class="n">Index</span> <span class="p">=</span> <span class="m">4</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">PICKLIST</span><span class="p">,</span>
+  <span class="n">Options</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"First"</span><span class="p">,</span> <span class="s">"Second"</span><span class="p">,</span> <span class="s">"Third"</span> <span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Create another column</span>
-<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">AddColumnBuilder</span><span class="p">(</span><span class="s">"New Date Column"</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">DATE</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"New Date Column"</span><span class="p">,</span>
+  <span class="n">Index</span> <span class="p">=</span> <span class="m">4</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">DATE</span>
+<span class="p">};</span>
 
 <span class="c1">// Add columns to the sheet</span>
 <span class="n">IList</span><span class="p">&lt;</span><span class="n">Column</span><span class="p">&gt;</span> <span class="n">newColumns</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">ColumnResources</span><span class="p">.</span><span class="nf">AddColumns</span><span class="p">(</span>
@@ -6788,13 +6807,14 @@ curl -o <span class="s2">"stanley_hotel"</span> <span class="s2">"https://aws.sm
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify column properties</span>
-<span class="n">Column</span> <span class="n">columnSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">UpdateColumnBuilder</span><span class="p">(</span>
-      <span class="m">5005385858869124</span><span class="p">,</span>   <span class="c1">// columnId</span>
-      <span class="s">"First Column"</span><span class="p">,</span>
-      <span class="m">0</span><span class="p">)</span>                  <span class="c1">// column index</span>
-  <span class="p">.</span><span class="nf">SetType</span><span class="p">(</span><span class="n">ColumnType</span><span class="p">.</span><span class="n">PICKLIST</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetOptions</span><span class="p">(</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"One"</span><span class="p">,</span> <span class="s">"Two"</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Column</span> <span class="n">columnSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">5005385858869124</span><span class="p">,</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"First Column"</span><span class="p">,</span>
+  <span class="n">Index</span> <span class="p">=</span> <span class="m">0</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">PICKLIST</span><span class="p">,</span>
+  <span class="n">Options</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"One"</span><span class="p">,</span> <span class="s">"Two"</span><span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Update column</span>
 <span class="n">Column</span> <span class="n">updatedColumn</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">ColumnResources</span><span class="p">.</span><span class="nf">UpdateColumn</span><span class="p">(</span>
@@ -7215,7 +7235,10 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create comment</span>
-<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span><span class="p">.</span><span class="nf">AddCommentBuilder</span><span class="p">(</span><span class="s">"This is a new comment."</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+<span class="p">{</span>
+  <span class="n">Text</span> <span class="p">=</span> <span class="s">"This is a new comment."</span>
+<span class="p">};</span>
 
 <span class="c1">// Add comment to discussion</span>
 <span class="n">Comment</span> <span class="n">newComment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">DiscussionResources</span><span class="p">.</span><span class="n">CommentResources</span><span class="p">.</span><span class="nf">AddComment</span><span class="p">(</span>
@@ -7270,7 +7293,10 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
     <span class="o">}</span>
 </code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create comment</span>
-<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span><span class="p">.</span><span class="nf">AddCommentBuilder</span><span class="p">(</span><span class="s">"This is a new comment."</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+<span class="p">{</span>
+  <span class="n">Text</span> <span class="p">=</span> <span class="s">"This is a new comment."</span>
+<span class="p">};</span>
 
 <span class="c1">// Add comment (with attachment) to discussion</span>
 <span class="n">Comment</span> <span class="n">newComment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">DiscussionResources</span><span class="p">.</span><span class="n">CommentResources</span><span class="p">.</span><span class="nf">AddCommentWithAttachment</span><span class="p">(</span>
@@ -7418,9 +7444,11 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify edited comment properties</span>
-<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Comment</span><span class="p">();</span>
-<span class="n">comment</span><span class="p">.</span><span class="n">Id</span> <span class="p">=</span> <span class="m">7144101943502724</span><span class="p">;</span>
-<span class="n">comment</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">"This is the updated comment text"</span><span class="p">;</span>
+<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">7144101943502724</span><span class="p">,</span>
+  <span class="n">Text</span> <span class="p">=</span> <span class="s">"This is the updated comment text"</span>
+<span class="p">}</span>
 
 <span class="c1">// Edit comment</span>
 <span class="n">Comment</span> <span class="n">updatedComment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">DiscussionResources</span><span class="p">.</span><span class="n">CommentResources</span><span class="p">.</span><span class="nf">UpdateComment</span><span class="p">(</span>
@@ -7982,11 +8010,16 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create comment</span>
-<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span><span class="p">.</span><span class="nf">AddCommentBuilder</span><span class="p">(</span><span class="s">"This text is the body of the first comment"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
-
-<span class="c1">// Create discussion (including the comment)</span>
-<span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span><span class="p">.</span><span class="nf">CreateDiscussionBuilder</span><span class="p">(</span><span class="s">"This is a new discussion"</span><span class="p">,</span> <span class="n">commentSpecification</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create discussion (including the comment)</span>
+<span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"This is a new discussion"</span><span class="p">,</span>
+  <span class="n">Comment</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+    <span class="p">{</span>
+      <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
+    <span class="p">},</span>
+  <span class="n">Comments</span> <span class="p">=</span> <span class="k">null</span>         <span class="c1">// workaround for SDK issue</span>
+<span class="p">};</span>
 
 <span class="c1">// Add discussion to row</span>
 <span class="n">Discussion</span> <span class="n">newDiscussion</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">RowResources</span><span class="p">.</span><span class="n">DiscussionResources</span><span class="p">.</span><span class="nf">CreateDiscussion</span><span class="p">(</span>
@@ -8216,11 +8249,16 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create comment</span>
-<span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span><span class="p">.</span><span class="nf">AddCommentBuilder</span><span class="p">(</span><span class="s">"This text is the body of the first comment"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
-
-<span class="c1">// Create discussion (including the comment)</span>
-<span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span><span class="p">.</span><span class="nf">CreateDiscussionBuilder</span><span class="p">(</span><span class="s">"This is a new discussion"</span><span class="p">,</span> <span class="n">commentSpecification</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create discussion (including the comment)</span>
+<span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"This is a new discussion"</span><span class="p">,</span>
+  <span class="n">Comment</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+  <span class="p">{</span>
+    <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
+  <span class="p">},</span>
+  <span class="n">Comments</span> <span class="p">=</span> <span class="k">null</span>         <span class="c1">// workaround for SDK issue</span>
+<span class="p">};</span>
 
 <span class="c1">// Add discussion to sheet</span>
 <span class="n">Discussion</span> <span class="n">newDiscussion</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">DiscussionResources</span><span class="p">.</span><span class="nf">CreateDiscussion</span><span class="p">(</span>
@@ -8901,7 +8939,7 @@ These API operations allow you to access the user&#39;s favorite API-supported o
 <tr>
 <td><strong>type</strong></td>
 <td>string</td>
-<td>One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul></td>
+<td>One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>sight</li></ul></td>
 </tr>
 <tr>
 <td><strong>objectId</strong></td>
@@ -8942,15 +8980,17 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify favorites</span>
-<span class="n">Favorite</span><span class="p">[]</span> <span class="n">favoritesSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Favorite</span><span class="p">[]</span> <span class="p">{</span>
-  <span class="k">new</span> <span class="n">Favorite</span><span class="p">.</span><span class="nf">AddFavoriteBuilder</span><span class="p">(</span>
-    <span class="n">ObjectType</span><span class="p">.</span><span class="n">SHEET</span><span class="p">,</span>
-    <span class="m">8400677765441412</span><span class="p">)</span>           <span class="c1">// long objectId (in this case, the sheetId)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">()</span>
+<span class="n">IList</span><span class="p">&lt;</span><span class="n">Favorite</span><span class="p">&gt;</span> <span class="n">favoritesSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Favorite</span><span class="p">[]</span>
+<span class="p">{</span>
+  <span class="k">new</span> <span class="n">Favorite</span>
+  <span class="p">{</span>
+    <span class="n">Type</span> <span class="p">=</span> <span class="n">ObjectType</span><span class="p">.</span><span class="n">SHEET</span><span class="p">,</span>
+    <span class="n">ObjectId</span> <span class="p">=</span> <span class="m">8400677765441412</span>
+  <span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Add items to favorites</span>
-<span class="n">Favorite</span> <span class="n">newFavorite</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">FavoriteResources</span><span class="p">.</span><span class="nf">AddFavorites</span><span class="p">(</span><span class="n">favoritesSpecification</span><span class="p">);</span>
+<span class="n">IList</span><span class="p">&lt;</span><span class="n">Favorite</span><span class="p">&gt;</span> <span class="n">newFavorite</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">FavoriteResources</span><span class="p">.</span><span class="nf">AddFavorites</span><span class="p">(</span><span class="n">favoritesSpecification</span><span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify favorites</span>
 <span class="n">List</span><span class="o">&lt;</span><span class="n">Favorite</span><span class="o">&gt;</span> <span class="n">favoritesSpecification</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Favorite</span><span class="o">.</span><span class="na">AddFavoriteBuilder</span><span class="o">()</span>
   <span class="o">.</span><span class="na">addFavorite</span><span class="o">(</span>
@@ -10221,7 +10261,7 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set folder name</span>
-<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span><span class="p">.</span><span class="nf">CreateFolderBuilder</span><span class="p">(</span><span class="s">"New folder"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span> <span class="p">{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"New folder"</span> <span class="p">};</span>
 
 <span class="c1">// Create folder in "Sheets" folder (Home)</span>
 <span class="n">Folder</span> <span class="n">newFolder</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">HomeResources</span><span class="p">.</span><span class="n">FolderResources</span><span class="p">.</span><span class="nf">CreateFolder</span><span class="p">(</span><span class="n">folderSpecification</span><span class="p">);</span>
@@ -10311,7 +10351,7 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set folder name</span>
-<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span><span class="p">.</span><span class="nf">CreateFolderBuilder</span><span class="p">(</span><span class="s">"New folder"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span> <span class="p">{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"New folder"</span> <span class="p">};</span>
 
 <span class="c1">// Create folder in another folder</span>
 <span class="n">Folder</span> <span class="n">newFolder</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">FolderResources</span><span class="p">.</span><span class="nf">CreateFolder</span><span class="p">(</span>
@@ -10412,7 +10452,7 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set folder name</span>
-<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span><span class="p">.</span><span class="nf">CreateFolderBuilder</span><span class="p">(</span><span class="s">"New folder"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span> <span class="p">{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"New folder"</span> <span class="p">};</span>
 
 <span class="c1">// Create folder in a workspace</span>
 <span class="n">Folder</span> <span class="n">newFolder</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="n">FolderResources</span><span class="p">.</span><span class="nf">CreateFolder</span><span class="p">(</span>
@@ -11125,10 +11165,11 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set folder name</span>
-<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span><span class="p">.</span><span class="nf">UpdateFolderBuilder</span><span class="p">(</span>
-  <span class="m">7960873114331012</span><span class="p">,</span>               <span class="c1">// long folderId</span>
-  <span class="s">"New name for folder"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Folder</span> <span class="n">folderSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Folder</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">7960873114331012</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"New name for folder"</span>
+<span class="p">};</span>
 
 <span class="c1">// Update folder</span>
 <span class="n">Folder</span> <span class="n">updatedFolder</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">FolderResources</span><span class="p">.</span><span class="nf">UpdateFolder</span><span class="p">(</span><span class="n">folderSpecification</span><span class="p">);</span>
@@ -11300,12 +11341,15 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create group member</span>
-<span class="n">GroupMember</span> <span class="n">memberSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GroupMember</span><span class="p">.</span><span class="nf">AddGroupMemberBuilder</span><span class="p">(</span><span class="s">"john.doe@smartsheet.com"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">GroupMember</span> <span class="n">memberSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GroupMember</span> <span class="p">{</span> <span class="n">Email</span> <span class="p">=</span> <span class="s">"john.doe@smartsheet.com"</span> <span class="p">};</span>
 
 <span class="c1">// Add member to group</span>
-<span class="n">Group</span> <span class="n">groupSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Group</span><span class="p">.</span><span class="nf">CreateGroupBuilder</span><span class="p">(</span><span class="s">"API-created Group"</span><span class="p">,</span> <span class="s">"Group created via API"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetMembers</span><span class="p">(</span><span class="k">new</span> <span class="n">GroupMember</span><span class="p">[]</span> <span class="p">{</span> <span class="n">memberSpecification</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Group</span> <span class="n">groupSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Group</span>
+<span class="p">{</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"API-created Group"</span><span class="p">,</span>
+  <span class="n">Description</span> <span class="p">=</span> <span class="s">"Group created via API"</span><span class="p">,</span>
+  <span class="n">Members</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GroupMember</span><span class="p">[]</span> <span class="p">{</span> <span class="n">memberSpecification</span> <span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Create group</span>
 <span class="n">Group</span> <span class="n">newGroup</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">GroupResources</span><span class="p">.</span><span class="nf">CreateGroup</span><span class="p">(</span><span class="n">groupSpecification</span><span class="p">);</span>
@@ -11677,11 +11721,12 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify the name and description of the group</span>
-<span class="n">Group</span> <span class="n">groupSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Group</span><span class="p">.</span><span class="nf">UpdateGroupBuilder</span><span class="p">(</span>
-    <span class="m">2331373580117892</span><span class="p">)</span>               <span class="c1">// long groupId</span>
-  <span class="p">.</span><span class="nf">SetName</span> <span class="p">(</span><span class="s">"Renamed Group"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetDescription</span> <span class="p">(</span><span class="s">"Some new description"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Group</span> <span class="n">groupSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Group</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">2331373580117892</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"Renamed Group"</span><span class="p">,</span>
+  <span class="n">Description</span> <span class="p">=</span> <span class="s">"Some new description"</span>
+<span class="p">};</span>
 
 <span class="c1">// Update group</span>
 <span class="n">Group</span> <span class="n">updatedGroup</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">GroupResources</span><span class="p">.</span><span class="nf">UpdateGroup</span><span class="p">(</span><span class="n">groupSpecification</span><span class="p">);</span>
@@ -11850,7 +11895,7 @@ These API operations allow you to access the user&#39;s favorite API-supported o
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create group member</span>
-<span class="n">GroupMember</span> <span class="n">memberSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GroupMember</span><span class="p">.</span><span class="nf">AddGroupMemberBuilder</span><span class="p">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">GroupMember</span> <span class="n">memberSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GroupMember</span> <span class="p">{</span> <span class="n">Email</span> <span class="p">=</span> <span class="s">"jane.doe@smartsheet.com"</span> <span class="p">};</span>
 
 <span class="c1">// Add members to group</span>
 <span class="n">IList</span><span class="p">&lt;</span><span class="n">GroupMember</span><span class="p">&gt;</span> <span class="n">newMembers</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">GroupResources</span><span class="p">.</span><span class="nf">AddGroupMembers</span><span class="p">(</span>
@@ -13343,40 +13388,49 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify cell values for first row</span>
 <span class="n">Cell</span><span class="p">[]</span> <span class="n">cellsA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span><span class="p">[]</span> <span class="p">{</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">AddCellBuilder</span><span class="p">(</span><span class="m">7960873114331012</span><span class="p">,</span> <span class="k">true</span><span class="p">)</span>             <span class="c1">// columnId, value</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">AddCellBuilder</span><span class="p">(</span><span class="m">642523719853956</span><span class="p">,</span> <span class="s">"New status"</span><span class="p">)</span>      <span class="c1">// columnId, value</span>
-    <span class="p">.</span><span class="nf">SetStrict</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">()</span>
+  <span class="k">new</span> <span class="n">Cell</span>
+  <span class="p">{</span>
+    <span class="n">ColumnId</span> <span class="p">=</span> <span class="m">7960873114331012</span><span class="p">,</span>
+    <span class="n">Value</span> <span class="p">=</span> <span class="k">true</span>
+  <span class="p">},</span>
+  <span class="k">new</span> <span class="n">Cell</span>
+  <span class="p">{</span>
+    <span class="n">ColumnId</span> <span class="p">=</span> <span class="m">642523719853956</span><span class="p">,</span>
+    <span class="n">Value</span> <span class="p">=</span> <span class="s">"New status"</span>
+  <span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Specify contents of first row</span>
-<span class="n">Row</span> <span class="n">rowA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span><span class="p">.</span><span class="nf">AddRowBuilder</span><span class="p">(</span>
-    <span class="k">true</span><span class="p">,</span>                       <span class="c1">// Nullable&lt;bool&gt; toTop</span>
-    <span class="k">null</span><span class="p">,</span>                       <span class="c1">// Nullable&lt;bool&gt; toBottom</span>
-    <span class="k">null</span><span class="p">,</span>                       <span class="c1">// Nullable&lt;long&gt; parentId</span>
-    <span class="k">null</span><span class="p">,</span>                       <span class="c1">// Nullable&lt;long&gt; siblingId</span>
-    <span class="k">null</span><span class="p">)</span>                       <span class="c1">// Nullable&lt;bool&gt; above</span>
-  <span class="p">.</span><span class="nf">SetCells</span><span class="p">(</span><span class="n">cellsA</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Row</span> <span class="n">rowA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span>
+<span class="p">{</span>
+  <span class="n">ToTop</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">Cells</span> <span class="p">=</span> <span class="n">cellsA</span>
+<span class="p">};</span>
 
 <span class="c1">// Specify cell values of second row</span>
 <span class="n">Cell</span><span class="p">[]</span> <span class="n">cellsB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span><span class="p">[]</span> <span class="p">{</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">AddCellBuilder</span><span class="p">(</span><span class="m">7960873114331012</span><span class="p">,</span> <span class="k">true</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">AddCellBuilder</span><span class="p">(</span><span class="m">642523719853956</span><span class="p">,</span> <span class="s">"New status"</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">SetStrict</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">()</span>
+  <span class="k">new</span> <span class="n">Cell</span>
+  <span class="p">{</span>
+    <span class="n">ColumnId</span> <span class="p">=</span> <span class="m">7960873114331012</span><span class="p">,</span>
+    <span class="n">Value</span> <span class="p">=</span> <span class="k">true</span>
+  <span class="p">},</span>
+  <span class="k">new</span> <span class="n">Cell</span>
+  <span class="p">{</span>
+    <span class="n">ColumnId</span> <span class="p">=</span> <span class="m">642523719853956</span><span class="p">,</span>
+    <span class="n">Value</span> <span class="p">=</span> <span class="s">"New status"</span>
+  <span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Specify contents of second row</span>
-<span class="n">Row</span> <span class="n">rowB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span><span class="p">.</span><span class="nf">AddRowBuilder</span><span class="p">(</span><span class="k">true</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetCells</span><span class="p">(</span><span class="n">cellsB</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Row</span> <span class="n">rowB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span>
+<span class="p">{</span>
+  <span class="n">ToTop</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">Cells</span> <span class="p">=</span> <span class="n">cellsB</span>
+<span class="p">};</span>
 
 <span class="c1">// Add rows to sheet</span>
 <span class="n">IList</span><span class="p">&lt;</span><span class="n">Row</span><span class="p">&gt;</span> <span class="n">newRows</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">RowResources</span><span class="p">.</span><span class="nf">AddRows</span><span class="p">(</span>
-  <span class="m">873476834787</span><span class="p">,</span>                   <span class="c1">// long sheetId</span>
+  <span class="m">2331373580117892</span><span class="p">,</span>               <span class="c1">// long sheetId</span>
   <span class="k">new</span> <span class="n">Row</span><span class="p">[]</span> <span class="p">{</span> <span class="n">rowA</span><span class="p">,</span> <span class="n">rowB</span> <span class="p">}</span>        <span class="c1">// IEnumerable&lt;Row&gt; rowsToAdd</span>
 <span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify cell values for first row</span>
@@ -14163,7 +14217,7 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 <span class="p">};</span>
 
 <span class="c1">// Send row via email</span>
-<span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">sendRow</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
+<span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">sendRows</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
   <span class="p">})</span>
@@ -14353,38 +14407,30 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify updated cell values for first row</span>
-<span class="n">Cell</span><span class="p">[]</span> <span class="n">cellsA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span><span class="p">[]</span> <span class="p">{</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">UpdateCellBuilder</span><span class="p">(</span>
-      <span class="m">7518312134403972</span><span class="p">,</span>                               <span class="c1">// long columnId</span>
-      <span class="s">"new value"</span><span class="p">)</span>                                    <span class="c1">// value</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">UpdateCellBuilder</span><span class="p">(</span><span class="m">1888812600190852</span><span class="p">,</span> <span class="s">"A"</span><span class="p">)</span>       <span class="c1">// long columnId, value</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">()</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify updated value for first cell</span>
+<span class="kt">var</span> <span class="n">cellToUpdateA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span>
+<span class="p">{</span>
+  <span class="n">ColumnId</span> <span class="p">=</span> <span class="m">7518312134403972</span><span class="p">,</span>
+  <span class="n">Value</span> <span class="p">=</span> <span class="s">"new value"</span>
 <span class="p">};</span>
 
-<span class="c1">// Specify updated contents of first row</span>
-<span class="n">Row</span> <span class="n">rowA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span><span class="p">.</span><span class="nf">UpdateRowBuilder</span><span class="p">(</span><span class="m">6572427401553796</span><span class="p">)</span>       <span class="c1">// long rowId</span>
-  <span class="p">.</span><span class="nf">SetCells</span><span class="p">(</span><span class="n">cellsA</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
-
-<span class="c1">// Specify updated cell values for second row</span>
-<span class="n">Cell</span><span class="p">[]</span> <span class="n">cellsB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span><span class="p">[]</span> <span class="p">{</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">UpdateCellBuilder</span><span class="p">(</span><span class="m">7518312134403972</span><span class="p">,</span> <span class="s">"desc_updated"</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
-  <span class="k">new</span> <span class="n">Cell</span><span class="p">.</span><span class="nf">UpdateCellBuilder</span><span class="p">(</span><span class="m">1888812600190852</span><span class="p">,</span> <span class="s">"B"</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">Build</span><span class="p">()</span>
+<span class="c1">// Specify updated value for second cell</span>
+<span class="kt">var</span> <span class="n">cellToUpdateB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span>
+<span class="p">{</span>
+  <span class="n">ColumnId</span> <span class="p">=</span> <span class="m">1888812600190852</span><span class="p">,</span>
+  <span class="n">Value</span> <span class="p">=</span> <span class="s">"A"</span>
 <span class="p">};</span>
 
-<span class="c1">// Specify updated contents of second row</span>
-<span class="n">Row</span> <span class="n">rowB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span><span class="p">.</span><span class="nf">UpdateRowBuilder</span><span class="p">(</span><span class="m">3428827774183300</span><span class="p">)</span>       <span class="c1">// long rowId</span>
-  <span class="p">.</span><span class="nf">SetCells</span><span class="p">(</span><span class="n">cellsB</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="c1">// Identify row and add new cell values to it</span>
+<span class="kt">var</span> <span class="n">rowToUpdate</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Row</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">6572427401553796</span><span class="p">,</span>
+  <span class="n">Cells</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Cell</span><span class="p">[]</span> <span class="p">{</span> <span class="n">cellToUpdateA</span><span class="p">,</span> <span class="n">cellToUpdateB</span> <span class="p">}</span>
+<span class="p">};</span>
 
-<span class="c1">// Update rows in sheet</span>
-<span class="n">IList</span><span class="p">&lt;</span><span class="n">Row</span><span class="p">&gt;</span> <span class="n">updatedRows</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">RowResources</span><span class="p">.</span><span class="nf">UpdateRows</span><span class="p">(</span>
-  <span class="m">2068827774183300</span><span class="p">,</span>                                       <span class="c1">// long sheetId</span>
-  <span class="k">new</span> <span class="n">Row</span><span class="p">[]</span> <span class="p">{</span> <span class="n">rowA</span><span class="p">,</span> <span class="n">rowB</span> <span class="p">}</span>                                <span class="c1">// IEnumerable&lt;Row&gt; rowsToUpdate</span>
+<span class="n">IList</span><span class="p">&lt;</span><span class="n">Row</span><span class="p">&gt;</span> <span class="n">updatedRow</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">RowResources</span><span class="p">.</span><span class="nf">UpdateRows</span><span class="p">(</span>
+  <span class="m">2068827774183300</span><span class="p">,</span>    <span class="c1">// sheet Id</span>
+  <span class="k">new</span> <span class="n">Row</span><span class="p">[]</span> <span class="p">{</span><span class="n">rowToUpdate</span><span class="p">}</span>
 <span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify updated cell values for first row</span>
 <span class="n">List</span><span class="o">&lt;</span><span class="n">Cell</span><span class="o">&gt;</span> <span class="n">cellsA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cell</span><span class="o">.</span><span class="na">UpdateRowCellsBuilder</span><span class="o">()</span>
@@ -14414,7 +14460,6 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 <span class="n">List</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">updatedRows</span> <span class="o">=</span> <span class="n">smartsheet</span><span class="o">.</span><span class="na">sheetResources</span><span class="o">().</span><span class="na">rowResources</span><span class="o">().</span><span class="na">updateRows</span><span class="o">(</span>
   <span class="mi">2068827774183300L</span><span class="o">,</span>                              <span class="c1">// long sheetId</span>
   <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">rowA</span><span class="o">,</span> <span class="n">rowB</span><span class="o">)</span>
-<span class="o">);</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="c"># Build new cell value</span>
 <span class="n">new_cell</span> <span class="o">=</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Cell</span><span class="p">()</span>
 <span class="n">new_cell</span><span class="o">.</span><span class="n">column_id</span> <span class="o">=</span> <span class="mi">7036894123976580</span>
@@ -15371,7 +15416,7 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <span class="p">};</span>
 
 <span class="c1">// Send row via email</span>
-<span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">sendRow</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
+<span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">sendRows</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
   <span class="p">})</span>
@@ -16163,7 +16208,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify share (to one user as Editor)</span>
-<span class="n">Share</span><span class="p">[]</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">Share</span><span class="p">.</span><span class="nf">CreateShareBuilder</span><span class="p">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="p">,</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">EDITOR</span><span class="p">).</span><span class="nf">Build</span><span class="p">()};</span>
+<span class="n">Share</span><span class="p">[]</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">Share</span>
+  <span class="p">{</span>
+    <span class="n">Email</span> <span class="p">=</span> <span class="s">"jane.doe@smartsheet.com"</span><span class="p">,</span>
+    <span class="n">AccessLevel</span> <span class="p">=</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">EDITOR</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Share report</span>
 <span class="n">IList</span><span class="p">&lt;</span><span class="n">Share</span><span class="p">&gt;</span> <span class="n">addressList</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">ReportResources</span><span class="p">.</span><span class="n">ShareResources</span><span class="p">.</span><span class="nf">ShareTo</span><span class="p">(</span>
@@ -16288,7 +16338,11 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set the access level to Viewer</span>
-<span class="n">Share</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">.</span><span class="nf">UpdateShareBuilder</span><span class="p">(</span><span class="n">shareId</span><span class="p">,</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">VIEWER</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Share</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="s">"AAAFeF82FOeE"</span><span class="p">,</span>
+  <span class="n">AccessLevel</span> <span class="p">=</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">VIEWER</span>
+<span class="p">};</span>
 
 <span class="c1">// Update report share</span>
 <span class="n">Share</span> <span class="n">updatedShare</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">ReportResources</span><span class="p">.</span><span class="n">ShareResources</span><span class="p">.</span><span class="nf">UpdateShare</span><span class="p">(</span>
@@ -16660,7 +16714,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify share (to one user as Editor)</span>
-<span class="n">Share</span><span class="p">[]</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">Share</span><span class="p">.</span><span class="nf">CreateShareBuilder</span><span class="p">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="p">,</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">EDITOR</span><span class="p">).</span><span class="nf">Build</span><span class="p">()};</span>
+<span class="n">Share</span><span class="p">[]</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">Share</span>
+  <span class="p">{</span>
+    <span class="n">Email</span> <span class="p">=</span> <span class="s">"jane.doe@smartsheet.com"</span><span class="p">,</span>
+    <span class="n">AccessLevel</span> <span class="p">=</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">EDITOR</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Share sheet</span>
 <span class="n">IList</span><span class="p">&lt;</span><span class="n">Share</span><span class="p">&gt;</span> <span class="n">addressList</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">ShareResources</span><span class="p">.</span><span class="nf">ShareTo</span><span class="p">(</span>
@@ -16785,8 +16844,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set access level to Viewer</span>
-<span class="n">Share</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">.</span><span class="nf">UpdateShareBuilder</span><span class="p">(</span><span class="n">shareId</span><span class="p">,</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">VIEWER</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set the access level to Viewer</span>
+<span class="n">Share</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="s">"AAAFeF82FOeE"</span><span class="p">,</span>
+  <span class="n">AccessLevel</span> <span class="p">=</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">VIEWER</span>
+<span class="p">};</span>
 
 <span class="c1">// Update sheet share</span>
 <span class="n">Share</span> <span class="n">updatedShare</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">ShareResources</span><span class="p">.</span><span class="nf">UpdateShare</span><span class="p">(</span>
@@ -17621,7 +17684,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify share (to one user as Editor)</span>
-<span class="n">Share</span><span class="p">[]</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">Share</span><span class="p">.</span><span class="nf">CreateShareBuilder</span><span class="p">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="p">,</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">EDITOR</span><span class="p">).</span><span class="nf">Build</span><span class="p">()};</span>
+<span class="n">Share</span><span class="p">[]</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">Share</span>
+  <span class="p">{</span>
+    <span class="n">Email</span> <span class="p">=</span> <span class="s">"jane.doe@smartsheet.com"</span><span class="p">,</span>
+    <span class="n">AccessLevel</span> <span class="p">=</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">EDITOR</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Share workspace</span>
 <span class="n">IList</span><span class="p">&lt;</span><span class="n">Share</span><span class="p">&gt;</span> <span class="n">addressList</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="n">ShareResources</span><span class="p">.</span><span class="nf">ShareTo</span><span class="p">(</span>
@@ -17745,11 +17813,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set access level to Viewer</span>
-<span class="n">Share</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span><span class="p">.</span><span class="nf">UpdateShareBuilder</span><span class="p">(</span>
-    <span class="s">"AAAFeF82FOeE"</span><span class="p">,</span>           <span class="c1">// string shareId</span>
-    <span class="n">AccessLevel</span><span class="p">.</span><span class="n">VIEWER</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set the access level to Viewer</span>
+<span class="n">Share</span> <span class="n">shareSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Share</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="s">"AAAFeF82FOeE"</span><span class="p">,</span>
+  <span class="n">AccessLevel</span> <span class="p">=</span> <span class="n">AccessLevel</span><span class="p">.</span><span class="n">VIEWER</span>
+<span class="p">};</span>
 
 <span class="c1">// Update workspace share</span>
 <span class="n">Share</span> <span class="n">updatedShare</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="n">ShareResources</span><span class="p">.</span><span class="nf">UpdateShare</span><span class="p">(</span>
@@ -18380,26 +18449,29 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify properties of the first column</span>
-<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">CreateSheetColumnBuilder</span><span class="p">(</span>
-    <span class="s">"Favorite"</span><span class="p">,</span>             <span class="c1">// column title</span>
-    <span class="k">null</span><span class="p">,</span>                   <span class="c1">// Nullable(bool) isPrimary</span>
-    <span class="n">ColumnType</span><span class="p">.</span><span class="n">CHECKBOX</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetSymbol</span><span class="p">(</span>
-    <span class="n">Symbol</span><span class="p">.</span><span class="n">STAR</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
+<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"Favorite"</span><span class="p">,</span>
+  <span class="n">Primary</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">CHECKBOX</span><span class="p">,</span>
+  <span class="n">Symbol</span> <span class="p">=</span> <span class="n">Symbol</span><span class="p">.</span><span class="n">STAR</span>
+<span class="p">};</span>
 
 <span class="c1">// Specify properties of the second column</span>
-<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">CreateSheetColumnBuilder</span><span class="p">(</span>
-    <span class="s">"Primary Column"</span><span class="p">,</span>
-    <span class="k">true</span><span class="p">,</span>
-    <span class="n">ColumnType</span><span class="p">.</span><span class="n">TEXT_NUMBER</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
+<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"Primary Column"</span><span class="p">,</span>
+  <span class="n">Primary</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">TEXT_NUMBER</span>
+<span class="p">};</span>
 
 <span class="c1">// Create sheet in "Sheets" folder (specifying the 2 columns to include in the sheet)</span>
-<span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheet</span><span class="p">(</span> <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">CreateSheetBuilder</span><span class="p">(</span>
-    <span class="s">"newsheet"</span><span class="p">,</span>
-    <span class="k">new</span> <span class="n">Column</span><span class="p">[]</span> <span class="p">{</span> <span class="n">columnA</span><span class="p">,</span> <span class="n">columnB</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">());</span>
+<span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheet</span><span class="p">(</span><span class="k">new</span> <span class="n">Sheet</span>
+<span class="p">{</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"newsheet"</span><span class="p">,</span>
+  <span class="n">Columns</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">[]</span> <span class="p">{</span> <span class="n">columnA</span><span class="p">,</span> <span class="n">columnB</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify properties of the first column</span>
 <span class="n">Column</span> <span class="n">columnA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Column</span><span class="o">.</span><span class="na">AddColumnToSheetBuilder</span><span class="o">()</span>
   <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"Favorite"</span><span class="o">)</span>
@@ -18556,28 +18628,31 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify properties of the first column</span>
-<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">CreateSheetColumnBuilder</span><span class="p">(</span>
-    <span class="s">"Favorite"</span><span class="p">,</span>
-    <span class="k">null</span><span class="p">,</span>               <span class="c1">// Nullable(bool) primary</span>
-    <span class="n">ColumnType</span><span class="p">.</span><span class="n">CHECKBOX</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetSymbol</span><span class="p">(</span>
-    <span class="n">Symbol</span><span class="p">.</span><span class="n">STAR</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
+<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"Favorite"</span><span class="p">,</span>
+  <span class="n">Primary</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">CHECKBOX</span><span class="p">,</span>
+  <span class="n">Symbol</span> <span class="p">=</span> <span class="n">Symbol</span><span class="p">.</span><span class="n">STAR</span>
+<span class="p">};</span>
 
 <span class="c1">// Specify properties of the second column</span>
-<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">CreateSheetColumnBuilder</span><span class="p">(</span>
-    <span class="s">"Primary Column"</span><span class="p">,</span>
-    <span class="k">true</span><span class="p">,</span>
-    <span class="n">ColumnType</span><span class="p">.</span><span class="n">TEXT_NUMBER</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
+<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"Primary Column"</span><span class="p">,</span>
+  <span class="n">Primary</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">TEXT_NUMBER</span>
+<span class="p">};</span>
 
 <span class="c1">// Create sheet in folder (specifying the 2 columns to include in the sheet)</span>
 <span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">FolderResources</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheet</span><span class="p">(</span>
   <span class="m">3734419270854532</span><span class="p">,</span>                   <span class="c1">// long folderId</span>
-  <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">CreateSheetBuilder</span><span class="p">(</span>
-    <span class="s">"new sheet title"</span><span class="p">,</span>
-    <span class="k">new</span> <span class="n">Column</span><span class="p">[]</span> <span class="p">{</span> <span class="n">columnA</span><span class="p">,</span> <span class="n">columnB</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">());</span>
+  <span class="k">new</span> <span class="n">Sheet</span>
+    <span class="p">{</span>
+      <span class="n">Name</span> <span class="p">=</span> <span class="s">"new sheet title"</span><span class="p">,</span>
+      <span class="n">Columns</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">[]</span> <span class="p">{</span> <span class="n">columnA</span><span class="p">,</span> <span class="n">columnB</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify properties of the first column</span>
 <span class="n">Column</span> <span class="n">columnA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Column</span><span class="o">.</span><span class="na">AddColumnToSheetBuilder</span><span class="o">()</span>
   <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"Favorite"</span><span class="o">)</span>
@@ -18737,26 +18812,31 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify properties of the first column</span>
-<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">CreateSheetColumnBuilder</span><span class="p">(</span>
-    <span class="s">"Favorite"</span><span class="p">,</span>
-    <span class="k">null</span><span class="p">,</span>               <span class="c1">// Nullable(bool) primary</span>
-    <span class="n">ColumnType</span><span class="p">.</span><span class="n">CHECKBOX</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetSymbol</span><span class="p">(</span>
-    <span class="n">Symbol</span><span class="p">.</span><span class="n">STAR</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
+<span class="n">Column</span> <span class="n">columnA</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"Favorite"</span><span class="p">,</span>
+  <span class="n">Primary</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">CHECKBOX</span><span class="p">,</span>
+  <span class="n">Symbol</span> <span class="p">=</span> <span class="n">Symbol</span><span class="p">.</span><span class="n">STAR</span>
+<span class="p">};</span>
 
 <span class="c1">// Specify properties of the second column</span>
-<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">.</span><span class="nf">CreateSheetColumnBuilder</span><span class="p">(</span>
-    <span class="s">"Primary Column"</span><span class="p">,</span>
-    <span class="k">true</span><span class="p">,</span>
-    <span class="n">ColumnType</span><span class="p">.</span><span class="n">TEXT_NUMBER</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">(),</span>
+<span class="n">Column</span> <span class="n">columnB</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span>
+<span class="p">{</span>
+  <span class="n">Title</span> <span class="p">=</span> <span class="s">"Primary Column"</span><span class="p">,</span>
+  <span class="n">Primary</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">Type</span> <span class="p">=</span> <span class="n">ColumnType</span><span class="p">.</span><span class="n">TEXT_NUMBER</span>
+<span class="p">};</span>
 
 <span class="c1">// Create sheet in workspace (specifying the 2 columns to include in the sheet)</span>
 <span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheet</span><span class="p">(</span>
-    <span class="m">3734419270854532</span><span class="p">,</span>               <span class="c1">// long workspaceId</span>
-    <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">CreateSheetBuilder</span><span class="p">(</span><span class="s">"new sheet title"</span><span class="p">,</span> <span class="k">new</span> <span class="n">Column</span><span class="p">[]</span> <span class="p">{</span> <span class="n">columnA</span><span class="p">,</span> <span class="n">columnB</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">());</span>
+  <span class="m">3734419270854532</span><span class="p">,</span>                   <span class="c1">// long workspaceId</span>
+  <span class="k">new</span> <span class="n">Sheet</span>
+    <span class="p">{</span>
+      <span class="n">Name</span> <span class="p">=</span> <span class="s">"new sheet title"</span><span class="p">,</span>
+      <span class="n">Columns</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Column</span><span class="p">[]</span> <span class="p">{</span> <span class="n">columnA</span><span class="p">,</span> <span class="n">columnB</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify properties of the first column</span>
 <span class="n">Column</span> <span class="n">columnA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Column</span><span class="o">.</span><span class="na">AddColumnToSheetBuilder</span><span class="o">()</span>
   <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"Favorite"</span><span class="o">)</span>
@@ -18905,10 +18985,11 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify name for the sheet and Id of the template</span>
-<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">CreateSheetFromTemplateBuilder</span><span class="p">(</span>
-    <span class="s">"new sheet title"</span><span class="p">,</span>
-    <span class="m">7679398137620356</span><span class="p">)</span>           <span class="c1">// long templateId</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span>
+<span class="p">{</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"new sheet title"</span><span class="p">,</span>
+  <span class="n">FromId</span> <span class="p">=</span> <span class="m">7679398137620356</span>     <span class="c1">// template Id</span>
+<span class="p">};</span>
 
 <span class="c1">// Sample 1: Omit 'include' parameter</span>
 <span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheetFromTemplate</span><span class="p">(</span>
@@ -19037,10 +19118,11 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify name for the sheet and Id of the template</span>
-<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">CreateSheetFromTemplateBuilder</span><span class="p">(</span>
-    <span class="s">"new sheet title"</span><span class="p">,</span>
-    <span class="m">7679398137620356</span><span class="p">).</span>              <span class="c1">// long templateId</span>
-  <span class="nf">Build</span><span class="p">();</span>
+<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span>
+<span class="p">{</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"new sheet title"</span><span class="p">,</span>
+  <span class="n">FromId</span> <span class="p">=</span> <span class="m">7679398137620356</span>     <span class="c1">// template Id</span>
+<span class="p">};</span>
 
 <span class="c1">// Sample 1: Omit 'include' parameter</span>
 <span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">FolderResources</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheetFromTemplate</span><span class="p">(</span>
@@ -19175,10 +19257,11 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify name for the sheet and Id of the template</span>
-<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">CreateSheetFromTemplateBuilder</span><span class="p">(</span>
-    <span class="s">"new sheet name"</span><span class="p">,</span>           <span class="c1">// sheet title visible to user</span>
-    <span class="m">7679398137620356</span><span class="p">)</span>           <span class="c1">// long templateId</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span>
+<span class="p">{</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"new sheet title"</span><span class="p">,</span>
+  <span class="n">FromId</span> <span class="p">=</span> <span class="m">7679398137620356</span>     <span class="c1">// template Id</span>
+<span class="p">};</span>
 
 <span class="c1">// Sample 1: Omit 'include' parameter</span>
 <span class="n">Sheet</span> <span class="n">newSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">CreateSheetFromTemplate</span><span class="p">(</span>
@@ -20216,12 +20299,13 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify sheet publish status properties</span>
-<span class="n">SheetPublish</span> <span class="n">publishSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SheetPublish</span><span class="p">.</span><span class="nf">PublishStatusBuilder</span><span class="p">(</span>
-    <span class="k">true</span><span class="p">,</span>               <span class="c1">// Nullable&lt;bool&gt; readOnlyLiteEnabled</span>
-    <span class="k">false</span><span class="p">,</span>              <span class="c1">// Nullable&lt;bool&gt; readOnlyFullEnabled</span>
-    <span class="k">false</span><span class="p">,</span>              <span class="c1">// Nullable&lt;bool&gt; readWriteEnabled</span>
-    <span class="k">false</span><span class="p">)</span>              <span class="c1">// Nullable&lt;bool&gt; icalEnabled</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">SheetPublish</span> <span class="n">publishSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SheetPublish</span>
+<span class="p">{</span>
+  <span class="n">ReadOnlyLiteEnabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">ReadOnlyFullEnabled</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+  <span class="n">ReadWriteEnabled</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+  <span class="n">IcalEnabled</span> <span class="p">=</span> <span class="k">false</span>
+<span class="p">};</span>
 
 <span class="c1">// Set sheet publish status</span>
 <span class="n">SheetPublish</span> <span class="n">updatedStatus</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">UpdatePublishStatus</span><span class="p">(</span>
@@ -20636,11 +20720,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify updated sheet properties</span>
-<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span><span class="p">.</span><span class="nf">UpdateSheetBuilder</span><span class="p">(</span><span class="n">sheetId</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetName</span><span class="p">(</span><span class="s">"New Sheet Name"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetUserSettings</span><span class="p">(</span>
-    <span class="k">new</span> <span class="n">SheetUserSettings</span><span class="p">{</span> <span class="n">CriticalPathEnabled</span> <span class="p">=</span> <span class="k">true</span> <span class="p">})</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Sheet</span> <span class="n">sheetSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Sheet</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">4583173393803140</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"New Sheet Name"</span><span class="p">,</span>
+  <span class="n">UserSettings</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SheetUserSettings</span><span class="p">{</span><span class="n">CriticalPathEnabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Update sheet</span>
 <span class="n">Sheet</span> <span class="n">updatedSheet</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="nf">UpdateSheet</span><span class="p">(</span><span class="n">sheetSpecification</span><span class="p">);</span>
@@ -24044,13 +24129,14 @@ only has read-only access to the sheet (for example, the user has viewer permiss
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Set user properties</span>
-<span class="n">User</span> <span class="n">userSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">User</span><span class="p">.</span><span class="nf">AddUserBuilder</span><span class="p">(</span>
-    <span class="s">"john.doe@smartsheet.com"</span><span class="p">,</span>
-    <span class="k">false</span><span class="p">,</span>              <span class="c1">// Nullable&lt;bool&gt; admin</span>
-    <span class="k">true</span><span class="p">)</span>               <span class="c1">// Nullable&lt;bool&gt; licensedSheetCreator</span>
-  <span class="p">.</span><span class="nf">SetFirstName</span> <span class="p">(</span><span class="s">"John"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">SetLastName</span> <span class="p">(</span><span class="s">"Doe"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">User</span> <span class="n">userSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">User</span>
+<span class="p">{</span>
+  <span class="n">Email</span> <span class="p">=</span> <span class="s">"john.doe@smartsheet.com"</span><span class="p">,</span>
+  <span class="n">Admin</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+  <span class="n">LicensedSheetCreator</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">FirstName</span> <span class="p">=</span> <span class="s">"John"</span><span class="p">,</span>
+  <span class="n">LastName</span> <span class="p">=</span> <span class="s">"Doe"</span>
+<span class="p">};</span>
 
 <span class="c1">// Add user</span>
 <span class="n">User</span> <span class="n">newUser</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">UserResources</span><span class="p">.</span><span class="nf">AddUser</span><span class="p">(</span>
@@ -24926,15 +25012,15 @@ only has read-only access to the sheet (for example, the user has viewer permiss
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
     <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify updated user properties</span>
-<span class="n">User</span> <span class="n">userSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">User</span><span class="p">.</span><span class="nf">UpdateUserBuilder</span><span class="p">(</span>
-    <span class="m">82349925918590</span><span class="p">,</span>             <span class="c1">// long userId</span>
-    <span class="k">true</span><span class="p">,</span>                       <span class="c1">// Nullable&lt;bool&gt; admin</span>
-    <span class="k">true</span><span class="p">)</span>                       <span class="c1">// Nullable&lt;bool&gt; licensedSheetCreator</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">User</span> <span class="n">userSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">User</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">82349925918590</span><span class="p">,</span>
+  <span class="n">Admin</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">LicensedSheetCreator</span> <span class="p">=</span> <span class="k">true</span>
+<span class="p">};</span>
 
 <span class="c1">// Update user</span>
 <span class="n">User</span> <span class="n">updatedUser</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">UserResources</span><span class="p">.</span><span class="nf">UpdateUser</span><span class="p">(</span>
-  <span class="m">82349925918590</span><span class="p">,</span>             <span class="c1">// long userId</span>
   <span class="n">userSpecification</span>
 <span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify updated user properties</span>
@@ -25244,7 +25330,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify workspace name</span>
-<span class="n">Workspace</span> <span class="n">workspaceSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Workspace</span><span class="p">.</span><span class="nf">CreateWorkspaceBuilder</span><span class="p">(</span><span class="s">"New workspace"</span><span class="p">).</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Workspace</span> <span class="n">workspaceSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Workspace</span> <span class="p">{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"New workspace"</span> <span class="p">};</span>
 
 <span class="c1">// Create workspace</span>
 <span class="n">Workspace</span> <span class="n">newWorkspace</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="nf">CreateWorkspace</span><span class="p">(</span><span class="n">workspaceSpecification</span><span class="p">);</span>
@@ -25595,13 +25681,16 @@ only has read-only access to the sheet (for example, the user has viewer permiss
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Specify updated workspace name</span>
-<span class="n">Workspace</span> <span class="n">workspaceSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Workspace</span><span class="p">.</span><span class="nf">UpdateWorkspaceBuilder</span><span class="p">(</span>
-    <span class="m">7960873114331012</span><span class="p">,</span>           <span class="c1">// long workspaceId</span>
-    <span class="s">"Updated workspace"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+<span class="n">Workspace</span> <span class="n">workspaceSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Workspace</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">7960873114331012</span><span class="p">,</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"Updated Workspace"</span>
+<span class="p">};</span>
 
 <span class="c1">// Update workspace</span>
-<span class="n">Workspace</span> <span class="n">updatedWorkspace</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="nf">UpdateWorkspace</span><span class="p">(</span><span class="n">workspaceSpecification</span><span class="p">);</span>
+<span class="n">Workspace</span> <span class="n">updatedWorkspace</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WorkspaceResources</span><span class="p">.</span><span class="nf">UpdateWorkspace</span><span class="p">(</span>
+  <span class="n">workspaceSpecification</span>
+<span class="p">);</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify updated workspace properties</span>
 <span class="n">Workspace</span> <span class="n">workspaceSpecification</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Workspace</span><span class="o">.</span><span class="na">UpdateWorkspaceBuilder</span><span class="o">()</span>
   <span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"Updated workspace"</span><span class="o">)</span>
@@ -27924,13 +28013,15 @@ Use this information to implement error handling logic according to the followin
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Webhook specification</span>
-<span class="n">Webhook</span> <span class="n">webhook</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Webhook</span><span class="p">();</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Name</span> <span class="p">=</span> <span class="s">"Webhook #4"</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">CallbackUrl</span> <span class="p">=</span> <span class="s">"https://www.myApp.com/webhooks"</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Scope</span> <span class="p">=</span> <span class="s">"sheet"</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">ScopeObjectId</span> <span class="p">=</span> <span class="m">3285357287499652</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Events</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"*.*"</span> <span class="p">};</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Version</span> <span class="p">=</span> <span class="m">1</span><span class="p">;</span>
+<span class="n">Webhook</span> <span class="n">webhook</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Webhook</span>
+<span class="p">{</span>
+  <span class="n">Name</span> <span class="p">=</span> <span class="s">"Webhook #4"</span><span class="p">,</span>
+  <span class="n">CallbackUrl</span> <span class="p">=</span> <span class="s">"https://www.myApp.com/webhooks"</span><span class="p">,</span>
+  <span class="n">Scope</span> <span class="p">=</span> <span class="s">"sheet"</span><span class="p">,</span>
+  <span class="n">ScopeObjectId</span> <span class="p">=</span> <span class="m">3285357287499652</span><span class="p">,</span>
+  <span class="n">Events</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"*.*"</span> <span class="p">},</span>
+  <span class="n">Version</span> <span class="p">=</span> <span class="m">1</span>
+<span class="p">};</span>
 
 <span class="c1">// Create Webhook</span>
 <span class="n">Webhook</span> <span class="n">newWebhook</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WebhookResources</span><span class="p">.</span><span class="nf">CreateWebhook</span><span class="p">(</span>
@@ -28376,11 +28467,13 @@ Items in the response are ordered by API Client name &gt; Webhook name &gt; crea
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
   <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Webhook specification</span>
-<span class="n">Webhook</span> <span class="n">webhook</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Webhook</span><span class="p">();</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Id</span> <span class="p">=</span> <span class="m">8444254503626628</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">CallbackUrl</span> <span class="p">=</span> <span class="s">"https://www.myApp.com/webhooks"</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Version</span> <span class="p">=</span> <span class="m">1</span><span class="p">;</span>
-<span class="n">webhook</span><span class="p">.</span><span class="n">Enabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+<span class="n">Webhook</span> <span class="n">webhook</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Webhook</span>
+<span class="p">{</span>
+  <span class="n">Id</span> <span class="p">=</span> <span class="m">8444254503626628</span><span class="p">,</span>
+  <span class="n">CallbackUrl</span> <span class="p">=</span> <span class="s">"https://www.myApp.com/webhooks"</span><span class="p">,</span>
+  <span class="n">Version</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span>
+  <span class="n">Enabled</span> <span class="p">=</span> <span class="k">true</span>
+<span class="p">}</span>
 
 <span class="c1">// Update Webhook</span>
 <span class="n">Webhook</span> <span class="n">updatedWebhook</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">WebhookResources</span><span class="p">.</span><span class="nf">UpdateWebhook</span><span class="p">(</span>
