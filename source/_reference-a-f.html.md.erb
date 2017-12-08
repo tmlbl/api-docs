@@ -1707,6 +1707,346 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 
 <aside class="notice">To retrieve a download URL for a file attachment, use the Get Attachment operation for the specific version you want to download.</aside>
 
+# Automation Rules
+
+Overview text
+
+## <%= OBJECTS %>
+
+### AutomationRule Object
+
+> Example AutomationRule Object:
+
+```json
+{
+	"id": 6755404643362692,
+	"name": "Approval Request",
+	"action": { },
+	"enabled": true,
+	"createdBy": {
+		"name": "Test User",
+		"email": "test.user@smartsheet.com"
+	},
+	"createdAt": "2017-10-24T16:57:09Z",
+	"modifiedBy": {
+		"name": "Test User",
+		"email": "test.user@smartsheet.com"
+	},
+	"modifiedAt": "2017-10-24T16:57:09Z",
+	"userCanModify": true
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | number | AutomationRule Id
+**name** | string | Optional. Rule name as shown in the UI.
+**action** | [AutomationAction](#automationaction-object) | AutomationAction Object containing information, such as type, recipients, and frequency, for this rule.
+**enabled** | Boolean | Flag indicating whether the rule is active (value = `true`).
+**createdAt** | timestamp | A timestamp of when the rule was originally added
+**createdBy** | [User](#user-object) | User Object containing name and email of the creator of this rule.
+**modifiedAt** | timestamp | The datetime for when the change was made to the rule
+**modifiedBy** | [User](#user-object) | User Object containing the name and email of the User that made the change
+**userCanModify** | Boolean | Flag indicating whether current user can modify the rule (value = `true`).
+**disabledReasonText** | string | Human readable error string.
+**disabledReason** | string | See table of [Disabled Reasons](#disabled-reasons-for-automation-rules). 
+
+### AutomationAction Object
+
+> Example AutomationAction Object:
+
+```json
+{
+	"action": {
+		"type": "APPROVAL_REQUEST_ACTION",
+		"recipientColumnIds": [
+			2819152916309892
+		],
+		"frequency": "IMMEDIATELY",
+		"includeAllColumns": true,
+		"includeAttachments": true,
+		"includeDiscussions": true,
+		"notifyAllSharedUsers": false
+	}
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**type** | string | One of three types: `APPROVAL_REQUEST_ACTION`, `NOTIFICATION_ACTION`, or `UPDATE_REQUEST_ACTION`.
+**recipients** | [Recipient](#recipient-object) | Array of Recipient Objects. The type can contain an email object or group id. But currently only email addresses are allowed.
+**recipientColumnIds** | long[] | Array of column Ids from which to collect email recipients.
+**notifyAllSharedUsers** | Boolean | If `true`, notifications are sent to all users shared to the sheet. 
+**frequency** | string | Values are one of the following: `DAILY`, `HOURLY`, `IMMEDIATELY`, or `WEEKLY`.
+**subject** | string | Email subject line.
+**message** | string | Email body.
+**includedColumnIds | long[] | Array of column ids to specify inclusion in message contents.
+**includeAllColumns | Boolean | If `true` (default), all columns are included in email contents.
+**includeAttachments** | Boolean | If `true`, includes attachments.
+**includeDiscussions** | Boolean | If `true`, includes discussions.
+
+<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per request.</aside>
+
+## Delete an Automation Rule
+
+> Example Request: Delete an Automation Rule
+
+```shell
+// Todo
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+// Todo
+```
+
+`DELETE /sheets/{sheetId}/automationrules/{automationRuleId}`
+
+Deletes an automation rule.
+
+## Get an Automation Rule
+
+> Example Request: Get an Automation Rule
+
+```shell
+// Todo
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+// Todo
+```
+
+`GET /sheets/{sheetId}/automationrules/{automationRuleId}`
+
+Returns a fully populated AutomationRule, including the action value.
+
+## List All Automation Rules
+
+> Example Request: List All Automation Rules
+
+```shell
+// Todo
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+{
+  "pageNumber": 1,
+  "pageSize": 100,
+  "totalPages": 1,
+  "totalCount": 3,
+  "data": [
+    {
+      "id": 6755404643362692,
+      "name": "Approval Request",
+      "action": {
+        "type": "APPROVAL_REQUEST_ACTION",
+        "recipientColumnIds": [
+          2819152916309892
+        ],
+        "frequency": "IMMEDIATELY",
+        "includeAllColumns": true,
+        "includeAttachments": true,
+        "includeDiscussions": true,
+        "notifyAllSharedUsers": false
+      },
+      "enabled": true,
+      "createdBy": {
+        "name": "Test User",
+        "email": "test.user@smartsheet.com"
+      },
+      "createdAt": "2017-10-24T16:57:09Z",
+      "modifiedBy": {
+        "name": "Test User",
+        "email": "test.user@smartsheet.com"
+      },
+      "modifiedAt": "2017-10-24T16:57:09Z",
+      "userCanModify": true
+    },
+    {
+        "id": 4503604829677444,
+        "name": "Notification",
+        "action": {
+          "type": "NOTIFICATION_ACTION",
+          "recipients": [
+            {
+              "email": "test.user@smartsheet.com"
+            }
+          ],
+          "frequency": "DAILY",
+          "includedColumnIds": [
+            1192857230959501
+          ],
+          "includeAllColumns": false,
+          "includeAttachments": true,
+          "includeDiscussions": true,
+          "notifyAllSharedUsers": false
+        },
+        "enabled": true,
+        "createdBy": {
+          "name": "Test User",
+          "email": "test.user@smartsheet.com"
+        },
+        "createdAt": "2017-10-24T15:58:41Z",
+        "modifiedBy": {
+          "name": "Test User",
+          "email": "test.user@smartsheet.com"
+        },
+        "modifiedAt": "2017-10-24T16:42:02Z",
+        "userCanModify": true
+    },
+    {
+      "id": 2251805015992196,
+      "name": "Approval Request",
+      "action": {
+        "type": "APPROVAL_REQUEST_ACTION",
+        "recipientColumnIds": [
+          2819152916309892
+        ],
+        "frequency": "IMMEDIATELY",
+        "includeAllColumns": true,
+        "includeAttachments": true,
+        "includeDiscussions": true,
+        "notifyAllSharedUsers": false
+      },
+      "enabled": true,
+      "createdBy": {
+        "name": "Test User",
+        "email": "test.user@smartsheet.com"
+      },
+      "createdAt": "2017-10-24T16:12:17Z",
+      "modifiedBy": {
+        "name": "Test User",
+        "email": "test.user@smartsheet.com"
+      },
+      "modifiedAt": "2017-10-24T16:27:26Z",
+      "userCanModify": true
+    }
+  ]
+}
+```
+
+`GET /sheets/{sheetId}/automationrules`
+
+Returns all AutomationRules associated with the specified sheet. 
+Note: These objects are fully populated, including a fully inflated action property. When we add the trigger and condition, it will be omitted from this result.
+
+## Update an Automation Rule
+
+> Example Request: Update an Automation Rule
+
+```shell
+// Todo
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+// Todo
+```
+
+`PUT /sheets/{sheetId}/automationrules/{automationRuleId}`
+
+Updates an existing automation rule. Only Name, action, status, and enabled can be changed.
+
+## <%= RELATED %>
+
+### Disabled Reasons for Automation Rules
+
+     |     |
+-----|-----|
+APPROVAL_COLUMN_MISSING | This rule''s approval status column has been deleted.
+APPROVAL_COLUMN_WRONG_TYPE | The approval column must be a dropdown column.
+AUTOMATION_NOT_ENABLED_FOR_ORG | To create or edit automated actions, you need to upgrade your account to a Business or Enterprise plan.
+COLUMN_MISSING | A column referenced by this rule has been deleted.
+COLUMN_TYPE_INCOMPATIBLE | A column referenced by this rule has been changed to an incompatible column type.
+NO_POTENTIAL_RECIPIENTS | This rule has no recipients that will be able to receive notifications based on this sheet's permission settings or this account's approved domain sharing list.
+NO_VALID_SELECTED_COLUMNS | All selected columns for this rule have been deleted.
+
 # Cells
 
 A collection of Cells comprises each Row in a Sheet.
