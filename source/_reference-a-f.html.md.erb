@@ -1780,19 +1780,19 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 **frequency** | string | Values are one of the following: `DAILY`, `HOURLY`, `IMMEDIATELY`, or `WEEKLY`.
 **subject** | string | Email subject line.
 **message** | string | Email body.
-**includedColumnIds | long[] | Array of column ids to specify inclusion in message contents.
-**includeAllColumns | Boolean | If `true` (default), all columns are included in email contents.
+**includedColumnIds** | long[] | Array of column ids to specify inclusion in message contents.
+**includeAllColumns** | Boolean | If `true` (default), all columns are included in email contents.
 **includeAttachments** | Boolean | If `true`, includes attachments.
 **includeDiscussions** | Boolean | If `true`, includes discussions.
-
-<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per request.</aside>
 
 ## Delete an Automation Rule
 
 > Example Request: Delete an Automation Rule
 
 ```shell
-// Todo
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X DELETE
 ```
 
 ```javascript
@@ -1818,19 +1818,29 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 > Example Response:
 
 ```json
-// Todo
+{
+  "message": "SUCCESS",
+  "resultCode": 0
+}
 ```
 
 `DELETE /sheets/{sheetId}/automationrules/{automationRuleId}`
 
 Deletes an automation rule.
 
+     |     |
+-----|-----|
+<%= SCOPE %> | ?? WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result Object](#result-object)
+
 ## Get an Automation Rule
 
 > Example Request: Get an Automation Rule
 
 ```shell
-// Todo
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
 ```javascript
@@ -1856,19 +1866,42 @@ Deletes an automation rule.
 > Example Response:
 
 ```json
-// Todo
+{
+	"id": 6755404643362692,
+	"name": "Approval Request",
+	"action": { },
+	"enabled": true,
+	"createdBy": {
+		"name": "Test User",
+		"email": "test.user@smartsheet.com"
+	},
+	"createdAt": "2017-10-24T16:57:09Z",
+	"modifiedBy": {
+		"name": "Test User",
+		"email": "test.user@smartsheet.com"
+	},
+	"modifiedAt": "2017-10-24T16:57:09Z",
+	"userCanModify": true
+}
 ```
 
 `GET /sheets/{sheetId}/automationrules/{automationRuleId}`
 
 Returns a fully populated AutomationRule, including the action value.
 
+     |     |
+-----|-----|
+<%= SCOPE %> | ?? READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [AutomationRule Object](#automationrule-object).
+
 ## List All Automation Rules
 
 > Example Request: List All Automation Rules
 
 ```shell
-// Todo
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
 ```javascript
@@ -1995,12 +2028,24 @@ Returns a fully populated AutomationRule, including the action value.
 Returns all AutomationRules associated with the specified sheet. 
 Note: These objects are fully populated, including a fully inflated action property. When we add the trigger and condition, it will be omitted from this result.
 
+<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ?? READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [AutomationRule Objects](#automationrule-object)
+
 ## Update an Automation Rule
 
 > Example Request: Update an Automation Rule
 
 ```shell
-// Todo
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X PUT \
+-d '{ .. }'
 ```
 
 ```javascript
@@ -2026,12 +2071,25 @@ Note: These objects are fully populated, including a fully inflated action prope
 > Example Response:
 
 ```json
-// Todo
+{
+  "message": "SUCCESS",
+  "result": { .. },
+  "resultCode": 0
+}
 ```
 
 `PUT /sheets/{sheetId}/automationrules/{automationRuleId}`
 
 Updates an existing automation rule. Only Name, action, status, and enabled can be changed.
+
+<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per request.</aside>
+
+     |     |
+-----|-----|
+<%= SCOPE %> | ?? ADMIN_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | An [AutomationRule Object](#automationrule-object) that contains ...
+<%= RETURNS %> | [Result object](#result-object) containing the [AutomationRule Object](#automationrule-object) that was modified
 
 ## <%= RELATED %>
 
