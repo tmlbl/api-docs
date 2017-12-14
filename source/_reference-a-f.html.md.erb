@@ -1758,8 +1758,8 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 **modifiedAt** | timestamp | The datetime for when the change was made to the rule.
 **modifiedBy** | [User](#user-object) | User Object containing the name and email of the User that made the change.
 **userCanModify** | Boolean | If `true`, indicates whether the current user can modify the rule.
-**disabledReasonText** | string | Human readable error string.
-**disabledReason** | string | Descriptive text for error. See table of [Disabled Reasons](#disabled-reasons-for-automation-rules). 
+**disabledReasonText** | string | Descriptive reason a rule is disabled.
+**disabledReason** | string | Machine-readable reason a rule is disabled. See table of [Disabled Reasons](#disabled-reasons-for-automation-rules). 
 
 ### AutomationAction Object
 
@@ -1784,18 +1784,18 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
      |     |     |
 -----|-----|-----|
 **type** | string | One of three types: `APPROVAL_REQUEST_ACTION`, `NOTIFICATION_ACTION`, or `UPDATE_REQUEST_ACTION`.
-**recipients** | [Recipient](#recipient-object) | Array of Recipient Objects. The type can contain an email object or group id. But currently only email addresses are allowed.
+**recipients** | [Recipient](#recipient-object) | Array of Recipient Objects that contains one or more [Email Objects](#email-object).
 **recipientColumnIds** | long[] | Array of column Ids from which to collect email recipients.
 **notifyAllSharedUsers** | Boolean | If `true`, notifications are sent to all users shared to the sheet. 
-**frequency** | string | Values are one of the following: `DAILY`, `HOURLY`, `IMMEDIATELY`, or `WEEKLY`.
+**frequency** | string | Must be one of the following values: `DAILY`, `HOURLY`, `IMMEDIATELY`, or `WEEKLY`.
 **subject** | string | Email subject line.
 **message** | string | Email body.
-**includedColumnIds** | long[] | Array of column Ids to specify inclusion in message contents.
+**includedColumnIds** | long[] | Specifies which columns to include in message.
 **includeAllColumns** | Boolean | If `true` (default), all columns are included in email contents.
 **includeAttachments** | Boolean | If `true`, includes attachments.
 **includeDiscussions** | Boolean | If `true`, includes discussions.
 
-<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per request.</aside>
+<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per AutomationRule Object.</aside>
 
 ## Delete an Automation Rule
 
@@ -2102,7 +2102,7 @@ Updates an existing automation rule.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | An [AutomationRule Object](#automationrule-object). Note: you must specify `action.type` and it must match the existing rule type to send a `PUT` for this endpoint.
+<%= REQUEST %> | An [AutomationRule Object](#automationrule-object). When sending an AutomationRule, you must always specify `action.type` and it must match the existing rule type.
 <%= RETURNS %> | The [AutomationRule Object](#automationrule-object) that was modified
 
 ## <%= RELATED %>
