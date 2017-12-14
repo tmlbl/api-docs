@@ -1719,21 +1719,31 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 
 ```json
 {
-	"id": 6755404643362692,
-	"name": "Approval Request",
-	"action": { },
-	"enabled": true,
-	"createdBy": {
-		"name": "Test User",
-		"email": "test.user@smartsheet.com"
-	},
-	"createdAt": "2017-10-24T16:57:09Z",
-	"modifiedBy": {
-		"name": "Test User",
-		"email": "test.user@smartsheet.com"
-	},
-	"modifiedAt": "2017-10-24T16:57:09Z",
-	"userCanModify": true
+  "id": 789994550205316,
+  "name": "Approval Request",
+  "enabled": true,
+  "createdBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "createdAt": "2017-12-14T18:31:55Z",
+  "modifiedBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "modifiedAt": "2017-12-14T18:31:55Z",
+  "userCanModify": true,
+  "action": {
+    "type": "APPROVAL_REQUEST_ACTION",
+    "recipients": [
+      {
+        "email": "jane.roe@smartsheet.com"
+      }
+    ],
+    "frequency": "IMMEDIATELY",
+    "includeAllColumns": true,
+    "includeAttachments": true,
+    "includeDiscussions": true,
+    "notifyAllSharedUsers": false
+  }
 }
 ```
 
@@ -1757,17 +1767,17 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 
 ```json
 {
-	"action": {
-		"type": "APPROVAL_REQUEST_ACTION",
-		"recipientColumnIds": [
-			2819152916309892
-		],
-		"frequency": "IMMEDIATELY",
-		"includeAllColumns": true,
-		"includeAttachments": true,
-		"includeDiscussions": true,
-		"notifyAllSharedUsers": false
-	}
+  "type": "APPROVAL_REQUEST_ACTION",
+  "recipients": [
+    {
+      "email": "jane.roe@smartsheet.com"
+    }
+  ],
+  "frequency": "IMMEDIATELY",
+  "includeAllColumns": true,
+  "includeAttachments": true,
+  "includeDiscussions": true,
+  "notifyAllSharedUsers": false
 }
 ```
 
@@ -1784,6 +1794,8 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 **includeAllColumns** | Boolean | If `true` (default), all columns are included in email contents.
 **includeAttachments** | Boolean | If `true`, includes attachments.
 **includeDiscussions** | Boolean | If `true`, includes discussions.
+
+<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per request.</aside>
 
 ## Delete an Automation Rule
 
@@ -1867,27 +1879,37 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automation
 
 ```json
 {
-	"id": 6755404643362692,
-	"name": "Approval Request",
-	"action": { },
-	"enabled": true,
-	"createdBy": {
-		"name": "Test User",
-		"email": "test.user@smartsheet.com"
-	},
-	"createdAt": "2017-10-24T16:57:09Z",
-	"modifiedBy": {
-		"name": "Test User",
-		"email": "test.user@smartsheet.com"
-	},
-	"modifiedAt": "2017-10-24T16:57:09Z",
-	"userCanModify": true
+  "id": 789994550205316,
+  "name": "Approval Request",
+  "enabled": true,
+  "createdBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "createdAt": "2017-12-14T18:31:55Z",
+  "modifiedBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "modifiedAt": "2017-12-14T18:31:55Z",
+  "userCanModify": true,
+  "action": {
+    "type": "APPROVAL_REQUEST_ACTION",
+    "recipients": [
+      {
+        "email": "jane.roe@smartsheet.com"
+      }
+    ],
+    "frequency": "IMMEDIATELY",
+    "includeAllColumns": true,
+    "includeAttachments": true,
+    "includeDiscussions": true,
+    "notifyAllSharedUsers": false
+  }
 }
 ```
 
 `GET /sheets/{sheetId}/automationrules/{automationRuleId}`
 
-Returns a fully populated AutomationRule, including the action value.
+Returns the specified automation rule, including any action values.
 
      |     |
 -----|-----|
@@ -1931,93 +1953,61 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules \
   "pageNumber": 1,
   "pageSize": 100,
   "totalPages": 1,
-  "totalCount": 3,
+  "totalCount": 2,
   "data": [
     {
-      "id": 6755404643362692,
+      "id": 789994550205316,
       "name": "Approval Request",
+      "enabled": true,
+      "createdBy": {
+        "email": "john.doe@smartsheet.com"
+      },
+      "createdAt": "2017-12-14T18:31:55Z",
+      "modifiedBy": {
+        "email": "john.doe@smartsheet.com"
+      },
+      "modifiedAt": "2017-12-14T18:31:55Z",
+      "userCanModify": true,
       "action": {
         "type": "APPROVAL_REQUEST_ACTION",
-        "recipientColumnIds": [
-          2819152916309892
+        "recipients": [
+          {
+            "email": "jane.roe@smartsheet.com"
+          }
         ],
         "frequency": "IMMEDIATELY",
         "includeAllColumns": true,
         "includeAttachments": true,
         "includeDiscussions": true,
         "notifyAllSharedUsers": false
-      },
+      }
+    },
+    {
+      "id": 3377755522834820,
+      "name": "Notification",
       "enabled": true,
       "createdBy": {
-        "name": "Test User",
-        "email": "test.user@smartsheet.com"
+        "email": "john.doe@smartsheet.com"
       },
-      "createdAt": "2017-10-24T16:57:09Z",
+      "createdAt": "2017-12-14T18:31:37Z",
       "modifiedBy": {
-        "name": "Test User",
-        "email": "test.user@smartsheet.com"
+        "email": "john.doe@smartsheet.com"
       },
-      "modifiedAt": "2017-10-24T16:57:09Z",
-      "userCanModify": true
-    },
-    {
-        "id": 4503604829677444,
-        "name": "Notification",
-        "action": {
-          "type": "NOTIFICATION_ACTION",
-          "recipients": [
-            {
-              "email": "test.user@smartsheet.com"
-            }
-          ],
-          "frequency": "DAILY",
-          "includedColumnIds": [
-            1192857230959501
-          ],
-          "includeAllColumns": false,
-          "includeAttachments": true,
-          "includeDiscussions": true,
-          "notifyAllSharedUsers": false
-        },
-        "enabled": true,
-        "createdBy": {
-          "name": "Test User",
-          "email": "test.user@smartsheet.com"
-        },
-        "createdAt": "2017-10-24T15:58:41Z",
-        "modifiedBy": {
-          "name": "Test User",
-          "email": "test.user@smartsheet.com"
-        },
-        "modifiedAt": "2017-10-24T16:42:02Z",
-        "userCanModify": true
-    },
-    {
-      "id": 2251805015992196,
-      "name": "Approval Request",
+      "modifiedAt": "2017-12-14T18:31:37Z",
+      "userCanModify": true,
       "action": {
-        "type": "APPROVAL_REQUEST_ACTION",
-        "recipientColumnIds": [
-          2819152916309892
+        "type": "NOTIFICATION_ACTION",
+        "recipients": [
+          {
+            "email": "jane.roe@smartsheet.com"
+          }
         ],
-        "frequency": "IMMEDIATELY",
+        "frequency": "DAILY",
         "includeAllColumns": true,
         "includeAttachments": true,
         "includeDiscussions": true,
         "notifyAllSharedUsers": false
-      },
-      "enabled": true,
-      "createdBy": {
-        "name": "Test User",
-        "email": "test.user@smartsheet.com"
-      },
-      "createdAt": "2017-10-24T16:12:17Z",
-      "modifiedBy": {
-        "name": "Test User",
-        "email": "test.user@smartsheet.com"
-      },
-      "modifiedAt": "2017-10-24T16:27:26Z",
-      "userCanModify": true
+      }
     }
   ]
 }
@@ -2025,16 +2015,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules \
 
 `GET /sheets/{sheetId}/automationrules`
 
-Returns all AutomationRules associated with the specified sheet. 
-
-<aside class="notice"><%= SUPPORTS_PAGING %></aside>
+Returns all automation rules associated with the specified sheet. 
 
      |     |
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
-<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [AutomationRule Objects](#automationrule-object)
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [AutomationRule Objects](#automationrule-object).
 
 ## Update an Automation Rule
 
@@ -2044,7 +2031,15 @@ Returns all AutomationRules associated with the specified sheet.
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -X PUT \
--d '{ .. }'
+-d '{
+	"action": {
+		"type": "APPROVAL_REQUEST_ACTION",
+		"recipients": [{
+			"email": "john.doe@smartsheet.com"
+		}],
+		"frequency": "WEEKLY"
+	}
+}'
 ```
 
 ```javascript
@@ -2071,9 +2066,31 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automation
 
 ```json
 {
-  "message": "SUCCESS",
-  "result": { .. },
-  "resultCode": 0
+  "id": 789994550205316,
+  "name": "Approval Request",
+  "enabled": true,
+  "createdBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "createdAt": "2017-12-14T18:31:55Z",
+  "modifiedBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "modifiedAt": "2017-12-14T18:47:36Z",
+  "userCanModify": true,
+  "action": {
+    "type": "APPROVAL_REQUEST_ACTION",
+    "recipients": [
+      {
+        "email": "jane.roe@smartsheet.com"
+      }
+    ],
+    "frequency": "WEEKLY",
+    "includeAllColumns": true,
+    "includeAttachments": true,
+    "includeDiscussions": true,
+    "notifyAllSharedUsers": false
+  }
 }
 ```
 
@@ -2085,8 +2102,8 @@ Updates an existing automation rule.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | An [AutomationRule Object](#automationrule-object) that contains at least one of the following attributes:<ul><li>name (optional)</li><li>action (optional)</li><li>status (optional)</li><li>enabled (optional)</li></ul>
-<%= RETURNS %> | [Result object](#result-object) containing the [AutomationRule Object](#automationrule-object) that was modified
+<%= REQUEST %> | An [AutomationRule Object](#automationrule-object). Note: you must specify `action.type` and it must match the existing rule type to send a `PUT` for this endpoint.
+<%= RETURNS %> | The [AutomationRule Object](#automationrule-object) that was modified
 
 ## <%= RELATED %>
 
