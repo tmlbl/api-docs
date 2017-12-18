@@ -1768,33 +1768,35 @@ IList<Row> newRows = smartsheet.SheetResources.RowResources.AddRows(
 
 ```java
 // Specify cell values for first row
-List<Cell> cellsA = new Cell.AddRowCellsBuilder()
-  .addCell(
-    7960873114331012L,      // long cellId
-    true)                   // value
-  .addCell(
-    642523719853956L,       // long cellId for next column
-    "New status")
-  .build();
+List<Cell> rowACells = Arrays.asList(
+  new Cell(7960873114331012L)   // column Id
+    .setValue(true),
+  new Cell(642523719853956L)    // column Id
+    .setValue("New status")
+);
 
 // Specify contents of first row
-Row rowA = new Row.AddRowBuilder().setCells(cellsA).setToBottom(true).build();
+Row rowA = new Row();
+rowA.setCells(rowACells);
+rowA.setToBottom(true);
 
 // Specify cell values for second row
-List<Cell> cellsB = new Cell.AddRowCellsBuilder()
-  .addCell(
-    7960873114331012L,
-    true)
-  .addCell(
-    642523719853956L,
-    "New status")
-  .build();
+List<Cell> rowBCells = Arrays.asList(
+  new Cell(7960873114331012L)
+    .setValue(true),
+  new Cell(642523719853956L)
+    .setValue("New status")
+);
 
 // Specify contents of second row
-Row rowB = new Row.AddRowBuilder().setCells(cellsB).setToBottom(true).build();
+Row rowB = new Row();
+rowB.setCells(rowBCells);
+rowB.setToBottom(true);
 
 // Add rows to sheet
-List<Row> newRows = smartsheet.sheetResources().rowResources().addRows(sheetId, Arrays.asList(rowA, rowB));
+List<Row> newRows = smartsheet.sheetResources().rowResources().addRows(
+  1639534409607044L,    // sheet Id
+  Arrays.asList(rowA, rowB));
 ```
 
 ```python
@@ -6397,7 +6399,8 @@ PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(
 );
 
 // Sample 2: Specify pagination parameter 'includeAll' 
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+PaginationParameters parameters = new PaginationParameters();
+parameters.setIncludeAll(true);
 
 // Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
 PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
