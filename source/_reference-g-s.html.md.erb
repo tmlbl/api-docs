@@ -89,10 +89,14 @@ Group newGroup = smartsheet.GroupResources.CreateGroup(groupSpecification);
 
 ```java
 // Create group member
-GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder().setEmail("john.doe@smartsheet.com").build();
+GroupMember memberSpecification = new GroupMember();
+memberSpecification.setEmail("john.doe@smartsheet.com");
 
 // Add member to group
-Group groupSpecification = new Group.CreateGroupBuilder().setName("API-created Group").setDescription("Group created via API").setMembers(Arrays.asList(memberSpecification)).build();
+Group groupSpecification = new Group();
+groupSpecification.setName("API-created Group");
+groupSpecification.setDescription("Group created via API");
+groupSpecification.setMembers(Arrays.asList(memberSpecification));
 
 // Create group
 Group newGroup = smartsheet.groupResources().createGroup(groupSpecification);
@@ -456,11 +460,10 @@ Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
 
 ```java
 // Specify the name and description of the group
-Group groupSpecification = new Group.UpdateGroupBuilder()
-  .setId(2331373580117892L)               // long groupId
-  .setName("Renamed Group")
-  .setDescription("Some new description")
-  .build();
+Group groupSpecification = new Group();
+groupSpecification.setId(2331373580117892L);
+groupSpecification.setName("Renamed Group");
+groupSpecification.setDescription("Some new description");
 
 // Update group
 Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification);
@@ -603,7 +606,8 @@ IList<GroupMember> newMembers = smartsheet.GroupResources.AddGroupMembers(
 
 ```java
 // Create group member
-GroupMember memberSpecification = new GroupMember.AddGroupMemberBuilder().setEmail("jane.doe@smartsheet.com").build();
+GroupMember memberSpecification = new GroupMember();
+memberSpecification.setEmail("jane.doe@smartsheet.com");
 
 // Add members to group
 List<GroupMember> newMembers = smartsheet.groupResources().memberResources().addGroupMembers(
