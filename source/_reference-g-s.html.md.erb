@@ -1994,27 +1994,25 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToA
 
 ```java
 // Specify destination sheet
-CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder()
-  .setSheetId(2258256056870788L)                                  // long sheetId
-  .build();
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination();
+destination.setSheetId(2258256056870788L);
 
 // Specify rows to be copied (and destination sheet)
-CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder()
-  .setRowIds(Arrays.asList(145417762563972L, 8026717110462340L))  // long rowIds
-  .setTo(destination)
-  .build();
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective();
+directive.setRowIds(Arrays.asList(145417762563972L, 8026717110462340L));
+directive.setTo(destination);
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
-  4583173393803140L,                                              // long sheetId
-  null,                                                           // EnumSet<RowCopyInclusion> includes
-  true,                                                           // Boolean ignoreRowsNotFound
+  4583173393803140L,                        // long sheetId
+  null,                                     // EnumSet<RowCopyInclusion> includes
+  true,                                     // Boolean ignoreRowsNotFound
   directive
 );
 
 // Sample 2: Specify 'include' parameter with value of "CHILDREN", and 'ignoreRowsNotFound' parameter with value of 'true'
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
-  4583173393803140L,                                              // long sheetId
+  4583173393803140L,                        // long sheetId
   EnumSet.of(RowCopyInclusion.CHILDREN),
   true,
   directive
@@ -2345,15 +2343,13 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToA
 
 ```java
 // Specify destination sheet
-CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination.InsertCopyOrMoveRowDestinationBuilder()
-  .setSheetId(2258256056870788L)      // long sheetId
-  .build();
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination();
+destination.setSheetId(2258256056870788L);
 
 // Specify rows to be moved (and destination sheet)
-CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective.InsertCopyOrMoveRowDirectiveBuilder()
-  .setRowIds(Arrays.asList(145417762563972L, 8026717110462340L))
-  .setTo(destination)
-  .build();
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective();
+directive.setRowIds(Arrays.asList(145417762563972L, 8026717110462340L));
+directive.setTo(destination);
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
