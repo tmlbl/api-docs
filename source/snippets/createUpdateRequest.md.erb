@@ -82,17 +82,17 @@ smartsheet.sheets.createUpdateRequest(options)
 
 ```java
 // Specify recipients
-RecipientEmail recipientSpecification = new RecipientEmail.AddRecipientEmailBuilder()
-  .setEmail("recipient1@smartsheet.com")
-  .setEmail("recipient2@smartsheet.com")
-  .build();
+RecipientEmail recipientA = new RecipientEmail();
+recipientA.setEmail("recipient1@smartsheet.com");
 
-List<Recipient> recipients = new ArrayList<Recipient>();
-recipients.add(recipientSpecification);
+RecipientEmail recipientB = new RecipientEmail();
+recipientB.setEmail("recipient2@smartsheet.com");
+
+List<Recipient> recipients = Arrays.asList(recipientA,recipientB);
 
 // Specify parameters for update request
 UpdateRequest updateRequest = new UpdateRequest();
-updateRequest.setSendTo(recipientSpecification);
+updateRequest.setSendTo(recipients);
 updateRequest.setSubject("Sample Monthly Update Request");
 updateRequest.setMessage("Please update my online sheet.");
 updateRequest.setRowIds(Arrays.asList(3344087179913092L, 7847686807283588L));
