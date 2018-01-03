@@ -2514,33 +2514,30 @@ IList<Row> updatedRow = smartsheet.SheetResources.RowResources.UpdateRows(
 
 ```java
 // Specify updated cell values for first row
-List<Cell> cellsA = new Cell.UpdateRowCellsBuilder()
-  .addCell(7518312134403972L, "new value")        // long columnId
-  .addCell(1888812600190852L, "A")                // long columnId
-  .build();
+Cell cellA = new Cell(7518312134403972L);   // column Id
+cellA.setValue("new value");
 
-// Specify updated contents of first row
-Row rowA = new Row.UpdateRowBuilder()
-  .setCells(cellsA)
-  .setRowId(6572427401553796L)                    // long rowId
-  .build();
+Cell cellB = new Cell(6392412227561348L);   // column Id
+cellB.setValue(123);
+
+Row rowA = new Row(2068827774183300L);
+rowA.setCells(Arrays.asList(cellA,cellB));
 
 // Specify updated cell values for second row
-List<Cell> cellsB = new Cell.UpdateRowCellsBuilder()
-  .addCell(7518312134403972L, "desc_updated")     // long columnId
-  .addCell(1888812600190852L, "B")                // long columnId
-  .build();
+Cell cellC = new Cell(7518312134403972L);
+cellC.setValue("desc_updated");
 
-// Specify updated contents of second row
-Row rowB = new Row.UpdateRowBuilder()
-  .setCells(cellsB)
-  .setRowId(2068827774183300L)                    // long rowId
-  .build();
+Cell cellD = new Cell(6392412227561348L);
+cellD.setValue(456);
+
+Row rowB = new Row(6572427401553796L);
+rowB.setCells(Arrays.asList(cellC,cellD));
 
 // Update rows in sheet
 List<Row> updatedRows = smartsheet.sheetResources().rowResources().updateRows(
-  2068827774183300L,                              // long sheetId
-  Arrays.asList(rowA, rowB)
+  1639534409607044L,                      // long sheetId
+  Arrays.asList(rowA,rowB)
+);
 ```
 
 ```python
@@ -3360,10 +3357,11 @@ IList<Share> addressList = smartsheet.ReportResources.ShareResources.ShareTo(
 
 ```java
 // Specify share (to one user as Editor)
-List<Share> shareSpecification = Arrays.asList( new Share.CreateUserShareBuilder()
-  .setEmailAddress("jane.doe@smartsheet.com")
-  .setAccessLevel(AccessLevel.EDITOR)
-  .build());
+Share shareA = new Share();
+shareA.setEmail("jane.doe@smartsheet.com");
+shareA.setAccessLevel(AccessLevel.EDITOR);
+
+List<Share> shareSpecification = Arrays.asList(shareA);
 
 // Share report
 List<Share> addressList = smartsheet.reportResources().shareResources().shareTo(
