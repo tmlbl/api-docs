@@ -4614,11 +4614,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This text is the body of the first comment"
+};
 
-// Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = commentSpecification
+};
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(
@@ -4816,11 +4821,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This text is the body of the first comment"
+};
 
-// Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion with an attachment",
+  Comment = commentSpecification
+};
 
 // Add discussion (including comment with attachment) to sheet
 Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(
