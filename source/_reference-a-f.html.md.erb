@@ -583,11 +583,10 @@ Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.Attach
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
-  .setUrl("http://www.google.com")
-  .setAttachmentType(AttachmentType.LINK)
-  .setName("Search Engine")
-  .build();
+Attachment attachmentSpecification = new Attachment();
+attachmentSpecification.setUrl("http://www.google.com");
+attachmentSpecification.setAttachmentType(AttachmentType.LINK);
+attachmentSpecification.setName("Search Engine");
 
 // Attach URL to comment
 Attachment updatedAttachment = smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
@@ -696,12 +695,11 @@ Attachment updatedAttachment = smartsheet.SheetResources.RowResources.Attachment
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
-  .setUrl("http://www.google.com")
-  .setAttachmentType(AttachmentType.LINK)
-  .setName("Search Engine")
-  .setDescription("A popular search engine")
-  .build();
+Attachment attachmentSpecification = new Attachment();
+attachmentSpecification.setUrl("http://www.google.com");
+attachmentSpecification.setAttachmentType(AttachmentType.LINK);
+attachmentSpecification.setName("Search Engine");
+attachmentSpecification.setDescription("A popular search engine");
 
 // Attach URL to row
 Attachment updatedAttachment = smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
@@ -811,12 +809,12 @@ Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.Att
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
-  .setUrl("http://www.google.com")
-  .setAttachmentType(AttachmentType.LINK)
-  .setName("Search Engine")
-  .setDescription("A popular search engine")
-  .build();
+Attachment attachmentSpecification = new Attachment();
+attachmentSpecification.setUrl("http://www.google.com");
+attachmentSpecification.setAttachmentType(AttachmentType.LINK);
+attachmentSpecification.setName("Search Engine");
+attachmentSpecification.setDescription("A popular search engine");
+
 
 // Attach URL to sheet
 Attachment updatedAttachment = smartsheet.sheetResources().attachmentResources().attachUrl(
@@ -3150,19 +3148,17 @@ IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
 
 ```java
 // Create columns
-Column column1 = new Column.AddColumnToSheetBuilder()
-  .setTitle("New Picklist Column 1")
-  .setType(ColumnType.PICKLIST)
-  .setIndex(4)
-  .setOptions(Arrays.asList("First", "Second", "Third"))
-  .build();
+Column column1 = new Column();
+column1.setTitle("New Picklist Column 1");
+column1.setType(ColumnType.PICKLIST);
+column1.setIndex(4);
+column1.setOptions(Arrays.asList("First", "Second", "Third"));
 
-Column column2 = new Column.AddColumnToSheetBuilder()
-  .setTitle("New Date Column")
-  .setType(ColumnType.DATE)
-  .setValidation(true)
-  .setIndex(4)
-  .build();
+Column column2 = new Column();
+column2.setTitle("New Date Column");
+column2.setType(ColumnType.DATE);
+column2.setValidation(true);
+column2.setIndex(4);
 
 // Add columns to the sheet
 List<Column> newColumns = smartsheet.sheetResources().columnResources().addColumns(
@@ -3600,17 +3596,16 @@ Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
 
 ```java
 // Specify column properties
-Column columnSpecification = new Column.UpdateColumnBuilder()
-  .setColumnId(5005385858869124)         // long columnId
-  .setTitle("First Column")
-  .setIndex(0)
-  .setType(ColumnType.PICKLIST)
-  .setOptions(Arrays.asList("One", "Two"))
-  .build();
+Column columnSpecification = new Column();
+columnSpecification.setId(5005385858869124L);      // long columnId
+columnSpecification.setTitle("First Column");
+columnSpecification.setIndex(0);
+columnSpecification.setType(ColumnType.PICKLIST);
+columnSpecification.setOptions(Arrays.asList("One", "Two"));
 
 // Update column
 Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(
-  2252168947361668,   // sheetId
+  2252168947361668L,   // sheetId
   columnSpecification
 );
 ```
@@ -3847,7 +3842,8 @@ Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResour
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+Comment commentSpecification = new Comment();
+commentSpecification.setText("This is a new comment.");
 
 // Add comment to discussion
 Comment newComment = smartsheet.sheetResources().discussionResources().commentResources().addComment(
@@ -3921,8 +3917,9 @@ Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResour
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
-
+Comment commentSpecification = new Comment();
+commentSpecification.setText("This is a new comment.");
+        
 // Add comment (with attachment) to discussion
 File file = new File(filePath);
 smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(
@@ -4544,10 +4541,13 @@ Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionReso
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment();
+commentSpecification.setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion();
+discussionSpecification.setTitle("This is a new discussion");
+discussionSpecification.setComment(commentSpecification);
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4632,10 +4632,13 @@ Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionReso
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment();
+commentSpecification.setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion();
+discussionSpecification.setTitle("This is a new discussion");
+discussionSpecification.setComment(commentSpecification);
 
 // Set file path
 File file = new File(filePath);
@@ -4744,10 +4747,13 @@ Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateD
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment();
+commentSpecification.setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion();
+discussionSpecification.setTitle("This is a new discussion");
+discussionSpecification.setComment(commentSpecification);
 
 // Add discussion to sheet
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4827,10 +4833,14 @@ Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateD
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment();
+commentSpecification.setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion();
+discussionSpecification.setTitle("This is a new discussion");
+discussionSpecification.setComment(commentSpecification);
+
 File file = new File(filePath);
 
 // Add discussion (including comment with attachment) to sheet
@@ -5003,7 +5013,8 @@ PagedResult<Discussion> results = smartsheet.sheetResources().discussionResource
 );
 
 // Sample 2: Specify pagination parameter 'includeAll'
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+PaginationParameters parameters = new PaginationParameters();
+parameters.setIncludeAll(true);
 
 // List discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
 PagedResult<Discussion> results = smartsheet.sheetResources().discussionResources().listDiscussions(
@@ -5190,7 +5201,8 @@ PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().dis
 );
 
 // Sample 2: Specify pagination parameter 'includeAll'
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+PaginationParameters parameters = new PaginationParameters();
+parameters.setIncludeAll(true);
 
 // Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
 PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
