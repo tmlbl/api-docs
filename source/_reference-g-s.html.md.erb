@@ -93,10 +93,10 @@ GroupMember memberSpecification = new GroupMember();
 memberSpecification.setEmail("john.doe@smartsheet.com");
 
 // Add member to group
-Group groupSpecification = new Group();
-groupSpecification.setName("API-created Group");
-groupSpecification.setDescription("Group created via API");
-groupSpecification.setMembers(Arrays.asList(memberSpecification));
+Group groupSpecification = new Group()
+    .setDescription("Group created via API")
+    .setMembers(Arrays.asList(memberSpecification));
+  groupSpecification.setName("API-created Group");
 
 // Create group
 Group newGroup = smartsheet.groupResources().createGroup(groupSpecification);
@@ -460,11 +460,10 @@ Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
 
 ```java
 // Specify the name and description of the group
-Group groupSpecification = new Group();
-groupSpecification.setId(2331373580117892L);
-groupSpecification.setName("Renamed Group");
-groupSpecification.setDescription("Some new description");
-
+Group groupSpecification = new Group(2331373580117892L)
+    .setDescription("Some new description");
+  groupSpecification.setName("Renamed Group");
+        
 // Update group
 Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification);
 ```
@@ -1994,13 +1993,13 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.CopyRowsToA
 
 ```java
 // Specify destination sheet
-CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination();
-destination.setSheetId(2258256056870788L);
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination()
+  .setSheetId(2258256056870788L);
 
 // Specify rows to be copied (and destination sheet)
-CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective();
-directive.setRowIds(Arrays.asList(145417762563972L, 8026717110462340L));
-directive.setTo(destination);
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective()
+  .setRowIds(Arrays.asList(145417762563972L, 8026717110462340L))
+  .setTo(destination);
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().copyRows(
@@ -2343,13 +2342,13 @@ CopyOrMoveRowResult results = smartsheet.SheetResources.RowResources.MoveRowsToA
 
 ```java
 // Specify destination sheet
-CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination();
-destination.setSheetId(2258256056870788L);
+CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination()
+  .setSheetId(2258256056870788L);
 
 // Specify rows to be moved (and destination sheet)
-CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective();
-directive.setRowIds(Arrays.asList(145417762563972L, 8026717110462340L));
-directive.setTo(destination);
+CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective()
+  .setRowIds(Arrays.asList(145417762563972L, 8026717110462340L))
+  .setTo(destination);
 
 // Sample 1: Omit 'include' and 'ignoreRowsNotFound' parameters
 CopyOrMoveRowResult results = smartsheet.sheetResources().rowResources().moveRows(
@@ -2514,21 +2513,21 @@ IList<Row> updatedRow = smartsheet.SheetResources.RowResources.UpdateRows(
 
 ```java
 // Specify updated cell values for first row
-Cell cellA = new Cell(7518312134403972L);   // column Id
-cellA.setValue("new value");
+Cell cellA = new Cell(7518312134403972L)   // column Id
+  .setValue("new value");
 
-Cell cellB = new Cell(6392412227561348L);   // column Id
-cellB.setValue(123);
+Cell cellB = new Cell(6392412227561348L)   // column Id
+  .setValue(123);
 
 Row rowA = new Row(2068827774183300L);
 rowA.setCells(Arrays.asList(cellA,cellB));
 
 // Specify updated cell values for second row
-Cell cellC = new Cell(7518312134403972L);
-cellC.setValue("desc_updated");
+Cell cellC = new Cell(7518312134403972L)
+  .setValue("desc_updated");
 
-Cell cellD = new Cell(6392412227561348L);
-cellD.setValue(456);
+Cell cellD = new Cell(6392412227561348L)
+  .setValue(456);
 
 Row rowB = new Row(6572427401553796L);
 rowB.setCells(Arrays.asList(cellC,cellD));

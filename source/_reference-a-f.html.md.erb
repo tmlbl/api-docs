@@ -583,10 +583,10 @@ Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.Attach
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment();
-attachmentSpecification.setUrl("http://www.google.com");
-attachmentSpecification.setAttachmentType(AttachmentType.LINK);
-attachmentSpecification.setName("Search Engine");
+Attachment attachmentSpecification = new Attachment()
+    .setUrl("http://www.google.com")
+    .setAttachmentType(AttachmentType.LINK);
+  attachmentSpecification.setName("Search Engine");
 
 // Attach URL to comment
 Attachment updatedAttachment = smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
@@ -695,11 +695,11 @@ Attachment updatedAttachment = smartsheet.SheetResources.RowResources.Attachment
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment();
-attachmentSpecification.setUrl("http://www.google.com");
-attachmentSpecification.setAttachmentType(AttachmentType.LINK);
-attachmentSpecification.setName("Search Engine");
-attachmentSpecification.setDescription("A popular search engine");
+Attachment attachmentSpecification = new Attachment()
+    .setUrl("http://www.google.com")
+    .setAttachmentType(AttachmentType.LINK)
+    .setDescription("A popular search engine");
+  attachmentSpecification.setName("Search Engine");
 
 // Attach URL to row
 Attachment updatedAttachment = smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
@@ -809,12 +809,11 @@ Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.Att
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment();
-attachmentSpecification.setUrl("http://www.google.com");
-attachmentSpecification.setAttachmentType(AttachmentType.LINK);
-attachmentSpecification.setName("Search Engine");
-attachmentSpecification.setDescription("A popular search engine");
-
+Attachment attachmentSpecification = new Attachment()
+    .setUrl("http://www.google.com")
+    .setAttachmentType(AttachmentType.LINK)
+    .setDescription("A popular search engine");
+  attachmentSpecification.setName("Search Engine");
 
 // Attach URL to sheet
 Attachment updatedAttachment = smartsheet.sheetResources().attachmentResources().attachUrl(
@@ -2688,10 +2687,10 @@ smartsheet.SheetResources.RowResources.CellResources.AddImageToCell(
 
 ```java
 // Set options
-Image image = new Image();
-image.setAltText("Caution sign");
-image.setHeight(16L);
-image.setWidth(16L);
+Image image = new Image()
+  .setAltText("Caution sign")
+  .setHeight(16L)
+  .setWidth(16L);
 
 smartsheet.sheetResources().rowResources().cellResources().addImageToCell(
   1639534409607044L,      // sheetId
@@ -2953,8 +2952,8 @@ string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).Image
 
 ```java
 // Build list of image urls
-ImageUrl imageUrl = new ImageUrl();
-imageUrl.setImageId("jpbGklqdfZuL4Jw-kZhdZA");
+ImageUrl imageUrl = new ImageUrl()
+  .setImageId("jpbGklqdfZuL4Jw-kZhdZA");
 List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
 
 String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
@@ -3148,17 +3147,17 @@ IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
 
 ```java
 // Create columns
-Column column1 = new Column();
-column1.setTitle("New Picklist Column 1");
-column1.setType(ColumnType.PICKLIST);
-column1.setIndex(4);
-column1.setOptions(Arrays.asList("First", "Second", "Third"));
+Column column1 = new Column()
+  .setTitle("New Picklist Column 1")
+  .setType(ColumnType.PICKLIST)
+  .setIndex(4)
+  .setOptions(Arrays.asList("First", "Second", "Third"));
 
-Column column2 = new Column();
-column2.setTitle("New Date Column");
-column2.setType(ColumnType.DATE);
-column2.setValidation(true);
-column2.setIndex(4);
+Column column2 = new Column()
+  .setTitle("New Date Column")
+  .setType(ColumnType.DATE)
+  .setValidation(true)
+  .setIndex(4);
 
 // Add columns to the sheet
 List<Column> newColumns = smartsheet.sheetResources().columnResources().addColumns(
@@ -3596,12 +3595,11 @@ Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
 
 ```java
 // Specify column properties
-Column columnSpecification = new Column();
-columnSpecification.setId(5005385858869124L);      // long columnId
-columnSpecification.setTitle("First Column");
-columnSpecification.setIndex(0);
-columnSpecification.setType(ColumnType.PICKLIST);
-columnSpecification.setOptions(Arrays.asList("One", "Two"));
+Column columnSpecification = new Column(5005385858869124L)
+  .setTitle("First Column")
+  .setIndex(0)
+  .setType(ColumnType.PICKLIST)
+  .setOptions(Arrays.asList("One", "Two"));
 
 // Update column
 Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(
@@ -3842,8 +3840,8 @@ Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResour
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment();
-commentSpecification.setText("This is a new comment.");
+Comment commentSpecification = new Comment()
+  .setText("This is a new comment.");
 
 // Add comment to discussion
 Comment newComment = smartsheet.sheetResources().discussionResources().commentResources().addComment(
@@ -3917,8 +3915,8 @@ Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResour
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment();
-commentSpecification.setText("This is a new comment.");
+Comment commentSpecification = new Comment()
+  .setText("This is a new comment.");
         
 // Add comment (with attachment) to discussion
 File file = new File(filePath);
@@ -4541,13 +4539,13 @@ Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionReso
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment();
-commentSpecification.setText("This text is the body of the first comment");
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion();
-discussionSpecification.setTitle("This is a new discussion");
-discussionSpecification.setComment(commentSpecification);
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4637,13 +4635,13 @@ Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionReso
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment();
-commentSpecification.setText("This text is the body of the first comment");
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion();
-discussionSpecification.setTitle("This is a new discussion");
-discussionSpecification.setComment(commentSpecification);
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 // Set file path
 File file = new File(filePath);
@@ -4752,13 +4750,13 @@ Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateD
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment();
-commentSpecification.setText("This text is the body of the first comment");
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion();
-discussionSpecification.setTitle("This is a new discussion");
-discussionSpecification.setComment(commentSpecification);
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 // Add discussion to sheet
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4843,13 +4841,13 @@ Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateD
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment();
-commentSpecification.setText("This text is the body of the first comment");
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion();
-discussionSpecification.setTitle("This is a new discussion");
-discussionSpecification.setComment(commentSpecification);
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 File file = new File(filePath);
 
@@ -5023,8 +5021,8 @@ PagedResult<Discussion> results = smartsheet.sheetResources().discussionResource
 );
 
 // Sample 2: Specify pagination parameter 'includeAll'
-PaginationParameters parameters = new PaginationParameters();
-parameters.setIncludeAll(true);
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
 
 // List discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
 PagedResult<Discussion> results = smartsheet.sheetResources().discussionResources().listDiscussions(
@@ -5211,8 +5209,8 @@ PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().dis
 );
 
 // Sample 2: Specify pagination parameter 'includeAll'
-PaginationParameters parameters = new PaginationParameters();
-parameters.setIncludeAll(true);
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
 
 // Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
 PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
@@ -5348,9 +5346,9 @@ IList<Favorite> newFavorite = smartsheet.FavoriteResources.AddFavorites(favorite
 
 ```java
 // Specify favorites
-Favorite favoritesSpecification = new Favorite();
-favoritesSpecification.setObjectId(8400677765441412L);
-favoritesSpecification.setType(FavoriteType.SHEET);
+Favorite favoritesSpecification = new Favorite()
+  .setObjectId(8400677765441412L)
+  .setType(FavoriteType.SHEET);
 
 // Add items to favorites
 List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(Arrays.asList(favoritesSpecification));
@@ -6359,10 +6357,10 @@ Folder folder = smartsheet.FolderResources.CopyFolder(
 
 ```java
 // Specify destination
-ContainerDestination destination = new ContainerDestination();
-destination.setDestinationType(DestinationType.FOLDER);
-destination.setDestinationId(7960873114331012L);
-destination.setNewName("newFolderName");
+ContainerDestination destination = new ContainerDestination()
+  .setDestinationType(DestinationType.FOLDER)
+  .setDestinationId(7960873114331012L)
+  .setNewName("newFolderName");
 
 // Sample 1: Omit 'include' and 'skipRemap' parameters
 Folder folder = smartsheet.folderResources().copyFolder(
@@ -7137,9 +7135,9 @@ Folder folder = smartsheet.FolderResources.MoveFolder(
 
 ```java
 // Specify destination
-ContainerDestination destination = new ContainerDestination();
-destination.setDestinationType(DestinationType.FOLDER);
-destination.setDestinationId(7960873114331012L);
+ContainerDestination destination = new ContainerDestination()
+  .setDestinationType(DestinationType.FOLDER)
+  .setDestinationId(7960873114331012L);
 
 // Move folder
 Folder folder = smartsheet.folderResources().moveFolder(
@@ -7246,9 +7244,8 @@ Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecificati
 
 ```java
 // Set folder name and id of the folder to be updated
-Folder folderSpecification = new Folder();
+Folder folderSpecification = new Folder(7960873114331012L);
 folderSpecification.setName("New name for folder");
-folderSpecification.setId(7960873114331012L);
 
 // Update folder
 Folder updatedFolder = smartsheet.folderResources().updateFolder(folderSpecification);
