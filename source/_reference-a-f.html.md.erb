@@ -5338,14 +5338,12 @@ IList<Favorite> newFavorite = smartsheet.FavoriteResources.AddFavorites(favorite
 
 ```java
 // Specify favorites
-List<Favorite> favoritesSpecification = new Favorite.AddFavoriteBuilder()
-  .addFavorite(
-    8400677765441412L,       // long sheetId
-    FavoriteType.SHEET)
-  .build();
+Favorite favoritesSpecification = new Favorite();
+favoritesSpecification.setObjectId(8400677765441412L);
+favoritesSpecification.setType(FavoriteType.SHEET);
 
 // Add items to favorites
-List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(favoritesSpecification);
+List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(Arrays.asList(favoritesSpecification));
 ```
 
 ```python
@@ -6474,7 +6472,8 @@ Folder newFolder = smartsheet.HomeResources.FolderResources.CreateFolder(folderS
 
 ```java
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New Folder");
 
 // Create folder in "Sheets" folder (Home)
 Folder newFolder = smartsheet.homeResources().folderResources().createFolder(folderSpecification);
@@ -6549,7 +6548,8 @@ Folder newFolder = smartsheet.FolderResources.CreateFolder(
 
 ```java
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New Folder");
 
 // Create folder in another folder
 Folder newFolder = smartsheet.folderResources().createFolder(
@@ -6632,7 +6632,8 @@ Folder newFolder = smartsheet.WorkspaceResources.FolderResources.CreateFolder(
 
 ```java
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New Folder");
 
 // Create folder in a workspace
 Folder newFolder = smartsheet.workspaceResources().folderResources().createFolder(
@@ -7235,10 +7236,9 @@ Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecificati
 
 ```java
 // Set folder name and id of the folder to be updated
-Folder folderSpecification = new Folder.UpdateFolderBuilder()
-  .setName("New name for folder")
-  .setId(7960873114331012L)      // long folderId
-  .build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New name for folder");
+folderSpecification.setId(7960873114331012L);
 
 // Update folder
 Folder updatedFolder = smartsheet.folderResources().updateFolder(folderSpecification);
