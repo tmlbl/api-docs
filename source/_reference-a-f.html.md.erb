@@ -566,9 +566,12 @@ smartsheet.sheets.addCommentAttachment(options)
 	
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine"
+};
 
 // Attach URL to comment
 Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(
@@ -580,11 +583,10 @@ Attachment updatedAttachment = smartsheet.SheetResources.CommentResources.Attach
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
+Attachment attachmentSpecification = new Attachment();
+attachmentSpecification.setAttachmentType(AttachmentType.LINK)
   .setUrl("http://www.google.com")
-  .setAttachmentType(AttachmentType.LINK)
-  .setName("Search Engine")
-  .build();
+  .setName("Search Engine");
 
 // Attach URL to comment
 Attachment updatedAttachment = smartsheet.sheetResources().commentResources().attachmentResources().attachUrl(
@@ -676,10 +678,12 @@ smartsheet.sheets.addRowAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .SetDescription("A popular search engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine"
+};
 
 // Attach URL to row
 Attachment updatedAttachment = smartsheet.SheetResources.RowResources.AttachmentResources.AttachUrl(
@@ -691,12 +695,11 @@ Attachment updatedAttachment = smartsheet.SheetResources.RowResources.Attachment
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
+Attachment attachmentSpecification = new Attachment();
+attachmentSpecification.setAttachmentType(AttachmentType.LINK)
   .setUrl("http://www.google.com")
-  .setAttachmentType(AttachmentType.LINK)
-  .setName("Search Engine")
   .setDescription("A popular search engine")
-  .build();
+  .setName("Search Engine");
 
 // Attach URL to row
 Attachment updatedAttachment = smartsheet.sheetResources().rowResources().attachmentResources().attachUrl(
@@ -789,10 +792,13 @@ smartsheet.sheets.addAttachment(options)
 
 ```csharp
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder("http://www.google.com", AttachmentType.LINK)
-  .SetName("Search Engine")
-  .SetDescription("A popular search engine")
-  .Build();
+Attachment attachmentSpecification = new Attachment
+{
+  Url = "http://www.google.com",
+  AttachmentType = AttachmentType.LINK,
+  Name = "Search Engine",
+  Description = "A popular search engine"
+};
 
 // Attach URL to sheet
 Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.AttachUrl(
@@ -803,12 +809,11 @@ Attachment updatedAttachment = smartsheet.SheetResources.AttachmentResources.Att
 
 ```java
 // Create attachment
-Attachment attachmentSpecification = new Attachment.CreateAttachmentBuilder()
+Attachment attachmentSpecification = new Attachment();
+attachmentSpecification.setAttachmentType(AttachmentType.LINK)
   .setUrl("http://www.google.com")
-  .setAttachmentType(AttachmentType.LINK)
-  .setName("Search Engine")
   .setDescription("A popular search engine")
-  .build();
+  .setName("Search Engine");
 
 // Attach URL to sheet
 Attachment updatedAttachment = smartsheet.sheetResources().attachmentResources().attachUrl(
@@ -1699,6 +1704,418 @@ Gets a list of all versions of the given Attachment Id in order from newest to o
 
 <aside class="notice">To retrieve a download URL for a file attachment, use the Get Attachment operation for the specific version you want to download.</aside>
 
+# Automation Rules
+
+"Automation" is a catch-all term for approvals, notifications, and update requests. You can delete, update, or retrieve various automation settings through the API. You cannot create new automation rules programmatically. 
+
+## <%= OBJECTS %>
+
+### AutomationRule Object
+
+> Example AutomationRule Object:
+
+```json
+{
+  "id": 789994550205316,
+  "name": "Approval Request",
+  "enabled": true,
+  "createdBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "createdAt": "2017-12-14T18:31:55Z",
+  "modifiedBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "modifiedAt": "2017-12-14T18:31:55Z",
+  "userCanModify": true,
+  "action": {
+    "type": "APPROVAL_REQUEST_ACTION",
+    "recipients": [
+      {
+        "email": "jane.roe@smartsheet.com"
+      }
+    ],
+    "frequency": "IMMEDIATELY",
+    "includeAllColumns": true,
+    "includeAttachments": true,
+    "includeDiscussions": true,
+    "notifyAllSharedUsers": false
+  }
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | number | AutomationRule Id
+**name** | string | Rule name as shown in the UI.
+**action** | [AutomationAction](#automationaction-object) | AutomationAction Object containing information for this rule, such as type, recipients, and frequency.
+**enabled** | Boolean | If `true`, indicates that the rule is active.
+**createdAt** | timestamp | A timestamp of when the rule was originally added.
+**createdBy** | [User](#user-object) | User Object containing name and email of the creator of this rule.
+**modifiedAt** | timestamp | The datetime for when the change was made to the rule.
+**modifiedBy** | [User](#user-object) | User Object containing the name and email of the User that made the change.
+**userCanModify** | Boolean | If `true`, indicates whether the current user can modify the rule.
+**disabledReasonText** | string | Descriptive reason a rule is disabled.
+**disabledReason** | string | Machine-readable reason a rule is disabled. See table of [Disabled Reasons](#disabled-reasons-for-automation-rules). 
+
+### AutomationAction Object
+
+> Example AutomationAction Object:
+
+```json
+{
+  "type": "APPROVAL_REQUEST_ACTION",
+  "recipients": [
+    {
+      "email": "jane.roe@smartsheet.com"
+    }
+  ],
+  "frequency": "IMMEDIATELY",
+  "includeAllColumns": true,
+  "includeAttachments": true,
+  "includeDiscussions": true,
+  "notifyAllSharedUsers": false
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**type** | string | One of three types: `APPROVAL_REQUEST_ACTION`, `NOTIFICATION_ACTION`, or `UPDATE_REQUEST_ACTION`.
+**recipients** | [Recipient](#recipient-object) | Array of Recipient Objects that contains one or more [Email Objects](#email-object).
+**recipientColumnIds** | long[] | Array of column Ids from which to collect email recipients.
+**notifyAllSharedUsers** | Boolean | If `true`, notifications are sent to all users shared to the sheet. 
+**frequency** | string | Must be one of the following values: `DAILY`, `HOURLY`, `IMMEDIATELY`, or `WEEKLY`.
+**subject** | string | Email subject line.
+**message** | string | Email body.
+**includedColumnIds** | long[] | Specifies which columns to include in message.
+**includeAllColumns** | Boolean | If `true` (default), all columns are included in email contents.
+**includeAttachments** | Boolean | If `true`, includes attachments.
+**includeDiscussions** | Boolean | If `true`, includes discussions.
+
+<aside class="notice">Either recipientColumns, recipientEmails, or notifyAllSharedUsers may be specified, but not more than one per AutomationRule Object.</aside>
+
+## Delete an Automation Rule
+
+> Example Request: Delete an Automation Rule
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X DELETE
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0
+}
+```
+
+`DELETE /sheets/{sheetId}/automationrules/{automationRuleId}`
+
+Deletes an automation rule.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [Result Object](#result-object)
+
+## Get an Automation Rule
+
+> Example Request: Get an Automation Rule
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+{
+  "id": 789994550205316,
+  "name": "Approval Request",
+  "enabled": true,
+  "createdBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "createdAt": "2017-12-14T18:31:55Z",
+  "modifiedBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "modifiedAt": "2017-12-14T18:31:55Z",
+  "userCanModify": true,
+  "action": {
+    "type": "APPROVAL_REQUEST_ACTION",
+    "recipients": [
+      {
+        "email": "jane.roe@smartsheet.com"
+      }
+    ],
+    "frequency": "IMMEDIATELY",
+    "includeAllColumns": true,
+    "includeAttachments": true,
+    "includeDiscussions": true,
+    "notifyAllSharedUsers": false
+  }
+}
+```
+
+`GET /sheets/{sheetId}/automationrules/{automationRuleId}`
+
+Returns the specified automation rule, including any action values.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [AutomationRule Object](#automationrule-object).
+
+## List All Automation Rules
+
+> Example Request: List All Automation Rules
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+{
+  "pageNumber": 1,
+  "pageSize": 100,
+  "totalPages": 1,
+  "totalCount": 2,
+  "data": [
+    {
+      "id": 789994550205316,
+      "name": "Approval Request",
+      "enabled": true,
+      "createdBy": {
+        "email": "john.doe@smartsheet.com"
+      },
+      "createdAt": "2017-12-14T18:31:55Z",
+      "modifiedBy": {
+        "email": "john.doe@smartsheet.com"
+      },
+      "modifiedAt": "2017-12-14T18:31:55Z",
+      "userCanModify": true,
+      "action": {
+        "type": "APPROVAL_REQUEST_ACTION",
+        "recipients": [
+          {
+            "email": "jane.roe@smartsheet.com"
+          }
+        ],
+        "frequency": "IMMEDIATELY",
+        "includeAllColumns": true,
+        "includeAttachments": true,
+        "includeDiscussions": true,
+        "notifyAllSharedUsers": false
+      }
+    },
+    {
+      "id": 3377755522834820,
+      "name": "Notification",
+      "enabled": true,
+      "createdBy": {
+        "email": "john.doe@smartsheet.com"
+      },
+      "createdAt": "2017-12-14T18:31:37Z",
+      "modifiedBy": {
+        "email": "john.doe@smartsheet.com"
+      },
+      "modifiedAt": "2017-12-14T18:31:37Z",
+      "userCanModify": true,
+      "action": {
+        "type": "NOTIFICATION_ACTION",
+        "recipients": [
+          {
+            "email": "jane.roe@smartsheet.com"
+          }
+        ],
+        "frequency": "DAILY",
+        "includeAllColumns": true,
+        "includeAttachments": true,
+        "includeDiscussions": true,
+        "notifyAllSharedUsers": false
+      }
+    }
+  ]
+}
+```
+
+`GET /sheets/{sheetId}/automationrules`
+
+Returns all automation rules associated with the specified sheet. 
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [AutomationRule Objects](#automationrule-object).
+
+## Update an Automation Rule
+
+> Example Request: Update an Automation Rule
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/automationrules/{automationRuleId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X PUT \
+-d '{
+	"action": {
+		"type": "APPROVAL_REQUEST_ACTION",
+		"recipients": [{
+			"email": "john.doe@smartsheet.com"
+		}],
+		"frequency": "WEEKLY"
+	}
+}'
+```
+
+```javascript
+// Todo
+```
+	
+```csharp
+// Todo
+```
+
+```java
+// Todo
+```
+
+```python
+# Todo
+```
+
+```ruby
+# Todo
+```
+
+> Example Response:
+
+```json
+{
+  "id": 789994550205316,
+  "name": "Approval Request",
+  "enabled": true,
+  "createdBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "createdAt": "2017-12-14T18:31:55Z",
+  "modifiedBy": {
+    "email": "john.doe@smartsheet.com"
+  },
+  "modifiedAt": "2017-12-14T18:47:36Z",
+  "userCanModify": true,
+  "action": {
+    "type": "APPROVAL_REQUEST_ACTION",
+    "recipients": [
+      {
+        "email": "jane.roe@smartsheet.com"
+      }
+    ],
+    "frequency": "WEEKLY",
+    "includeAllColumns": true,
+    "includeAttachments": true,
+    "includeDiscussions": true,
+    "notifyAllSharedUsers": false
+  }
+}
+```
+
+`PUT /sheets/{sheetId}/automationrules/{automationRuleId}`
+
+Updates an existing automation rule.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | An [AutomationRule Object](#automationrule-object). When sending an AutomationRule, you must always specify `action.type` and it must match the existing rule type.
+<%= RETURNS %> | The [AutomationRule Object](#automationrule-object) that was modified
+
+## <%= RELATED %>
+
+### Disabled Reasons for Automation Rules
+
+     |     |
+-----|-----|
+APPROVAL_COLUMN_MISSING | This rule's approval status column has been deleted.
+APPROVAL_COLUMN_WRONG_TYPE | The approval column must be a dropdown column.
+AUTOMATION_NOT_ENABLED_FOR_ORG | To create or edit automated actions, you need to upgrade your account to a Business or Enterprise plan.
+COLUMN_MISSING | A column referenced by this rule has been deleted.
+COLUMN_TYPE_INCOMPATIBLE | A column referenced by this rule has been changed to an incompatible column type.
+NO_POTENTIAL_RECIPIENTS | This rule has no recipients that will be able to receive notifications based on this sheet's permission settings or this account's approved domain sharing list.
+NO_VALID_SELECTED_COLUMNS | All selected columns for this rule have been deleted.
+
 # Cells
 
 A collection of Cells comprises each Row in a Sheet.
@@ -2270,10 +2687,10 @@ smartsheet.SheetResources.RowResources.CellResources.AddImageToCell(
 
 ```java
 // Set options
-Image image = new Image();
-image.setAltText("Caution sign");
-image.setHeight(16L);
-image.setWidth(16L);
+Image image = new Image()
+  .setAltText("Caution sign")
+  .setHeight(16L)
+  .setWidth(16L);
 
 smartsheet.sheetResources().rowResources().cellResources().addImageToCell(
   1639534409607044L,      // sheetId
@@ -2535,8 +2952,8 @@ string temporaryUrl = smartsheet.ImageUrlResources.GetImageUrls(imageUrls).Image
 
 ```java
 // Build list of image urls
-ImageUrl imageUrl = new ImageUrl();
-imageUrl.setImageId("jpbGklqdfZuL4Jw-kZhdZA");
+ImageUrl imageUrl = new ImageUrl()
+  .setImageId("jpbGklqdfZuL4Jw-kZhdZA");
 List<ImageUrl> imageUrls = Arrays.asList(imageUrl);
 
 String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).getImageUrls().get(0).getUrl();
@@ -2705,12 +3122,21 @@ smartsheet.sheets.addColumn(options)
 
 ```csharp
 // Create a column
-Column columnA = new Column.AddColumnBuilder("New Picklist Column 1", 4, ColumnType.PICKLIST)
-  .SetOptions( new string[] { "First", "Second", "Third" })
-  .Build();
+Column columnA = new Column
+{
+  Title = "New Picklist Column 1",
+  Index = 4,
+  Type = ColumnType.PICKLIST,
+  Options = new string[] { "First", "Second", "Third" }
+};
 
 // Create another column
-Column columnB = new Column.AddColumnBuilder("New Date Column", 4, ColumnType.DATE).Build();
+Column columnB = new Column
+{
+  Title = "New Date Column",
+  Index = 4,
+  Type = ColumnType.DATE
+};
 
 // Add columns to the sheet
 IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
@@ -2721,19 +3147,17 @@ IList<Column> newColumns = smartsheet.SheetResources.ColumnResources.AddColumns(
 
 ```java
 // Create columns
-Column column1 = new Column.AddColumnToSheetBuilder()
+Column column1 = new Column()
   .setTitle("New Picklist Column 1")
   .setType(ColumnType.PICKLIST)
   .setIndex(4)
-  .setOptions(Arrays.asList("First", "Second", "Third"))
-  .build();
+  .setOptions(Arrays.asList("First", "Second", "Third"));
 
-Column column2 = new Column.AddColumnToSheetBuilder()
+Column column2 = new Column()
   .setTitle("New Date Column")
   .setType(ColumnType.DATE)
   .setValidation(true)
-  .setIndex(4)
-  .build();
+  .setIndex(4);
 
 // Add columns to the sheet
 List<Column> newColumns = smartsheet.sheetResources().columnResources().addColumns(
@@ -3153,14 +3577,15 @@ smartsheet.sheets.updateColumn(options)
 
 ```csharp
 // Specify column properties
-Column columnSpecification = new Column.UpdateColumnBuilder(
-      5005385858869124,   // columnId
-      "First Column",
-      0)                  // column index
-  .SetType(ColumnType.PICKLIST)
-  .SetOptions( new string[] { "One", "Two" })
-  .Build();
-
+Column columnSpecification = new Column
+{
+  Id = 5005385858869124,
+  Title = "First Column",
+  Index = 0,
+  Type = ColumnType.PICKLIST,
+  Options = new string[] { "One", "Two"}
+};
+            
 // Update column
 Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
   2252168947361668,   // sheetId
@@ -3170,17 +3595,15 @@ Column updatedColumn = smartsheet.SheetResources.ColumnResources.UpdateColumn(
 
 ```java
 // Specify column properties
-Column columnSpecification = new Column.UpdateColumnBuilder()
-  .setColumnId(5005385858869124)         // long columnId
+Column columnSpecification = new Column(5005385858869124L)
   .setTitle("First Column")
   .setIndex(0)
   .setType(ColumnType.PICKLIST)
-  .setOptions(Arrays.asList("One", "Two"))
-  .build();
+  .setOptions(Arrays.asList("One", "Two"));
 
 // Update column
 Column updatedColumn = smartsheet.sheetResources().columnResources().updateColumn(
-  2252168947361668,   // sheetId
+  2252168947361668L,   // sheetId
   columnSpecification
 );
 ```
@@ -3402,7 +3825,10 @@ smartsheet.sheets.addDiscussionComment(options)
 
 ```csharp
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This is a new comment."
+};
 
 // Add comment to discussion
 Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddComment(
@@ -3414,7 +3840,8 @@ Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResour
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
+Comment commentSpecification = new Comment()
+  .setText("This is a new comment.");
 
 // Add comment to discussion
 Comment newComment = smartsheet.sheetResources().discussionResources().commentResources().addComment(
@@ -3471,7 +3898,10 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 
 ```csharp
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This is a new comment.").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This is a new comment."
+};
 
 // Add comment (with attachment) to discussion
 Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResources.AddCommentWithAttachment(
@@ -3485,8 +3915,9 @@ Comment newComment = smartsheet.SheetResources.DiscussionResources.CommentResour
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This is a new comment.").build();
-
+Comment commentSpecification = new Comment()
+  .setText("This is a new comment.");
+        
 // Add comment (with attachment) to discussion
 File file = new File(filePath);
 smartsheet.sheetResources().discussionResources().commentResources().addCommentWithAttachment(
@@ -3593,9 +4024,11 @@ smartsheet.sheets.editComment(options)
 
 ```csharp
 // Specify edited comment properties
-Comment commentSpecification = new Comment();
-comment.Id = 7144101943502724;
-comment.Text = "This is the updated comment text";
+Comment commentSpecification = new Comment
+{
+  Id = 7144101943502724,
+  Text = "This is the updated comment text"
+}
 
 // Edit comment
 Comment updatedComment = smartsheet.SheetResources.DiscussionResources.CommentResources.UpdateComment(
@@ -4085,11 +4518,16 @@ smartsheet.sheets.createRowDiscussion(options)
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
-
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = new Comment
+    {
+      Text = "This text is the body of the first comment"
+    },
+  Comments = null         // workaround for SDK issue
+};
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussion(
@@ -4101,10 +4539,13 @@ Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionReso
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4171,11 +4612,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This text is the body of the first comment"
+};
 
-// Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = commentSpecification
+};
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(
@@ -4189,10 +4635,13 @@ Discussion newDiscussion = smartsheet.SheetResources.RowResources.DiscussionReso
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 // Set file path
 File file = new File(filePath);
@@ -4281,11 +4730,16 @@ smartsheet.sheets.createDiscussion(options)
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
-
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion",
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
+};
 
 // Add discussion to sheet
 Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(
@@ -4296,10 +4750,13 @@ Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateD
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
 
 // Add discussion to sheet
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4362,11 +4819,16 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 ```
 
 ```csharp
-// Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder("This text is the body of the first comment").Build();
+Comment commentSpecification = new Comment
+{
+  Text = "This text is the body of the first comment"
+};
 
-// Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder("This is a new discussion with an attachment", commentSpecification).Build();
+Discussion discussionSpecification = new Discussion
+{
+  Title = "This is a new discussion with an attachment",
+  Comment = commentSpecification
+};
 
 // Add discussion (including comment with attachment) to sheet
 Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(
@@ -4379,10 +4841,14 @@ Discussion newDiscussion = smartsheet.SheetResources.DiscussionResources.CreateD
 
 ```java
 // Create comment
-Comment commentSpecification = new Comment.AddCommentBuilder().setText("This text is the body of the first comment").build();
+Comment commentSpecification = new Comment()
+  .setText("This text is the body of the first comment");
 
 // Create discussion (including the comment)
-Discussion discussionSpecification = new Discussion.CreateDiscussionBuilder().setTitle("This is a new discussion").setComment(commentSpecification).build();
+Discussion discussionSpecification = new Discussion()
+  .setTitle("This is a new discussion")
+  .setComment(commentSpecification);
+
 File file = new File(filePath);
 
 // Add discussion (including comment with attachment) to sheet
@@ -4555,7 +5021,8 @@ PagedResult<Discussion> results = smartsheet.sheetResources().discussionResource
 );
 
 // Sample 2: Specify pagination parameter 'includeAll'
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
 
 // List discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
 PagedResult<Discussion> results = smartsheet.sheetResources().discussionResources().listDiscussions(
@@ -4742,7 +5209,8 @@ PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().dis
 );
 
 // Sample 2: Specify pagination parameter 'includeAll'
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
 
 // Get all row discussions (specify 'include' parameter with values of 'COMMENTS' and 'ATTACHMENTS', and 'includeAll' parameter with value of 'true')
 PagedResult<Discussion> results = smartsheet.sheetResources().rowResources().discussionResources().listDiscussions(
@@ -4822,7 +5290,7 @@ These API operations allow you to access the user's favorite API-supported objec
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>Sight</li></ul>
+**type** | string | One of:<ul><li>workspace</li><li>folder</li><li>sheet</li><li>report</li><li>template</li><li>sight</li></ul>
 **objectId** | number | Id of the favorited item.  If **type** is "template", only private sheet-type template Id is allowed.
 
 ## Add Favorites
@@ -4863,27 +5331,27 @@ smartsheet.favorites.addItemsToFavorites(options)
 
 ```csharp
 // Specify favorites
-Favorite[] favoritesSpecification = new Favorite[] {
-  new Favorite.AddFavoriteBuilder(
-    ObjectType.SHEET,
-    8400677765441412)           // long objectId (in this case, the sheetId)
-  .Build()
+IList<Favorite> favoritesSpecification = new Favorite[]
+{
+  new Favorite
+  {
+    Type = ObjectType.SHEET,
+    ObjectId = 8400677765441412
+  }
 };
 
 // Add items to favorites
-Favorite newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
+IList<Favorite> newFavorite = smartsheet.FavoriteResources.AddFavorites(favoritesSpecification);
 ```
 
 ```java
 // Specify favorites
-List<Favorite> favoritesSpecification = new Favorite.AddFavoriteBuilder()
-  .addFavorite(
-    8400677765441412L,       // long sheetId
-    FavoriteType.SHEET)
-  .build();
+Favorite favoritesSpecification = new Favorite()
+  .setObjectId(8400677765441412L)
+  .setType(FavoriteType.SHEET);
 
 // Add items to favorites
-List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(favoritesSpecification);
+List<Favorite> newFavorite = smartsheet.favoriteResources().addFavorites(Arrays.asList(favoritesSpecification));
 ```
 
 ```python
@@ -5889,11 +6357,10 @@ Folder folder = smartsheet.FolderResources.CopyFolder(
 
 ```java
 // Specify destination
-ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
+ContainerDestination destination = new ContainerDestination()
   .setDestinationType(DestinationType.FOLDER)
-  .setDestinationId(7960873114331012L)    // long destinationFolderId
-  .setNewName("newFolderName")
-  .build();
+  .setDestinationId(7960873114331012L)
+  .setNewName("newFolderName");
 
 // Sample 1: Omit 'include' and 'skipRemap' parameters
 Folder folder = smartsheet.folderResources().copyFolder(
@@ -6005,7 +6472,7 @@ smartsheet.home.createFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder { Name = "New folder" };
 
 // Create folder in "Sheets" folder (Home)
 Folder newFolder = smartsheet.HomeResources.FolderResources.CreateFolder(folderSpecification);
@@ -6013,7 +6480,8 @@ Folder newFolder = smartsheet.HomeResources.FolderResources.CreateFolder(folderS
 
 ```java
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New Folder");
 
 // Create folder in "Sheets" folder (Home)
 Folder newFolder = smartsheet.homeResources().folderResources().createFolder(folderSpecification);
@@ -6077,7 +6545,7 @@ smartsheet.folders.createChildFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder { Name = "New folder" };
 
 // Create folder in another folder
 Folder newFolder = smartsheet.FolderResources.CreateFolder(
@@ -6088,7 +6556,8 @@ Folder newFolder = smartsheet.FolderResources.CreateFolder(
 
 ```java
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New Folder");
 
 // Create folder in another folder
 Folder newFolder = smartsheet.folderResources().createFolder(
@@ -6160,7 +6629,7 @@ smartsheet.workspaces.createFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder("New folder").Build();
+Folder folderSpecification = new Folder { Name = "New folder" };
 
 // Create folder in a workspace
 Folder newFolder = smartsheet.WorkspaceResources.FolderResources.CreateFolder(
@@ -6171,7 +6640,8 @@ Folder newFolder = smartsheet.WorkspaceResources.FolderResources.CreateFolder(
 
 ```java
 // Set folder name
-Folder folderSpecification = new Folder.CreateFolderBuilder().setName("New Folder").build();
+Folder folderSpecification = new Folder();
+folderSpecification.setName("New Folder");
 
 // Create folder in a workspace
 Folder newFolder = smartsheet.workspaceResources().folderResources().createFolder(
@@ -6665,10 +7135,9 @@ Folder folder = smartsheet.FolderResources.MoveFolder(
 
 ```java
 // Specify destination
-ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder()
+ContainerDestination destination = new ContainerDestination()
   .setDestinationType(DestinationType.FOLDER)
-  .setDestinationId(7960873114331012L)        // long destinationFolderId
-  .build();
+  .setDestinationId(7960873114331012L);
 
 // Move folder
 Folder folder = smartsheet.folderResources().moveFolder(
@@ -6763,10 +7232,11 @@ smartsheet.folders.updateFolder(options)
 
 ```csharp
 // Set folder name
-Folder folderSpecification = new Folder.UpdateFolderBuilder(
-  7960873114331012,               // long folderId
-  "New name for folder")
-  .Build();
+Folder folderSpecification = new Folder
+{
+  Id = 7960873114331012,
+  Name = "New name for folder"
+};
 
 // Update folder
 Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecification);
@@ -6774,10 +7244,8 @@ Folder updatedFolder = smartsheet.FolderResources.UpdateFolder(folderSpecificati
 
 ```java
 // Set folder name and id of the folder to be updated
-Folder folderSpecification = new Folder.UpdateFolderBuilder()
-  .setName("New name for folder")
-  .setId(7960873114331012L)      // long folderId
-  .build();
+Folder folderSpecification = new Folder(7960873114331012L);
+folderSpecification.setName("New name for folder");
 
 // Update folder
 Folder updatedFolder = smartsheet.folderResources().updateFolder(folderSpecification);

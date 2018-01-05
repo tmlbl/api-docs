@@ -565,13 +565,14 @@ smartsheet.users.addUser(options)
 
 ```csharp
 // Set user properties
-User userSpecification = new User.AddUserBuilder(
-    "john.doe@smartsheet.com",
-    false,              // Nullable<bool> admin
-    true)               // Nullable<bool> licensedSheetCreator
-  .SetFirstName ("John")
-  .SetLastName ("Doe")
-  .Build();
+User userSpecification = new User
+{
+  Email = "john.doe@smartsheet.com",
+  Admin = false,
+  LicensedSheetCreator = true,
+  FirstName = "John",
+  LastName = "Doe"
+};
 
 // Add user
 User newUser = smartsheet.UserResources.AddUser(
@@ -583,12 +584,12 @@ User newUser = smartsheet.UserResources.AddUser(
 
 ```java
 // Set user properties
-User userSpecification = new User.AddUserBuilder().setAdmin(false)
+User userSpecification = new User();
+userSpecification.setAdmin(false)
   .setEmail("john.doe@smartsheet.com")
   .setFirstName("John")
   .setLastName("Doe")
-  .setLicensedSheetCreator(true)
-  .build();
+  .setLicensedSheetCreator(true);
 
 // Add user
 User newUser = smartsheet.userResources().addUser(userSpecification);
@@ -1271,7 +1272,8 @@ PagedResult<User> users = smartsheet.userResources().listUsers(
 );
 
 // Sample 2: Specify pagination parameter 'includeAll' 
-PaginationParameters parameters = new PaginationParameters.PaginationParametersBuilder().setIncludeAll(true).build();
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
 
 // Specify 'email' parameter with value of "john.doe@smartsheet.com" and 'includeAll' parameter with value of 'true'
 PagedResult<User> users = smartsheet.userResources().listUsers( new HashSet(Arrays.asList("john.doe@smartsheet.com")), parameters);
@@ -1464,22 +1466,25 @@ smartsheet.users.updateUser(options)
 
 ```csharp
 // Specify updated user properties
-User userSpecification = new User.UpdateUserBuilder(
-    82349925918590,             // long userId
-    true,                       // Nullable<bool> admin
-    true)                       // Nullable<bool> licensedSheetCreator
-  .Build();
+User userSpecification = new User
+{
+  Id = 82349925918590,
+  Admin = true,
+  LicensedSheetCreator = true
+};
 
 // Update user
 User updatedUser = smartsheet.UserResources.UpdateUser(
-  82349925918590,             // long userId
   userSpecification
 );
 ```
 
 ```java
 // Specify updated user properties
-User userSpecification = new User.UpdateUserBuilder().setUserId(userId).setAdmin(true).setLicensedSheetCreator(true).build();
+User userSpecification = new User();
+userSpecification.setLicensedSheetCreator(true)
+  .setAdmin(true)
+  .setId(82349925918590L);        // long userId
 
 // Update user
 User updatedUser = smartsheet.userResources().updateUser(userSpecification);
@@ -1634,7 +1639,8 @@ Workspace workspace = smartsheet.WorkspaceResources.CopyWorkspace(
 
 ```java
 // Specify name for the new workspace
-ContainerDestination destination = new ContainerDestination.AddContainerDestinationBuilder().setNewName("newWorkspaceName").build();
+ContainerDestination destination = new ContainerDestination();
+destination.setNewName("newWorkspaceName");
 
 // Sample 1: Omit 'include' and 'skipRemap' parameters
 Workspace workspace = smartsheet.workspaceResources().copyWorkspace(
@@ -1738,7 +1744,7 @@ smartsheet.workspaces.createWorkspace(options)
 
 ```csharp
 // Specify workspace name
-Workspace workspaceSpecification = new Workspace.CreateWorkspaceBuilder("New workspace").Build();
+Workspace workspaceSpecification = new Workspace { Name = "New workspace" };
 
 // Create workspace
 Workspace newWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(workspaceSpecification);
@@ -1746,7 +1752,8 @@ Workspace newWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(workspace
 
 ```java
 // Specify workspace name
-Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder().setName("New workspace").build();
+Workspace workspaceSpecification = new Workspace();
+workspaceSpecification.setName("New workspace");
 
 // Create workspace
 Workspace newWorkspace = smartsheet.workspaceResources().createWorkspace(workspaceSpecification);
@@ -2100,21 +2107,23 @@ smartsheet.workspaces.updateWorkspace(options)
 
 ```csharp
 // Specify updated workspace name
-Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder(
-    7960873114331012,           // long workspaceId
-    "Updated workspace")
-  .Build();
+Workspace workspaceSpecification = new Workspace
+{
+  Id = 7960873114331012,
+  Name = "Updated Workspace"
+};
 
 // Update workspace
-Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(workspaceSpecification);
+Workspace updatedWorkspace = smartsheet.WorkspaceResources.UpdateWorkspace(
+  workspaceSpecification
+);
 ```
 
 ```java
 // Specify updated workspace properties
-Workspace workspaceSpecification = new Workspace.UpdateWorkspaceBuilder()
-  .setName("Updated workspace")
-  .setId(7960873114331012L)       // long workspaceId
-  .build();
+Workspace workspaceSpecification = new Workspace();
+workspaceSpecification.setName("Updated workspace")
+  .setId(7960873114331012L);
 
 // Update workspace
 Workspace updatedWorkspace = smartsheet.workspaceResources().updateWorkspace(workspaceSpecification);
