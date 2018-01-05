@@ -93,10 +93,10 @@ GroupMember memberSpecification = new GroupMember();
 memberSpecification.setEmail("john.doe@smartsheet.com");
 
 // Add member to group
-Group groupSpecification = new Group()
-    .setDescription("Group created via API")
-    .setMembers(Arrays.asList(memberSpecification));
-  groupSpecification.setName("API-created Group");
+Group groupSpecification = new Group();
+groupSpecification.setDescription("Group created via API")
+  .setMembers(Arrays.asList(memberSpecification))
+  .setName("API-created Group");
 
 // Create group
 Group newGroup = smartsheet.groupResources().createGroup(groupSpecification);
@@ -460,9 +460,9 @@ Group updatedGroup = smartsheet.GroupResources.UpdateGroup(groupSpecification);
 
 ```java
 // Specify the name and description of the group
-Group groupSpecification = new Group(2331373580117892L)
-    .setDescription("Some new description");
-  groupSpecification.setName("Renamed Group");
+Group groupSpecification = new Group(2331373580117892L);
+groupSpecification.setDescription("Some new description")
+  .setName("Renamed Group");
         
 // Update group
 Group updatedGroup = smartsheet.groupResources().updateGroup(groupSpecification);
@@ -3456,9 +3456,9 @@ Share updatedShare = smartsheet.ReportResources.ShareResources.UpdateShare(
 
 ```java
 // Set the access level to Viewer
-Share shareSpecification = new Share()
-    .setAccessLevel(AccessLevel.VIEWER);
-  shareSpecification.setId("AAAFeF82FOeE");   // string shareId
+Share shareSpecification = new Share();
+shareSpecification.setAccessLevel(AccessLevel.VIEWER)
+  .setId("AAAFeF82FOeE");   // string shareId
 
 // Update report share
 Share updatedShare = smartsheet.reportResources().shareResources().updateShare(
@@ -4256,9 +4256,9 @@ smartsheet.sights.updateShare(options)
 
 ```java
 // Set the access level to Viewer
-Share shareSpecification = new Share()
-    .setAccessLevel(AccessLevel.VIEWER);
-  shareSpecification.setId("AAAFeF82FOeE");   // string shareId
+Share shareSpecification = new Share();
+shareSpecification.setAccessLevel(AccessLevel.VIEWER)
+  .setId("AAAFeF82FOeE");   // string shareId
 
 // Update Sight share
 Share updatedShare = smartsheet.sightResources().shareResources().updateShare(
@@ -4682,9 +4682,9 @@ Share updatedShare = smartsheet.WorkspaceResources.ShareResources.UpdateShare(
 
 ```java
 // Set the access level to Viewer
-Share shareSpecification = new Share()
-    .setAccessLevel(AccessLevel.VIEWER);
-  shareSpecification.setId("AAAFeF82FOeE");   // string shareId
+Share shareSpecification = new Share();
+shareSpecification.setAccessLevel(AccessLevel.VIEWER)
+  .setId("AAAFeF82FOeE");   // string shareId
 
 // Update workspace share
 Share updatedShare = smartsheet.workspaceResources().shareResources().updateShare(
@@ -6517,8 +6517,8 @@ Sheet sheet = smartsheet.SheetResources.MoveSheet(
 ```java
 // Specify destination
 ContainerDestination destination = new ContainerDestination();
-destination.setDestinationType(DestinationType.FOLDER);
-destination.setDestinationId(7960873114331012L);
+destination.setDestinationType(DestinationType.FOLDER)
+  .setDestinationId(7960873114331012L);
 
 // Move sheet
 Sheet sheet = smartsheet.sheetResources().moveSheet(

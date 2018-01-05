@@ -67,12 +67,12 @@ smartsheet.ReportResources.SendReport (8130994621441924, sheetEmail);       // l
 
 ```java
 // Specify an individual recipient
-RecipientEmail recipientEmail = new RecipientEmail();
-recipientEmail.setEmail("john.doe@smartsheet.com");
+RecipientEmail recipientEmail = new RecipientEmail()
+  .setEmail("john.doe@smartsheet.com");
 
 // Specify a group recipient
-RecipientGroup recipientGroup = new RecipientGroup();
-recipientGroup.setGroupId(2258118617917316L);
+RecipientGroup recipientGroup = new RecipientGroup()
+  .setGroupId(2258118617917316L);
 
 // Set recipients
 List<Recipient> recipientList = Arrays.asList(
@@ -81,17 +81,17 @@ List<Recipient> recipientList = Arrays.asList(
 );
 
 // Set format details
-FormatDetails formatDetails = new FormatDetails();
-formatDetails.setPaperSize(PaperSize.A0);
+FormatDetails formatDetails = new FormatDetails()
+  .setPaperSize(PaperSize.A0);
 
 // Configure email
 SheetEmail emailSpecification = new SheetEmail();
-emailSpecification.setSendTo(recipientList);
-emailSpecification.setSubject("Check this report out!");
-emailSpecification.setMessage("Here is the report I mentioned in our meeting");
-emailSpecification.setCcMe(false);
 emailSpecification.setFormat(SheetEmailFormat.PDF);
-emailSpecification.setFormatDetails(formatDetails);
+emailSpecification.setFormatDetails(formatDetails)
+  .setSendTo(recipientList)
+  .setSubject("Check this report out!")
+  .setMessage("Here is the report I mentioned in our meeting")
+  .setCcMe(false);
 
 // Send report via email
 smartsheet.reportResources().sendReport(
