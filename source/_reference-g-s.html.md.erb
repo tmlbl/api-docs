@@ -951,9 +951,9 @@ Extends the [Row Object](#row-object), adding the following:
 
      |     |     |
 -----|-----|-----|
-**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyFullDefaultView** | string | Indicates which view the user has set for a read-only, default view of the published report. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
 **readOnlyFullEnabled** | Boolean | (Required) If `true`, a rich version of the report is published with the ability to download row attachments and discussions.
+**readOnlyFullAccessibleBy** | string | Indicates who can access the 'Read-Only Full' view of the published report:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the report owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullDefaultView** | string | Indicates which view the user has set for a read-only, default view of the published report. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
 **readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published report<br/>Only returned in a response if **readOnlyFullEnabled** = true.
 
@@ -1544,7 +1544,7 @@ Sets the publish status of the Report and returns the new status, including the 
 <%= REQUEST %> | [ReportPublish Object](#reportpublish-object)
 <%= RETURNS %> | [Result Object](#result-object) containing a [ReportPublish Object](#reportpublish-object)
 
-<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, the value of <b>readOnlyFullAccessibleBy</b> is defaulted to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
+<aside class="notice">For Read Only, if you do not specify <b>readOnlyFullAccessibleBy</b>, the value defaults to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
 
 ## Send Report via Email
 
@@ -4820,18 +4820,18 @@ Represents the project settings dependencies for a specific sheet.  Project sett
      |     |     |
 -----|-----|-----|
 **icalEnabled** | Boolean | (Required) If `true`, a webcal is available for the calendar in the sheet.
-**icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
-**readOnlyFullAccessibleBy** | string | Flag to indicate who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyFullDefaultView** | string | Indicates which view the user has set for a read-only, default view of the published sheet. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
 **readOnlyFullEnabled** | Boolean | (Required) If `true`, a rich version of the sheet is published with the ability to download row attachments and discussions.
+**readOnlyLiteEnabled** | Boolean | (Required) If `true`, a lightweight version of the sheet is published without row attachments or discussions.
+**readWriteEnabled** | Boolean | (Required) If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
+**icalUrl** | string | URL for 'iCal' view of the published sheet<br/>Only returned in a response if **icalEnabled** = true.
+**readOnlyFullAccessibleBy** | string | Indicates who can access the 'Read-Only Full' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readOnlyFullEnabled** = true.
+**readOnlyFullDefaultView** | string | Indicates which view the user has set for a read-only, default view of the published sheet. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
 **readOnlyFullShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readOnlyFullUrl** | string | URL for 'Read-Only Full' view of the published sheet<br/>Only returned in a response if **readOnlyFullEnabled** = true.
-**readOnlyLiteEnabled** | Boolean | (Required) If `true`, a lightweight version of the sheet is published without row attachments or discussions.
 **readOnlyLiteSslUrl** | string | URL for 'Read-Only' view of the published sheet when SSL is enabled. 
 **readOnlyLiteUrl** | string | URL for 'Read-Only HTML' view of the published sheet<br/>Only returned in a response if **readOnlyLiteEnabled** = true.
-**readWriteAccessibleBy** | string | Flag to indicate who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
+**readWriteAccessibleBy** | string | Indicates who can access the 'Edit by Anyone' view of the published sheet:<ul><li>If "ALL", it is available to anyone who has the link.</li><li>If "ORG", it is available only to members of the sheet owner's Smartsheet organization.</li></ul>Only returned in a response if **readWriteEnabled** = true.
 **readWriteDefaultView** | string | Indicates which view the user has set for a read-write, default view of the published sheet. Must be one of the following values: "CALENDAR", "CARD", or "GRID".
-**readWriteEnabled** | Boolean | (Required) If `true`, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.
 **readWriteShowToolbar** | Boolean | Indicates whether the left nav toolbar is displayed. The default, or `true`, is to display the toolbar. If `false`, hides the toolbar.
 **readWriteUrl** | string | URL for 'Edit by Anyone' view of the published sheet<br/>Only returned in a response if **readWriteEnabled** = true.
 
@@ -6775,9 +6775,9 @@ Sets the publish status of the Sheet and returns the new status, including the U
 <%= REQUEST %> | [SheetPublish Object](#sheetpublish-object)
 <%= RETURNS %> | [Result Object](#result-object) containing a [SheetPublish Object](#sheetpublish-object)
 
-<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, the value of <b>readOnlyFullAccessibleBy</b> defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
+<aside class="notice">For Read Only, if you do not specify a value for <b>readOnlyFullAccessibleBy</b>, the value defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
 
-<aside class="notice">If <b>readWriteEnabled</b> is set to <code>true</code> in the request but <b>readWriteAccessibleBy</b> is not specified, the value of <b>readWriteAccessibleBy</b> defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
+<aside class="notice">For Read Write, if you do not specify a value for <b>readWriteAccessibleBy</b>, the value defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
 
 ## Search Sheet 
 
