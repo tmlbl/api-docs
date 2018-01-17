@@ -501,7 +501,7 @@ In addition to the sample application provided for each SDK, you can always view
 
 <aside class="notice">The link between an SDK and its sample application might not be immediately apparent if you have limited experience using SDKs. Think of the SDK as the toolbox and the sample application as the thing you build using the tools in the box. The various Smartsheet sample applications do some minimal tasks like loading a sheet and updating cells in a row. Once you've run the sample application, you can clone it and use the structure it provides to start building your own applications.</aside>
 
-# Other Topics
+# Permission Levels
 
 ## Access Levels
 
@@ -516,6 +516,50 @@ EDITOR | The user can edit the resource, but cannot alter the structure of, dele
 EDITOR_SHARE | The same as EDITOR, but with the ability to share the resource to other users.
 OWNER | The user has complete control over the resource.
 VIEWER | The user has read-only access to the resource.
+
+<aside class="notice">Smartsheet also uses <a href="<aside class="#access-scopes">Access Scopes</a>. The terminology is similar, so it's easy to conflate the topics. Access levels have to do with how permissions are shared from within the UI. Access scopes are permissions that a user has approved for your app.</aside>
+
+## Assume User
+
+> Example Request: Assume User
+
+```shell
+-H "Assume-User: jane.doe%40smartsheet.com" \
+```
+
+```javascript
+// Use as an attribute with the `options` you list for any API call
+{ assumeUser: "jane.doe@smartsheet.com" }
+```
+
+```csharp
+// Add when you initialize the client
+SmartsheetClient smartsheet = new SmartsheetBuilder()
+  .SetAccessToken(accessToken)
+  .SetAssumedUser("jane.doe@smartsheet.com")
+  .Build();
+```
+
+```java
+smartsheet.setAssumedUser("jane.doe@smartsheet.com");
+```
+
+```python
+ss_client.assume_user("jane.doe@smartsheet.com")
+```
+
+```ruby
+# Add when you initialize the client
+smartsheet = Smartsheet::Client.new(token: config['token'], logger: logger, assume_user: 'jane.doe@smartsheet.com')
+```
+
+> Example Response:
+
+```json
+// The response shows what the assumed user would see for the respective API call.
+```
+
+Allows an admin to act on behalf of, or impersonate, the user to make API calls. You might do this to troubleshoot a user problem or cover for vacations and sick time. The With cURL, the email address used to identify the user must be URI-encoded.
 
 # Third-party App Development
 
