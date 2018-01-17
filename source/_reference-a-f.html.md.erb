@@ -3737,9 +3737,9 @@ AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type include an [AutoN
 
 # Comments
 
-A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
+A Comment is a component of a [Discussion](#discussions). A Discussion is the API's way of separating comment threads, and the comments are the individual replies or comments in that thread.
 
-<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#list-discussions">Get All Discussions</a> followed by a <a href="#get-discussion">Get Discussion</a> call to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#list-row-discussions">List Row Discussions</a> using the include query parameter.</li></ul></aside>
+<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#list-discussions">List Discussions</a> using the include query parameter to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#list-row-discussions">List Row Discussions</a> using the include query parameter.</li></ul></aside>
 
 ## <%= OBJECTS %>
 
@@ -4412,7 +4412,13 @@ Gets a list of the user's Smartsheet Contacts.
 
 # Discussions
 
-A Discussion is a collection of one or more [Comments](#comments). A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
+A Discussion is an API-only concept to help differentiate between a top-level comment in the UI vs. the sub-comments that follow, that is, the comments that form the thread of the Discussion. In object terms, a Discussion is a collection of one or more [Comments](#comments). A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
+
+The Discussion Object allows you to give a title to a thread. When you Create a Discussion, you are essentially naming a thread. 
+
+Because the UI categorizes all discussions and comments as comments, this top-level Discussion shows up twice in a GET Discussion call: once as the discussion with a `title` and again as the first comment with `text`. This is important to remember, especially if you want to edit/update the comment. If you think of it as a Discussion (with a `title`), you cannot write to a `title` that is already set. But since that Discussion is also stored as a Comment (with a `text` parameter), you can use [Edit Comment](#edit-comment) to update the object.
+
+<aside class="notice">Because the UI does not differentiate between Discussions and Comments, the length of a comment can vary. If a top-level comment (known in the API as a Discussion) is longer than 100 characters, Smartsheet truncates the `title` value. If you need to retrieve the entire comment, remember that discussion.title is also comment.text. Use an include statement with Discussions or Get Comment directly.</aside>
 
 ## <%= OBJECTS %>
 
@@ -4445,7 +4451,7 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
      |     |     |
 -----|-----|-----|
 **id** | number | Discussion Id
-**title** | string | Discussion title
+**title** | string | Discussion title, must be 100 characters in length or less
 **comments** | [Comment](#comment-object)[] | Array of Comment Objects
 **commentCount** | number | The number of comments in the discussion
 **commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects
@@ -5039,7 +5045,7 @@ discussions = response[:data]
 
 `GET /sheets/{sheetId}/discussions`
 
-Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
+Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions). Remember that Discussions are the equivalent of titles, so this returns the title for each discussion thread. To see all Discussions and Comments (or the entire thread for each Discussion), use the `include` parameter.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -5230,7 +5236,7 @@ discussions = response[:data]
 
 `GET /sheets/{sheetId}/rows/{rowId}/discussions`
 
-Gets a list of all Discussions associated with the specified Row.
+Gets a list of all Discussions associated with the specified Row. Remember that Discussions are the equivalent of titles, so this returns the title for each discussion thread. To see all Discussions and Comments (or the entire thread for each Discussion), use the `include` parameter.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
