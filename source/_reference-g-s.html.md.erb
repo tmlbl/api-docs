@@ -4788,22 +4788,52 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 
 ### Criteria Object
 
+> Example Criteria Object:
+
+```json
+[
+  {
+      "operator": "IS_ONE_OF",
+      "values": [
+          "Complete"
+      ],
+      "columnId": 675838380271492
+  }
+]
+
      |     |     |
 -----|-----|-----|
 **operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
-**value1** | string or number | Optional. Present if a custom filter criteria's operator has one or more arguments.
-**value2** | string or number | Optional.  Present if a custom filter criteria's operator has two arguments.
+**values** | array | Optional. Present if a custom filter criteria's operator has one or more arguments.
+**columnId** | number | Column Id
 
-### Filter Object
+### Filters Object
+
+> Example Filters Object:
+
+```json
+{
+  "id": 7182478625531780,
+  "filterType": "PERSONAL",
+  "query": {
+    "operator": "AND",
+    "criteria": [],
+    "includeParent": false
+  }
+}
 
 Smartsheet users can define and save personal column filters on sheets they can view. To see whether a row has been included or excluded with a filter, invoke the "include=filters" query string, which returns a `row.filteredOut` = `true` or `false` response for rows that are excluded by a filter. To see how the filter has been defined, invoke the "include=filterDefinitions" query string parameter.
 
      |     |     |
 -----|-----|-----|
-**type** | string | One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul>
+**id** | number | Filters Id
+**filterType** | string | One of the following values:<ul><li>CUSTOM</li><li>LIST</li><li>PERSONAL</li></ul>
+**query** | object | Contains operator and Criteria Object.
+**operator** | string | One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul>
+**includeParent** | Boolean | If **true**, indicates that "show parent rows" is enabled for the filters.
 **excludeSelected** | Boolean | If **true**, rows containing cells matching the "values" or "criteria" items are excluded instead of included.
 **values** | object[] containing strings, numbers, and Booleans | Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter matches against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.
-**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.
+**criteria** | [Criteria](#criteria-object)[] | Only included if the filter is of type CUSTOM or PERSONAL.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.
 
 ### ProjectSettings Object
 
