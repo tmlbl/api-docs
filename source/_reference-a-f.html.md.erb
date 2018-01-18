@@ -1349,35 +1349,6 @@ Gets a list of all Attachments that are on the Row, including Row and Discussion
 
 ### Attach New Version
 
-> Example Request (multipart): Attach New Version
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--X POST \
--F "file=@ProgressReport.docx;type=application/msword"
-```
-
-```javascript
-// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.
-```
-
-```csharp
-// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.
-```
-
-```java
-// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.
-```
-
-```python
-# Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.
-```
-
-```ruby
-# Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.
-```
-
 > Example Request (simple): Attach New Version
 
 ```shell
@@ -1469,6 +1440,35 @@ response = smartsheet.sheets.attachments.attach_new_version(
   file_length: file_length
 )
 updated_attachment = response[:result]
+```
+
+> Example Request (multipart): Attach New Version
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X POST \
+-F "file=@ProgressReport.docx;type=application/msword"
+```
+
+```javascript
+// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.
+```
+
+```csharp
+// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.
+```
+
+```java
+// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.
+```
+
+```python
+# Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.
+```
+
+```ruby
+# Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.
 ```
 
 > Example Response:
@@ -3737,9 +3737,12 @@ AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type include an [AutoN
 
 # Comments
 
-A Comment is a component of a [Discussion](#discussions). A Discussion is the API's way of separating comment threads, and the comments are the individual replies or comments in that thread.
+A Discussion is a container for a number of individual Comments in a threaded conversation. For more details, see the [Discussion](#discussions) section.​
 
-<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#list-discussions">List Discussions</a> using the include query parameter to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#list-row-discussions">List Row Discussions</a> using the include query parameter.</li></ul></aside>
+This section describes operations on an *individual* Comment within a Discussion thread.
+
+* To retrieve all Discussions and Comments for an entire Sheet, use [List Discussions](#list-discussions) with the ​query parameter​ `include​=comments​`.
+* To retrieve all Discussions and Comments associated with a Row, use [List Row Discussions](#list-row-discussions) ​with the​ query parameter​ `include​=comments​`.
 
 ## <%= OBJECTS %>
 
