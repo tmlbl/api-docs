@@ -4473,13 +4473,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+-d '{"comment": {"text":"This text is the body of the first comment"}}'
 ```
 
 ```javascript
 // Specify discussion
 var discussion = {
-  "title": "This is a new discussion",
   "comment": {
     "text": "This text is the body of the first comment"
   }
@@ -4506,7 +4505,6 @@ smartsheet.sheets.createRowDiscussion(options)
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion",
   Comment = new Comment
     {
       Text = "This text is the body of the first comment"
@@ -4529,8 +4527,8 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4545,7 +4543,6 @@ response = ss_client.Discussions.create_discussion_on_row(
   9283173393803140,           # sheet_id
   0123456789012345,           # row_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4556,7 +4553,6 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```ruby
 # Set options
 body = {
-  title: 'This is a new discussion',
   comment: {
     text: 'This text is the body of the first comment'
   }
@@ -4581,15 +4577,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -F "discussion=<discussion.json;type=application/json" \
 -F "file=@datafile;type=application/octet-stream"
 
-    #
-    # Content of the discussion.json file:
-    #
-    {
-        "title": "This is a new discussion with an attachment", 
-        "comment": {
-          "text":"This text is the body of the first comment"
-        }
+  #
+  # Content of the discussion.json file:
+  #
+  {
+    "comment": {
+      "text":"This text is the body of the first comment"
     }
+  }
 ```
 
 ```javascript
@@ -4597,15 +4592,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 ```
 
 ```csharp
-Comment commentSpecification = new Comment
-{
-  Text = "This text is the body of the first comment"
-};
-
+// Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion",
-  Comment = commentSpecification
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
 };
 
 // Add discussion to row
@@ -4625,8 +4619,8 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 // Set file path
 File file = new File(filePath);
@@ -4647,7 +4641,6 @@ response = ss_client.Discussions.create_discussion_on_row_with_attachment(
   9283173393803140,       # sheet_id
   0123456789012345,       # row_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4686,13 +4679,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+-d '{"comment": {"text":"This text is the body of the first comment"}}'
 ```
 
 ```javascript
 // Specify discussion
 var discussion = {
-  "title": "This is a new discussion",
   "comment": {
     "text": "This text is the body of the first comment"
   }
@@ -4718,7 +4710,6 @@ smartsheet.sheets.createDiscussion(options)
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion",
   Comment = new Comment
   {
     Text = "This text is the body of the first comment"
@@ -4740,11 +4731,11 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 // Add discussion to sheet
-Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
+Discussion newDiscussion = smartsheet.sheetResources().discussionResources().createDiscussion(
   9283173393803140L,       // long sheetId
   discussionSpecification
 );
@@ -4754,7 +4745,6 @@ Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussion
 response = ss_client.Discussions.create_discussion_on_sheet(
   9283173393803140,           # sheet_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4765,7 +4755,6 @@ response = ss_client.Discussions.create_discussion_on_sheet(
 ```ruby
 # Set options
 body = {
-  title: 'This is a new discussion',
   comment: {
     text: 'This text is the body of the first comment'
   }
@@ -4788,15 +4777,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -F "discussion=<discussion.json;type=application/json" \
 -F "file=@file_to_attach;type=application/octet-stream"
 
-    #
-    # Content of the discussion.json file:
-    #
-    {
-        "title": "This is a new discussion with an attachment", 
-        "comment": {
-          "text":"This text is the body of the first comment"
-        }
+  #
+  # Content of the discussion.json file:
+  #
+  {
+    "comment": {
+      "text":"This text is the body of the first comment"
     }
+  }
 ```
 
 ```javascript
@@ -4804,15 +4792,14 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 ```
 
 ```csharp
-Comment commentSpecification = new Comment
-{
-  Text = "This text is the body of the first comment"
-};
-
+// Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion with an attachment",
-  Comment = commentSpecification
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
 };
 
 // Add discussion (including comment with attachment) to sheet
@@ -4831,8 +4818,8 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 File file = new File(filePath);
 
@@ -4849,7 +4836,6 @@ Discussion newDiscussion = smartsheet.sheetResources().discussionResources().cre
 response = ss_client.Discussions.create_discussion_on_sheet_with_attachment(
   9283173393803140,           # sheet_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
