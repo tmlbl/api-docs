@@ -524,39 +524,28 @@ VIEWER | The user has read-only access to the resource.
 > Example: Assume User
 
 ```shell
-// List Sheets
 curl https://api.smartsheet.com/2.0/sheets \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Assume-User: jane.doe%40smartsheet.com" \
 ```
 
 ```javascript
-// Move Sheets
-// Set destination information
-var body = {
-  destinationType: "folder",
-  destinationId: 7960873114331012
-};
-
 // Set options
 var options = {
-  sheetId: 4583173393803140,
-  assumeUser: "jane.doe@smartsheet.com",
-  body: body
-};
+  assumeUser: "jane.doe%40smartsheet.com"
+  };
 
-// Move sheet
-smartsheet.sheets.moveSheet(options)
-  .then(function (movedSheet) {
-    console.log(movedSheet);
+// List Sheets
+smartsheet.sheets.listSheets(options)
+  .then(function(sheetList) {
+      console.log(sheetList);
   })
-  .catch(function (error) {
-    console.log(error);
+  .catch(function(error) {
+      console.log(error);
   });
 ```
 
 ```csharp
-// Add this text when you initialize the client
 SmartsheetClient smartsheet = new SmartsheetBuilder()
   .SetAccessToken(accessToken)
   .SetAssumedUser("jane.doe@smartsheet.com")
@@ -564,17 +553,14 @@ SmartsheetClient smartsheet = new SmartsheetBuilder()
 ```
 
 ```java
-// Add this line anywhere in your code above the operation you want to perform
 smartsheet.setAssumedUser("jane.doe@smartsheet.com");
 ```
 
 ```python
-# Add this line anywhere in your code above the operation you want to perform
 ss_client.assume_user("jane.doe@smartsheet.com")
 ```
 
 ```ruby
-# Add this text when you initialize the client
 smartsheet = Smartsheet::Client.new(
   token: config['token'],
   logger: logger,
