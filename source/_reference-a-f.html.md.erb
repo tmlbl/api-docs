@@ -139,23 +139,23 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/comments/{commentId}/attach
 ```
 
 ```javascript
-// n/a
+// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.
 ```
 
 ```csharp
-// n/a
+// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.
 ```
 
 ```java
-// n/a
+// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.
 ```
 
 ```python
-# n/a
+# Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.
 ```
 
 ```ruby
-# n/a
+# Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.
 ```
 
 > Example Request (simple): Attach File to Comment
@@ -277,23 +277,23 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/attachments \
 ```
 
 ```javascript
-// n/a
+// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.
 ```
 
 ```csharp
-// n/a
+// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.
 ```
 
 ```java
-// n/a
+// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.
 ```
 
 ```python
-# n/a
+# Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.
 ```
 
 ```ruby
-# n/a
+# Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.
 ```
 
 > Example Request (simple): Attach File to Row
@@ -411,23 +411,23 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments \
 ```
 
 ```javascript
-// n/a
+// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.
 ```
 
 ```csharp
-// n/a
+// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.
 ```
 
 ```java
-// n/a
+// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.
 ```
 
 ```python
-# n/a
+# Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.
 ```
 
 ```ruby
-# n/a
+# Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.
 ```
 
 > Example Request (simple): Attach File to Sheet
@@ -1349,57 +1349,6 @@ Gets a list of all Attachments that are on the Row, including Row and Discussion
 
 ### Attach New Version
 
-> Example Request (multipart): Attach New Version
-
-```shell
-curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--X POST \
--F "file=@ProgressReport.docx;type=application/msword"
-```
-
-```javascript
-// n/a
-```
-
-```csharp
-Attachment attachment = smartsheet.SheetResources.AttachmentResources.VersioningResources.AttachNewVersion(
-  9283173393803140,               // long sheetId
-  0123456789123452,               // long attachmentId
-  filePath,
-  "application/msword"
-);
-```
-
-```java
-// Specify the new file to be attached
-File file = new File(filePath);
-
-// Attach new version of the file
-Attachment attachment = smartsheet.sheetResources().attachmentResources().versioningResources().attachNewVersion(
-  9283173393803140L,       // long sheetId
-  0123456789123452L,       // long attachmentId
-  file,
-  "application/msword"
-);
-```
-
-```python
-response = ss_client.Attachments.attach_new_version(
-  9283173393803140,       # sheet_id
-  0123456789123452,       # attachment_id
-  ('ProgressReport.docx',
-    open('/path/to/ProgressReport.docx', 'rb'),
-    'application/msword')
-)
-
-updated_attachment = response.result
-```
-
-```ruby
-# N/A
-```
-
 > Example Request (simple): Attach New Version
 
 ```shell
@@ -1491,6 +1440,35 @@ response = smartsheet.sheets.attachments.attach_new_version(
   file_length: file_length
 )
 updated_attachment = response[:result]
+```
+
+> Example Request (multipart): Attach New Version
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/attachments/{attachmentId}/versions \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-X POST \
+-F "file=@ProgressReport.docx;type=application/msword"
+```
+
+```javascript
+// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.
+```
+
+```csharp
+// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.
+```
+
+```java
+// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.
+```
+
+```python
+# Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.
+```
+
+```ruby
+# Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.
 ```
 
 > Example Response:
@@ -3050,17 +3028,17 @@ A Column is a component of a Sheet or Report.
 **type** | string | One of:<ul><li>TEXT_NUMBER</li><li>DATE</li><li>DATETIME</li><li>CONTACT_LIST</li><li>CHECKBOX</li><li>PICKLIST</li><li>DURATION</li><li>PREDECESSOR</li><li>ABSTRACT_DATETIME</li></ul>See [Column Types](#column-types).
 **options** | string[] | Array of the options available for the column
 **contactOptions** | ContactOption[] | Array of ContactOption Objects to specify a pre-defined list of values for the column. Column **type** must be **CONTACT_LIST** 
-**hidden** | Boolean | Flag indicating whether the column is hidden
+**hidden** | Boolean | Indicates whether the column is hidden
 **symbol** | string | When applicable for CHECKBOX or PICKLIST column types. See [Symbol Columns](#symbol-columns).
 **systemColumnType** | string | When applicable, one of: <ul><li>AUTO_NUMBER</li><li>MODIFIED_DATE</li><li>MODIFIED_BY</li><li>CREATED_DATE</li><li>CREATED_BY</li></ul>See [System Columns](#system-columns).
 **autoNumberFormat** | [AutoNumberFormat](#autonumberformat-object) | Present when systemColumnType == AUTO_NUMBER
 **tags** | string[] | Set of tags to indicate special columns. Each element in the array is set to one of the following values:<ul><li>CALENDAR_START_DATE</li><li>CALENDAR_END_DATE</li><li>GANTT_START_DATE</li><li>GANTT_END_DATE</li><li>GANTT_PERCENT_COMPLETE</li><li>GANTT_DISPLAY_LABEL</li><li>GANTT_PREDECESSOR</li><li>GANTT_DURATION</li><li>GANTT_ASSIGNED_RESOURCE</li></ul>
-**validation** | Boolean | Flag indicating whether validation has been enabled for the column (value = `true`)
+**validation** | Boolean | Indicates whether validation has been enabled for the column (value = `true`)
 **width** | number | Display width of the column in pixels
 **format** | string | The format descriptor (see [Formatting](#formatting))<br/>Only returned if the **include** query string parameter contains **format** and this column has a non-default format applied to it.
 **filter** | [Filter](#filter-object) | The filter applied to the column.<br/>Only returned if the **include** query string parameter contains **filters** and this column has a filter applied to it.
-**locked** | Boolean | Flag indicating whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
-**lockedForUser** | Boolean | Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
+**locked** | Boolean | Indicates whether the column is locked. In a response, a value of `true` indicates that the column has been locked by the sheet owner or the admin.
+**lockedForUser** | Boolean | Indicates whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.
 
 ### ContactOption Object
 
@@ -3678,7 +3656,7 @@ Updates properties of the column, moves the column, and/or renames the column.
 -----|-----|
 <%= SCOPE %> | ADMIN_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
+<%= REQUEST %> | A [Column object](#column-object) that contains the following attributes:<ul><li>index</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>hidden (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the [Column object](#column-object) that was modified
 
 ## <%= RELATED %>
@@ -3759,9 +3737,12 @@ AUTO_NUMBER | TEXT_NUMBER | Columns of this system column type include an [AutoN
 
 # Comments
 
-A Comment is a component of a [Discussion](#discussions).  Each Discussion is composed of one or more Comments.
+A Discussion is a container for a number of individual Comments in a threaded conversation. For more details, see the [Discussion](#discussions) section.​
 
-<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#list-discussions">Get All Discussions</a> followed by a <a href="#get-discussion">Get Discussion</a> call to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#list-row-discussions">List Row Discussions</a> using the include query parameter.</li></ul></aside>
+This section describes operations on an *individual* Comment within a Discussion thread.
+
+* To retrieve all Discussions and Comments for an entire Sheet, use [List Discussions](#list-discussions) with the ​query parameter​ `include​=comments​`.
+* To retrieve all Discussions and Comments associated with a Row, use [List Row Discussions](#list-row-discussions) ​with the​ query parameter​ `include​=comments​`.
 
 ## <%= OBJECTS %>
 
@@ -3893,7 +3874,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions/{discussionId}/
 ```
 
 ```javascript
-// n/a
+// Multipart operations are not supported by the Node SDK. Instead, see instructions to Add Comment, and then Attach File to Comment.
 ```
 
 ```csharp
@@ -3945,7 +3926,7 @@ response = ss_client.Discussions.add_comment_to_discussion_with_attachment(
 ```
 
 ```ruby
-# N/A
+# Multipart operations are not supported by the Ruby SDK. Instead, see instructions to Add Comment, and then Attach File to Comment.
 ```
 
 > Example Response:
@@ -4434,7 +4415,11 @@ Gets a list of the user's Smartsheet Contacts.
 
 # Discussions
 
-A Discussion is a collection of one or more [Comments](#comments). A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
+A Discussion is a container for a collection of individual [Comments](#comments) within a single thread. A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
+
+In the UI, Smartsheet creates a Discussion to contain each top-level Comment and subsequent replies into a single thread.
+
+Using the API, you can only add a Comment to a Discussion. If the Discussion doesn't already exist, you must create it first.
 
 ## <%= OBJECTS %>
 
@@ -4467,7 +4452,7 @@ A Discussion is a collection of one or more [Comments](#comments). A Discussion 
      |     |     |
 -----|-----|-----|
 **id** | number | Discussion Id
-**title** | string | Discussion title
+**title** | string | Read Only. Discussion title automatically created by duplicating the first 100 characters of the top-level Comment
 **comments** | [Comment](#comment-object)[] | Array of Comment Objects
 **commentCount** | number | The number of comments in the discussion
 **commentAttachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects
@@ -4488,13 +4473,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+-d '{"comment": {"text":"This text is the body of the first comment"}}'
 ```
 
 ```javascript
 // Specify discussion
 var discussion = {
-  "title": "This is a new discussion",
   "comment": {
     "text": "This text is the body of the first comment"
   }
@@ -4521,7 +4505,6 @@ smartsheet.sheets.createRowDiscussion(options)
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion",
   Comment = new Comment
     {
       Text = "This text is the body of the first comment"
@@ -4544,8 +4527,8 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 // Add discussion to row
 Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
@@ -4560,7 +4543,6 @@ response = ss_client.Discussions.create_discussion_on_row(
   9283173393803140,           # sheet_id
   0123456789012345,           # row_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4571,7 +4553,6 @@ response = ss_client.Discussions.create_discussion_on_row(
 ```ruby
 # Set options
 body = {
-  title: 'This is a new discussion',
   comment: {
     text: 'This text is the body of the first comment'
   }
@@ -4596,31 +4577,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/rows/{rowId}/discussions \
 -F "discussion=<discussion.json;type=application/json" \
 -F "file=@datafile;type=application/octet-stream"
 
-    #
-    # Content of the discussion.json file:
-    #
-    {
-        "title": "This is a new discussion with an attachment", 
-        "comment": {
-          "text":"This text is the body of the first comment"
-        }
+  #
+  # Content of the discussion.json file:
+  #
+  {
+    "comment": {
+      "text":"This text is the body of the first comment"
     }
+  }
 ```
 
 ```javascript
-// [todo]
+// Multipart operations are not supported by the Node SDK. Instead, see instructions to Create Discussion on Row, and then Attach File to Comment.
 ```
 
 ```csharp
-Comment commentSpecification = new Comment
-{
-  Text = "This text is the body of the first comment"
-};
-
+// Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion",
-  Comment = commentSpecification
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
 };
 
 // Add discussion to row
@@ -4640,8 +4619,8 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 // Set file path
 File file = new File(filePath);
@@ -4662,7 +4641,6 @@ response = ss_client.Discussions.create_discussion_on_row_with_attachment(
   9283173393803140,       # sheet_id
   0123456789012345,       # row_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4672,7 +4650,7 @@ response = ss_client.Discussions.create_discussion_on_row_with_attachment(
 ```
 
 ```ruby
-# N/A
+# Multipart operations are not supported by the Ruby SDK. Instead, see instructions to Create Discussion on Row, and then Attach File to Comment.
 ```
 
 > Example Response:
@@ -4701,13 +4679,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'
+-d '{"comment": {"text":"This text is the body of the first comment"}}'
 ```
 
 ```javascript
 // Specify discussion
 var discussion = {
-  "title": "This is a new discussion",
   "comment": {
     "text": "This text is the body of the first comment"
   }
@@ -4733,7 +4710,6 @@ smartsheet.sheets.createDiscussion(options)
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion",
   Comment = new Comment
   {
     Text = "This text is the body of the first comment"
@@ -4755,11 +4731,11 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 // Add discussion to sheet
-Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussionResources().createDiscussion(
+Discussion newDiscussion = smartsheet.sheetResources().discussionResources().createDiscussion(
   9283173393803140L,       // long sheetId
   discussionSpecification
 );
@@ -4769,7 +4745,6 @@ Discussion newDiscussion = smartsheet.sheetResources().rowResources().discussion
 response = ss_client.Discussions.create_discussion_on_sheet(
   9283173393803140,           # sheet_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4780,7 +4755,6 @@ response = ss_client.Discussions.create_discussion_on_sheet(
 ```ruby
 # Set options
 body = {
-  title: 'This is a new discussion',
   comment: {
     text: 'This text is the body of the first comment'
   }
@@ -4803,31 +4777,29 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/discussions \
 -F "discussion=<discussion.json;type=application/json" \
 -F "file=@file_to_attach;type=application/octet-stream"
 
-    #
-    # Content of the discussion.json file:
-    #
-    {
-        "title": "This is a new discussion with an attachment", 
-        "comment": {
-          "text":"This text is the body of the first comment"
-        }
+  #
+  # Content of the discussion.json file:
+  #
+  {
+    "comment": {
+      "text":"This text is the body of the first comment"
     }
+  }
 ```
 
 ```javascript
-// [todo]
+// Multipart operations are not supported by the Node SDK. Instead, see instructions to Create Discussion on Sheet, and then Attach File to Comment.
 ```
 
 ```csharp
-Comment commentSpecification = new Comment
-{
-  Text = "This text is the body of the first comment"
-};
-
+// Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion
 {
-  Title = "This is a new discussion with an attachment",
-  Comment = commentSpecification
+  Comment = new Comment
+  {
+    Text = "This text is the body of the first comment"
+  },
+  Comments = null         // workaround for SDK issue
 };
 
 // Add discussion (including comment with attachment) to sheet
@@ -4846,8 +4818,8 @@ Comment commentSpecification = new Comment()
 
 // Create discussion (including the comment)
 Discussion discussionSpecification = new Discussion()
-  .setTitle("This is a new discussion")
-  .setComment(commentSpecification);
+  .setComment(commentSpecification)
+  .setComments(null);     // workaround for SDK issue
 
 File file = new File(filePath);
 
@@ -4864,7 +4836,6 @@ Discussion newDiscussion = smartsheet.sheetResources().discussionResources().cre
 response = ss_client.Discussions.create_discussion_on_sheet_with_attachment(
   9283173393803140,           # sheet_id
   ss_client.models.Discussion({
-    'title': 'This is a new discussion',
     'comment': ss_client.models.Comment({
       'text': 'This text is the body of the first comment'
     })
@@ -4874,7 +4845,7 @@ response = ss_client.Discussions.create_discussion_on_sheet_with_attachment(
 ```
 
 ```ruby
-# N/A
+# Multipart operations are not supported by the Ruby SDK. Instead, see instructions to Create Discussion on Sheet, and then Attach File to Comment.
 ```
 
 > Example Response:
@@ -5061,7 +5032,7 @@ discussions = response[:data]
 
 `GET /sheets/{sheetId}/discussions`
 
-Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).
+Gets a list of *all* Discussions associated with the specified Sheet. Remember that Discussions are containers for the conversation thread. To see the entire thread, use the `include=comments` parameter.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
@@ -5252,7 +5223,7 @@ discussions = response[:data]
 
 `GET /sheets/{sheetId}/rows/{rowId}/discussions`
 
-Gets a list of all Discussions associated with the specified Row.
+Gets a list of all Discussions associated with the specified Row. Remember that Discussions are containers for the conversation thread. To see the entire thread, use the `include=comments` parameter.
 
 <aside class="notice"><%= SUPPORTS_PAGING %></aside>
 
