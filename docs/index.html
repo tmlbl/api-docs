@@ -321,10 +321,13 @@
             <a href="#sdks-and-sample-code" class="toc-h1 toc-link" data-title="SDKs and Sample Code">SDKs and Sample Code</a>
           </li>
           <li>
-            <a href="#other-topics" class="toc-h1 toc-link" data-title="Other Topics">Other Topics</a>
+            <a href="#permission-levels" class="toc-h1 toc-link" data-title="Permission Levels">Permission Levels</a>
               <ul class="toc-list-subhead">
                   <li>
                     <a href="#access-levels" class="toc-h2 toc-link" data-title="Access Levels">Access Levels</a>
+                  </li>
+                  <li>
+                    <a href="#assume-user" class="toc-h2 toc-link" data-title="Assume User">Assume User</a>
                   </li>
               </ul>
           </li>
@@ -1264,7 +1267,7 @@
                                 <a href="#criteria-object" class="toc-h3 toc-link" data-title="Criteria Object">Criteria Object</a>
                             </li>
                             <li>
-                                <a href="#filter-object" class="toc-h3 toc-link" data-title="Filter Object">Filter Object</a>
+                                <a href="#filters-object" class="toc-h3 toc-link" data-title="Filters Object">Filters Object</a>
                             </li>
                             <li>
                                 <a href="#projectsettings-object" class="toc-h3 toc-link" data-title="ProjectSettings Object">ProjectSettings Object</a>
@@ -1399,22 +1402,25 @@
                                 <a href="#celllinkwidgetcontent-object" class="toc-h3 toc-link" data-title="CellLinkWidgetContent Object">CellLinkWidgetContent Object</a>
                             </li>
                             <li>
+                                <a href="#celldataitem-object" class="toc-h3 toc-link" data-title="CellDataItem Object">CellDataItem Object</a>
+                            </li>
+                            <li>
+                                <a href="#imagewidgetcontent-object" class="toc-h3 toc-link" data-title="ImageWidgetContent Object">ImageWidgetContent Object</a>
+                            </li>
+                            <li>
+                                <a href="#reportwidgetcontent-object" class="toc-h3 toc-link" data-title="ReportWidgetContent Object">ReportWidgetContent Object</a>
+                            </li>
+                            <li>
                                 <a href="#richtextwidgetcontent-object" class="toc-h3 toc-link" data-title="RichTextWidgetContent Object">RichTextWidgetContent Object</a>
                             </li>
                             <li>
                                 <a href="#shortcutwidgetcontent-object" class="toc-h3 toc-link" data-title="ShortcutWidgetContent Object">ShortcutWidgetContent Object</a>
                             </li>
                             <li>
-                                <a href="#reportwidgetcontent-object" class="toc-h3 toc-link" data-title="ReportWidgetContent Object">ReportWidgetContent Object</a>
-                            </li>
-                            <li>
-                                <a href="#imagewidgetcontent-object" class="toc-h3 toc-link" data-title="ImageWidgetContent Object">ImageWidgetContent Object</a>
-                            </li>
-                            <li>
-                                <a href="#celldataitem-object" class="toc-h3 toc-link" data-title="CellDataItem Object">CellDataItem Object</a>
-                            </li>
-                            <li>
                                 <a href="#shortcutdataitem-object" class="toc-h3 toc-link" data-title="ShortcutDataItem Object">ShortcutDataItem Object</a>
+                            </li>
+                            <li>
+                                <a href="#titlewidgetcontent-object" class="toc-h3 toc-link" data-title="TitleWidgetContent Object">TitleWidgetContent Object</a>
                             </li>
                         </ul>
                   </li>
@@ -1805,7 +1811,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='smartsheet-api-2-0'><span class="customTOCSectionHeading">Smartsheet API 2.0</span></h1>
-<p>Updated 2018-01-05
+<p>Updated 2018-01-22
 <h1 id='overview'>Overview</h1><h2 id='introduction'>Introduction</h2>
 <blockquote>
 <p>Click the corresponding tab above to see sample code in the language of your choice. For more detail, see <a href="#sdks-and-sample-code">SDKs and Sample Code</a>)</p>
@@ -1837,7 +1843,7 @@
 <li>Administer users and accounts</li>
 </ul>
 
-<p>You can view code examples in the programming language of your choice by clicking the corresponding tab in the dark-blue area in the rightmost pane.</p>
+<p>You can view code examples in the programming language of your choice by clicking the corresponding tab in the dark-blue area in the rightmost pane. Each tab corresponds to a Software Development Kit (SDK) that Smartsheet provides to make working in that programming language easier. See <a href="#sdks-and-sample-code">SDKs and Sample Code</a>.</p>
 
 <h2 id='how-do-i-start'>How Do I Start?</h2>
 
@@ -1866,7 +1872,7 @@
 
 <p>This Id pattern is repeated throughout the API. Columns, rows, cells, comments, attachments, or any other data element have a unique Id.</p>
 
-<p>If you don&#39;t want to make raw HTTP calls, Smartsheet also has several software development kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see <a href="#sdks-and-sample-code">SDKs and Sample Code.</a></p>
+<p>If you don&#39;t want to make raw HTTP calls, Smartsheet also has several Software Development Kits (SDKs) that provide a higher level interface for popular programming languages. For more information, see <a href="#sdks-and-sample-code">SDKs and Sample Code</a>.</p>
 <h3 id='http-verbs'>HTTP Verbs</h3>
 <p>Call the API using the following <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">standard HTTP methods</a>:</p>
 
@@ -2256,7 +2262,10 @@ Also, make sure your code does not depend on the order in which JSON objects are
 <p>Install the SDK</p>
 </blockquote>
 
-<pre class="highlight javascript tab-javascript"><code><span class="nx">npm</span> <span class="nx">install</span> <span class="nx">smartsheet</span>
+<pre class="highlight shell tab-shell"><code><span class="c"># The cURL code samples included in this API documentation demonstrate</span>
+<span class="c"># how to execute operations using the command line data transfer</span>
+<span class="c"># tool cURL: https://curl.haxx.se/.</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="nx">npm</span> <span class="nx">install</span> <span class="nx">smartsheet</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// In the Visual Studio Package Manager Console</span>
 <span class="n">Install</span><span class="p">-</span><span class="n">Package</span> <span class="n">smartsheet</span><span class="p">-</span><span class="n">csharp</span><span class="p">-</span><span class="n">sdk</span>
 </code></pre><pre class="highlight java tab-java"><code><span class="c1">// Add the SDK as a dependency in your project</span>
@@ -2275,7 +2284,9 @@ Also, make sure your code does not depend on the order in which JSON objects are
 <blockquote>
 <p>Load the client</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="c1">// Initialize client SDK</span>
+<pre class="highlight shell tab-shell"><code><span class="c"># Click the corresponding language tab when using the SDK for that language.</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Initialize client SDK</span>
+<span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'smartsheet'</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">smartsheet</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">createClient</span><span class="p">({</span> <span class="na">accessToken</span><span class="p">:</span> <span class="nx">ll352u9jujauoqz4gstvsae05</span> <span class="p">});</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="k">using</span> <span class="nn">Smartsheet.Api</span><span class="p">;</span>
 <span class="k">using</span> <span class="nn">Smartsheet.Api.Models</span><span class="p">;</span>
@@ -2327,7 +2338,7 @@ Also, make sure your code does not depend on the order in which JSON objects are
   <span class="ss">:modified_at</span><span class="o">=&gt;</span><span class="s2">"2017-08-20T02:47:41Z"</span>
 <span class="p">}</span>
 </code></pre>
-<p>Smartsheet has SDKs providing a higher level interface for several languages.</p>
+<p>Smartsheet has Software Development Kits (SDKs) providing a higher level interface for several languages.</p>
 
 <table><thead>
 <tr>
@@ -2362,7 +2373,11 @@ Also, make sure your code does not depend on the order in which JSON objects are
 <td><a href="https://github.com/smartsheet-samples/ruby-read-write-sheet">ruby-read-write-sheet</a></td>
 </tr>
 </tbody></table>
-<h1 id='other-topics'>Other Topics</h1><h2 id='access-levels'>Access Levels</h2>
+
+<p>In addition to the sample application provided for each SDK, you can always view code examples in this document by clicking the corresponding tab in the dark-blue area in the rightmost pane.</p>
+
+<p>To use an SDK for development work, follow the instructions in the SDK readme to download and install the SDK. Then download the sample app and run it. Once you&#39;ve run the sample application, you can clone it and use the structure it provides to start building your own applications.</p>
+<h1 id='permission-levels'>Permission Levels</h1><h2 id='access-levels'>Access Levels</h2>
 <p>Sheets, Workspaces, and Templates have an <strong>accessLevel</strong> attribute that describes the current user&#39;s access level to that object. 
 This corresponds directly to the sharing and access controls of Smartsheet that are available through the Smartsheet UI. 
 The <strong>accessLevel</strong> attribute has one of the following values:</p>
@@ -2394,6 +2409,41 @@ The <strong>accessLevel</strong> attribute has one of the following values:</p>
 <td>The user has read-only access to the resource.</td>
 </tr>
 </tbody></table>
+
+<aside class="notice">Smartsheet also uses <a href="<aside class="#access-scopes">Access Scopes</a>. Access Levels describe the actual permissions a specific user has for a specific sheet or other resource. Access Scopes describe the general categories of access requested by a third-party app.</aside>
+<h2 id='assume-user'>Assume User</h2>
+<blockquote>
+<p>Example: Assume User</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl https://api.smartsheet.com/2.0/sheets <span class="se">\</span>
+-H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
+-H <span class="s2">"Assume-User: jane.doe%40smartsheet.com"</span> <span class="se">\</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Set options</span>
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">assumeUser</span><span class="p">:</span> <span class="s2">"jane.doe%40smartsheet.com"</span>
+  <span class="p">};</span>
+
+<span class="c1">// List Sheets</span>
+<span class="nx">smartsheet</span><span class="p">.</span><span class="nx">sheets</span><span class="p">.</span><span class="nx">listSheets</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">sheetList</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">sheetList</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+  <span class="p">});</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="n">SmartsheetClient</span> <span class="n">smartsheet</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SmartsheetBuilder</span><span class="p">()</span>
+  <span class="p">.</span><span class="nf">SetAccessToken</span><span class="p">(</span><span class="n">accessToken</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">SetAssumedUser</span><span class="p">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+</code></pre><pre class="highlight java tab-java"><code><span class="n">smartsheet</span><span class="o">.</span><span class="na">setAssumedUser</span><span class="o">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="o">);</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="n">ss_client</span><span class="o">.</span><span class="n">assume_user</span><span class="p">(</span><span class="s">"jane.doe@smartsheet.com"</span><span class="p">)</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="n">smartsheet</span> <span class="o">=</span> <span class="no">Smartsheet</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+  <span class="ss">token: </span><span class="n">config</span><span class="p">[</span><span class="s1">'token'</span><span class="p">],</span>
+  <span class="ss">logger: </span><span class="n">logger</span><span class="p">,</span>
+  <span class="ss">assume_user: </span><span class="s1">'jane.doe@smartsheet.com'</span>
+<span class="p">)</span>
+</code></pre>
+<p>Allows an admin to act on behalf of, or impersonate, the user to make API calls. You might do this to troubleshoot a user problem or cover for vacations and sick time. The With cURL, the email address used to identify the user must be URI-encoded.</p>
 <h1 id='third-party-app-development'>Third-party App Development</h1>
 <p>Apps connect to Smartsheet using <a href="https://oauth.net/2/">OAuth 2.0</a> to authenticate and authorize users. If you are building an app, this documentation will walk you through the steps you need to authenticate your users. The Smartsheet <a href="#sdks-and-sample-code">SDKs</a> contain APIs for OAuth 2.0.</p>
 <h2 id='first-steps'>First Steps</h2>
@@ -2591,6 +2641,8 @@ Smartsheet will redirect this URL to display your app&#39;s consent page with an
 </tbody></table>
 
 <p>You can view code examples by clicking the corresponding tab in the dark-blue area in the rightmost pane. The cURL example shows a <code>GET</code>.</p>
+
+<p>A correctly formatted Auth URL request looks like this: <code>https://app.smartsheet.com/b/authorize?response_type=code&amp;client_id=dheu3dmkd32fhxme&amp;scope=READ_SHEETS%20WRITE_SHEETS&amp;state=MY_STATE</code></p>
 
 <aside class="Notice">If the user has not yet logged into Smartsheet, the redirect will first take them to a login page, and then display the consent page.</aside>
 
@@ -2892,7 +2944,7 @@ return an error if one or more items in the array already exist.  Existing items
 <p>In general, the default behavior for bulk operations is to fail outright if any of the objects in the request are invalid for some reason.  If successful, Smartsheet creates/updates/deletes all objects in the request;
 if not, no objects are changed.</p>
 
-<p>However, there are some operations that support <em>partial success</em>, which means the operation still succeeds even if one or more of the objects in the request fails for some reason (for example, an object is invalid).  Partial success is 
+<p>However, there are some operations that support <em>partial success</em>, which means the operation still succeeds even if one or more of the objects in the request fails for some reason (for example, an object is invalid). Here is another example: if you want to update more than one row, you send more than one row object in your request. If a row object is invalid, that row update will fail, but the other row updates will succeed.  Partial success is 
 <em>not</em> the default mode for an operation and you must explicitly enable it by using a query string parameter.  This is noted in the documentation for operations that support partial success.</p>
 
 <p>When partial success is enabled, and one or more of the objects in the request fail to be added/updated/deleted, a standard <a href="#result-object">Result Object</a> is returned, but with a <strong>message</strong> of &#39;PARTIAL_SUCCESS&#39; (instead of &#39;SUCCESS&#39;), and a <strong>resultCode</strong> of 3. Additionally, the object contains a <strong>failedItems</strong> attribute -- an array of <a href="#bulkitemfailure-object">BulkItemFailure Objects</a> that contains an item for each object in the request that failed to be added/updated/deleted.</p>
@@ -3218,11 +3270,11 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -X POST <span class="se">\</span>
 -F <span class="s2">"file=@ProgressReport.docx;type=application/msword"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight java tab-java"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="c"># n/a</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># n/a</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight java tab-java"><code><span class="c1">// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="c"># Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.</span>
 </code></pre>
 
 <blockquote>
@@ -3362,11 +3414,11 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -X POST <span class="se">\</span>
 -F <span class="s2">"file=@ProgressReport.docx;type=application/msword"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight java tab-java"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="c"># n/a</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># n/a</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight java tab-java"><code><span class="c1">// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="c"># Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.</span>
 </code></pre>
 
 <blockquote>
@@ -3506,11 +3558,11 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -X POST <span class="se">\</span>
 -F <span class="s2">"file=@ProgressReport.docx;type=application/msword"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight java tab-java"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="c"># n/a</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># n/a</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight java tab-java"><code><span class="c1">// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="c"># Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.</span>
 </code></pre>
 
 <blockquote>
@@ -4585,41 +4637,6 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
 
 <h2 id='versioning'>Versioning</h2><h3 id='attach-new-version'>Attach New Version</h3>
 <blockquote>
-<p>Example Request (multipart): Attach New Version</p>
-</blockquote>
-<pre class="highlight shell tab-shell"><code>curl https://api.smartsheet.com/2.0/sheets/<span class="o">{</span>sheetId<span class="o">}</span>/attachments/<span class="o">{</span>attachmentId<span class="o">}</span>/versions <span class="se">\</span>
--H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
--X POST <span class="se">\</span>
--F <span class="s2">"file=@ProgressReport.docx;type=application/msword"</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="n">Attachment</span> <span class="n">attachment</span> <span class="p">=</span> <span class="n">smartsheet</span><span class="p">.</span><span class="n">SheetResources</span><span class="p">.</span><span class="n">AttachmentResources</span><span class="p">.</span><span class="n">VersioningResources</span><span class="p">.</span><span class="nf">AttachNewVersion</span><span class="p">(</span>
-  <span class="m">9283173393803140</span><span class="p">,</span>               <span class="c1">// long sheetId</span>
-  <span class="m">0123456789123452</span><span class="p">,</span>               <span class="c1">// long attachmentId</span>
-  <span class="n">filePath</span><span class="p">,</span>
-  <span class="s">"application/msword"</span>
-<span class="p">);</span>
-</code></pre><pre class="highlight java tab-java"><code><span class="c1">// Specify the new file to be attached</span>
-<span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">filePath</span><span class="o">);</span>
-
-<span class="c1">// Attach new version of the file</span>
-<span class="n">Attachment</span> <span class="n">attachment</span> <span class="o">=</span> <span class="n">smartsheet</span><span class="o">.</span><span class="na">sheetResources</span><span class="o">().</span><span class="na">attachmentResources</span><span class="o">().</span><span class="na">versioningResources</span><span class="o">().</span><span class="na">attachNewVersion</span><span class="o">(</span>
-  <span class="mi">9283173393803140L</span><span class="o">,</span>       <span class="c1">// long sheetId</span>
-  <span class="mo">01234567</span><span class="mi">89123452L</span><span class="o">,</span>       <span class="c1">// long attachmentId</span>
-  <span class="n">file</span><span class="o">,</span>
-  <span class="s">"application/msword"</span>
-<span class="o">);</span>
-</code></pre><pre class="highlight python tab-python"><code><span class="n">response</span> <span class="o">=</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">Attachments</span><span class="o">.</span><span class="n">attach_new_version</span><span class="p">(</span>
-  <span class="mi">9283173393803140</span><span class="p">,</span>       <span class="c"># sheet_id</span>
-  <span class="mo">01234567</span><span class="mi">89123452</span><span class="p">,</span>       <span class="c"># attachment_id</span>
-  <span class="p">(</span><span class="s">'ProgressReport.docx'</span><span class="p">,</span>
-    <span class="nb">open</span><span class="p">(</span><span class="s">'/path/to/ProgressReport.docx'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">),</span>
-    <span class="s">'application/msword'</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">updated_attachment</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">result</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># N/A</span>
-</code></pre>
-<blockquote>
 <p>Example Request (simple): Attach New Version</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code>curl https://api.smartsheet.com/2.0/sheets/<span class="o">{</span>sheetId<span class="o">}</span>/attachments/<span class="o">{</span>attachmentId<span class="o">}</span>/versions <span class="se">\</span>
@@ -4695,6 +4712,19 @@ For example, you can perform a simple upload to upload a file to a <a href="#att
   <span class="ss">file_length: </span><span class="n">file_length</span>
 <span class="p">)</span>
 <span class="n">updated_attachment</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="ss">:result</span><span class="p">]</span>
+</code></pre>
+<blockquote>
+<p>Example Request (multipart): Attach New Version</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl https://api.smartsheet.com/2.0/sheets/<span class="o">{</span>sheetId<span class="o">}</span>/attachments/<span class="o">{</span>attachmentId<span class="o">}</span>/versions <span class="se">\</span>
+-H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
+-X POST <span class="se">\</span>
+-F <span class="s2">"file=@ProgressReport.docx;type=application/msword"</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Multipart operations are not supported by the C# SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight java tab-java"><code><span class="c1">// Multipart operations are not supported by the Java SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="c"># Multipart operations are not supported by the Python SDK. Instead, see the example for a simple request.</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see the example for a simple request.</span>
 </code></pre>
 <blockquote>
 <p>Example Response:</p>
@@ -6782,7 +6812,7 @@ curl -o <span class="s2">"stanley_hotel"</span> <span class="s2">"https://aws.sm
 <tr>
 <td><strong>hidden</strong></td>
 <td>Boolean</td>
-<td>Flag indicating whether the column is hidden</td>
+<td>Indicates whether the column is hidden</td>
 </tr>
 <tr>
 <td><strong>symbol</strong></td>
@@ -6807,7 +6837,7 @@ curl -o <span class="s2">"stanley_hotel"</span> <span class="s2">"https://aws.sm
 <tr>
 <td><strong>validation</strong></td>
 <td>Boolean</td>
-<td>Flag indicating whether validation has been enabled for the column (value = <code>true</code>)</td>
+<td>Indicates whether validation has been enabled for the column (value = <code>true</code>)</td>
 </tr>
 <tr>
 <td><strong>width</strong></td>
@@ -6827,12 +6857,12 @@ curl -o <span class="s2">"stanley_hotel"</span> <span class="s2">"https://aws.sm
 <tr>
 <td><strong>locked</strong></td>
 <td>Boolean</td>
-<td>Flag indicating whether the column is locked. In a response, a value of <code>true</code> indicates that the column has been locked by the sheet owner or the admin.</td>
+<td>Indicates whether the column is locked. In a response, a value of <code>true</code> indicates that the column has been locked by the sheet owner or the admin.</td>
 </tr>
 <tr>
 <td><strong>lockedForUser</strong></td>
 <td>Boolean</td>
-<td>Flag indicating whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.</td>
+<td>Indicates whether the column is locked for the requesting user.  This attribute may be present in a response, but cannot be specified in a request.</td>
 </tr>
 </tbody></table>
 <h3 id='contactoption-object'>ContactOption Object</h3>
@@ -7473,7 +7503,7 @@ curl -o <span class="s2">"stanley_hotel"</span> <span class="s2">"https://aws.sm
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td>A <a href="#column-object">Column object</a> that contains the following attributes:<ul><li>index</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul></td>
+<td>A <a href="#column-object">Column object</a> that contains the following attributes:<ul><li>index</li><li>title -- required when creating a column, optional after that</li><li>type (optional)</li><li>hidden (optional)</li><li>options (optional)</li><li>symbol (optional)</li><li>systemColumnType (optional)</li><li>autoNumberFormat (optional)</li><li>validation (optional)</li><li>width (optional)</li><li>format (optional)</li><li>locked (optional)</li><li>contactOptions (optional) -- must have set column type to CONTACT_LIST</li></ul></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -7704,9 +7734,14 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </tr>
 </tbody></table>
 <h1 id='comments'>Comments</h1>
-<p>A Comment is a component of a <a href="#discussions">Discussion</a>.  Each Discussion is composed of one or more Comments.</p>
+<p>A Discussion is a container for a number of individual Comments in a threaded conversation. For more details, see the <a href="#discussions">Discussion</a> section.​</p>
 
-<aside class="notice">The operations in this section describe how to add, edit, delete, or get an <i>individual comment</i>. To get <i>all comments</i> that exist within all discussions on a Sheet or on a Row or to get the commentId for a specific comment within the discussion, use one of the following operations:<ul><li><a href="#list-discussions">Get All Discussions</a> followed by a <a href="#get-discussion">Get Discussion</a> call to return a <a href="#comment-object">Comment Object</a>.</li><li><a href="#list-row-discussions">List Row Discussions</a> using the include query parameter.</li></ul></aside>
+<p>This section describes operations on an <em>individual</em> Comment within a Discussion thread.</p>
+
+<ul>
+<li>To retrieve all Discussions and Comments for an entire Sheet, use <a href="#list-discussions">List Discussions</a> with the ​query parameter​ <code>include​=comments​</code>.</li>
+<li>To retrieve all Discussions and Comments associated with a Row, use <a href="#list-row-discussions">List Row Discussions</a> ​with the​ query parameter​ <code>include​=comments​</code>.</li>
+</ul>
 <h2 id='objects-6'>Objects</h2><h3 id='comment-object'>Comment Object</h3>
 <blockquote>
 <p>Example Comment Object</p>
@@ -7850,7 +7885,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
     <span class="o">{</span>
       <span class="s2">"text"</span>:<span class="s2">"This is a new comment."</span>
     <span class="o">}</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// n/a</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see instructions to Add Comment, and then Attach File to Comment.</span>
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create comment</span>
 <span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
 <span class="p">{</span>
@@ -7890,7 +7925,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
   <span class="n">comment</span><span class="p">,</span>
   <span class="p">(</span><span class="s">'image.png'</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/path/to/image.png'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">),</span> <span class="s">'image/png'</span><span class="p">)</span>
 <span class="p">)</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># N/A</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see instructions to Add Comment, and then Attach File to Comment.</span>
 </code></pre>
 
 <blockquote>
@@ -8442,7 +8477,11 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <h1 id='discussions'>Discussions</h1>
 
-<p>A Discussion is a collection of one or more <a href="#comments">Comments</a>. A Discussion can exist on a <a href="#rows">Row</a> or a <a href="#sheets">Sheet</a>.</p>
+<p>A Discussion is a container for a collection of individual <a href="#comments">Comments</a> within a single thread. A Discussion can exist on a <a href="#rows">Row</a> or a <a href="#sheets">Sheet</a>.</p>
+
+<p>In the UI, Smartsheet creates a Discussion to contain each top-level Comment and subsequent replies into a single thread.</p>
+
+<p>Using the API, you can only add a Comment to a Discussion. If the Discussion doesn&#39;t already exist, you must create it first.</p>
 
 <h2 id='objects-8'>Objects</h2><h3 id='discussion-object'>Discussion Object</h3>
 <blockquote>
@@ -8483,7 +8522,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 <tr>
 <td><strong>title</strong></td>
 <td>string</td>
-<td>Discussion title</td>
+<td>Read Only. Discussion title automatically created by duplicating the first 100 characters of the top-level Comment</td>
 </tr>
 <tr>
 <td><strong>comments</strong></td>
@@ -8546,10 +8585,9 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
 -X POST <span class="se">\</span>
--d <span class="s1">'{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'</span>
+-d <span class="s1">'{"comment": {"text":"This text is the body of the first comment"}}'</span>
 </code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Specify discussion</span>
 <span class="kd">var</span> <span class="nx">discussion</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"This is a new discussion"</span><span class="p">,</span>
   <span class="s2">"comment"</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"This text is the body of the first comment"</span>
   <span class="p">}</span>
@@ -8573,7 +8611,6 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span>
 <span class="p">{</span>
-  <span class="n">Title</span> <span class="p">=</span> <span class="s">"This is a new discussion"</span><span class="p">,</span>
   <span class="n">Comment</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
     <span class="p">{</span>
       <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
@@ -8593,8 +8630,8 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Discussion</span><span class="o">()</span>
-  <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"This is a new discussion"</span><span class="o">)</span>
-  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">);</span>
+  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setComments</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>     <span class="c1">// workaround for SDK issue</span>
 
 <span class="c1">// Add discussion to row</span>
 <span class="n">Discussion</span> <span class="n">newDiscussion</span> <span class="o">=</span> <span class="n">smartsheet</span><span class="o">.</span><span class="na">sheetResources</span><span class="o">().</span><span class="na">rowResources</span><span class="o">().</span><span class="na">discussionResources</span><span class="o">().</span><span class="na">createDiscussion</span><span class="o">(</span>
@@ -8606,7 +8643,6 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
   <span class="mi">9283173393803140</span><span class="p">,</span>           <span class="c"># sheet_id</span>
   <span class="mo">01234567</span><span class="mi">89012345</span><span class="p">,</span>           <span class="c"># row_id</span>
   <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Discussion</span><span class="p">({</span>
-    <span class="s">'title'</span><span class="p">:</span> <span class="s">'This is a new discussion'</span><span class="p">,</span>
     <span class="s">'comment'</span><span class="p">:</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Comment</span><span class="p">({</span>
       <span class="s">'text'</span><span class="p">:</span> <span class="s">'This text is the body of the first comment'</span>
     <span class="p">})</span>
@@ -8614,7 +8650,6 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 <span class="p">)</span>
 </code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Set options</span>
 <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="ss">title: </span><span class="s1">'This is a new discussion'</span><span class="p">,</span>
   <span class="ss">comment: </span><span class="p">{</span>
     <span class="ss">text: </span><span class="s1">'This text is the body of the first comment'</span>
   <span class="p">}</span>
@@ -8640,25 +8675,23 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 -F <span class="s2">"discussion=&lt;discussion.json;type=application/json"</span> <span class="se">\</span>
 -F <span class="s2">"file=@datafile;type=application/octet-stream"</span>
 
-    <span class="c">#</span>
-    <span class="c"># Content of the discussion.json file:</span>
-    <span class="c">#</span>
-    <span class="o">{</span>
-        <span class="s2">"title"</span>: <span class="s2">"This is a new discussion with an attachment"</span>, 
-        <span class="s2">"comment"</span>: <span class="o">{</span>
-          <span class="s2">"text"</span>:<span class="s2">"This text is the body of the first comment"</span>
-        <span class="o">}</span>
+  <span class="c">#</span>
+  <span class="c"># Content of the discussion.json file:</span>
+  <span class="c">#</span>
+  <span class="o">{</span>
+    <span class="s2">"comment"</span>: <span class="o">{</span>
+      <span class="s2">"text"</span>:<span class="s2">"This text is the body of the first comment"</span>
     <span class="o">}</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
-<span class="p">{</span>
-  <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
-<span class="p">};</span>
-
+  <span class="o">}</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see instructions to Create Discussion on Row, and then Attach File to Comment.</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span>
 <span class="p">{</span>
-  <span class="n">Title</span> <span class="p">=</span> <span class="s">"This is a new discussion"</span><span class="p">,</span>
-  <span class="n">Comment</span> <span class="p">=</span> <span class="n">commentSpecification</span>
+  <span class="n">Comment</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+  <span class="p">{</span>
+    <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
+  <span class="p">},</span>
+  <span class="n">Comments</span> <span class="p">=</span> <span class="k">null</span>         <span class="c1">// workaround for SDK issue</span>
 <span class="p">};</span>
 
 <span class="c1">// Add discussion to row</span>
@@ -8675,8 +8708,8 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Discussion</span><span class="o">()</span>
-  <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"This is a new discussion"</span><span class="o">)</span>
-  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">);</span>
+  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setComments</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>     <span class="c1">// workaround for SDK issue</span>
 
 <span class="c1">// Set file path</span>
 <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">filePath</span><span class="o">);</span>
@@ -8694,14 +8727,13 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
   <span class="mi">9283173393803140</span><span class="p">,</span>       <span class="c"># sheet_id</span>
   <span class="mo">01234567</span><span class="mi">89012345</span><span class="p">,</span>       <span class="c"># row_id</span>
   <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Discussion</span><span class="p">({</span>
-    <span class="s">'title'</span><span class="p">:</span> <span class="s">'This is a new discussion'</span><span class="p">,</span>
     <span class="s">'comment'</span><span class="p">:</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Comment</span><span class="p">({</span>
       <span class="s">'text'</span><span class="p">:</span> <span class="s">'This text is the body of the first comment'</span>
     <span class="p">})</span>
   <span class="p">}),</span>
   <span class="p">(</span><span class="s">'photo.jpg'</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/path/to/photo.jpg'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">),</span> <span class="s">'image/jpeg'</span><span class="p">)</span>
 <span class="p">)</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># N/A</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see instructions to Create Discussion on Row, and then Attach File to Comment.</span>
 </code></pre>
 
 <blockquote>
@@ -8723,7 +8755,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
             </span><span class="s2">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This text is the body of the first comment"</span><span class="w">
         </span><span class="p">}],</span><span class="w">
         </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4583173393803140</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a new discussion"</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This text is the body of the first comment"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="s2">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -8753,7 +8785,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td><a href="#discussion-object">Discussion Object</a> with the following attributes:<ul><li>title (string)</li><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></td>
+<td><a href="#discussion-object">Discussion Object</a> with the following attribute:<ul><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -8779,7 +8811,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td>Request body should contain <em>parts</em> with the following names:<ul><li><strong>discussion</strong>: JSON <a href="#discussion-object">Discussion Object</a> with the following attributes:<ul><li>title (string)</li><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></li><li><strong>file</strong>: (optional) file to attach to the new comment</li></ul>See <a href="#multipart-uploads">Multipart Uploads</a> for more information on parts.</td>
+<td>Request body should contain <em>parts</em> with the following names:<ul><li><strong>discussion</strong>: JSON <a href="#discussion-object">Discussion Object</a> with the following attributes:<ul><li>title (string), must be 100 characters in length or less</li><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></li><li><strong>file</strong>: (optional) file to attach to the new comment</li></ul>See <a href="#multipart-uploads">Multipart Uploads</a> for more information on parts.</td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -8797,10 +8829,9 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 -H <span class="s2">"Authorization: Bearer ll352u9jujauoqz4gstvsae05"</span> <span class="se">\</span>
 -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
 -X POST <span class="se">\</span>
--d <span class="s1">'{"title": "This is a new discussion", "comment": {"text":"This text is the body of the first comment"}}'</span>
+-d <span class="s1">'{"comment": {"text":"This text is the body of the first comment"}}'</span>
 </code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Specify discussion</span>
 <span class="kd">var</span> <span class="nx">discussion</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"This is a new discussion"</span><span class="p">,</span>
   <span class="s2">"comment"</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"This text is the body of the first comment"</span>
   <span class="p">}</span>
@@ -8823,7 +8854,6 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span>
 <span class="p">{</span>
-  <span class="n">Title</span> <span class="p">=</span> <span class="s">"This is a new discussion"</span><span class="p">,</span>
   <span class="n">Comment</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
   <span class="p">{</span>
     <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
@@ -8842,18 +8872,17 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Discussion</span><span class="o">()</span>
-  <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"This is a new discussion"</span><span class="o">)</span>
-  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">);</span>
+  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setComments</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>     <span class="c1">// workaround for SDK issue</span>
 
 <span class="c1">// Add discussion to sheet</span>
-<span class="n">Discussion</span> <span class="n">newDiscussion</span> <span class="o">=</span> <span class="n">smartsheet</span><span class="o">.</span><span class="na">sheetResources</span><span class="o">().</span><span class="na">rowResources</span><span class="o">().</span><span class="na">discussionResources</span><span class="o">().</span><span class="na">createDiscussion</span><span class="o">(</span>
+<span class="n">Discussion</span> <span class="n">newDiscussion</span> <span class="o">=</span> <span class="n">smartsheet</span><span class="o">.</span><span class="na">sheetResources</span><span class="o">().</span><span class="na">discussionResources</span><span class="o">().</span><span class="na">createDiscussion</span><span class="o">(</span>
   <span class="mi">9283173393803140L</span><span class="o">,</span>       <span class="c1">// long sheetId</span>
   <span class="n">discussionSpecification</span>
 <span class="o">);</span>
 </code></pre><pre class="highlight python tab-python"><code><span class="n">response</span> <span class="o">=</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">Discussions</span><span class="o">.</span><span class="n">create_discussion_on_sheet</span><span class="p">(</span>
   <span class="mi">9283173393803140</span><span class="p">,</span>           <span class="c"># sheet_id</span>
   <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Discussion</span><span class="p">({</span>
-    <span class="s">'title'</span><span class="p">:</span> <span class="s">'This is a new discussion'</span><span class="p">,</span>
     <span class="s">'comment'</span><span class="p">:</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Comment</span><span class="p">({</span>
       <span class="s">'text'</span><span class="p">:</span> <span class="s">'This text is the body of the first comment'</span>
     <span class="p">})</span>
@@ -8861,7 +8890,6 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 <span class="p">)</span>
 </code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Set options</span>
 <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="ss">title: </span><span class="s1">'This is a new discussion'</span><span class="p">,</span>
   <span class="ss">comment: </span><span class="p">{</span>
     <span class="ss">text: </span><span class="s1">'This text is the body of the first comment'</span>
   <span class="p">}</span>
@@ -8885,25 +8913,23 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 -F <span class="s2">"discussion=&lt;discussion.json;type=application/json"</span> <span class="se">\</span>
 -F <span class="s2">"file=@file_to_attach;type=application/octet-stream"</span>
 
-    <span class="c">#</span>
-    <span class="c"># Content of the discussion.json file:</span>
-    <span class="c">#</span>
-    <span class="o">{</span>
-        <span class="s2">"title"</span>: <span class="s2">"This is a new discussion with an attachment"</span>, 
-        <span class="s2">"comment"</span>: <span class="o">{</span>
-          <span class="s2">"text"</span>:<span class="s2">"This text is the body of the first comment"</span>
-        <span class="o">}</span>
+  <span class="c">#</span>
+  <span class="c"># Content of the discussion.json file:</span>
+  <span class="c">#</span>
+  <span class="o">{</span>
+    <span class="s2">"comment"</span>: <span class="o">{</span>
+      <span class="s2">"text"</span>:<span class="s2">"This text is the body of the first comment"</span>
     <span class="o">}</span>
-</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// [todo]</span>
-</code></pre><pre class="highlight csharp tab-csharp"><code><span class="n">Comment</span> <span class="n">commentSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
-<span class="p">{</span>
-  <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
-<span class="p">};</span>
-
+  <span class="o">}</span>
+</code></pre><pre class="highlight javascript tab-javascript"><code><span class="c1">// Multipart operations are not supported by the Node SDK. Instead, see instructions to Create Discussion on Sheet, and then Attach File to Comment.</span>
+</code></pre><pre class="highlight csharp tab-csharp"><code><span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Discussion</span>
 <span class="p">{</span>
-  <span class="n">Title</span> <span class="p">=</span> <span class="s">"This is a new discussion with an attachment"</span><span class="p">,</span>
-  <span class="n">Comment</span> <span class="p">=</span> <span class="n">commentSpecification</span>
+  <span class="n">Comment</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Comment</span>
+  <span class="p">{</span>
+    <span class="n">Text</span> <span class="p">=</span> <span class="s">"This text is the body of the first comment"</span>
+  <span class="p">},</span>
+  <span class="n">Comments</span> <span class="p">=</span> <span class="k">null</span>         <span class="c1">// workaround for SDK issue</span>
 <span class="p">};</span>
 
 <span class="c1">// Add discussion (including comment with attachment) to sheet</span>
@@ -8919,8 +8945,8 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <span class="c1">// Create discussion (including the comment)</span>
 <span class="n">Discussion</span> <span class="n">discussionSpecification</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Discussion</span><span class="o">()</span>
-  <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"This is a new discussion"</span><span class="o">)</span>
-  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">);</span>
+  <span class="o">.</span><span class="na">setComment</span><span class="o">(</span><span class="n">commentSpecification</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setComments</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>     <span class="c1">// workaround for SDK issue</span>
 
 <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">filePath</span><span class="o">);</span>
 
@@ -8934,14 +8960,13 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </code></pre><pre class="highlight python tab-python"><code><span class="n">response</span> <span class="o">=</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">Discussions</span><span class="o">.</span><span class="n">create_discussion_on_sheet_with_attachment</span><span class="p">(</span>
   <span class="mi">9283173393803140</span><span class="p">,</span>           <span class="c"># sheet_id</span>
   <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Discussion</span><span class="p">({</span>
-    <span class="s">'title'</span><span class="p">:</span> <span class="s">'This is a new discussion'</span><span class="p">,</span>
     <span class="s">'comment'</span><span class="p">:</span> <span class="n">ss_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Comment</span><span class="p">({</span>
       <span class="s">'text'</span><span class="p">:</span> <span class="s">'This text is the body of the first comment'</span>
     <span class="p">})</span>
   <span class="p">}),</span>
   <span class="p">(</span><span class="s">'photo.jpg'</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/path/to/photo.jpg'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">),</span> <span class="s">'image/jpeg'</span><span class="p">)</span>
 <span class="p">)</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># N/A</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="c1"># Multipart operations are not supported by the Ruby SDK. Instead, see instructions to Create Discussion on Sheet, and then Attach File to Comment.</span>
 </code></pre>
 
 <blockquote>
@@ -8963,7 +8988,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
             </span><span class="s2">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This text is the body of the first comment"</span><span class="w">
         </span><span class="p">}],</span><span class="w">
         </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4583173393803140</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a new discussion"</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This text is the body of the first comment"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="s2">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -8993,7 +9018,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td><a href="#discussion-object">Discussion Object</a> with the following attributes:<ul><li>title (string)</li><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></td>
+<td><a href="#discussion-object">Discussion Object</a> with the following attribute:<ul><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -9019,7 +9044,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 </tr>
 <tr>
 <td><strong>Request Body</strong></td>
-<td>Request body should contain <em>parts</em> with the following names:<ul><li><strong>discussion</strong>: JSON <a href="#discussion-object">Discussion Object</a> with the following attributes:<ul><li>title (string)</li><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></li><li><strong>file</strong>: (optional) file to attach to the new comment</li></ul>See <a href="#multipart-uploads">Multipart Uploads</a> for more information on parts.</td>
+<td>Request body should contain <em>parts</em> with the following names:<ul><li><strong>discussion</strong>: JSON <a href="#discussion-object">Discussion Object</a> with the following attributes:<ul><li>title (string), must be 100 characters in length or less</li><li>comment (<a href="#comment-object">Comment Object</a>)</li></ul></li><li><strong>file</strong>: (optional) file to attach to the new comment</li></ul>See <a href="#multipart-uploads">Multipart Uploads</a> for more information on parts.</td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -9220,7 +9245,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <p><code>GET /sheets/{sheetId}/discussions</code></p>
 
-<p>Gets a list of all Discussions associated with the specified Sheet (both sheet-level discussions and row-level discussions).</p>
+<p>Gets a list of <em>all</em> Discussions associated with the specified Sheet. Remember that Discussions are containers for the conversation thread. To see the entire thread, use the <code>include=comments</code> parameter.</p>
 
 <aside class="notice">This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>.</aside>
 
@@ -9460,7 +9485,7 @@ filled in by Smartsheet and whose values cannot be changed by the user. These co
 
 <p><code>GET /sheets/{sheetId}/rows/{rowId}/discussions</code></p>
 
-<p>Gets a list of all Discussions associated with the specified Row.</p>
+<p>Gets a list of all Discussions associated with the specified Row. Remember that Discussions are containers for the conversation thread. To see the entire thread, use the <code>include=comments</code> parameter.</p>
 
 <aside class="notice">This operation supports pagination of results. For more information, see <a href='#paging'>Paging</a>.</aside>
 
@@ -12906,19 +12931,19 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 </tr>
 </thead><tbody>
 <tr>
+<td><strong>readOnlyFullEnabled</strong></td>
+<td>Boolean</td>
+<td>(Required) If <code>true</code>, a rich version of the report is published with the ability to download row attachments and discussions.</td>
+</tr>
+<tr>
 <td><strong>readOnlyFullAccessibleBy</strong></td>
 <td>string</td>
-<td>Flag to indicate who can access the &#39;Read-Only Full&#39; view of the published report:<ul><li>If &quot;ALL&quot;, it is available to anyone who has the link.</li><li>If &quot;ORG&quot;, it is available only to members of the report owner&#39;s Smartsheet organization.</li></ul>Only returned in a response if <strong>readOnlyFullEnabled</strong> = true.</td>
+<td>Indicates who can access the &#39;Read-Only Full&#39; view of the published report:<ul><li>If &quot;ALL&quot;, it is available to anyone who has the link.</li><li>If &quot;ORG&quot;, it is available only to members of the report owner&#39;s Smartsheet organization.</li></ul>Only returned in a response if <strong>readOnlyFullEnabled</strong> = true.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullDefaultView</strong></td>
 <td>string</td>
 <td>Indicates which view the user has set for a read-only, default view of the published report. Must be one of the following values: &quot;CALENDAR&quot;, &quot;CARD&quot;, or &quot;GRID&quot;.</td>
-</tr>
-<tr>
-<td><strong>readOnlyFullEnabled</strong></td>
-<td>Boolean</td>
-<td>(Required) If <code>true</code>, a rich version of the report is published with the ability to download row attachments and discussions.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullShowToolbar</strong></td>
@@ -13488,7 +13513,7 @@ of <a href="#groupmember-object">GroupMember Objects</a> any users specified in 
 </tr>
 </tbody></table>
 
-<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, the value of <b>readOnlyFullAccessibleBy</b> is defaulted to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
+<aside class="notice">For Read Only, if you do not specify <b>readOnlyFullAccessibleBy</b>, the value defaults to the organization-level 'Report Publishing' setting (if the Report owner belongs to an organization) or to "ALL" (if the Report owner does not belong to an organization).</aside>
 <h2 id='send-report-via-email'>Send Report via Email</h2>
 
 <blockquote>
@@ -18639,6 +18664,17 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 </tr>
 </tbody></table>
 <h3 id='criteria-object'>Criteria Object</h3>
+<blockquote>
+<p>Example Criteria Object:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"IS_ONE_OF"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"Complete"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"columnId"</span><span class="p">:</span><span class="w"> </span><span class="mi">675838380271492</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 <table><thead>
 <tr>
 <th></th>
@@ -18652,17 +18688,30 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <td>One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul></td>
 </tr>
 <tr>
-<td><strong>value1</strong></td>
-<td>string or number</td>
+<td><strong>values</strong></td>
+<td>array</td>
 <td>Optional. Present if a custom filter criteria&#39;s operator has one or more arguments.</td>
 </tr>
 <tr>
-<td><strong>value2</strong></td>
-<td>string or number</td>
-<td>Optional.  Present if a custom filter criteria&#39;s operator has two arguments.</td>
+<td><strong>columnId</strong></td>
+<td>number</td>
+<td>Column Id</td>
 </tr>
 </tbody></table>
-<h3 id='filter-object'>Filter Object</h3>
+<h3 id='filters-object'>Filters Object</h3>
+<blockquote>
+<p>Example Filters Object:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">7182478625531780</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"filterType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PERSONAL"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AND"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+    </span><span class="s2">"includeParent"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 <p>Smartsheet users can define and save personal column filters on sheets they can view. To see whether a row has been included or excluded with a filter, invoke the &quot;include=filters&quot; query string, which returns a <code>row.filteredOut</code> = <code>true</code> or <code>false</code> response for rows that are excluded by a filter. To see how the filter has been defined, invoke the &quot;include=filterDefinitions&quot; query string parameter.</p>
 
 <table><thead>
@@ -18673,9 +18722,29 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 </tr>
 </thead><tbody>
 <tr>
-<td><strong>type</strong></td>
+<td><strong>id</strong></td>
+<td>number</td>
+<td>Filters Id</td>
+</tr>
+<tr>
+<td><strong>filterType</strong></td>
 <td>string</td>
-<td>One of the following values:<ul><li>LIST</li><li>CUSTOM</li></ul></td>
+<td>One of the following values:<ul><li>PERSONAL</li><li>SHARED</li></ul></td>
+</tr>
+<tr>
+<td><strong>query</strong></td>
+<td>object</td>
+<td>Contains operator and Criteria Object.</td>
+</tr>
+<tr>
+<td><strong>operator</strong></td>
+<td>string</td>
+<td>One of the following values:<ul><li>EQUAL</li><li>NOT_EQUAL</li><li>GREATER_THAN</li><li>LESS_THAN</li><li>CONTAINS</li><li>BETWEEN</li><li>TODAY</li><li>PAST</li><li>FUTURE</li><li>LAST_N_DAYS</li><li>NEXT_N_DAYS</li><li>IS_BLANK</li><li>IS_NOT_BLANK</li><li>IS_NUMBER</li><li>IS_NOT_NUMBER</li><li>IS_DATE</li><li>IS_NOT_DATE</li><li>IS_CHECKED</li><li>IS_NOT_CHECKED</li></ul></td>
+</tr>
+<tr>
+<td><strong>includeParent</strong></td>
+<td>Boolean</td>
+<td>If <strong>true</strong>, indicates that &quot;show parent rows&quot; is enabled for the filters.</td>
 </tr>
 <tr>
 <td><strong>excludeSelected</strong></td>
@@ -18685,12 +18754,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <tr>
 <td><strong>values</strong></td>
 <td>object[] containing strings, numbers, and Booleans</td>
-<td>Only included if the filter is of type LIST.<br/><br/>An array of literal cell values that this filter matches against row cells in this column.  The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created.  These may be strings, numbers, Booleans, or dates.</td>
+<td>An array of literal cell values that this filter matches against row cells in this column. The type of the objects in the array depend on the type of the cell values selected to be filtered on when the filter was created. These may be strings, numbers, Booleans, or dates.</td>
 </tr>
 <tr>
 <td><strong>criteria</strong></td>
 <td><a href="#criteria-object">Criteria</a>[]</td>
-<td>Only included if the filter is of type CUSTOM.<br/><br/>An array of Criteria Objects specifying custom criteria against which to match cell values.</td>
+<td>An array of Criteria Objects specifying custom criteria against which to match cell values.</td>
 </tr>
 </tbody></table>
 <h3 id='projectsettings-object'>ProjectSettings Object</h3>
@@ -18733,6 +18802,21 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <td>(Required) If <code>true</code>, a webcal is available for the calendar in the sheet.</td>
 </tr>
 <tr>
+<td><strong>readOnlyFullEnabled</strong></td>
+<td>Boolean</td>
+<td>(Required) If <code>true</code>, a rich version of the sheet is published with the ability to download row attachments and discussions.</td>
+</tr>
+<tr>
+<td><strong>readOnlyLiteEnabled</strong></td>
+<td>Boolean</td>
+<td>(Required) If <code>true</code>, a lightweight version of the sheet is published without row attachments or discussions.</td>
+</tr>
+<tr>
+<td><strong>readWriteEnabled</strong></td>
+<td>Boolean</td>
+<td>(Required) If <code>true</code>, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.</td>
+</tr>
+<tr>
 <td><strong>icalUrl</strong></td>
 <td>string</td>
 <td>URL for &#39;iCal&#39; view of the published sheet<br/>Only returned in a response if <strong>icalEnabled</strong> = true.</td>
@@ -18740,17 +18824,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <tr>
 <td><strong>readOnlyFullAccessibleBy</strong></td>
 <td>string</td>
-<td>Flag to indicate who can access the &#39;Read-Only Full&#39; view of the published sheet:<ul><li>If &quot;ALL&quot;, it is available to anyone who has the link.</li><li>If &quot;ORG&quot;, it is available only to members of the sheet owner&#39;s Smartsheet organization.</li></ul>Only returned in a response if <strong>readOnlyFullEnabled</strong> = true.</td>
+<td>Indicates who can access the &#39;Read-Only Full&#39; view of the published sheet:<ul><li>If &quot;ALL&quot;, it is available to anyone who has the link.</li><li>If &quot;ORG&quot;, it is available only to members of the sheet owner&#39;s Smartsheet organization.</li></ul>Only returned in a response if <strong>readOnlyFullEnabled</strong> = true.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullDefaultView</strong></td>
 <td>string</td>
 <td>Indicates which view the user has set for a read-only, default view of the published sheet. Must be one of the following values: &quot;CALENDAR&quot;, &quot;CARD&quot;, or &quot;GRID&quot;.</td>
-</tr>
-<tr>
-<td><strong>readOnlyFullEnabled</strong></td>
-<td>Boolean</td>
-<td>(Required) If <code>true</code>, a rich version of the sheet is published with the ability to download row attachments and discussions.</td>
 </tr>
 <tr>
 <td><strong>readOnlyFullShowToolbar</strong></td>
@@ -18761,11 +18840,6 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <td><strong>readOnlyFullUrl</strong></td>
 <td>string</td>
 <td>URL for &#39;Read-Only Full&#39; view of the published sheet<br/>Only returned in a response if <strong>readOnlyFullEnabled</strong> = true.</td>
-</tr>
-<tr>
-<td><strong>readOnlyLiteEnabled</strong></td>
-<td>Boolean</td>
-<td>(Required) If <code>true</code>, a lightweight version of the sheet is published without row attachments or discussions.</td>
 </tr>
 <tr>
 <td><strong>readOnlyLiteSslUrl</strong></td>
@@ -18780,17 +18854,12 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 <tr>
 <td><strong>readWriteAccessibleBy</strong></td>
 <td>string</td>
-<td>Flag to indicate who can access the &#39;Edit by Anyone&#39; view of the published sheet:<ul><li>If &quot;ALL&quot;, it is available to anyone who has the link.</li><li>If &quot;ORG&quot;, it is available only to members of the sheet owner&#39;s Smartsheet organization.</li></ul>Only returned in a response if <strong>readWriteEnabled</strong> = true.</td>
+<td>Indicates who can access the &#39;Edit by Anyone&#39; view of the published sheet:<ul><li>If &quot;ALL&quot;, it is available to anyone who has the link.</li><li>If &quot;ORG&quot;, it is available only to members of the sheet owner&#39;s Smartsheet organization.</li></ul>Only returned in a response if <strong>readWriteEnabled</strong> = true.</td>
 </tr>
 <tr>
 <td><strong>readWriteDefaultView</strong></td>
 <td>string</td>
 <td>Indicates which view the user has set for a read-write, default view of the published sheet. Must be one of the following values: &quot;CALENDAR&quot;, &quot;CARD&quot;, or &quot;GRID&quot;.</td>
-</tr>
-<tr>
-<td><strong>readWriteEnabled</strong></td>
-<td>Boolean</td>
-<td>(Required) If <code>true</code>, a rich version of the sheet is published with the ability to edit cells and manage attachments and discussions.</td>
 </tr>
 <tr>
 <td><strong>readWriteShowToolbar</strong></td>
@@ -20972,9 +21041,9 @@ Either <strong>email</strong> and <strong>groupId</strong> may be set, but not b
 </tr>
 </tbody></table>
 
-<aside class="notice">If <b>readOnlyFullEnabled</b> is set to <code>true</code> in the request, but <b>readOnlyFullAccessibleBy</b> is not specified, the value of <b>readOnlyFullAccessibleBy</b> defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
+<aside class="notice">For Read Only, if you do not specify a value for <b>readOnlyFullAccessibleBy</b>, the value defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
 
-<aside class="notice">If <b>readWriteEnabled</b> is set to <code>true</code> in the request but <b>readWriteAccessibleBy</b> is not specified, the value of <b>readWriteAccessibleBy</b> defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
+<aside class="notice">For Read Write, if you do not specify a value for <b>readWriteAccessibleBy</b>, the value defaults to the organization-level 'Sheet Publishing' setting (if the Sheet owner belongs to an organization) or to "ALL" (if the Sheet owner does not belong to an organization).</aside>
 <h2 id='search-sheet-2'>Search Sheet</h2>
 
 <blockquote>
@@ -21579,11 +21648,6 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <td>Widget Id</td>
 </tr>
 <tr>
-<td><strong>type</strong></td>
-<td>string</td>
-<td>Type of widget</td>
-</tr>
-<tr>
 <td><strong>title</strong></td>
 <td>string</td>
 <td><em>(Optional)</em> Title of the widget</td>
@@ -21629,9 +21693,58 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <td>Widget version number</td>
 </tr>
 <tr>
+<td><strong>type</strong></td>
+<td>string</td>
+<td>Type of widget. See table below to see how UI widget names map to type.</td>
+</tr>
+<tr>
 <td><strong>contents</strong></td>
-<td><a href="#widget-object">WidgetContent</a></td>
-<td>Data that specifies the contents of the widget. _Note: the type of <em>WidgetContent</em> Object (and attributes within) depends on the value of <em>Widget.type</em>: <ul><li>CELLLINK - <a href="#celllinkwidgetcontent-object">CellLinkWidgetContent</a></li> <li>SHEETSUMMARY - <a href="#celllinkwidgetcontent-object">CellLinkWidgetContent</a></li> <li>RICHTEXT - <a href="#richtextwidgetcontent-object">RichTextWidgetContent</a></li> <li>SHORTCUTICON - <a href="#shortcutwidgetcontent-object">ShortcutWidgetContent</a></li> <li>SHORTCUTLIST - <a href="#shortcutwidgetcontent-object">ShortcutWidgetContent</a> </li> <li>GRIDGANTT - <a href="#reportwidgetcontent-object">ReportWidgetContent</a></li> <li>IMAGE - <a href="#imagewidgetcontent-object">ImageWidgetContent</a></li></td>
+<td>WidgetContent Object</td>
+<td>Data that specifies the contents of the widget. <b>Note:</b> The type of WidgetContent Object (and attributes within) depends on the value of <code>widget.type</code>.</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td><strong>UI widget name</strong></td>
+<td><strong>type string</strong></td>
+<td><strong>Object</strong></td>
+</tr>
+<tr>
+<td>Image</td>
+<td>IMAGE</td>
+<td><a href="#imagewidgetcontent-object">ImageWidgetContent</a></td>
+</tr>
+<tr>
+<td>Metric</td>
+<td>SHEETSUMMARY</td>
+<td><a href="#celllinkwidgetcontent-object">CellLinkWidgetContent</a></td>
+</tr>
+<tr>
+<td>Report</td>
+<td>GRIDGANTT</td>
+<td><a href="#reportwidgetcontent-object">ReportWidgetContent</a></td>
+</tr>
+<tr>
+<td>Rich Text</td>
+<td>RICHTEXT</td>
+<td><a href="#richtextwidgetcontent-object">RichTextWidgetContent</a></td>
+</tr>
+<tr>
+<td>Shortcut</td>
+<td>SHORTCUTLIST</td>
+<td><a href="#shortcutwidgetcontent-object">ShortcutWidgetContent</a></td>
+</tr>
+<tr>
+<td>Title</td>
+<td>TITLE</td>
+<td><a href="#titlewidgetcontent-object">TitleWidgetContent</a></td>
 </tr>
 </tbody></table>
 <h3 id='celllinkwidgetcontent-object'>CellLinkWidgetContent Object</h3>
@@ -21656,82 +21769,6 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <td>column</td>
 <td><a href="#column-object">column</a>[]</td>
 <td>Array of Column Objects</td>
-</tr>
-</tbody></table>
-<h3 id='richtextwidgetcontent-object'>RichTextWidgetContent Object</h3>
-<table><thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead><tbody>
-<tr>
-<td>html</td>
-<td>string</td>
-<td>The widget content as HTML </br> </br> The Rich Text widget supports the following subset of HTML tags and CSS Styles: </br></br> <b>HTML</b><ul><li>a</li> <li>br</li> <li>li</li> <li>ol</li> <li>p</li> <li>ul</li> <li>span</li></ul> <b>CSS</b><ul><li>color</li> <li>font-family</li> <li>font-size</li> <li>font-style</li> <li>font-weight</li> <li>text-align</li> <li>text-decoration</li></ul></td>
-</tr>
-</tbody></table>
-<h3 id='shortcutwidgetcontent-object'>ShortcutWidgetContent Object</h3>
-<table><thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead><tbody>
-<tr>
-<td>shortcutData</td>
-<td><a href="#shortcutdataitem-object">shortcutData</a>[]</td>
-<td>An array of ShortcutDataItem Objects</td>
-</tr>
-</tbody></table>
-<h3 id='reportwidgetcontent-object'>ReportWidgetContent Object</h3>
-<table><thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead><tbody>
-<tr>
-<td>htmlContent</td>
-<td>string</td>
-<td>HTML snippet to render Report</td>
-</tr>
-</tbody></table>
-<h3 id='imagewidgetcontent-object'>ImageWidgetContent Object</h3>
-<table><thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead><tbody>
-<tr>
-<td><strong>privateId</strong></td>
-<td>string</td>
-<td>The image private Id</td>
-</tr>
-<tr>
-<td><strong>height</strong></td>
-<td>integer</td>
-<td>Original height of the image in pixels</td>
-</tr>
-<tr>
-<td><strong>width</strong></td>
-<td>integer</td>
-<td>Original width of the image in pixels</td>
-</tr>
-<tr>
-<td><strong>fileName</strong></td>
-<td>string</td>
-<td>Name of the image file</td>
-</tr>
-<tr>
-<td><strong>format</strong></td>
-<td>string</td>
-<td><a href="#formatting">formatDescriptor</a></td>
 </tr>
 </tbody></table>
 <h3 id='celldataitem-object'>CellDataItem Object</h3>
@@ -21778,6 +21815,82 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <td>Column Id for the cell</td>
 </tr>
 </tbody></table>
+<h3 id='imagewidgetcontent-object'>ImageWidgetContent Object</h3>
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td><strong>privateId</strong></td>
+<td>string</td>
+<td>The image private Id</td>
+</tr>
+<tr>
+<td><strong>height</strong></td>
+<td>integer</td>
+<td>Original height of the image in pixels</td>
+</tr>
+<tr>
+<td><strong>width</strong></td>
+<td>integer</td>
+<td>Original width of the image in pixels</td>
+</tr>
+<tr>
+<td><strong>fileName</strong></td>
+<td>string</td>
+<td>Name of the image file</td>
+</tr>
+<tr>
+<td><strong>format</strong></td>
+<td>string</td>
+<td><a href="#formatting">formatDescriptor</a></td>
+</tr>
+</tbody></table>
+<h3 id='reportwidgetcontent-object'>ReportWidgetContent Object</h3>
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td>htmlContent</td>
+<td>string</td>
+<td>HTML snippet to render Report</td>
+</tr>
+</tbody></table>
+<h3 id='richtextwidgetcontent-object'>RichTextWidgetContent Object</h3>
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td>html</td>
+<td>string</td>
+<td>The widget content as HTML </br> </br> The Rich Text widget supports the following subset of HTML tags and CSS Styles: </br></br> <b>HTML</b><ul><li>a - defines a hyperlink</li> <li>br - inserts a single line break</li><li>li - defines a list item</li> <li>ol - defines an ordered list</li> <li>p - defines a paragraph</li> <li>ul - defines an unordered list</li> <li>span - defines a section in a document</li></ul> <b>CSS</b><ul><li>color</li> <li>font-family</li> <li>font-size</li> <li>font-style</li> <li>font-weight</li> <li>text-align</li> <li>text-decoration</li></ul></td>
+</tr>
+</tbody></table>
+<h3 id='shortcutwidgetcontent-object'>ShortcutWidgetContent Object</h3>
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td>shortcutData</td>
+<td><a href="#shortcutdataitem-object">shortcutData</a>[]</td>
+<td>An array of ShortcutDataItem Objects</td>
+</tr>
+</tbody></table>
 <h3 id='shortcutdataitem-object'>ShortcutDataItem Object</h3>
 <table><thead>
 <tr>
@@ -21797,7 +21910,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <td><a href="#formatting">formatDescriptor</a></td>
 </tr>
 <tr>
-<td><strong>mimeType</strong></td>
+<td><strong>attachmentType</strong></td>
 <td>string</td>
 <td>Attachment type (one of FILE, GOOGLE_DRIVE, LINK, BOX_COM, DROPBOX, EVERNOTE, or EGNYTE)</td>
 </tr>
@@ -21810,6 +21923,25 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 <td><strong>order</strong></td>
 <td>integer</td>
 <td>The display order for the ShortcutWidgetItem</td>
+</tr>
+</tbody></table>
+<h3 id='titlewidgetcontent-object'>TitleWidgetContent Object</h3>
+<table><thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead><tbody>
+<tr>
+<td>htmlContent</td>
+<td>string</td>
+<td>HTML snippet to render Title</td>
+</tr>
+<tr>
+<td>backgroundColor</td>
+<td>hex</td>
+<td>The hex color, for instance #E6F5FE</td>
 </tr>
 </tbody></table>
 <h2 id='copy-sight'>Copy Sight</h2>
@@ -23781,7 +23913,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 </thead><tbody>
 <tr>
 <td><strong>Access Scope</strong></td>
-<td>Must be one of the followings:<ul><li>ADMIN_SHEETS, or</li><li>WRITE_SHEETS (the access token owner must be the submitter of the specified update request).</li></ul></td>
+<td>Must be one of the followings:<ul><li>ADMIN_SHEETS, or</li><li>WRITE_SHEETS</li></ul></td>
 </tr>
 <tr>
 <td><strong>Headers</strong></td>
@@ -24150,7 +24282,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 </thead><tbody>
 <tr>
 <td><strong>Access Scope</strong></td>
-<td>Must be one of the followings:<ul><li>ADMIN_SHEETS, or</li><li>WRITE_SHEETS (the access token owner must be the submitter of the specified update request).</li></ul></td>
+<td>WRITE_SHEETS</td>
 </tr>
 <tr>
 <td><strong>Headers</strong></td>
@@ -24233,7 +24365,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 </thead><tbody>
 <tr>
 <td><strong>Access Scope</strong></td>
-<td>Must be one of the followings:<ul><li>ADMIN_SHEETS, or</li><li>WRITE_SHEETS (The access token owner must be the submitter of the specified sent update request).</li></ul></td>
+<td>Must be one of the followings:<ul><li>ADMIN_SHEETS, or</li><li>WRITE_SHEETS</li></ul></td>
 </tr>
 <tr>
 <td><strong>Headers</strong></td>
@@ -25524,7 +25656,7 @@ only has read-only access to the sheet (for example, the user has viewer permiss
 </span></code></pre>
 <p><code>DELETE /users/{userId}</code></p>
 
-<p>Removes a User from an organization. User is transitioned to a free collaborator with read-only access to owned sheets (unless those are optionally transferred to another user). </p>
+<p>Removes a User from an organization. User is transitioned to a free collaborator with read-only access to owned reports, sheets, Sights, workspaces, and any shared templates (unless those are optionally transferred to another user). </p>
 
 <aside class="notice">This operation is only available to system administrators.</aside>
 
@@ -28045,7 +28177,7 @@ The following diagram illustrates the process of creating and enabling a Webhook
 <li><p>To initiate the verification process, the API Client submits an <a href="#update-webhook">Update Webhook</a> request to specify <code>enabled: true</code>. (<em>Note</em>: The API Client does not receive a response to this request until the Verification process (steps 4 and 5) has completed.)</p></li>
 <li><p>When Smartsheet receives the request to enable the webhook, it sends a <a href="#webhook-verification">Verification Request</a> to the Subscriber (that is, to the <code>callbackUrl</code> that the API Client specified in the <strong>Create Webhook</strong> request). 
 The request specifies a unique random value in the <strong>Smartsheet-Hook-Challenge</strong> header and contains only <code>challenge</code> and <code>webhookId</code> in the request body. The <code>challenge</code> value is a repeat of the header value for API clients that don&#39;t interpret header values.</p></li>
-<li><p>The Subscriber responds to the Verification Request by echoing back the same unique random value in the <strong>Smartsheet-Hook-Response</strong> header of the response.</p></li>
+<li><p>The Subscriber responds to the Verification Request by echoing back the same unique random value in the <strong>Smartsheet-Hook-Response</strong> header of the response. For API clients that don&#39;t interpret header values, you can also send a JSON body with a <code>smartsheetHookResponse</code> attribute and the same value that would have been in the header. </p></li>
 <li><p>Once the Subscriber has successfully acknowledged the Verification Request, Smartsheet enables the webhook and responds to the API Client&#39;s <strong>Update Webhook</strong> request to confirm that the webhook has been enabled (<code>enabled: true</code> and <code>status: &quot;ENABLED&quot;</code>). </p></li>
 </ol>
 
@@ -28069,13 +28201,16 @@ Smartsheet-Hook-Challenge: d78dd1d3-01ce-4481-81de-92b4f3aa5ab1
 
 <pre class="highlight plaintext"><code>HTTP status: 200 OK
 Smartsheet-Hook-Response: d78dd1d3-01ce-4481-81de-92b4f3aa5ab1 
+{
+  "smartsheetHookResponse": "d78dd1d3-01ce-4481-81de-92b4f3aa5ab1"
+}
 </code></pre>
 
 <p>When an API Client attempts to enable a webhook, Smartsheet sends a verification request to the webhook&#39;s <strong>callbackUrl</strong> to verify that the Subscriber expects and is able to successfully receive callbacks. 
 The request specifies a unique random value in the <strong>Smartsheet-Hook-Challenge</strong> header and contains a JSON object in the request body with only <code>challenge</code> and <code>webhookId</code> attributes in the request body. The <code>challenge</code> attribute is a repeat of the header value for API clients that don&#39;t interpret header values.</p>
 
 <ul>
-<li><p>To verify the webhook, the Subscriber&#39;s response to the Verification Request must return a 200 HTTP status code and must echo back the same unique random value in the <strong>Smartsheet-Hook-Response</strong> header of the response. Once Smartsheet receives this verification response, the webhook is enabled (<code>enabled: true</code> and <code>status: &quot;ENABLED&quot;</code>).</p></li>
+<li><p>To verify the webhook, the Subscriber&#39;s response to the Verification Request must return a 200 HTTP status code and must echo back the same unique random value in the <strong>Smartsheet-Hook-Response</strong> header of the response or with a JSON <code>smartsheetHookResponse</code> attribute. Once Smartsheet receives this verification response, the webhook is enabled (<code>enabled: true</code> and <code>status: &quot;ENABLED&quot;</code>).</p></li>
 <li><p>If the Subscriber does not successfully respond to the verification request, the webhook remains disabled (<code>enabled: false</code> and <code>status: &quot;DISABLED_VERIFICATION_FAILED&quot;</code>).</p></li>
 </ul>
 
