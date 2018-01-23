@@ -4413,6 +4413,173 @@ Gets a list of the user's Smartsheet Contacts.
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Contact Objects](#contact-object)
 
+# Cross-sheet References
+
+Cross-sheet references allow you to perform calculations on data that is stored in another sheet. A CrossSheetReference Object contains the location information and cell ranges that Smartsheet needs to ensure the correct data is referenced.
+
+<aside class="notice">A cross-sheet reference is not a formula; however, you must have a cross-sheet reference defined before you can use a formula to perform calculations between sheets. To add or edit formulas, use Add Row or Update Row.</aside>  
+
+## <%= OBJECTS %>
+
+### CrossSheetReference Object
+
+> Example CrossSheetReference Object:
+
+```json
+{
+  "id": 6530408486594436,
+  "status": "OK",
+  "name": "Sample Reference Sheet Range 1",
+  "sourceSheetId": 3285357287499652,
+  "startRowId": 1646404963723140,
+  "endRowId": 1646404963723140,
+  "startColumnId": 6800865311909764,
+  "endColumnId": 6800865311909764
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | long | Sheet reference identifier, guaranteed unique within referencing sheet.
+**name** | string | Friendly name of reference. May be specified in POST or left unspecified for auto generation just like in UI.
+**sourceSheetId** | long | Sheet Id of source.
+**startRowId** | long  | Defines edges of range. For a single row or column, start and end should be the same value. Omit rows to indicate entire column. Omit columns to indicate entire row. (Illegal to omit both)
+**endRowId** | long  | Defines edges of range. For a single row or column, start and end should be the same value. Omit rows to indicate entire column. Omit columns to indicate entire row. (Illegal to omit both)
+**startColumnId** | long  | Defines edges of range. For a single row or column, start and end should be the same value. Omit rows to indicate entire column. Omit columns to indicate entire row. (Illegal to omit both)
+**endColumnId** | long  | Defines edges of range. For a single row or column, start and end should be the same value. Omit rows to indicate entire column. Omit columns to indicate entire row. (Illegal to omit both)
+**status** | ENUM | One of the following values:<ul><li>OK: the link is in a good state</li><li>BLOCKED: the permissions on the home sheet have changed</li><li>BROKEN: the rows, columns, or sheet linked to was deleted</li><li>CIRCULAR: the formula reference is circular</li><li>DISABLED: the permissions on the sheet linked to have changed</li><li>INACCESSIBLE: the sheet linked to cannot be viewed by this user</li><li>INVALID: the request is badly formed in some way</li><li>NOT_SHARED: the owner of the one or both sheets needs to share the sheets to you</li></ul>
+
+## Add Cross-sheet References
+
+> Example Request
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d // still need the body
+```
+
+```javascript
+// to do
+```
+
+```csharp
+// to do
+```
+
+```java
+// to do
+```
+
+```python
+# to do
+```
+
+```ruby
+# to do
+```
+
+> Example Response:
+
+```json
+{
+  "id": 6530408486594436,
+  "status": "OK",
+  "name": "Sample Reference Sheet Range 1",
+  "sourceSheetId": 3285357287499652,
+  "startRowId": 1646404963723140,
+  "endRowId": 1646404963723140,
+  "startColumnId": 6800865311909764,
+  "endColumnId": 6800865311909764
+}
+```
+
+`POST /sheets/{sheetId}/crosssheetreferences`
+
+Text here
+
+## Get Cross-sheet Reference
+
+> Example Request
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences/{crossSheetReferenceId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+```
+
+```javascript
+
+```
+
+```csharp
+
+```
+
+```java
+
+```
+
+```python
+
+```
+
+```ruby
+
+```
+
+> Example Response:
+
+```json
+
+```
+
+`GET /sheets/{sheetId}/crosssheetreferences/{crossSheetReferenceId}`
+
+Text here
+
+## List Cross-sheet References
+
+> Example Request
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+```
+
+```javascript
+
+```
+
+```csharp
+
+```
+
+```java
+
+```
+
+```python
+
+```
+
+```ruby
+
+```
+
+> Example Response:
+
+```json
+
+```
+
+`GET /sheets/{sheetId}/crosssheetreferences`
+
+Text here
+
 # Discussions
 
 A Discussion is a container for a collection of individual [Comments](#comments) within a single thread. A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
