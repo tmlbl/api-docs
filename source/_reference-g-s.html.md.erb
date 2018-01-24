@@ -2424,6 +2424,10 @@ Moves Rows from the Sheet specified in the URL to (the bottom of) another sheet.
 
 For details about sending update requests, see [Create Update Request](#create-update-request).
 
+## Sort Rows
+
+For details about sorting the rows in a sheet, see [Sort Rows in Sheet](#sort-rows-in-sheet).
+
 ## Update Rows
 
 > Example Request: Update Rows
@@ -4875,6 +4879,19 @@ Represents individual user settings for a specific sheet.  User settings may be 
 **criticalPathEnabled** | Boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
 **displaySummaryTasks** | Boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
 
+### SortCriterion Object
+
+     |     |     |
+-----|-----|-----|
+**columnId** | number | Column Id
+**direction** | string | The direction for the sort. Must be one of the following values: "ASCENDING" (default) or "DESCENDING"
+
+### SortSpecifier Object
+
+     |     |     |
+-----|-----|-----|
+**sortCriteria** | [SortCriterion](#sortcriterion-object)[] | Specifies sort order. Array is in priority order.
+
 ### Source Object
 
      |     |     |
@@ -6835,7 +6852,7 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/sort \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: application/json" \
 -X POST \
--d '{"sortCriteria": [{"columnId": 87927234, "direction": "DESCENDING"}]}'
+-d '{"sortCriteria": [{"columnId": 4583173393803140, "direction": "DESCENDING"}]}'
 ```
 
 ```javascript
@@ -6862,12 +6879,46 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/sort \
 
 ```json
 {
-  "id": 5670346721388420,
-  "name": "sort test",
-  "version": 255,
-  "totalRowCount": 10,
   "accessLevel": "OWNER",
-  ...
+  "projectSettings": {
+    "workingDays": [
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY"
+    ],
+    "nonWorkingDays": [
+      "2018-01-01"
+    ],
+    "lengthOfDay": 6
+  },
+  "columns": [
+    {
+      "id": 4583173393803140,
+      "index": 0,
+      "primary": true,
+      "title": "Primary Column",
+      "type": "TEXT_NUMBER",
+      "validation": false
+    },
+    {
+      "id": 2331373580117892,
+      "index": 1,
+      "options": [
+        "new",
+        "in progress",
+        "completed"
+      ],
+      "title": "status",
+      "type": "PICKLIST",
+      "validation": true
+    }
+  ],
+  "createdAt": "2012-07-24T18:22:29-07:00",
+  "id": 4583173393803140,
+  "modifiedAt": "2012-07-24T18:30:52-07:00",
+  "name": "sheet 1",
+  "permalink": "https://app.smartsheet.com/b/home?lx=pWNSDH9itjBXxBzFmyf-5w",
+  "rows": []
 }
 ```
 
@@ -6879,8 +6930,8 @@ Sorts the rows of a sheet, either in ascending or descending order.
 -----|-----|
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | [SortSpecifier](#sortspecifier-object) limited to the following attributes:<ul><li>sortCriteria: SortCrition array in priority order. Specifies sort order.</li><li>columnId: the column to sort on</li><li>direction (optional): one of the following values:<ul><li>ASCENDING (default)</li><li>DESCENDING</li></ul></li></ul>
-<%= RETURNS %> | [SortSpecifier](#sortspecifier-object)
+<%= PARAMETERS %> | [SortSpecifier](#sortspecifier-object) limited to the following attributes:<ul><li>sortCriteria: <a href="#sortcriterion-object">SortCrition</a> array in priority order. Specifies sort order.</li><li>columnId: the column to sort on</li><li>direction (optional): one of the following values:<ul><li>ASCENDING (default)</li><li>DESCENDING</li></ul></li></ul>
+<%= RETURNS %> | [Sheet Object](#sheet-object), populated according to the specified parameters
 
 ## Update Sheet
 
