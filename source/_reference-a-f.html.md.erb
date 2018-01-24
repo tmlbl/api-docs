@@ -4448,7 +4448,7 @@ For incomplete or unsaved references, Smartsheet stores them for 2 hours before 
 **startRowId** | long  | Defines beginning edge of range when selecting one or more row. To indicate only rows are selected, omit the `startColumnId` and `endColumnId` parameters.
 **endRowId** | long  | Defines ending edge of range when selecting one or more row. To indicate only rows are selected, omit the `startColumnId` and `endColumnId` parameters.
 **startColumnId** | long  | Defines beginning edge of range when selecting one or more column. To indicate only columns are selected, omit the `startRowId` and `endRowId` parameters.
-**endColumnId** | long  | Defines beginning edge of range when selecting one or more column. To indicate only columns are selected, omit the `startRowId` and `endRowId` parameters.
+**endColumnId** | long  | Defines ending edge of range when selecting one or more column. To indicate only columns are selected, omit the `startRowId` and `endRowId` parameters.
 **status** | ENUM | One of the following values:<ul><li>OK: the link is in a good state</li><li>BLOCKED: the permissions on the home sheet have changed</li><li>BROKEN: the rows, columns, or sheet linked to was deleted</li><li>CIRCULAR: the formula reference is circular</li><li>DISABLED: the permissions on the sheet linked to have changed</li><li>INACCESSIBLE: the sheet linked to cannot be viewed by this user</li><li>INVALID: the request is badly formed in some way</li><li>NOT_SHARED: the owner of the one or both sheets needs to share the sheets to you</li></ul>
 
 ## Add Cross-sheet References
@@ -4511,6 +4511,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
 
 Adds a cross-sheet reference between two sheets and defines the data range for specific formulas. For multiple formulas, you must create a cross-sheet reference for each formula that uses a unique data range.
 
+     |     |
+-----|-----|
+<%= SCOPE %> | CREATE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [CrossSheetReference Object](#crosssheetreference-object) or an array of CrossSheetReference Objects, with the following attributes:<ul><li>name (optional): friendly name for reference. If unspecified, Smartsheet will autogenerate a name.</li><li>sourceSheetId: sheetId for data source</li><li>At least two of the following:<ul><li>startRowId: Defines beginning edge of range when selecting one or more row.</li><li>endRowId: Defines ending edge of range when selecting one or more row.</li><li>startColumnId: Defines beginning edge of range when selecting one or more column.</li><li>endColumnId: Defines ending edge of range when selecting one or more column.</li></ul></li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing the the newly created cross-sheet references -- either a single [CrossSheetReference Object](#crosssheetreference-object) or an array of CrossSheetReference Objects, corresponding to what was specified in the request.
+
 ## Get Cross-sheet Reference
 
 > Example Request
@@ -4559,6 +4566,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences/{cross
 `GET /sheets/{sheetId}/crosssheetreferences/{crossSheetReferenceId}`
 
 Gets the cross-sheet reference specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [CrossSheetReference Object](#crosssheetreference-object)
 
 ## List Cross-sheet References
 
@@ -4624,6 +4637,12 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
 `GET /sheets/{sheetId}/crosssheetreferences`
 
 Lists all cross-sheet references for the sheet.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [CrossSheetReference Objects](#crosssheetreference-object)
 
 # Discussions
 
