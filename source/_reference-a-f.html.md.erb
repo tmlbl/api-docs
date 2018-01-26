@@ -4415,11 +4415,11 @@ Gets a list of the user's Smartsheet Contacts.
 
 # Cross-sheet References
 
-To create a formula that references data in another sheet, you must first create a cross-sheet reference between the primary sheet and the source sheet. In addition, that reference must define which block of data to look at, whether that is by column, row, or both.
+To create a formula that references data in another sheet, you must first create a cross-sheet reference between the detail sheet and the source sheet. That reference must also define the cell range.
 
-Once you have the cross-sheet reference defined, you can use the `name` value from the response in any formula you create. When you are ready to write the formula, use [Add Rows](#add-rows) or [Update Rows](#update-rows).
+Once you have created the cross-sheet reference, you can use the reference name in any formula on the detail sheet. To create the formula, use [Add Rows](#add-rows) or [Update Rows](#update-rows).
 
-<aside class="notice">For incomplete or unsaved references, Smartsheet stores them for 2 hours before deleting them if the references haven't been completed or saved in that time.</aside>  
+Cross-sheet references that are not used by any formula are automatically deleted after two hours.
 
 ## <%= OBJECTS %>
 
@@ -4443,15 +4443,15 @@ Once you have the cross-sheet reference defined, you can use the `name` value fr
      |     |     |
 -----|-----|-----|
 **id** | long | Cross-sheet reference Id, guaranteed unique within referencing sheet.
-**name** | string | Friendly name of reference. Auto-generated unless specified in Add Cross-sheet References.
+**name** | string | Friendly name of reference. Auto-generated unless specified in [Create Cross-sheet References](#create-cross-sheet-references).
 **sourceSheetId** | long | Sheet Id of source sheet.
-**startRowId** | long  | Defines beginning edge of range when selecting one or more row. To indicate only rows are selected, omit the `startColumnId` and `endColumnId` parameters.
-**endRowId** | long  | Defines ending edge of range when selecting one or more row. To indicate only rows are selected, omit the `startColumnId` and `endColumnId` parameters.
-**startColumnId** | long  | Defines beginning edge of range when selecting one or more column. To indicate only columns are selected, omit the `startRowId` and `endRowId` parameters.
-**endColumnId** | long  | Defines ending edge of range when selecting one or more column. To indicate only columns are selected, omit the `startRowId` and `endRowId` parameters.
-**status** | ENUM | One of the following values:<ul><li>OK: the reference is in a good state</li><li>BLOCKED: a reference is downstream of a circular issue</li><li>BROKEN: the data source location was deleted (either a column, row, or sheet)</li><li>CIRCULAR: the formula reference is self referencing and cannot be resolved</li><li>DISABLED: updating of the reference is temporarily disabled due to maintenance</li><li>INVALID/UNKNOWN: the reference is new and has not been validated</li><li>NOT_SHARED: no common shared users</li></ul>
+**startRowId** | long  | Defines beginning edge of range when specifying one or more rows. To specify an entire row, omit the `startColumnId` and `endColumnId` parameters.
+**endRowId** | long  | Defines ending edge of range when specifying one or more rows. To specify an entire row, omit the `startColumnId` and `endColumnId` parameters.
+**startColumnId** | long  | Defines beginning edge of range when specifying one or more columns. To specify an entire column, omit the `startRowId` and `endRowId` parameters.
+**endColumnId** | long  | Defines ending edge of range when specifying one or more columns. To specify an entire column, omit the `startRowId` and `endRowId` parameters.
+**status** | string | One of the following values:<ul><li>If the request succeeded:<ul><li>OK: the reference is in a good state</li></ul></li><li>If the request failed:<ul><li>BLOCKED: a reference is downstream of a circular issue</li><li>BROKEN: the data source location was deleted (either a column, row, or sheet)</li><li>CIRCULAR: the formula reference is self referencing and cannot be resolved</li><li>DISABLED: updating of the reference is temporarily disabled due to maintenance</li><li>INVALID/UNKNOWN: the reference is new and has not been validated</li><li>NOT_SHARED: no common shared users</li></ul></ul>
 
-## Add Cross-sheet References
+## Create Cross-sheet References
 
 > Example Request
 
@@ -4509,13 +4509,13 @@ curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
 
 `POST /sheets/{sheetId}/crosssheetreferences`
 
-Adds a cross-sheet reference between two sheets and defines the data range for specific formulas. For multiple formulas, you must create a cross-sheet reference for each formula that uses a unique data range.
+Adds a cross-sheet reference between two sheets and defines the data range for formulas. Each distinct data range requires a new cross-sheet reference.
 
      |     |
 -----|-----|
 <%= SCOPE %> | CREATE_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
-<%= REQUEST %> | [CrossSheetReference Object](#crosssheetreference-object) or an array of CrossSheetReference Objects, with the following attributes:<ul><li>name (optional): friendly name for reference. If unspecified, Smartsheet will autogenerate a name.</li><li>sourceSheetId: sheetId for data source</li><li>At least two of the following:<ul><li>startRowId: Defines beginning edge of range when selecting one or more row.</li><li>endRowId: Defines ending edge of range when selecting one or more row.</li><li>startColumnId: Defines beginning edge of range when selecting one or more column.</li><li>endColumnId: Defines ending edge of range when selecting one or more column.</li></ul></li></ul>
+<%= REQUEST %> | [CrossSheetReference Object](#crosssheetreference-object) with the following attributes:<ul><li>name (optional): unique name for reference. If you omit this parameter, Smartsheet will autogenerate a name.</li><li>sourceSheetId: sheetId for data source</li><li>Either two or all of the following:<ul><li>startRowId: Defines beginning edge of range when specifying one or more rows. Must be used with endRowId.</li><li>endRowId: Defines ending edge of range when specifying one or more rows. Must be used with startRowId.</li><li>startColumnId: Defines beginning edge of range when specifying one or more columns. Must be used with endColumnId.</li><li>endColumnId: Defines ending edge of range when specifying one or more columns. Must be used with startColumnId.</li></ul></li></ul>
 <%= RETURNS %> | [Result object](#result-object) containing the the newly created cross-sheet references -- either a single [CrossSheetReference Object](#crosssheetreference-object) or an array of CrossSheetReference Objects, corresponding to what was specified in the request.
 
 ## Get Cross-sheet Reference
@@ -4524,8 +4524,7 @@ Adds a cross-sheet reference between two sheets and defines the data range for s
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences/{crossSheetReferenceId} \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" 
 ```
 
 ```javascript
@@ -4579,8 +4578,7 @@ Gets the cross-sheet reference specified in the URL.
 
 ```shell
 curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
--H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
--H "Content-Type: application/json" \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
 ```javascript
