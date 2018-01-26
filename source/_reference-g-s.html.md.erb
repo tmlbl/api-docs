@@ -2424,6 +2424,10 @@ Moves Rows from the Sheet specified in the URL to (the bottom of) another sheet.
 
 For details about sending update requests, see [Create Update Request](#create-update-request).
 
+## Sort Rows
+
+For details about sorting the rows in a sheet, see [Sort Rows in Sheet](#sort-rows-in-sheet).
+
 ## Update Rows
 
 > Example Request: Update Rows
@@ -4782,8 +4786,9 @@ A Sheet can exist in a user's **Sheets** folder ([Home](#home)), in a [Folder](#
 **modifiedAt** | timestamp | Time that the Sheet was modified
 **columns** | [Column](#column-object)[] | Array of Column Objects
 **rows** | [Row](#row-object)[] | Array of Row Objects
-**discussions** | [Discussion](#discussion-object)[] | Array of Discussion Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
 **attachments** | [Attachment](#attachment-object)[] | Array of Attachment Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **attachments**.
+**crossSheetReferences** | [CrossSheetReference](#crosssheetreference-object)[] | Array of CrossSheetReference Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **crossSheetReferences**.
+**discussions** | [Discussion](#discussion-object)[] | Array of Discussion Objects<br/>Only returned if the [**include**](#get-sheet) query string parameter contains **discussions**.
 **fromId** | number | The Id of the Template from which to create the Sheet. This attribute can be specified in a request, but is never present in a response.
 
 ### Criteria Object
@@ -4873,6 +4878,19 @@ Represents individual user settings for a specific sheet.  User settings may be 
 -----|-----|-----|
 **criticalPathEnabled** | Boolean | Does this user have "Show Critical Path" turned on for this sheet?  Note this setting only has an effect on project sheets with dependencies enabled.
 **displaySummaryTasks** | Boolean | Does this user have "Display Summary Tasks" turned on for this sheet?  Applies only to sheets where Calendar View has been configured.
+
+### SortCriterion Object
+
+     |     |     |
+-----|-----|-----|
+**columnId** | number | Column Id
+**direction** | string | The direction for the sort. Must be one of the following values: "ASCENDING" (default) or "DESCENDING"
+
+### SortSpecifier Object
+
+     |     |     |
+-----|-----|-----|
+**sortCriteria** | [SortCriterion](#sortcriterion-object)[] | Specifies sort order. Array is in priority order.
 
 ### Source Object
 
@@ -6089,7 +6107,7 @@ Gets the Sheet specified in the URL. Returns the Sheet, including Rows, and opti
 -----|-----|
 <%= SCOPE %> | READ_SHEETS
 <%= HEADERS %> | <%= HEADER_AUTH %>
-<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**discussions**: includes sheet-level and row-level discussions</li><li>**attachments**: includes the metadata for sheet-level and row-level attachments</li><li>**format**: includes column, row, and cell formatting</li><li>**filters**: includes [row.filteredOut](#row-object) attribute</li><li>**filterDefinitions**: includes type of filter, operators used, and criteria</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
+<%= PARAMETERS %> | **include** (optional) -- a comma-separated list of elements to include in the response.<br/>Supports all [Row Include Flags](#row-include-flags) with the following differences:<ul><li>**attachments**: includes the metadata for sheet-level and row-level attachments</li><li>**crossSheetReferences**: includes the cross-sheet references</li><li>**discussions**: includes sheet-level and row-level discussions</li><li>**filters**: includes [row.filteredOut](#row-object) attribute</li><li>**filterDefinitions**: includes type of filter, operators used, and criteria</li><li>**format**: includes column, row, and cell formatting</li><li>**ownerInfo**: includes owner's email address and user Id</li></ul>Also supports the **source** include flag, which adds the [Source Object](#source-object) indicating which sheet or template the sheet was created from, if any.
   | **exclude** (optional) -- a comma-separated list of elements to <i>not include</i> in the response.<br/><ul><li>**nonexistentCells**: excludes cells that have never contained any data</li><li>**include=format&exclude=nonexistentCells**: excludes cells that have never contained data yet returns those cells if they have formatting or conditional formatting</li><li>**linkInFromCellDetails**: excludes the following attributes from the **cell.linkInFromCell** Object:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li><li>**linksOutToCellsDetails**: excludes the following attributes from the **cell.linksOutToCells** array elements:<ul><li>status</li><li>rowId</li><li>columnId</li></ul></li></ul>
   | **rowIds** (optional): a comma-separated list of Row Ids on which to filter the rows included in the result
   | **rowNumbers** (optional): a comma-separated list of Row numbers  on which to filter the rows included in the result.  Non-existent row numbers are ignored.
@@ -6825,6 +6843,96 @@ For details about sending update requests, see [Create Update Request](#create-u
 
 For details about Sheet sharing, see [Sheet Sharing](#sheet-sharing).
 
+## Sort Rows in Sheet
+
+> Example Request: Sort Rows in Sheet
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/sort \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"sortCriteria": [{"columnId": 4583173393803140, "direction": "DESCENDING"}]}'
+```
+
+```javascript
+// to do
+```
+
+```csharp
+// to do
+```
+
+```java
+// to do
+```
+
+```python
+# to do
+```
+
+```ruby
+# to do
+```
+
+> Example Response:
+
+```json
+{
+  "accessLevel": "OWNER",
+  "projectSettings": {
+    "workingDays": [
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY"
+    ],
+    "nonWorkingDays": [
+      "2018-01-01"
+    ],
+    "lengthOfDay": 6
+  },
+  "columns": [
+    {
+      "id": 4583173393803140,
+      "index": 0,
+      "primary": true,
+      "title": "Primary Column",
+      "type": "TEXT_NUMBER",
+      "validation": false
+    },
+    {
+      "id": 2331373580117892,
+      "index": 1,
+      "options": [
+        "new",
+        "in progress",
+        "completed"
+      ],
+      "title": "status",
+      "type": "PICKLIST",
+      "validation": true
+    }
+  ],
+  "createdAt": "2012-07-24T18:22:29-07:00",
+  "id": 4583173393803140,
+  "modifiedAt": "2012-07-24T18:30:52-07:00",
+  "name": "sheet 1",
+  "permalink": "https://app.smartsheet.com/b/home?lx=pWNSDH9itjBXxBzFmyf-5w",
+  "rows": []
+}
+```
+
+`POST /sheets/{sheetId}/sort`
+
+Sorts the rows of a sheet, either in ascending or descending order.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | WRITE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= PARAMETERS %> | [SortSpecifier](#sortspecifier-object) with the following attribute:<ul><li>sortCriteria: <a href="#sortcriterion-object">SortCriterion</a> array in priority order. Specifies sort order.</li></ul>
+  | (Optional) Any of the relevant parameters or query parameters listed for [Get Sheet](#get-sheet)
+<%= RETURNS %> | [Sheet Object](#sheet-object), populated according to the specified parameters
 
 ## Update Sheet
 

@@ -4413,6 +4413,235 @@ Gets a list of the user's Smartsheet Contacts.
 <%= PARAMETERS %> | <%= PAGING_PARAMETERS %>
 <%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [Contact Objects](#contact-object)
 
+# Cross-sheet References
+
+To create a formula that references data in another sheet, you must first create a cross-sheet reference between the detail sheet and the source sheet. That reference must also define the cell range.
+
+Once you have created the cross-sheet reference, you can use the reference name in any formula on the detail sheet. To create the formula, use [Add Rows](#add-rows) or [Update Rows](#update-rows).
+
+Cross-sheet references that are not used by any formula are automatically deleted after two hours.
+
+## <%= OBJECTS %>
+
+### CrossSheetReference Object
+
+> Example CrossSheetReference Object:
+
+```json
+{
+  "id": 6530408486594436,
+  "status": "OK",
+  "name": "Sample Reference Sheet Range 1",
+  "sourceSheetId": 3285357287499652,
+  "startRowId": 1646404963723140,
+  "endRowId": 1646404963723140,
+  "startColumnId": 6800865311909764,
+  "endColumnId": 6800865311909764
+}
+```
+
+     |     |     |
+-----|-----|-----|
+**id** | long | Cross-sheet reference Id, guaranteed unique within referencing sheet.
+**name** | string | Friendly name of reference. Auto-generated unless specified in [Create Cross-sheet References](#create-cross-sheet-references).
+**sourceSheetId** | long | Sheet Id of source sheet.
+**startRowId** | long  | Defines beginning edge of range when specifying one or more rows. To specify an entire row, omit the `startColumnId` and `endColumnId` parameters.
+**endRowId** | long  | Defines ending edge of range when specifying one or more rows. To specify an entire row, omit the `startColumnId` and `endColumnId` parameters.
+**startColumnId** | long  | Defines beginning edge of range when specifying one or more columns. To specify an entire column, omit the `startRowId` and `endRowId` parameters.
+**endColumnId** | long  | Defines ending edge of range when specifying one or more columns. To specify an entire column, omit the `startRowId` and `endRowId` parameters.
+**status** | string | One of the following values:<ul><li>If the request succeeded:<ul><li>OK: the reference is in a good state</li></ul></li><li>If the request failed:<ul><li>BLOCKED: a reference is downstream of a circular issue</li><li>BROKEN: the data source location was deleted (either a column, row, or sheet)</li><li>CIRCULAR: the formula reference is self referencing and cannot be resolved</li><li>DISABLED: updating of the reference is temporarily disabled due to maintenance</li><li>INVALID/UNKNOWN: the reference is new and has not been validated</li><li>NOT_SHARED: no common shared users</li></ul></ul>
+
+## Create Cross-sheet References
+
+> Example Request
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{
+	"name": "Sample Time Log Sheet Range 1",
+	"sourceSheetId": 154378742065028,
+	"startRowId": 4089096300717956,
+	"endRowId": 2681721417164676,
+	"startColumnId": 824812248557444,
+	"endColumnId": 824812248557444
+}'
+```
+
+```javascript
+// Not yet implemented
+```
+
+```csharp
+// Not yet implemented
+```
+
+```java
+// Not yet implemented
+```
+
+```python
+# Not yet implemented
+```
+
+```ruby
+# Not yet implemented
+```
+
+> Example Response:
+
+```json
+{
+  "message": "SUCCESS",
+  "resultCode": 0,
+  "result": {
+    "name": "Sample Time Log Sheet Range 1",
+    "sourceSheetId": 154378742065028,
+    "startRowId": 4089096300717956,
+    "endRowId": 2681721417164676,
+    "startColumnId": 824812248557444,
+    "endColumnId": 824812248557444
+  }
+}
+```
+
+`POST /sheets/{sheetId}/crosssheetreferences`
+
+Adds a cross-sheet reference between two sheets and defines the data range for formulas. Each distinct data range requires a new cross-sheet reference.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | CREATE_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %><br/><%= HEADER_CT_JSON %>
+<%= REQUEST %> | [CrossSheetReference Object](#crosssheetreference-object) with the following attributes:<ul><li>name (optional): unique name for reference. If you omit this parameter, Smartsheet will autogenerate a name.</li><li>sourceSheetId: sheetId for data source</li><li>Either two or all of the following:<ul><li>startRowId: Defines beginning edge of range when specifying one or more rows. Must be used with endRowId.</li><li>endRowId: Defines ending edge of range when specifying one or more rows. Must be used with startRowId.</li><li>startColumnId: Defines beginning edge of range when specifying one or more columns. Must be used with endColumnId.</li><li>endColumnId: Defines ending edge of range when specifying one or more columns. Must be used with startColumnId.</li></ul></li></ul>
+<%= RETURNS %> | [Result object](#result-object) containing a [CrossSheetReference Object](#crosssheetreference-object), corresponding to what was specified in the request.
+
+## Get Cross-sheet Reference
+
+> Example Request
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences/{crossSheetReferenceId} \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" 
+```
+
+```javascript
+// Not yet implemented
+```
+
+```csharp
+// Not yet implemented
+```
+
+```java
+// Not yet implemented
+```
+
+```python
+# Not yet implemented
+```
+
+```ruby
+# Not yet implemented
+```
+
+> Example Response:
+
+```json
+{
+  "id": 8157685695702916,
+  "status": "OK",
+  "name": "Sample Time Log Sheet Range 1",
+  "sourceSheetId": 154378742065028,
+  "startRowId": 4089096300717956,
+  "endRowId": 2681721417164676,
+  "startColumnId": 824812248557444,
+  "endColumnId": 824812248557444
+}
+```
+
+`GET /sheets/{sheetId}/crosssheetreferences/{crossSheetReferenceId}`
+
+Gets the cross-sheet reference specified in the URL.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [CrossSheetReference Object](#crosssheetreference-object)
+
+## List Cross-sheet References
+
+> Example Request
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets/{sheetId}/crosssheetreferences \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Not yet implemented
+```
+
+```csharp
+// Not yet implemented
+```
+
+```java
+// Not yet implemented
+```
+
+```python
+# Not yet implemented
+```
+
+```ruby
+# Not yet implemented
+```
+
+> Example Response:
+
+```json
+{
+  "pageNumber": 1,
+  "pageSize": 100,
+  "totalPages": 1,
+  "totalCount": 6,
+  "data": [
+    {
+      "id": 2545778347534212,
+      "status": "OK",
+      "name": "Data Sheet Range 1",
+      "sourceSheetId": 1244271622809476,
+      "startColumnId": 6905486478993284,
+      "endColumnId": 545911223936900
+    },
+    {
+      "id": 8157685695702916,
+      "status": "OK",
+      "name": "Sample Time Log Sheet Range 1",
+      "sourceSheetId": 154378742065028,
+      "startRowId": 4089096300717956,
+      "endRowId": 2681721417164676,
+      "startColumnId": 824812248557444,
+      "endColumnId": 824812248557444
+    }
+  ]
+}
+```
+
+`GET /sheets/{sheetId}/crosssheetreferences`
+
+Lists all cross-sheet references for the sheet.
+
+     |     |
+-----|-----|
+<%= SCOPE %> | READ_SHEETS
+<%= HEADERS %> | <%= HEADER_AUTH %>
+<%= RETURNS %> | [IndexResult Object](#indexresult-object) containing an array of [CrossSheetReference Objects](#crosssheetreference-object)
+
 # Discussions
 
 A Discussion is a container for a collection of individual [Comments](#comments) within a single thread. A Discussion can exist on a [Row](#rows) or a [Sheet](#sheets).
