@@ -107,6 +107,63 @@ Header | Definition | Example |
 
 ### Query Strings
 
+> Example Request: List Sheets with Query Strings
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets?include=attachments&includeAll=true \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+  queryParameters: {
+    include: "attachments",
+    includeAll: false,
+    pageSize: 50,
+    page: 1
+  }
+};
+
+// List sheets
+smartsheet.sheets.listSheets(options)
+	.then(function(sheetList) {
+		console.log(sheetList);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
+  new SheetInclusion[] { SheetInclusion.SOURCE },
+  new PaginationParameters(
+    true,           // includeAll
+    null,           // int pageSize
+    null)           // int page
+);
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
+
+// Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
+PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
+```
+
+```python
+response = ss_client.Sheets.list_sheets(include="attachments", include_all=True)
+sheets = response.data
+```
+
+```ruby
+response = smartsheet.sheets.list(params: {include:"attachments", includeAll:true })
+sheets = response
+```
+
 Many API calls can be modified by including one or more of these common query strings: 
 
 Query Parameter | Type | Description | More Info |
@@ -1012,6 +1069,63 @@ Examples include `GET` [/users](#list-users), [/sheets](#list-sheets), [/sheets/
 you can retrieve paged subsets of results, enabling you to process potentially large result sets in smaller chunks.
 
 ### Paging Query String Parameters
+
+> Example Request: List Sheets with Query Strings
+
+```shell
+curl https://api.smartsheet.com/2.0/sheets?includeAll=true \
+-H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
+```
+
+```javascript
+// Set options
+var options = {
+  queryParameters: {
+    includeAll: false,
+    pageSize: 50,
+    page: 1
+  }
+};
+
+// List sheets
+smartsheet.sheets.listSheets(options)
+	.then(function(sheetList) {
+		console.log(sheetList);
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
+```
+
+```csharp
+PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
+  new SheetInclusion[] { SheetInclusion.SOURCE },
+  new PaginationParameters(
+    true,           // includeAll
+    null,           // int pageSize
+    null)           // int page
+);
+```
+
+```java
+// Specify pagination parameter 'includeAll' 
+PaginationParameters parameters = new PaginationParameters()
+  .setIncludeAll(true);
+
+// Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
+PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
+```
+
+```python
+response = ss_client.Sheets.list_sheets(include_all=True)
+sheets = response.data
+```
+
+```ruby
+response = smartsheet.sheets.list(params: {includeAll:true })
+sheets = response
+```
+
 Index endpoints all support pagination via the following optional query string parameters:
 
 Value | Type | Description |
