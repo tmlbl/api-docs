@@ -110,7 +110,7 @@ Header | Definition | Example |
 > Example Request: List Sheets with Query Strings
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets?include=attachments&includeAll=true \
+curl https://api.smartsheet.com/2.0/sheets?include=attachments,source&includeAll=true \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -119,9 +119,8 @@ curl https://api.smartsheet.com/2.0/sheets?include=attachments&includeAll=true \
 var options = {
   queryParameters: {
     include: "attachments",
-    includeAll: false,
-    pageSize: 50,
-    page: 1
+    include: "source",
+    includeAll: true
   }
 };
 
@@ -146,21 +145,24 @@ PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
 ```
 
 ```java
-// Specify pagination parameter 'includeAll' 
-PaginationParameters parameters = new PaginationParameters()
+// Specify pagination parameter 'includeAll'
+PaginationParameters page_params = new PaginationParameters()
   .setIncludeAll(true);
 
-// Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
-PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
+// Specify `include` parameters
+EnumSet include_params = EnumSet.of(SourceInclusion.SOURCE);
+
+// List Sheets with pagination and include parameters
+PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(include_params, page_params, null);
 ```
 
 ```python
-response = ss_client.Sheets.list_sheets(include="attachments", include_all=True)
+response = ss_client.Sheets.list_sheets(include="attachments,source", include_all=True)
 sheets = response.data
 ```
 
 ```ruby
-response = smartsheet.sheets.list(params: {include:"attachments", includeAll:true })
+response = smartsheet.sheets.list(params: {include:"attachments,source", includeAll:true })
 sheets = response
 ```
 
@@ -1073,7 +1075,7 @@ you can retrieve paged subsets of results, enabling you to process potentially l
 > Example Request: List Sheets with Pagination Query Strings
 
 ```shell
-curl https://api.smartsheet.com/2.0/sheets?includeAll=true \
+curl https://api.smartsheet.com/2.0/sheets?include=attachments,source&includeAll=true \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05"
 ```
 
@@ -1081,9 +1083,9 @@ curl https://api.smartsheet.com/2.0/sheets?includeAll=true \
 // Set options
 var options = {
   queryParameters: {
-    includeAll: false,
-    pageSize: 50,
-    page: 1
+    include: "attachments",
+    include: "source",
+    includeAll: true
   }
 };
 
@@ -1108,21 +1110,24 @@ PaginatedResult<Sheet> sheets = smartsheet.SheetResources.ListSheets(
 ```
 
 ```java
-// Specify pagination parameter 'includeAll' 
-PaginationParameters parameters = new PaginationParameters()
+// Specify pagination parameter 'includeAll'
+PaginationParameters page_params = new PaginationParameters()
   .setIncludeAll(true);
 
-// Specify 'include' parameter with value of "SOURCE", and 'includeAll' parameter with value of 'true'
-PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(EnumSet.of(SourceInclusion.SOURCE), parameters, modifiedSince);
+// Specify `include` parameters
+EnumSet include_params = EnumSet.of(SourceInclusion.SOURCE);
+
+// List Sheets with pagination and include parameters
+PagedResult<Sheet> sheets = smartsheet.sheetResources().listSheets(include_params, page_params, null);
 ```
 
 ```python
-response = ss_client.Sheets.list_sheets(include_all=True)
+response = ss_client.Sheets.list_sheets(include="attachments,source", include_all=True)
 sheets = response.data
 ```
 
 ```ruby
-response = smartsheet.sheets.list(params: {includeAll:true })
+response = smartsheet.sheets.list(params: {include:"attachments,source", includeAll:true })
 sheets = response
 ```
 
