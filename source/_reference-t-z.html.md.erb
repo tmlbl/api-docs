@@ -1615,9 +1615,9 @@ Updates the User specified in the URL.
 curl 'https://api.smartsheet.com/2.0/users/{userId}/profileimage' \
 -H "Authorization: Bearer ll352u9jujauoqz4gstvsae05" \
 -H "Content-Type: image/jpeg" \
--H 'Content-Disposition: attachment' \
+-H 'Content-Disposition: attachment; filename=janeroe.jpg' \
 -X POST \
---data-binary @picture.jpg
+--data-binary @janeroe.jpg
 ```
 
 ```javascript
@@ -1644,18 +1644,20 @@ curl 'https://api.smartsheet.com/2.0/users/{userId}/profileimage' \
 
 ```json
 {
-	"message": "SUCCESS",
-	"resultCode": 0,
-	"result": [{
-		"id": 6039340093597572,
-		"rowNumber": 6,
-		"siblingId": 1535740466227076,
-		"expanded": true,
-		"createdAt": "2017-08-28T21:29:16Z",
-		"modifiedAt": "2017-08-30T08:10:47Z",
-		"cells": [Object]
-	}],
-	"version": 1
+  "message": "SUCCESS",
+  "resultCode": 0,
+  "result": {
+    "email": "jane.roe@smartsheet.com",
+    "name": "Jane Roe",
+    "firstName": "Jane",
+    "lastName": "Row",
+    "profileImage": {
+      "imageId": "u!1!nAtdn5RJB_o!k6_e_3h2R3w!wmYXPek-yVD",
+      "height": 1050,
+      "width": 1050
+    },
+    "id": 3173821341106052
+  }
 }
 ```
 
@@ -1668,7 +1670,9 @@ Uploads an image to the User profile.
 <%= SCOPE %> | WRITE_SHEETS
 <%= HEADERS %> | See [Simple Uploads](#simple-uploads) for information about required headers.
 <%= REQUEST %> | Binary content for the file
-<%= RETURNS %> | [Result Object](#result-object)
+<%= RETURNS %> | [Result Object](#result-object) containing the [User Object](#user-object) for the updated user.
+
+<aside class="notice">Uploading a profile image differs from <a href="#add-image-to-cell">Adding an Image to a Cell</a> in the following ways:<ul><li>A Content-Length header is not required</li><li>Allowable file types are limited to: gif, jpg, and png</li><li>Maximum file size is determined by the following rules:<ul><li>If you have not defined a custom size and the image is larger than 1050 x 1050 pixels, Smartsheet scales the image down to 1050 x 1050</li><li>If you have defined a custom size, Smartsheet uses that as the file size max</li></ul></li><li>If the image is not square, Smartsheet uses a solid color to pad the image</li></ul></aside>
 
 # Workspaces
 
