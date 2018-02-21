@@ -2860,7 +2860,9 @@ fos.close();
 ```
 
 ```python
-# [todo]
+# Get the image id from the cell object, as returned from get_sheet
+# Convert the image id to a download url, using images.get_image_urls (docs)
+# Download the image from the url, probably using the Requests library.
 ```
 
 ```ruby
@@ -2938,15 +2940,16 @@ String temporaryUrl = smartsheet.imageUrlResources().getImageUrls(imageUrls).get
 ```
 
 ```python
-body = [
+imageUrl = ss_client.models.ImageUrl(
   {
     "imageId": 'jpbGklqdfZuL4Jw-kZhdZA',
     "height": 256,
     "width": 256
   }
-]
+)
 
-image_urls = ss_client.models.ImageUrl(body)
+response = ss_client.Images.get_image_urls([imageUrl])
+url = response.image_urls[0].url
 ```
 
 ```ruby
