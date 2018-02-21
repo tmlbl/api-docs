@@ -2986,6 +2986,10 @@ Gets a list of URLs that can be used to retrieve the specified cell images.
 <%= REQUEST %> | Array of [ImageUrl Objects](#imageurl-object), with the following attributes:<ul><li><b>imageId</b> (required)</li><li><b>height</b> (optional)</li><li><b>width</b> (optional)</li></ul>Each image in the response is sized according to which dimensions were specified by the request:<ul><li>If neither <b>height</b> nor <b>width</b> is specified, the image is returned in its original size.</li><li>If both <b>height</b> AND <b>width</b> are specified, image is sized using those measurements.</li><li>If either <b>height</b> OR <b>width</b> is specified (that is, one or the other -- not both), the image is automatically scaled using that measurement.</li></ul>Additionally, the following rules apply:<ul><li>If the requested image size is less than or equal to the actual image size, the returned image size matches the requested size.</li><li>If the requested image size is larger than the actual image size, the returned image size matches the actual image size.</li></ul>
 <%= RETURNS %> | [ImageUrlMap Object](#imageurlmap-object)
 
+<aside class="notice">If the image is stored on a cloud server that is public facing, such as Google, you do not need an authorization header to retrieve it.</aside>
+
+To retrieve images, see the workflow in [Download Cell Image](#download-cell-image).
+
 ## Remove Image from Cell
 
 To remove an image from a cell (and set cell contents to either empty or to another value), use the [Update Rows](#update-rows) operation to set **cell.value** to the new value.
