@@ -2860,9 +2860,29 @@ fos.close();
 ```
 
 ```python
-# Get the image id from the cell object, as returned from get_sheet
-# Convert the image id to a download url, using images.get_image_urls (docs)
-# Download the image from the url, probably using the Requests library.
+# Steps 1 and 2: Locate the cell and obtain the imageId
+row = ss_client.Sheets.get_row(
+    1696831624483716,   # sheet_id
+    1049441315358596)   # row_id
+cell = row.get_column(74761903175665540)     # column_id
+image = cell.image
+print (image)
+
+# Step 3: Obtain a temporary image URL
+imageUrl = ss_client.models.ImageUrl(
+  {
+    "imageId": 'nQCn-Bm2ncwqsw_FX1XI_w',
+    "height": 40,
+    "width": 20
+  }
+)
+
+response = ss_client.Images.get_image_urls([imageUrl])
+url = response.image_urls[0].url
+print (url)
+
+# Step 4: Download the image
+# Download the image from the URL, probably using the Requests library.
 ```
 
 ```ruby
