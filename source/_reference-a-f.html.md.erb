@@ -2860,29 +2860,29 @@ fos.close();
 ```
 
 ```python
+sheetId = 1639534409607044
+rowId = 3344087179913092
+columnId = 1735559124150148
+
 # Steps 1 and 2: Locate the cell and obtain the imageId
-row = ss_client.Sheets.get_row(
-    1696831624483716,   # sheet_id
-    1049441315358596)   # row_id
-cell = row.get_column(74761903175665540)     # column_id
+row = ss_client.Sheets.get_row(sheet_id, row_id)
+cell = row.get_column(column_id)
 image = cell.image
-print (image)
+
+# Automate using Alt Text as the file name
+filename = getattr(image, 'alt_text', default_filename)
 
 # Step 3: Obtain a temporary image URL
-imageUrl = ss_client.models.ImageUrl(
-  {
-    "imageId": 'nQCn-Bm2ncwqsw_FX1XI_w',
-    "height": 40,
-    "width": 20
-  }
-)
-
+imageUrl = ss_client.models.ImageUrl( { "imageId": image.id } )
 response = ss_client.Images.get_image_urls([imageUrl])
 url = response.image_urls[0].url
-print (url)
 
 # Step 4: Download the image
-# Download the image from the URL, probably using the Requests library.
+import requests
+response = requests.get(url)
+if response.status_code == 200:
+  with open(filename, 'wb') as f:
+    f.write(response.content)
 ```
 
 ```ruby
