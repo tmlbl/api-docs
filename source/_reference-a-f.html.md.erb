@@ -2884,7 +2884,28 @@ if response.status_code == 200:
 ```
 
 ```ruby
-# [todo]
+require 'open-uri'
+
+sheet_id = 1639534409607044
+row_id = 3344087179913092
+column_id = 1735559124150148
+default_filename = 'my_image.png'
+
+# Steps 1 and 2: Locate the cell and obtain the imageId
+row = smartsheet.sheets.rows.get(sheet_id: sheet_id, row_id: row_id)
+cell = row[:cells].select { |cell| cell[:column_id] == column_id }.first
+image = cell[:image]
+
+# Automate using Alt Text as the file name
+filename = image[:alt_text] || default_filename
+
+# Step 3: Obtain a temporary image URL
+response = smartsheet.sheets.list_image_urls(body: [{image_id: image[:id]}])
+url = response[:image_urls][0][:url]
+
+# Step 4: Download the image
+image_download = open(url)
+IO.copy_stream(image_download, filename)
 ```
 
 Downloading a cell image is a multi-step process. This sample downloads a cell image to a local file. The cell is specified by sheet Id, row Id, and column Id.
